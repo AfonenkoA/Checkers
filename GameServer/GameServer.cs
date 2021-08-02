@@ -23,6 +23,9 @@ namespace GameServer
     }
     class Player : IDisposable
     {
+        private string Serialize<T>(T obj) => JsonSerializer.Serialize<T>(obj);
+        private T Deserialize<T>(string json) => JsonSerializer.Deserialize<T>(json);
+
         public delegate void MoveActionHandler(Player player, MoveAction action);
         public delegate void EmoteActionHandler(Player player, EmoteAction action);
         public delegate void SurrenderActionHandler(Player player, SurrenderAction action);
@@ -57,25 +60,25 @@ namespace GameServer
             while (true)
             {
                 string msg = await reader.ReadLineAsync();
-                switch (JsonSerializer.Deserialize<Action>(msg).Type)
+                switch (Deserialize<Action>(msg).Type)
                 {
                     case ActionType.Connect:
-                        ConnectAction connect = JsonSerializer.Deserialize<ConnectAction>(msg);
+                        ConnectAction connect = Deserialize<ConnectAction>(msg);
                         Login = connect.Login;
                         Password = connect.Password;
-                        await writer.WriteLineAsync(JsonSerializer.Serialize(ConnectionAcceptEvent.Instance));
+                        await writer.WriteLineAsync(Serialize(ConnectionAcceptEvent.Instance));
                         break;
                     case ActionType.Move:
-                        OnMove(this, JsonSerializer.Deserialize<MoveAction>(msg));
+                        OnMove(this, Deserialize<MoveAction>(msg));
                         break;
                     case ActionType.Emote:
-                        OnEmote(this, JsonSerializer.Deserialize<EmoteAction>(msg));
+                        OnEmote(this, Deserialize<EmoteAction>(msg));
                         break;
                     case ActionType.Surrender:
-                        OnSurrender(this, JsonSerializer.Deserialize<SurrenderAction>(msg));
+                        OnSurrender(this, Deserialize<SurrenderAction>(msg));
                         break;
                     case ActionType.RequestForGame:
-                        OnRequest(JsonSerializer.Deserialize<RequestForGameAction>(msg));
+                        OnRequest(Deserialize<RequestForGameAction>(msg));
                         break;
                 }
             }

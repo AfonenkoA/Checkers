@@ -8,7 +8,6 @@ using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Net.Http;
-using System.Text;
 
 namespace Checkers.Client
 {
@@ -57,29 +56,75 @@ namespace Checkers.Client
 
     public class GameClient
     {
-        private const string _baseUri = "localhost:";
-        private const string _userUri = _baseUri + "/user/";
-
         private readonly string _login;
         private readonly string _password;
-        private readonly GameService _gameService;
+        private GameService _gameService;
+
         private readonly HttpClient _httpClient = new();
-        private readonly SequreRequest _basicRequest;
+
+        private readonly string _query;
 
         public GameClient(string login, string password)
         {
             _login = login;
             _password = password;
-            _gameService = new GameService(this);
-            _basicRequest = new() { Login = login, Password = password };
+            _gameService = null;
+            _query = $"?login={login}&password={password}";
         }
 
-        public GameService Service { get { return _gameService; } }
+        public GameService Service
+        {
+            get
+            {
+                if (_gameService == null)
+                    _gameService = new GameService(this);
+                return _gameService;
+            }
+        }
         public string Login { get { return _login; } }
         public string Password { get { return _password; } }
 
+        private const string _baseUri = "http://localhost:5005/api/";
+        private const string _userUri = _baseUri + "user/";
+        private const string _gameUri = _baseUri + "games/";
+
+        private string AchievementsUri
+        {
+            get
+            {
+                return _userUri + Login + "/achievements";
+            }
+        }
+
+        private string ItemsUri
+        {
+            get
+            {
+                return _userUri + Login + "/items";
+            }
+        }
+
+        private string FriendsUri
+        {
+            get
+            {
+                return _userUri + Login + "/friends";
+            }
+        }
+
+        private string UserGamesUri
+        {
+            get
+            {
+                return _userUri + Login + "/games";
+            }
+        }
+
         public class GameService : IDisposable
         {
+            private string Serialize<T>(T obj) => JsonSerializer.Serialize<T>(obj);
+            private T Deserialize<T>(string json) => JsonSerializer.Deserialize<T>(json);
+
             public static class Board
             {
                 public static readonly CellType[,] schema = new CellType[8, 8];
@@ -160,7 +205,7 @@ namespace Checkers.Client
                 tcp.Connect(IPAddress.Loopback, 5000);
                 StreamWriter writer = new(tcp.GetStream()) { AutoFlush = true };
                 _controller = new GameController(writer);
-                writer.WriteLine(JsonSerializer.Serialize(new ConnectAction() { Login = client.Login, Password = client.Password }));
+                writer.WriteLine(Serialize(new ConnectAction() { Login = client.Login, Password = client.Password }));
                 Task.Run(Listen);
             }
 
@@ -175,31 +220,31 @@ namespace Checkers.Client
                 while (true)
                 {
                     string message = await reader.ReadLineAsync();
-                    switch (JsonSerializer.Deserialize<Event>(message).Type)
+                    switch (Deserialize<Event>(message).Type)
                     {
                         case EventType.GameStart:
-                            OnGameStart(JsonSerializer.Deserialize<GameStartEvent>(message));
+                            OnGameStart(Deserialize<GameStartEvent>(message));
                             break;
                         case EventType.GameEnd:
-                            OnGameEnd(JsonSerializer.Deserialize<GameEndEvent>(message));
+                            OnGameEnd(Deserialize<GameEndEvent>(message));
                             break;
                         case EventType.YourTurn:
-                            OnYourTurn(JsonSerializer.Deserialize<YourTurnEvent>(message));
+                            OnYourTurn(Deserialize<YourTurnEvent>(message));
                             break;
                         case EventType.EnemyTurn:
-                            OnEnemyTurn(JsonSerializer.Deserialize<EnemyTurnEvent>(message));
+                            OnEnemyTurn(Deserialize<EnemyTurnEvent>(message));
                             break;
                         case EventType.Emote:
-                            OnEmote(JsonSerializer.Deserialize<EmoteEvent>(message));
+                            OnEmote(Deserialize<EmoteEvent>(message));
                             break;
                         case EventType.Move:
-                            OnMove(JsonSerializer.Deserialize<MoveEvent>(message));
+                            OnMove(Deserialize<MoveEvent>(message));
                             break;
                         case EventType.Remove:
-                            OnRemove(JsonSerializer.Deserialize<RemoveEvent>(message));
+                            OnRemove(Deserialize<RemoveEvent>(message));
                             break;
                         case EventType.ConnectionAccept:
-                            OnConnectionAccept(JsonSerializer.Deserialize<ConnectionAcceptEvent>(message));
+                            OnConnectionAccept(Deserialize<ConnectionAcceptEvent>(message));
                             break;
                     }
                 }
@@ -214,16 +259,27 @@ namespace Checkers.Client
         }
 
 
-        private static string QueryString(SequreRequest request)
-        {
-            StringBuilder builder = new();
-            builder.Append("login=" + request.Login+'&');
-            builder.Append("login="+request.Password+'&');
-            return builder.ToString();
-        }
+        private string Serialize<T>(T obj) => JsonSerializer.Serialize(obj);
+        private T Deserialize<T>(string json) where T : new() => JsonSerializer.Deserialize<T>(json) ?? new T();
 
-        public async Task<UserLoginResponse> Authorize() => JsonSerializer.Deserialize<UserLoginResponse>(
-                await _httpClient.GetStringAsync(_userUri + QueryString(_basicRequest)));
+        public async Task<UserLoginResponse> AuthorizeAsync() => Deserialize<UserLoginResponse>(
+                await _httpClient.GetStringAsync(_userUri + _query));
+
+        public async Task<UserAchievementsGetResponse> GetAchievementsAsync() =>
+            Deserialize<UserAchievementsGetResponse>(await _httpClient.GetStringAsync(AchievementsUri));
+
+        public async Task<UserFriendsGetResponse> GetFriendsAsync() =>
+            Deserialize<UserFriendsGetResponse>(await _httpClient.GetStringAsync(FriendsUri + _query));
+
+        public async Task<UserGamesGetResponse> GetGamesAsync() =>
+            Deserialize<UserGamesGetResponse>(await _httpClient.GetStringAsync(UserGamesUri));
+
+        public async Task<GameGetRespose> GetGameAsync(int id) =>
+            Deserialize<GameGetRespose>(await _httpClient.GetStringAsync(_gameUri + id));
+
+        public async Task<UserItemsGetResponse> GetItemsAsync() =>
+            Deserialize<UserItemsGetResponse>(await _httpClient.GetStringAsync(ItemsUri + _query));
+
 
     }
 }

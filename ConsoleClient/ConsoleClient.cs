@@ -3,19 +3,36 @@ using Checkers.Client;
 
 using GService = Checkers.Client.GameClient.GameService;
 using Controller = Checkers.Client.GameClient.GameService.GameController;
+using System.Threading.Tasks;
 
 class ConsoleClient
 {
     static void Main(string[] args)
     {
         GameClient client = new("log", "pass");
-        GService service = client.Service;
-        Controller controller = service.Controller;
-        controller.Request();
-        while (true)
-        {
-            CrateAction(controller);
-        }
+        //GService service = client.Service;
+        //Controller controller = service.Controller;
+
+        Task.Run(async () =>
+            {
+                try
+                {
+                    Console.WriteLine(await client.GetGameAsync(3));
+                    Console.WriteLine(await client.AuthorizeAsync());
+                    Console.WriteLine(await client.GetAchievementsAsync());
+                    Console.WriteLine(await client.GetFriendsAsync());
+                    Console.WriteLine(await client.GetGamesAsync());
+                    Console.WriteLine(await client.GetItemsAsync());
+                }
+                catch (Exception ex)
+                { Console.WriteLine(ex); }
+            });
+        Console.Read();
+        //controller.Request();
+        //while (true)
+        //{
+        //    CrateAction(controller);
+        //}
     }
     private static void CrateAction(Controller controller)
     {

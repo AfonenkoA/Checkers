@@ -157,6 +157,11 @@ namespace Checkers.Transmission
         public ResponseStatus Status { get; set; }
     }
 
+    public class UserGamesGetResponse : Response
+    {
+        public int[]? Games { get;set;  }
+     }
+
     public struct UserInfo
     {
         public string Nick { get; set; }
@@ -168,7 +173,7 @@ namespace Checkers.Transmission
     public struct GameAction
     {
         public int ActionNumber { get; set; }
-        public TimeOnly ActionTime { get; set; }
+        public TimeSpan ActionTime { get; set; }
         public int ActorID { get; set; }
         public string ActionDescription { get; set; }
     }
@@ -192,7 +197,7 @@ namespace Checkers.Transmission
         public int[]? Achievements { get; set; }
     }
 
-    public class GameGetRespose
+    public class GameGetRespose : Response
     {
         public int ID { get; set; }
         public int Player1ID { get; set; }
@@ -234,10 +239,10 @@ namespace Checkers.Transmission
         public int[]? Friends { get; set; }
     }
 
-    public class UserFriendsGetResponse
-    { }
-    public class UserFriendsUpdateResponse
-    { }
+    public class UserFriendsGetResponse : UserFriendsResponse
+    {}
+    public class UserFriendsUpdateResponse : UserFriendsResponse
+    {}
 
     namespace InGame
     {
