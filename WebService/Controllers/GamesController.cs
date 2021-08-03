@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
+using static System.Text.Json.JsonSerializer;
 using Checkers.Transmission;
 using System;
 
@@ -9,10 +9,6 @@ namespace WevService.Controllers
     [ApiController]
     public class GamesController : ControllerBase
     {
-
-        private string Serialize<T>(T obj) => JsonSerializer.Serialize(obj);
-        private T Deserialize<T>(string json) => JsonSerializer.Deserialize<T>(json);
-
         [HttpGet("{id}")]
         public string GameGet([FromRoute] int id)
         {

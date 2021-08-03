@@ -3,30 +3,8 @@ using Checkers.Client;
 
 namespace Checkers.Transmission
 {
-    public enum RequestType
-    {
-        GameGetRequest,
-        UserCreationRequest,
-        UserGetRequest,
-        UserLoginRequest,
-        UserUpdateRequest,
-        UserDeleteRequest,
-        UserItemsGetRequest,
-        UserItemsUpdateRequest,
-        UserAchievementsGetRequest,
-        UserFriendsGetRequest,
-        UserFriendsUpdateRequest,
-        UserGamesGetRequest
-    }
     public class Request
     {
-        public RequestType Type { get; set; }
-        public Request(RequestType type)
-        {
-            Type = type;
-        }
-        public Request()
-        { }
     }
 
     public class GameGetRequest : Request
@@ -37,43 +15,55 @@ namespace Checkers.Transmission
     public class UserRequest : Request
     {
         public string? Login { get; set; }
-        public UserRequest(RequestType type) : base(type)
-        {
-        }
         public UserRequest() { }
     }
 
     public class SequreRequest : UserRequest
     {
         public string? Password { get; set; }
-        public SequreRequest(RequestType type) : base(type)
-        { }
         public SequreRequest() : base()
         { }
+    }
+
+    public class UserAuthorizationRequest : SequreRequest 
+    {
+        public UserAuthorizationRequest()
+        {
+        }
+
+        public UserAuthorizationRequest(SequreRequest request) : this()
+        {
+            Login = request.Login;
+            Password = request.Password;
+        }
+    }
+
+    public class UserInfoRequest : SequreRequest
+    {
+        public UserInfoRequest()
+        {
+        }
+
+        public UserInfoRequest(SequreRequest request) : this()
+        {
+            Login = request.Login;
+            Password = request.Password;
+        }
     }
 
     public class UserCreationRequest : SequreRequest
     {
         public string? Email { get; set; }
         public string? Nick { get; set; }
-        public UserCreationRequest() : base(RequestType.UserCreationRequest)
-        {
-        }
-        public UserCreationRequest(SequreRequest request) : base(RequestType.UserCreationRequest) 
+
+        public UserCreationRequest(SequreRequest request) : this() 
         {
             Login = request.Login;
             Password= request.Password;
         }
-    }
 
-    public class UserLoginRequest : SequreRequest
-    {
-        public UserLoginRequest() : base(RequestType.UserLoginRequest)
-        { }
-        public UserLoginRequest(SequreRequest request) : base(RequestType.UserCreationRequest)
+        public UserCreationRequest()
         {
-            Login = request.Login;
-            Password = request.Password;
         }
     }
 
@@ -82,9 +72,9 @@ namespace Checkers.Transmission
         public string? NewPassword { get; set; }
         public string? NewEmail { get; set; }
         public int? NewPictureID { get; set; }
-        public UserUpdateRequest() : base(RequestType.UserUpdateRequest)
+        public UserUpdateRequest()
         { }
-        public UserUpdateRequest(SequreRequest request) : base(RequestType.UserCreationRequest)
+        public UserUpdateRequest(SequreRequest request)
         {
             Login = request.Login;
             Password = request.Password;
@@ -92,8 +82,8 @@ namespace Checkers.Transmission
     }
     public class UserDeleteRequest : SequreRequest
     {
-        public UserDeleteRequest() : base(RequestType.UserDeleteRequest) { }
-        public UserDeleteRequest(SequreRequest request) : base(RequestType.UserCreationRequest)
+        public UserDeleteRequest() { }
+        public UserDeleteRequest(SequreRequest request)
         {
             Login = request.Login;
             Password = request.Password;
@@ -105,9 +95,9 @@ namespace Checkers.Transmission
         public int? NewItemID { get; set; }
         public int? NewSelectedCheckersID { get; set; }
         public int? NewSelectedAnimationsID { get; set; }
-        public UserItemsUpdateRequest() : base(RequestType.UserItemsUpdateRequest)
+        public UserItemsUpdateRequest()
         { }
-        public UserItemsUpdateRequest(SequreRequest request) : base(RequestType.UserCreationRequest)
+        public UserItemsUpdateRequest(SequreRequest request)
         {
             Login = request.Login;
             Password = request.Password;
@@ -115,9 +105,9 @@ namespace Checkers.Transmission
     }
     public class UserFriendsGetRequest : SequreRequest
     {
-        public UserFriendsGetRequest() : base(RequestType.UserFriendsGetRequest)
+        public UserFriendsGetRequest()
         { }
-        public UserFriendsGetRequest(SequreRequest request) : base(RequestType.UserCreationRequest)
+        public UserFriendsGetRequest(SequreRequest request)
         {
             Login = request.Login;
             Password = request.Password;
@@ -125,24 +115,25 @@ namespace Checkers.Transmission
     }
     public class UserFriendsUpdateRequest : SequreRequest
     {
-        public int? NewFriendID { get; set; }
-        public int? DeleteFriendID { get; set; }
-        public UserFriendsUpdateRequest() : base(RequestType.UserFriendsUpdateRequest)
+        public string? NewFriend { get; set; }
+        public string? DeleteFriend { get; set; }
+        public UserFriendsUpdateRequest()
         { }
-        public UserFriendsUpdateRequest(SequreRequest request) : base(RequestType.UserCreationRequest)
+        public UserFriendsUpdateRequest(SequreRequest request)
         {
             Login = request.Login;
             Password = request.Password;
         }
     }
+
     public class UserAchievementsGetRequest : UserRequest
     {
-        public UserAchievementsGetRequest() : base(RequestType.UserAchievementsGetRequest)
+        public UserAchievementsGetRequest()
         { }
     }
     public class UserGamesGetRequest : UserRequest
     {
-        public UserGamesGetRequest() : base(RequestType.UserGamesGetRequest)
+        public UserGamesGetRequest()
         { }
     }
 
@@ -156,6 +147,10 @@ namespace Checkers.Transmission
     {
         public ResponseStatus Status { get; set; }
     }
+
+
+    public class UserAuthorizationResponse : Response
+    { }
 
     public class UserGamesGetResponse : Response
     {
@@ -176,12 +171,6 @@ namespace Checkers.Transmission
         public TimeSpan ActionTime { get; set; }
         public int ActorID { get; set; }
         public string ActionDescription { get; set; }
-    }
-
-    public class UserSequreResonse : Response
-    {
-        public string? Login { get; set; }
-        public string? Password { get; set; }
     }
 
     public class UserGetResponse : Response
@@ -213,42 +202,30 @@ namespace Checkers.Transmission
         public GameAction[]? Actions { get; set; }
     }
 
-    public class UserInfoResponse : UserSequreResonse
+    public class UserInfoResponse : Response
     {
         public UserInfo Info { get; set; }
         public string? Email { get; set; }
     }
-    public class UserLoginResponse : UserInfoResponse
-    { }
-    public class UserUpdateResponse : UserInfoResponse
-    { }
-    public class UserItemsResponse : UserSequreResonse
+
+    public class UserItemsResponse : Response
     {
         public int[]? Items { get; set; }
         public int SelectedCheckersID { get; set; }
         public int SelectedAnimationsID { get; set; }
     }
 
-    public class UserItemsGetResponse : UserItemsResponse
-    { }
-    public class UserItemsUpdateResponse : UserItemsResponse
-    { }
-
-    public class UserFriendsResponse : UserSequreResonse
+    public class UserFriendsResponse : Response
     {
-        public int[]? Friends { get; set; }
+        public string[]? Friends { get; set; }
     }
-
-    public class UserFriendsGetResponse : UserFriendsResponse
-    {}
-    public class UserFriendsUpdateResponse : UserFriendsResponse
-    {}
 
     namespace InGame
     {
         public enum EventType
         {
             ConnectionAccept,
+            Disconnect,
             GameStart,
             GameEnd,
             YourTurn,
@@ -264,6 +241,12 @@ namespace Checkers.Transmission
             { Type = type; }
             public Event()
             {}
+        }
+
+        public class DisconnectEvent : Event
+        {
+            public static readonly DisconnectEvent Instance = new();
+            public DisconnectEvent() : base(EventType.Disconnect) { }
         }
 
         public class ConnectionAcceptEvent : Event
@@ -341,6 +324,7 @@ namespace Checkers.Transmission
         public enum ActionType
         {
             Connect,
+            Disconnect,
             Move,
             Emote,
             Surrender,
@@ -356,6 +340,12 @@ namespace Checkers.Transmission
                 Type = type;
             }
             public Action() { }
+        }
+
+        public class DisconnectAction : Action
+        {
+            public static readonly DisconnectAction Instance = new();
+            public DisconnectAction() : base(ActionType.Disconnect) { }
         }
 
         public class ConnectAction : Action

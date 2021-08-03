@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Text.Json;
+using static System.Text.Json.JsonSerializer;
 using System.Threading.Tasks;
 using Checkers.Transmission.InGame;
 
@@ -23,18 +23,17 @@ namespace GameServer
     }
     class Player : IDisposable
     {
-        private string Serialize<T>(T obj) => JsonSerializer.Serialize<T>(obj);
-        private T Deserialize<T>(string json) => JsonSerializer.Deserialize<T>(json);
-
         public delegate void MoveActionHandler(Player player, MoveAction action);
         public delegate void EmoteActionHandler(Player player, EmoteAction action);
         public delegate void SurrenderActionHandler(Player player, SurrenderAction action);
         public delegate void RequestForGameActionHandler(RequestForGameAction action);
+        public delegate void DisconnectActionHandler(Player p,DisconnectAction action);
 
         public event MoveActionHandler OnMove = (p, a) => { };
         public event EmoteActionHandler OnEmote = (p, a) => { };
         public event SurrenderActionHandler OnSurrender = (p, a) => { };
         public event RequestForGameActionHandler OnRequest = a => { };
+        public event DisconnectActionHandler OnDisconnect = (p,a) => { };
 
         private readonly TcpClient client;
         private readonly StreamReader reader;
@@ -52,10 +51,10 @@ namespace GameServer
 
         public async Task SendEvent<T>(T e) where T : Event
         {
-            await writer.WriteLineAsync(JsonSerializer.Serialize(e));
+            await writer.WriteLineAsync(Serialize(e));
         }
 
-        public async Task Listen()
+        public async void Listen()
         {
             while (true)
             {
@@ -80,6 +79,9 @@ namespace GameServer
                     case ActionType.RequestForGame:
                         OnRequest(Deserialize<RequestForGameAction>(msg));
                         break;
+                    case ActionType.Disconnect:
+                        OnDisconnect(this,Deserialize<DisconnectAction>(msg));
+                        return;
                 }
             }
         }
@@ -99,7 +101,7 @@ namespace GameServer
         private readonly IPAddress ipAddress;
         private readonly int port;
         private readonly List<Player> list = new();
-        private readonly Queue<Player> gameQueue = new Queue<Player>();
+        private readonly Queue<Player> gameQueue = new();
         public TCPServer(int port)
         {
             ipAddress = IPAddress.Loopback;
@@ -119,7 +121,7 @@ namespace GameServer
                 {
                     gameQueue.Enqueue(p);
                     if (gameQueue.Count >= 2)
-                        Task.Run(new GameHolder(gameQueue.Dequeue(), gameQueue.Dequeue()).Start);
+                        new GameHolder(gameQueue.Dequeue(), gameQueue.Dequeue()).Start();
                 };
             }
         }
@@ -170,7 +172,6 @@ namespace GameServer
                 Task p2Turn = p2.SendEvent(EnemyTurnEvent.Instance);
                 Task.WaitAll(p1Turn, p2Turn);
                 Subscribe();
-
             }
             private void MoveHolder(Player p, MoveAction action)
             {

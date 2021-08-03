@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Text.Json;
+using static System.Text.Json.JsonSerializer;
 using Checkers.Transmission;
 
 namespace WevService.Controllers
@@ -9,13 +10,12 @@ namespace WevService.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private string Serialize<T>(T obj) => JsonSerializer.Serialize(obj);
-        private T Deserialize<T>(string json) => JsonSerializer.Deserialize<T>(json);
 
         [HttpGet("{login}")]
         public string SimpleUserGet([FromRoute] string login)
         {
-            return JsonSerializer.Serialize(
+            Console.WriteLine(login);
+            return Serialize(
                 new UserGetResponse()
                 {
                     Status = ResponseStatus.OK,
@@ -30,10 +30,13 @@ namespace WevService.Controllers
         }
 
         [HttpGet]
-        public string SequreUserGet([FromQuery] string login, [FromQuery] string password)
+        public string SequreUserGet([FromQuery] string login, [FromQuery] string password, [FromQuery] string action)
         {
-            return JsonSerializer.Serialize(
-                new UserLoginResponse()
+            switch (action)
+            {
+                case "info":
+                    return Serialize(
+                new UserInfoResponse()
                 {
                     Status = ResponseStatus.OK,
                     Info = new UserInfo()
@@ -44,9 +47,13 @@ namespace WevService.Controllers
                         Raiting = 1000
                     },
                     Email = login + "@example.com",
-                    Login = login,
-                    Password = password
                 });
+                case "authorize":
+                    return Serialize(new UserAuthorizationResponse() { Status = ResponseStatus.OK });
+                default:
+                    return Serialize(new Response() { Status = ResponseStatus.FAILED });
+            }
+
         }
 
         [HttpPost]
@@ -54,12 +61,10 @@ namespace WevService.Controllers
         {
             UserUpdateRequest request = Deserialize<UserUpdateRequest>(json.ToString());
             return Serialize(
-                new UserUpdateResponse()
+                new UserInfoResponse()
                 {
                     Status = ResponseStatus.OK,
                     Email = request.Login + "@example.com",
-                    Password = request.Password,
-                    Login = request.Login,
                     Info = new UserInfo()
                     {
                         Nick = request.Login,
@@ -82,8 +87,6 @@ namespace WevService.Controllers
             return Serialize(new UserItemsResponse()
             {
                 Status = ResponseStatus.OK,
-                Login = login,
-                Password = password,
                 SelectedAnimationsID = 1,
                 SelectedCheckersID = 1,
                 Items = new int[] { 1, 2, 3 }
@@ -94,11 +97,9 @@ namespace WevService.Controllers
         public string SequreUserItemsPut([FromRoute] string login, [FromBody] JsonElement json)
         {
             UserItemsUpdateRequest request = Deserialize<UserItemsUpdateRequest>(json.ToString());
-            return Serialize(new UserItemsUpdateResponse()
+            return Serialize(new UserItemsResponse()
             {
                 Status = ResponseStatus.OK,
-                Login = login,
-                Password = request.Password,
                 SelectedAnimationsID = 1,
                 SelectedCheckersID = 1,
                 Items = new int[] { 1, 2, 3 }
@@ -118,12 +119,10 @@ namespace WevService.Controllers
         [HttpGet("{login}/friends")]
         public string UserFriendsGet([FromRoute] string login, [FromQuery] string password)
         {
-            return Serialize(new UserFriendsGetResponse()
+            return Serialize(new UserFriendsResponse()
             {
                 Status = ResponseStatus.OK,
-                Login = login,
-                Password = password,
-                Friends = new int[] { 1, 2, 3 }
+                Friends = new string[] { "friend 1", "friend 2", "friend 3" }
             });
         }
 
@@ -131,21 +130,19 @@ namespace WevService.Controllers
         public string UserFriendsPut([FromRoute] string login, [FromBody] JsonElement json)
         {
             UserFriendsUpdateRequest request = Deserialize<UserFriendsUpdateRequest>(json.ToString());
-            return Serialize(new UserFriendsUpdateResponse()
+            return Serialize(new UserFriendsResponse()
             {
                 Status = ResponseStatus.OK,
-                Login = login,
-                Password = request.Password,
-                Friends = new int[] { 1, 2, 3 }
+                Friends = new string[] {"friend 1","friend 2","friend 3" }
             });
         }
 
         [HttpGet("{login}/games")]
         public string UserGamesGet([FromRoute] string login)
         {
-            return Serialize(new UserGamesGetResponse() 
+            return Serialize(new UserGamesGetResponse()
             {
-                Status = ResponseStatus.OK, 
+                Status = ResponseStatus.OK,
                 Games = new int[] { 1, 2, 3 }
             });
         }

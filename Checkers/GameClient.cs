@@ -5,7 +5,7 @@ using Checkers.Transmission;
 using System.Net.Sockets;
 using System.IO;
 using System.Net;
-using System.Text.Json;
+using static System.Text.Json.JsonSerializer;
 using System.Threading.Tasks;
 using System.Net.Http;
 
@@ -25,7 +25,7 @@ namespace Checkers.Client
 
     public struct Position
     {
-        private static string letters = "ABCDEFGH";
+        private const string letters = "ABCDEFGH";
         public readonly int x, y;
         public Position(int x, int y)
         {
@@ -58,7 +58,7 @@ namespace Checkers.Client
     {
         private readonly string _login;
         private readonly string _password;
-        private GameService _gameService;
+        private GameService? _gameService;
 
         private readonly HttpClient _httpClient = new();
 
@@ -68,8 +68,7 @@ namespace Checkers.Client
         {
             _login = login;
             _password = password;
-            _gameService = null;
-            _query = $"?login={login}&password={password}";
+            _query = $"?login={login}&password={password}&";
         }
 
         public GameService Service
@@ -122,9 +121,6 @@ namespace Checkers.Client
 
         public class GameService : IDisposable
         {
-            private string Serialize<T>(T obj) => JsonSerializer.Serialize<T>(obj);
-            private T Deserialize<T>(string json) => JsonSerializer.Deserialize<T>(json);
-
             public static class Board
             {
                 public static readonly CellType[,] schema = new CellType[8, 8];
@@ -159,22 +155,22 @@ namespace Checkers.Client
 
                 public void Request()
                 {
-                    Send(JsonSerializer.Serialize(RequestForGameAction.Instance));
+                    Send(Serialize(RequestForGameAction.Instance));
                 }
 
                 public void Move(Position from, Position to)
                 {
-                    Send(JsonSerializer.Serialize(new MoveAction() { From = from, To = to }));
+                    Send(Serialize(new MoveAction() { From = from, To = to }));
                 }
 
                 public void Emote(int emotionID)
                 {
-                    Send(JsonSerializer.Serialize(new EmoteAction() { EmotionID = emotionID }));
+                    Send(Serialize(new EmoteAction() { EmotionID = emotionID }));
                 }
 
                 public void Surrender()
                 {
-                    Send(JsonSerializer.Serialize(SurrenderAction.Instance));
+                    Send(Serialize(SurrenderAction.Instance));
                 }
             }
 
@@ -186,6 +182,7 @@ namespace Checkers.Client
             public delegate void EmoteEventHandler(EmoteEvent? ev);
             public delegate void RemoveEventHandler(RemoveEvent? ev);
             public delegate void ConnectionAcceptEventHandler(ConnectionAcceptEvent? ev);
+            public delegate void DisconnectEventHandler(DisconnectEvent? ev);
 
             public event GameStartEventHandler OnGameStart = Console.WriteLine;
             public event GameEndEventHandler OnGameEnd = Console.WriteLine;
@@ -195,24 +192,33 @@ namespace Checkers.Client
             public event RemoveEventHandler OnRemove = Console.WriteLine;
             public event EmoteEventHandler OnEmote = Console.WriteLine;
             public event ConnectionAcceptEventHandler OnConnectionAccept = Console.WriteLine;
+            public event DisconnectEventHandler OnDisconnect = Console.WriteLine;
 
             private readonly TcpClient tcp;
-            private GameController _controller;
+            private StreamWriter? _writer;
+            private readonly GameClient _client;
 
             public GameService(GameClient client)
             {
                 tcp = new();
+                _client = client;
+            }
+
+            public void Connect()
+            {
                 tcp.Connect(IPAddress.Loopback, 5000);
-                StreamWriter writer = new(tcp.GetStream()) { AutoFlush = true };
-                _controller = new GameController(writer);
-                writer.WriteLine(Serialize(new ConnectAction() { Login = client.Login, Password = client.Password }));
+                _writer = new(tcp.GetStream()) { AutoFlush = true };
+                Controller = new GameController(_writer);
+                _writer.WriteLine(Serialize(new ConnectAction() { Login = _client.Login, Password = _client.Password }));
                 Task.Run(Listen);
             }
 
-            public GameController Controller
+            public void Disconnect()
             {
-                get { return _controller; }
+                _writer?.WriteLine(Serialize(DisconnectAction.Instance));
             }
+
+            public GameController? Controller { get; private set; }
 
             private async void Listen()
             {
@@ -246,10 +252,12 @@ namespace Checkers.Client
                         case EventType.ConnectionAccept:
                             OnConnectionAccept(Deserialize<ConnectionAcceptEvent>(message));
                             break;
+                        case EventType.Disconnect:
+                            OnDisconnect(Deserialize<DisconnectEvent>(message));
+                            return;
                     }
                 }
             }
-
 
             public void Dispose()
             {
@@ -258,18 +266,17 @@ namespace Checkers.Client
             }
         }
 
+        public async Task<UserAuthorizationResponse> AuthorizeAsync() => Deserialize<UserAuthorizationResponse>(
+                await _httpClient.GetStringAsync(_userUri + _query+"action=authorize"));
 
-        private string Serialize<T>(T obj) => JsonSerializer.Serialize(obj);
-        private T Deserialize<T>(string json) where T : new() => JsonSerializer.Deserialize<T>(json) ?? new T();
-
-        public async Task<UserLoginResponse> AuthorizeAsync() => Deserialize<UserLoginResponse>(
-                await _httpClient.GetStringAsync(_userUri + _query));
+        public async Task<UserInfoResponse> GetUserInfoAsync() => Deserialize<UserInfoResponse>(
+            await _httpClient.GetStringAsync(_userUri + _query + "action=info"));
 
         public async Task<UserAchievementsGetResponse> GetAchievementsAsync() =>
             Deserialize<UserAchievementsGetResponse>(await _httpClient.GetStringAsync(AchievementsUri));
 
-        public async Task<UserFriendsGetResponse> GetFriendsAsync() =>
-            Deserialize<UserFriendsGetResponse>(await _httpClient.GetStringAsync(FriendsUri + _query));
+        public async Task<UserFriendsResponse> GetFriendsAsync() =>
+            Deserialize<UserFriendsResponse>(await _httpClient.GetStringAsync(FriendsUri + _query));
 
         public async Task<UserGamesGetResponse> GetGamesAsync() =>
             Deserialize<UserGamesGetResponse>(await _httpClient.GetStringAsync(UserGamesUri));
@@ -277,9 +284,10 @@ namespace Checkers.Client
         public async Task<GameGetRespose> GetGameAsync(int id) =>
             Deserialize<GameGetRespose>(await _httpClient.GetStringAsync(_gameUri + id));
 
-        public async Task<UserItemsGetResponse> GetItemsAsync() =>
-            Deserialize<UserItemsGetResponse>(await _httpClient.GetStringAsync(ItemsUri + _query));
+        public async Task<UserItemsResponse> GetItemsAsync() =>
+            Deserialize<UserItemsResponse>(await _httpClient.GetStringAsync(ItemsUri + _query));
 
-
+        public async Task<UserGetResponse> GetUserAsync(string login) => 
+            Deserialize<UserGetResponse>(await _httpClient.GetStringAsync(_userUri+login));
     }
 }
