@@ -1,22 +1,32 @@
 ﻿using System;
 using Checkers.Client;
-using System.Threading.Tasks;
+using Checkers.Data;
+using System.Linq;
 
 using static Checkers.Client.GameClient.GameService;
-using static Checkers.Client.GameClient;
+using System.Data.Entity;
+using Database = Checkers.Data.Database;
 
 class ConsoleClient
 {
     static void Main(string[] args)
     {
-        GameClient client = new("log", "pass");
-        GameService service = client.Service;
-        service.Connect();
-        GameController controller = service.Controller;
-        controller.Request();
-        controller.Move(new Position(1,2),new Position(2,3));
-        controller.Surrender();
-        service.Disconnect();
+        using (Database db =  new())
+        {
+            db.Users.Include(u=>u.Achievements);
+            foreach (User user in db.Users)
+                Console.WriteLine(string.Join<Achievement>(" ",user.Achievements.ToArray()));
+        }
+
+        //GameClient client = new("log", "pass");
+        //GameService service = client.Service;
+        //service.Connect();
+        //GameController controller = service.Controller;
+        //controller.Request();
+        //controller.Move(new Position(1,2),new Position(2,3));
+        //controller.Surrender();
+        //service.Disconnect();
+
         //Task.Run(async () =>
         //    {
         //        try

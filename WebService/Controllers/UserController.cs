@@ -3,6 +3,8 @@ using System;
 using System.Text.Json;
 using static System.Text.Json.JsonSerializer;
 using Checkers.Transmission;
+using Checkers.Data;
+using System.Linq;
 
 namespace WevService.Controllers
 {
@@ -10,50 +12,70 @@ namespace WevService.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private static readonly Database database = new();
+
+        private User FindUser(string login, string password)
+        {
+            var result = from u in database.Users
+                         where u.Login == login && u.Password == password
+                         select u;
+            return result.Any() ? result.First() : null;
+        }
+
+        private User FindUser(string login)
+        {
+            var result = from u in database.Users
+                         where u.Login == login
+                         select u;
+            return result.Any() ? result.First() : null;
+        }
 
         [HttpGet("{login}")]
         public string SimpleUserGet([FromRoute] string login)
         {
-            Console.WriteLine(login);
+            User user = FindUser(login);
+            if (user == null)
+                return Serialize(BasicResponse.Failed);
             return Serialize(
                 new UserGetResponse()
                 {
                     Status = ResponseStatus.OK,
                     Info = new UserInfo()
                     {
-                        Nick = login,
-                        LastActivity = DateTime.Now,
-                        PictureID = 1,
-                        Raiting = 1000
+                        Nick = user.Nick,
+                        Raiting = user.Rating,
+                        PictureID = user.PictureId,
+                        LastActivity = user.LastActivity
                     }
                 });
+
+
         }
 
         [HttpGet]
         public string SequreUserGet([FromQuery] string login, [FromQuery] string password, [FromQuery] string action)
         {
-            switch (action)
+            User user = FindUser(login, password);
+            if (user == null)
+                return Serialize(BasicResponse.Failed);
+            return action switch
             {
-                case "info":
-                    return Serialize(
-                new UserInfoResponse()
-                {
-                    Status = ResponseStatus.OK,
-                    Info = new UserInfo()
-                    {
-                        Nick = login,
-                        LastActivity = DateTime.Now,
-                        PictureID = 1,
-                        Raiting = 1000
-                    },
-                    Email = login + "@example.com",
-                });
-                case "authorize":
-                    return Serialize(new UserAuthorizationResponse() { Status = ResponseStatus.OK });
-                default:
-                    return Serialize(new Response() { Status = ResponseStatus.FAILED });
-            }
-
+                "info" => Serialize(
+                                new UserInfoResponse()
+                                {
+                                    Status = ResponseStatus.OK,
+                                    Info = new UserInfo()
+                                    {
+                                        Nick = login,
+                                        LastActivity = DateTime.Now,
+                                        PictureID = 1,
+                                        Raiting = 1000
+                                    },
+                                    Email = login + "@example.com",
+                                }),
+                "authorize" => Serialize(new UserAuthorizationResponse() { Status = ResponseStatus.OK }),
+                _ => Serialize(BasicResponse.Failed),
+            };
         }
 
         [HttpPost]
@@ -84,13 +106,21 @@ namespace WevService.Controllers
         [HttpGet("{login}/items")]
         public string SequreUserItemsGet([FromRoute] string login, [FromQuery] string password)
         {
+            User user = FindUser(login, password);
+            if(user == null)
+                return Serialize(BasicResponse.Failed);
+
+            var items = from item in database.Items
+                               where user.Id == item.UserId
+                               select item.Id;
+
             return Serialize(new UserItemsResponse()
             {
                 Status = ResponseStatus.OK,
                 SelectedAnimationsID = 1,
                 SelectedCheckersID = 1,
-                Items = new int[] { 1, 2, 3 }
-            });
+                Items = items.ToArray()
+            }); ;
         }
 
         [HttpPut("{login}/items")]
@@ -109,10 +139,16 @@ namespace WevService.Controllers
         [HttpGet("{login}/achievements")]
         public string UserAchievementsGet([FromRoute] string login)
         {
+            User user = FindUser(login);
+            if(user == null)
+                return Serialize(BasicResponse.Failed);
+            var achievements = from a in database.Achievements
+                               where a.UserId == user.Id
+                               select a.Id;
             return Serialize(new UserAchievementsGetResponse()
             {
                 Status = ResponseStatus.OK,
-                Achievements = new int[] { 1, 2, 3 }
+                Achievements = achievements.ToArray()
             });
         }
 
@@ -133,7 +169,7 @@ namespace WevService.Controllers
             return Serialize(new UserFriendsResponse()
             {
                 Status = ResponseStatus.OK,
-                Friends = new string[] {"friend 1","friend 2","friend 3" }
+                Friends = new string[] { "friend 1", "friend 2", "friend 3" }
             });
         }
 
@@ -146,6 +182,5 @@ namespace WevService.Controllers
                 Games = new int[] { 1, 2, 3 }
             });
         }
-
     }
 }

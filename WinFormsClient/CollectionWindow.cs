@@ -6,7 +6,7 @@ namespace WinFormsClient.Windows
     public partial class CollectionWindow : Form
     {
         private int[] _items;
-        private Form _parentForm;
+        private readonly Form _parentForm;
 
         public int[] Items
         {
@@ -21,7 +21,7 @@ namespace WinFormsClient.Windows
 
         public CollectionWindow(MainMenuWindow mainMenuWindow)
         {
-            this._parentForm = mainMenuWindow;
+            _parentForm = mainMenuWindow;
             _items = Empty<int>();
             InitializeComponent();
         }

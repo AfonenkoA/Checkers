@@ -6,8 +6,6 @@ namespace WinFormsClient
 {
     public partial class AchievementsWindow : Form
     {
-
-        private static readonly System.Resources.ResourceManager manager = Properties.Resources.ResourceManager;
         private readonly MainMenuWindow _mainMenuWindow;
         private int[] _achievements;
         public int[] Achievements

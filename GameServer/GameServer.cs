@@ -182,7 +182,7 @@ namespace GameServer
                 if (ReferenceEquals(p1, p))
                 {
                     turn = TurnType.SecondPlayer;
-                    p1Turn = p1.SendEvent(YourTurnEvent.Instance);
+                    p1Turn = p1.SendEvent(EnemyTurnEvent.Instance);
                     p2Turn = p2.SendEvent(YourTurnEvent.Instance);
                 }
                 else

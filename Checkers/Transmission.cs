@@ -9,7 +9,7 @@ namespace Checkers.Transmission
 
     public class GameGetRequest : Request
     {
-        public int gameID { get; set; }
+        public int GameID { get; set; }
     }
 
     public class UserRequest : Request
@@ -143,16 +143,17 @@ namespace Checkers.Transmission
         FAILED
     }
 
-    public class Response
+    public class BasicResponse
     {
+        public static readonly BasicResponse Failed = new() { Status = ResponseStatus.FAILED };
         public ResponseStatus Status { get; set; }
     }
 
 
-    public class UserAuthorizationResponse : Response
+    public class UserAuthorizationResponse : BasicResponse
     { }
 
-    public class UserGamesGetResponse : Response
+    public class UserGamesGetResponse : BasicResponse
     {
         public int[]? Games { get;set;  }
      }
@@ -173,20 +174,20 @@ namespace Checkers.Transmission
         public string ActionDescription { get; set; }
     }
 
-    public class UserGetResponse : Response
+    public class UserGetResponse : BasicResponse
     {
         public UserInfo Info { get; set; }
     }
 
-    public class UserDeleteResponse : Response
+    public class UserDeleteResponse : BasicResponse
     { }
 
-    public class UserAchievementsGetResponse : Response
+    public class UserAchievementsGetResponse : BasicResponse
     {
         public int[]? Achievements { get; set; }
     }
 
-    public class GameGetRespose : Response
+    public class GameGetRespose : BasicResponse
     {
         public int ID { get; set; }
         public int Player1ID { get; set; }
@@ -202,20 +203,20 @@ namespace Checkers.Transmission
         public GameAction[]? Actions { get; set; }
     }
 
-    public class UserInfoResponse : Response
+    public class UserInfoResponse : BasicResponse
     {
         public UserInfo Info { get; set; }
         public string? Email { get; set; }
     }
 
-    public class UserItemsResponse : Response
+    public class UserItemsResponse : BasicResponse
     {
         public int[]? Items { get; set; }
         public int SelectedCheckersID { get; set; }
         public int SelectedAnimationsID { get; set; }
     }
 
-    public class UserFriendsResponse : Response
+    public class UserFriendsResponse : BasicResponse
     {
         public string[]? Friends { get; set; }
     }
