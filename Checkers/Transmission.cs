@@ -1,5 +1,5 @@
-﻿using System;
-using Checkers.Client;
+﻿using Checkers.Client;
+using System;
 
 namespace Checkers.Transmission
 {
@@ -25,7 +25,7 @@ namespace Checkers.Transmission
         { }
     }
 
-    public class UserAuthorizationRequest : SequreRequest 
+    public class UserAuthorizationRequest : SequreRequest
     {
         public UserAuthorizationRequest()
         {
@@ -56,10 +56,10 @@ namespace Checkers.Transmission
         public string? Email { get; set; }
         public string? Nick { get; set; }
 
-        public UserCreationRequest(SequreRequest request) : this() 
+        public UserCreationRequest(SequreRequest request) : this()
         {
             Login = request.Login;
-            Password= request.Password;
+            Password = request.Password;
         }
 
         public UserCreationRequest()
@@ -151,12 +151,15 @@ namespace Checkers.Transmission
 
 
     public class UserAuthorizationResponse : BasicResponse
-    { }
+    {
+        public static new readonly UserAuthorizationResponse Failed = new() { Status = ResponseStatus.FAILED };
+    }
 
     public class UserGamesGetResponse : BasicResponse
     {
-        public int[]? Games { get;set;  }
-     }
+        public static new readonly UserGamesGetResponse Failed = new() { Status = ResponseStatus.FAILED };
+        public int[]? Games { get; set; }
+    }
 
     public struct UserInfo
     {
@@ -176,19 +179,24 @@ namespace Checkers.Transmission
 
     public class UserGetResponse : BasicResponse
     {
+        public static new readonly UserGetResponse Failed = new() { Status = ResponseStatus.FAILED };
         public UserInfo Info { get; set; }
     }
 
     public class UserDeleteResponse : BasicResponse
-    { }
+    {
+        public static new readonly UserDeleteResponse Failed = new() { Status = ResponseStatus.FAILED };
+    }
 
     public class UserAchievementsGetResponse : BasicResponse
     {
+        public static new readonly UserAchievementsGetResponse Failed = new() { Status = ResponseStatus.FAILED };
         public int[]? Achievements { get; set; }
     }
 
     public class GameGetRespose : BasicResponse
     {
+        public static new readonly GameGetRespose Failed = new() { Status = ResponseStatus.FAILED };
         public int ID { get; set; }
         public int Player1ID { get; set; }
         public int Player2ID { get; set; }
@@ -205,12 +213,14 @@ namespace Checkers.Transmission
 
     public class UserInfoResponse : BasicResponse
     {
+        public static readonly new UserInfoResponse Failed = new() { Status = ResponseStatus.FAILED };
         public UserInfo Info { get; set; }
         public string? Email { get; set; }
     }
 
     public class UserItemsResponse : BasicResponse
     {
+        public static new readonly UserItemsResponse Failed = new() { Status = ResponseStatus.FAILED };
         public int[]? Items { get; set; }
         public int SelectedCheckersID { get; set; }
         public int SelectedAnimationsID { get; set; }
@@ -218,6 +228,7 @@ namespace Checkers.Transmission
 
     public class UserFriendsResponse : BasicResponse
     {
+        public static new readonly UserFriendsResponse Failed = new() { Status = ResponseStatus.FAILED };
         public string[]? Friends { get; set; }
     }
 
@@ -235,36 +246,36 @@ namespace Checkers.Transmission
             Move,
             Remove,
         }
-        public class Event
+        public class EventArgs
         {
             public EventType Type { get; set; }
-            public Event(EventType type)
+            public EventArgs(EventType type)
             { Type = type; }
-            public Event()
-            {}
-        }
-
-        public class DisconnectEvent : Event
-        {
-            public static readonly DisconnectEvent Instance = new();
-            public DisconnectEvent() : base(EventType.Disconnect) { }
-        }
-
-        public class ConnectionAcceptEvent : Event
-        {
-            public static readonly ConnectionAcceptEvent Instance = new();
-            public ConnectionAcceptEvent() : base(EventType.ConnectionAccept)
+            public EventArgs()
             { }
         }
 
-        public class GameStartEvent : Event
+        public class DisconnectEventArgs : EventArgs
+        {
+            public static readonly DisconnectEventArgs Instance = new();
+            public DisconnectEventArgs() : base(EventType.Disconnect) { }
+        }
+
+        public class ConnectionAcceptEventArgs : EventArgs
+        {
+            public static readonly ConnectionAcceptEventArgs Instance = new();
+            public ConnectionAcceptEventArgs() : base(EventType.ConnectionAccept)
+            { }
+        }
+
+        public class GameStartEventArgs : EventArgs
         {
             public string? EnemyNick { get; set; }
             public int EnemyRaiting { get; set; }
             public int EnemyCheckersID { get; set; }
             public int EnemyAnimationsID { get; set; }
             public int EnemyPictureID { get; set; }
-            public GameStartEvent() : base(EventType.GameStart) { }
+            public GameStartEventArgs() : base(EventType.GameStart) { }
         }
 
         public enum GameResult
@@ -272,52 +283,52 @@ namespace Checkers.Transmission
             Win,
             Lose
         }
-        public class GameEndEvent : Event
+        public class GameEndEventArgs : EventArgs
         {
             public GameResult Result { get; set; }
             public int RaitingChange { get; set; }
-            public GameEndEvent() : base(EventType.GameEnd)
-            {}
-        }
-
-        public class YourTurnEvent : Event
-        {
-            public static readonly YourTurnEvent Instance = new();
-            public YourTurnEvent() : base(EventType.YourTurn)
+            public GameEndEventArgs() : base(EventType.GameEnd)
             { }
         }
 
-        public class EnemyTurnEvent : Event
+        public class YourTurnEventArgs : EventArgs
         {
-            public static readonly EnemyTurnEvent Instance = new();
-            public EnemyTurnEvent() : base(EventType.EnemyTurn)
+            public static readonly YourTurnEventArgs Instance = new();
+            public YourTurnEventArgs() : base(EventType.YourTurn)
             { }
         }
 
-        public class MoveEvent : Event
+        public class EnemyTurnEventArgs : EventArgs
         {
-            public Position From {  get; set; }
+            public static readonly EnemyTurnEventArgs Instance = new();
+            public EnemyTurnEventArgs() : base(EventType.EnemyTurn)
+            { }
+        }
+
+        public class MoveEventArgs : EventArgs
+        {
+            public Position From { get; set; }
             public Position To { get; set; }
-            public MoveEvent() : base(EventType.Move)
-            {}
-            public MoveEvent(MoveAction action) : this()
+            public MoveEventArgs() : base(EventType.Move)
+            { }
+            public MoveEventArgs(MoveActionArgs action) : this()
             {
                 From = action.From;
                 To = action.To;
             }
         }
 
-        public class RemoveEvent : Event
+        public class RemoveEventArgs : EventArgs
         {
             public Position Position { get; set; }
-            public RemoveEvent() : base(EventType.Remove) { }
+            public RemoveEventArgs() : base(EventType.Remove) { }
         }
 
-        public class EmoteEvent : Event
+        public class EmoteEventArgs : EventArgs
         {
             public int EmotionID { get; set; }
-            public EmoteEvent() : base(EventType.Emote) { }
-            public EmoteEvent(EmoteAction action) : this()
+            public EmoteEventArgs() : base(EventType.Emote) { }
+            public EmoteEventArgs(EmoteActionArgs action) : this()
             {
                 EmotionID = action.EmotionID;
             }
@@ -332,52 +343,52 @@ namespace Checkers.Transmission
             RequestForGame
         }
 
-        public class Action
+        public class ActionArgs
         {
 
             public ActionType Type { get; set; }
-            public Action(ActionType type)
+            public ActionArgs(ActionType type)
             {
                 Type = type;
             }
-            public Action() { }
+            public ActionArgs() { }
         }
 
-        public class DisconnectAction : Action
+        public class DisconnectActionArgs : ActionArgs
         {
-            public static readonly DisconnectAction Instance = new();
-            public DisconnectAction() : base(ActionType.Disconnect) { }
+            public static readonly DisconnectActionArgs Instance = new();
+            public DisconnectActionArgs() : base(ActionType.Disconnect) { }
         }
 
-        public class ConnectAction : Action
+        public class ConnectAction : ActionArgs
         {
             public ConnectAction() : base(ActionType.Connect)
             { }
-            public string? Login {  get; set; }
-            public string? Password {  get; set; }
+            public string? Login { get; set; }
+            public string? Password { get; set; }
         }
 
-        public class MoveAction : Action
+        public class MoveActionArgs : ActionArgs
         {
-            public MoveAction() : base(ActionType.Move) { }
+            public MoveActionArgs() : base(ActionType.Move) { }
             public Position From { get; set; }
             public Position To { get; set; }
         }
-        public class EmoteAction : Action
+        public class EmoteActionArgs : ActionArgs
         {
             public int EmotionID { get; set; }
-            public EmoteAction() : base(ActionType.Emote) { }
+            public EmoteActionArgs() : base(ActionType.Emote) { }
         }
-        public class SurrenderAction : Action
+        public class SurrenderActionArgs : ActionArgs
         {
-            public static readonly SurrenderAction Instance = new();
-            public SurrenderAction() : base(ActionType.Surrender) { }
+            public static readonly SurrenderActionArgs Instance = new();
+            public SurrenderActionArgs() : base(ActionType.Surrender) { }
         }
 
-        public class RequestForGameAction : Action
+        public class RequestForGameActionArgs : ActionArgs
         {
-            public static readonly RequestForGameAction Instance = new();
-            public RequestForGameAction() : base(ActionType.RequestForGame) { }
+            public static readonly RequestForGameActionArgs Instance = new();
+            public RequestForGameActionArgs() : base(ActionType.RequestForGame) { }
         }
     }
 }

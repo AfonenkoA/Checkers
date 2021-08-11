@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Checkers.Transmission;
 using Checkers.Transmission.InGame;
-using Checkers.Transmission;
-using System.Net.Sockets;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using static System.Text.Json.JsonSerializer;
-using System.Threading.Tasks;
 using System.Net.Http;
+using System.Net.Sockets;
+using System.Threading.Tasks;
+using static System.Text.Json.JsonSerializer;
 
 namespace Checkers.Client
 {
@@ -155,44 +155,36 @@ namespace Checkers.Client
 
                 public void Request()
                 {
-                    Send(Serialize(RequestForGameAction.Instance));
+                    Send(Serialize(RequestForGameActionArgs.Instance));
                 }
 
                 public void Move(Position from, Position to)
                 {
-                    Send(Serialize(new MoveAction() { From = from, To = to }));
+                    Send(Serialize(new MoveActionArgs() { From = from, To = to }));
                 }
 
                 public void Emote(int emotionID)
                 {
-                    Send(Serialize(new EmoteAction() { EmotionID = emotionID }));
+                    Send(Serialize(new EmoteActionArgs() { EmotionID = emotionID }));
                 }
 
                 public void Surrender()
                 {
-                    Send(Serialize(SurrenderAction.Instance));
+                    Send(Serialize(SurrenderActionArgs.Instance));
                 }
             }
 
-            public delegate void GameStartEventHandler(GameStartEvent? ev);
-            public delegate void GameEndEventHandler(GameEndEvent? ev);
-            public delegate void YourTurnEventHandler(YourTurnEvent? ev);
-            public delegate void EnemyTurnEventHandler(EnemyTurnEvent? ev);
-            public delegate void MoveEventHandelr(MoveEvent? ev);
-            public delegate void EmoteEventHandler(EmoteEvent? ev);
-            public delegate void RemoveEventHandler(RemoveEvent? ev);
-            public delegate void ConnectionAcceptEventHandler(ConnectionAcceptEvent? ev);
-            public delegate void DisconnectEventHandler(DisconnectEvent? ev);
+            private static void Print(object? sender, object args) => Console.WriteLine(args);
 
-            public event GameStartEventHandler OnGameStart = Console.WriteLine;
-            public event GameEndEventHandler OnGameEnd = Console.WriteLine;
-            public event YourTurnEventHandler OnYourTurn = Console.WriteLine;
-            public event EnemyTurnEventHandler OnEnemyTurn = Console.WriteLine;
-            public event MoveEventHandelr OnMove = Console.WriteLine;
-            public event RemoveEventHandler OnRemove = Console.WriteLine;
-            public event EmoteEventHandler OnEmote = Console.WriteLine;
-            public event ConnectionAcceptEventHandler OnConnectionAccept = Console.WriteLine;
-            public event DisconnectEventHandler OnDisconnect = Console.WriteLine;
+            public event EventHandler<GameStartEventArgs> OnGameStart = Print;
+            public event EventHandler<GameEndEventArgs> OnGameEnd = Print;
+            public event EventHandler<YourTurnEventArgs> OnYourTurn = Print;
+            public event EventHandler<EnemyTurnEventArgs> OnEnemyTurn = Print;
+            public event EventHandler<MoveEventArgs> OnMove = Print;
+            public event EventHandler<RemoveEventArgs> OnRemove = Print;
+            public event EventHandler<EmoteEventArgs> OnEmote = Print;
+            public event EventHandler<ConnectionAcceptEventArgs> OnConnectionAccept = Print;
+            public event EventHandler<DisconnectEventArgs> OnDisconnect = Print;
 
             private readonly TcpClient tcp;
             private StreamWriter? _writer;
@@ -215,7 +207,7 @@ namespace Checkers.Client
 
             public void Disconnect()
             {
-                _writer?.WriteLine(Serialize(DisconnectAction.Instance));
+                _writer?.WriteLine(Serialize(DisconnectActionArgs.Instance));
             }
 
             public GameController? Controller { get; private set; }
@@ -225,35 +217,40 @@ namespace Checkers.Client
                 StreamReader reader = new(tcp.GetStream());
                 while (true)
                 {
-                    string message = await reader.ReadLineAsync();
-                    switch (Deserialize<Event>(message).Type)
+                    string? message = await reader.ReadLineAsync();
+                    if (message == null)
+                        continue;
+                    EventType? type = Deserialize<Transmission.InGame.EventArgs>(message)?.Type;
+                    if (type == null)
+                        continue;
+                    switch (type)
                     {
                         case EventType.GameStart:
-                            OnGameStart(Deserialize<GameStartEvent>(message));
+                            OnGameStart(this, Deserialize<GameStartEventArgs>(message) ?? new GameStartEventArgs());
                             break;
                         case EventType.GameEnd:
-                            OnGameEnd(Deserialize<GameEndEvent>(message));
+                            OnGameEnd(this, Deserialize<GameEndEventArgs>(message) ?? new GameEndEventArgs());
                             break;
                         case EventType.YourTurn:
-                            OnYourTurn(Deserialize<YourTurnEvent>(message));
+                            OnYourTurn(this, Deserialize<YourTurnEventArgs>(message) ?? YourTurnEventArgs.Instance);
                             break;
                         case EventType.EnemyTurn:
-                            OnEnemyTurn(Deserialize<EnemyTurnEvent>(message));
+                            OnEnemyTurn(this, Deserialize<EnemyTurnEventArgs>(message) ?? EnemyTurnEventArgs.Instance);
                             break;
                         case EventType.Emote:
-                            OnEmote(Deserialize<EmoteEvent>(message));
+                            OnEmote(this, Deserialize<EmoteEventArgs>(message) ?? new EmoteEventArgs());
                             break;
                         case EventType.Move:
-                            OnMove(Deserialize<MoveEvent>(message));
+                            OnMove(this, Deserialize<MoveEventArgs>(message) ?? new MoveEventArgs());
                             break;
                         case EventType.Remove:
-                            OnRemove(Deserialize<RemoveEvent>(message));
+                            OnRemove(this, Deserialize<RemoveEventArgs>(message) ?? new RemoveEventArgs());
                             break;
                         case EventType.ConnectionAccept:
-                            OnConnectionAccept(Deserialize<ConnectionAcceptEvent>(message));
+                            OnConnectionAccept(this, Deserialize<ConnectionAcceptEventArgs>(message) ?? ConnectionAcceptEventArgs.Instance);
                             break;
                         case EventType.Disconnect:
-                            OnDisconnect(Deserialize<DisconnectEvent>(message));
+                            OnDisconnect(this, Deserialize<DisconnectEventArgs>(message) ?? DisconnectEventArgs.Instance);
                             return;
                     }
                 }
@@ -267,27 +264,36 @@ namespace Checkers.Client
         }
 
         public async Task<UserAuthorizationResponse> AuthorizeAsync() => Deserialize<UserAuthorizationResponse>(
-                await _httpClient.GetStringAsync(_userUri + _query+"action=authorize"));
+                await _httpClient.GetStringAsync(_userUri + _query + "action=authorize")) ??
+            UserAuthorizationResponse.Failed;
 
         public async Task<UserInfoResponse> GetUserInfoAsync() => Deserialize<UserInfoResponse>(
-            await _httpClient.GetStringAsync(_userUri + _query + "action=info"));
+            await _httpClient.GetStringAsync(_userUri + _query + "action=info")) ??
+            UserInfoResponse.Failed;
+    
 
         public async Task<UserAchievementsGetResponse> GetAchievementsAsync() =>
-            Deserialize<UserAchievementsGetResponse>(await _httpClient.GetStringAsync(AchievementsUri));
+            Deserialize<UserAchievementsGetResponse>(await _httpClient.GetStringAsync(AchievementsUri)) ??
+            UserAchievementsGetResponse.Failed;
 
         public async Task<UserFriendsResponse> GetFriendsAsync() =>
-            Deserialize<UserFriendsResponse>(await _httpClient.GetStringAsync(FriendsUri + _query));
+            Deserialize<UserFriendsResponse>(await _httpClient.GetStringAsync(FriendsUri + _query)) ??
+            UserFriendsResponse.Failed;
 
         public async Task<UserGamesGetResponse> GetGamesAsync() =>
-            Deserialize<UserGamesGetResponse>(await _httpClient.GetStringAsync(UserGamesUri));
+            Deserialize<UserGamesGetResponse>(await _httpClient.GetStringAsync(UserGamesUri)) ??
+            UserGamesGetResponse.Failed;
 
         public async Task<GameGetRespose> GetGameAsync(int id) =>
-            Deserialize<GameGetRespose>(await _httpClient.GetStringAsync(_gameUri + id));
+            Deserialize<GameGetRespose>(await _httpClient.GetStringAsync(_gameUri + id)) ??
+            GameGetRespose.Failed;
 
         public async Task<UserItemsResponse> GetItemsAsync() =>
-            Deserialize<UserItemsResponse>(await _httpClient.GetStringAsync(ItemsUri + _query));
+            Deserialize<UserItemsResponse>(await _httpClient.GetStringAsync(ItemsUri + _query)) ??
+            UserItemsResponse.Failed;
 
-        public async Task<UserGetResponse> GetUserAsync(string login) => 
-            Deserialize<UserGetResponse>(await _httpClient.GetStringAsync(_userUri+login));
+        public async Task<UserGetResponse> GetUserAsync(string login) =>
+            Deserialize<UserGetResponse>(await _httpClient.GetStringAsync(_userUri + login)) ?? 
+            UserGetResponse.Failed;
     }
 }

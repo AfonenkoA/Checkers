@@ -1,14 +1,10 @@
-﻿using System;
+﻿using Checkers.Transmission;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Checkers.Transmission;
 using static System.Array;
+using static WinFormsClient.Common;
 
 namespace WinFormsClient
 {
@@ -39,7 +35,7 @@ namespace WinFormsClient
             FriendsPanel.Controls.Clear();
             List<Task<UserGetResponse>> tasks = new(_friends.Length);
             foreach (string friend in _friends)
-                tasks.Add(Common.Client.GetUserAsync(friend));
+                tasks.Add(Client.GetUserAsync(friend));
             foreach (var task in tasks)
             {
                 UserGetResponse response = await task;
@@ -51,7 +47,7 @@ namespace WinFormsClient
                 };
                 button.Click += (o, a) =>
                 {
-                    new ProfileWindow(response.Info);
+                    _ = new ProfileWindow(response.Info);
                 };
                 FriendsPanel.Controls.Add(button);
             }

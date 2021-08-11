@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using static System.Text.Json.JsonSerializer;
-using Checkers.Transmission;
+﻿using Checkers.Transmission;
+using Microsoft.AspNetCore.Mvc;
 using System;
+using static System.Text.Json.JsonSerializer;
 
 namespace WevService.Controllers
 {

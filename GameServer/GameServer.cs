@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Checkers.Data;
+using Checkers.Transmission.InGame;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using static System.Text.Json.JsonSerializer;
 using System.Threading.Tasks;
-using Checkers.Transmission.InGame;
-
-using Action = Checkers.Transmission.InGame.Action;
+using static System.Text.Json.JsonSerializer;
+using ActionArgs = Checkers.Transmission.InGame.ActionArgs;
 
 namespace GameServer
 {
@@ -16,40 +16,53 @@ namespace GameServer
         static void Main(string[] args)
         {
             int port = 5000;
-            TCPServer server = new(port);
-            server.Run();
-            Console.Read();
+            using (var db = new GameDatabase())
+            {
+                TCPServer server = new(port, db);
+                Task.Run(server.Run);
+            }
         }
     }
+
+    class PlayerFactory
+    {
+        public static Player Connect(TcpClient client, GameDatabase database)
+        {
+            return new Player(client, database);
+        }
+    }
+
     class Player : IDisposable
     {
-        public delegate void MoveActionHandler(Player player, MoveAction action);
-        public delegate void EmoteActionHandler(Player player, EmoteAction action);
-        public delegate void SurrenderActionHandler(Player player, SurrenderAction action);
-        public delegate void RequestForGameActionHandler(RequestForGameAction action);
-        public delegate void DisconnectActionHandler(Player p,DisconnectAction action);
-
-        public event MoveActionHandler OnMove = (p, a) => { };
-        public event EmoteActionHandler OnEmote = (p, a) => { };
-        public event SurrenderActionHandler OnSurrender = (p, a) => { };
-        public event RequestForGameActionHandler OnRequest = a => { };
-        public event DisconnectActionHandler OnDisconnect = (p,a) => { };
+        public event EventHandler<MoveActionArgs> OnMove = (o, a) => { };
+        public event EventHandler<EmoteActionArgs> OnEmote = (o, a) => { };
+        public event EventHandler<SurrenderActionArgs> OnSurrender = (o, a) => { };
+        public event EventHandler<RequestForGameActionArgs> OnRequest = (o, a) => { };
+        public event EventHandler<DisconnectActionArgs> OnDisconnect = (o, a) => { };
 
         private readonly TcpClient client;
         private readonly StreamReader reader;
         private readonly StreamWriter writer;
-        public string Login { get; private set; }
-        public string Password { get; private set; }
-        public Player(TcpClient client)
+        private readonly GameDatabase database;
+        private User user;
+
+
+        public string Nick => user.Login;
+        public int Id => user.Id;
+        public int AnimationsId => user.SelectedAnimation;
+        public int CheckersId => user.SelectedCheckers;
+
+        public Player(TcpClient client, GameDatabase database)
         {
             this.client = client;
+            this.database = database;
             reader = new(client.GetStream());
             writer = new(client.GetStream()) { AutoFlush = true };
             Task.Run(Listen);
         }
 
 
-        public async Task SendEvent<T>(T e) where T : Event
+        public async Task SendEvent<T>(T e) where T : Checkers.Transmission.InGame.EventArgs
         {
             await writer.WriteLineAsync(Serialize(e));
         }
@@ -59,28 +72,27 @@ namespace GameServer
             while (true)
             {
                 string msg = await reader.ReadLineAsync();
-                switch (Deserialize<Action>(msg).Type)
+                switch (Deserialize<ActionArgs>(msg).Type)
                 {
                     case ActionType.Connect:
                         ConnectAction connect = Deserialize<ConnectAction>(msg);
-                        Login = connect.Login;
-                        Password = connect.Password;
-                        await writer.WriteLineAsync(Serialize(ConnectionAcceptEvent.Instance));
+                        user = database.FindUser(connect.Login, connect.Password);
+                        await writer.WriteLineAsync(Serialize(ConnectionAcceptEventArgs.Instance));
                         break;
                     case ActionType.Move:
-                        OnMove(this, Deserialize<MoveAction>(msg));
+                        OnMove(this, Deserialize<MoveActionArgs>(msg));
                         break;
                     case ActionType.Emote:
-                        OnEmote(this, Deserialize<EmoteAction>(msg));
+                        OnEmote(this, Deserialize<EmoteActionArgs>(msg));
                         break;
                     case ActionType.Surrender:
-                        OnSurrender(this, Deserialize<SurrenderAction>(msg));
+                        OnSurrender(this, Deserialize<SurrenderActionArgs>(msg));
                         break;
                     case ActionType.RequestForGame:
-                        OnRequest(Deserialize<RequestForGameAction>(msg));
+                        OnRequest(this, Deserialize<RequestForGameActionArgs>(msg));
                         break;
                     case ActionType.Disconnect:
-                        OnDisconnect(this,Deserialize<DisconnectAction>(msg));
+                        OnDisconnect(this, Deserialize<DisconnectActionArgs>(msg));
                         return;
                 }
             }
@@ -98,14 +110,16 @@ namespace GameServer
     }
     class TCPServer
     {
+        private readonly GameDatabase database;
         private readonly IPAddress ipAddress;
         private readonly int port;
         private readonly List<Player> list = new();
         private readonly Queue<Player> gameQueue = new();
-        public TCPServer(int port)
+        public TCPServer(int port, GameDatabase database)
         {
             ipAddress = IPAddress.Loopback;
             this.port = port;
+            this.database = database;
         }
         public async void Run()
         {
@@ -114,28 +128,27 @@ namespace GameServer
             Console.WriteLine($"Запущен сервер на {ipAddress}:{port}");
             while (true)
             {
-                Player p = new(await listener.AcceptTcpClientAsync());
+                Player p = new(await listener.AcceptTcpClientAsync(), database);
                 Console.WriteLine($"Подключен пользователь {p}");
                 list.Add(p);
-                p.OnRequest += a =>
+                p.OnRequest += (o, a) =>
                 {
                     gameQueue.Enqueue(p);
                     if (gameQueue.Count >= 2)
-                        new GameHolder(gameQueue.Dequeue(), gameQueue.Dequeue()).Start();
+                        new GameHolder(gameQueue.Dequeue(), gameQueue.Dequeue(), database).Start();
                 };
             }
         }
 
         public class GameHolder
         {
-            private enum TurnType
-            {
-                FirstPlayer,
-                SecondPlayer
-            }
-            private Player p1;
-            private Player p2;
-            private TurnType turn;
+            private readonly Player p1;
+            private readonly Player p2;
+            private readonly GameDatabase database;
+            private int turnNumber = 1;
+
+            private readonly Game game;
+
             private void Subscribe()
             {
                 p1.OnMove += MoveHolder;
@@ -156,49 +169,69 @@ namespace GameServer
                 p2.OnSurrender -= SurrenderHolder;
             }
 
-            public GameHolder(Player p1, Player p2)
+            public GameHolder(Player p1, Player p2, GameDatabase database)
             {
+                this.database = database;
                 this.p1 = p1;
                 this.p2 = p2;
+                game = new Game()
+                {
+                    Player1Id = p1.Id,
+                    Player2Id = p2.Id,
+                    Player1AnimationId = p1.AnimationsId,
+                    Player1ChekersId = p1.CheckersId,
+                    Player2AnimationId = p2.AnimationsId,
+                    Player2ChekersId = p2.CheckersId,
+                    StartTime = DateTime.Now,
+                };
             }
+
+
+            //public DateTime StartTime { get; set; }
+            //public DateTime EndTime { get; set; }
+            //public int WinnerId { get; set; }
+            //public int Player1RaitingChange { get; set; }
+            //public int Player2RaitingChange { get; set; }
 
             public void Start()
             {
-                turn = TurnType.FirstPlayer;
-                Task p1Start = p1.SendEvent(new GameStartEvent() { EnemyNick = p2.Login });
-                Task p2Start = p2.SendEvent(new GameStartEvent() { EnemyNick = p1.Login });
+                Task p1Start = p1.SendEvent(new GameStartEventArgs() { EnemyNick = p1.Nick });
+                Task p2Start = p2.SendEvent(new GameStartEventArgs() { EnemyNick = p2.Nick });
                 Task.WaitAll(p1Start, p2Start);
-                Task p1Turn = p1.SendEvent(YourTurnEvent.Instance);
-                Task p2Turn = p2.SendEvent(EnemyTurnEvent.Instance);
+                Task p1Turn = p1.SendEvent(YourTurnEventArgs.Instance);
+                Task p2Turn = p2.SendEvent(EnemyTurnEventArgs.Instance);
                 Task.WaitAll(p1Turn, p2Turn);
                 Subscribe();
             }
-            private void MoveHolder(Player p, MoveAction action)
+            private void MoveHolder(object o, MoveActionArgs action)
             {
+                Player p = o as Player;
                 Console.WriteLine(action);
                 Task p1Turn, p2Turn, p1Move, p2Move;
-                p1Move = p1.SendEvent(new MoveEvent(action));
-                p2Move = p2.SendEvent(new MoveEvent(action));
+                p1Move = p1.SendEvent(new MoveEventArgs(action));
+                p2Move = p2.SendEvent(new MoveEventArgs(action));
                 if (ReferenceEquals(p1, p))
                 {
-                    turn = TurnType.SecondPlayer;
-                    p1Turn = p1.SendEvent(EnemyTurnEvent.Instance);
-                    p2Turn = p2.SendEvent(YourTurnEvent.Instance);
+                    p1Turn = p1.SendEvent(EnemyTurnEventArgs.Instance);
+                    p2Turn = p2.SendEvent(YourTurnEventArgs.Instance);
                 }
                 else
                 {
-                    turn = TurnType.FirstPlayer;
-                    p1Turn = p1.SendEvent(YourTurnEvent.Instance);
-                    p2Turn = p2.SendEvent(EnemyTurnEvent.Instance);
+                    p1Turn = p1.SendEvent(YourTurnEventArgs.Instance);
+                    p2Turn = p2.SendEvent(EnemyTurnEventArgs.Instance);
                 }
                 Task.WaitAll(p1Turn, p2Turn, p1Move, p2Move);
             }
-            private void EmoteHolder(Player p, EmoteAction action)
+            private void EmoteHolder(object o, EmoteActionArgs action)
             {
-                Console.WriteLine(p.Login + action);
+                GamesProgress progress = new()
+                {
+                    ActionNum = turnNumber++,
+                };
             }
-            private void SurrenderHolder(Player p, SurrenderAction action)
+            private void SurrenderHolder(object o, SurrenderActionArgs action)
             {
+                Player p = o as Player;
                 GameResult p1Result;
                 GameResult p2Result;
                 if (ReferenceEquals(p1, p))
@@ -211,8 +244,8 @@ namespace GameServer
                     p1Result = GameResult.Win;
                     p2Result = GameResult.Lose;
                 }
-                Task p1End = p1.SendEvent(new GameEndEvent() { Result = p1Result });
-                Task p2End = p2.SendEvent(new GameEndEvent() { Result = p2Result });
+                Task p1End = p1.SendEvent(new GameEndEventArgs() { Result = p1Result });
+                Task p2End = p2.SendEvent(new GameEndEventArgs() { Result = p2Result });
                 Task.WaitAll(p1End, p2End);
                 Unsubscribe();
             }

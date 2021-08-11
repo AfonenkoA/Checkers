@@ -1,8 +1,8 @@
-using System;
-using System.Windows.Forms;
 using Checkers.Client;
-using System.Resources;
+using System;
 using System.Drawing;
+using System.Resources;
+using System.Windows.Forms;
 
 namespace WinFormsClient
 {
@@ -31,11 +31,11 @@ namespace WinFormsClient
             {
                 Height = 100,
                 Width = 100,
-                Image = (Image)manager.GetObject($"Item{id}Pic"),
+                Image = manager.GetObject($"Item{id}Pic") as Image,
                 SizeMode = PictureBoxSizeMode.Zoom,
             });
-            Controls.Add(new ItemLabel(manager.GetString($"Item{id}Title")));
-            Controls.Add(new ItemLabel(manager.GetString($"Item{id}Desc") ));
+            Controls.Add(new ItemLabel(manager.GetString($"Item{id}Title") ?? string.Empty));
+            Controls.Add(new ItemLabel(manager.GetString($"Item{id}Desc") ?? string.Empty));
         }
     }
 

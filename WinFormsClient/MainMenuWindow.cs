@@ -1,7 +1,7 @@
-﻿using Checkers.Transmission;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using WinFormsClient.Windows;
 using static System.Array;
+using static WinFormsClient.Common;
 
 namespace WinFormsClient
 {
@@ -41,25 +41,28 @@ namespace WinFormsClient
 
         private async void ProfileButton_Click(object sender, System.EventArgs e)
         {
-
-            new ProfileWindow((await Common.Client.GetUserInfoAsync()).Info);
+            _ = new ProfileWindow((await Client.GetUserInfoAsync()).Info);
         }
 
         private async void AchievementsButton_Click(object sender, System.EventArgs e)
         {
             Hide();
-            _achievementsWindow.Achievements = (await Common.Client.GetAchievementsAsync()).Achievements?? Empty<int>();
+            _achievementsWindow.Achievements = (await Client.GetAchievementsAsync()).Achievements ?? Empty<int>();
         }
 
         private async void FriendsButton_Click(object sender, System.EventArgs e)
         {
-            _friendsWindow.Friends = (await Common.Client.GetFriendsAsync()).Friends;
+            var response = await Client.GetFriendsAsync();
+            if (response.Friends != null)
+                _friendsWindow.Friends = response.Friends;
             Hide();
         }
 
         private async void CollectionButton_Click(object sender, System.EventArgs e)
         {
-            _collectionWindow.Items = (await Common.Client.GetItemsAsync()).Items;
+            var response = await Client.GetItemsAsync();
+            if (response.Items != null)
+                _collectionWindow.Items = response.Items;
             Hide();
         }
     }

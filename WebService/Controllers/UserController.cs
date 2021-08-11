@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Checkers.Data;
+using Checkers.Transmission;
+using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Text.Json;
 using static System.Text.Json.JsonSerializer;
-using Checkers.Transmission;
-using Checkers.Data;
-using System.Linq;
 
 namespace WevService.Controllers
 {
@@ -12,28 +12,12 @@ namespace WevService.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private static readonly Database database = new();
-
-        private User FindUser(string login, string password)
-        {
-            var result = from u in database.Users
-                         where u.Login == login && u.Password == password
-                         select u;
-            return result.Any() ? result.First() : null;
-        }
-
-        private User FindUser(string login)
-        {
-            var result = from u in database.Users
-                         where u.Login == login
-                         select u;
-            return result.Any() ? result.First() : null;
-        }
+        private static readonly GameDatabase database = new();
 
         [HttpGet("{login}")]
         public string SimpleUserGet([FromRoute] string login)
         {
-            User user = FindUser(login);
+            User user = database.FindUser(login);
             if (user == null)
                 return Serialize(BasicResponse.Failed);
             return Serialize(
@@ -55,7 +39,7 @@ namespace WevService.Controllers
         [HttpGet]
         public string SequreUserGet([FromQuery] string login, [FromQuery] string password, [FromQuery] string action)
         {
-            User user = FindUser(login, password);
+            User user = database.FindUser(login, password);
             if (user == null)
                 return Serialize(BasicResponse.Failed);
             return action switch
@@ -106,13 +90,13 @@ namespace WevService.Controllers
         [HttpGet("{login}/items")]
         public string SequreUserItemsGet([FromRoute] string login, [FromQuery] string password)
         {
-            User user = FindUser(login, password);
-            if(user == null)
+            User user = database.FindUser(login, password);
+            if (user == null)
                 return Serialize(BasicResponse.Failed);
 
             var items = from item in database.Items
-                               where user.Id == item.UserId
-                               select item.Id;
+                        where user.Id == item.UserId
+                        select item.ItemId;
 
             return Serialize(new UserItemsResponse()
             {
@@ -139,8 +123,8 @@ namespace WevService.Controllers
         [HttpGet("{login}/achievements")]
         public string UserAchievementsGet([FromRoute] string login)
         {
-            User user = FindUser(login);
-            if(user == null)
+            User user = database.FindUser(login);
+            if (user == null)
                 return Serialize(BasicResponse.Failed);
             var achievements = from a in database.Achievements
                                where a.UserId == user.Id
@@ -155,10 +139,19 @@ namespace WevService.Controllers
         [HttpGet("{login}/friends")]
         public string UserFriendsGet([FromRoute] string login, [FromQuery] string password)
         {
+            User user = database.FindUser(login, password);
+            if (user == null)
+                return Serialize(BasicResponse.Failed);
+
+            var result = from uf in database.Friends
+                         where uf.UserId == user.Id
+                         join u in database.Users on uf.FriendId equals u.Id
+                         select u.Login;
+
             return Serialize(new UserFriendsResponse()
             {
                 Status = ResponseStatus.OK,
-                Friends = new string[] { "friend 1", "friend 2", "friend 3" }
+                Friends = result.ToArray()
             });
         }
 
@@ -169,8 +162,8 @@ namespace WevService.Controllers
             return Serialize(new UserFriendsResponse()
             {
                 Status = ResponseStatus.OK,
-                Friends = new string[] { "friend 1", "friend 2", "friend 3" }
-            });
+                Friends = new string[] { "biba", "boba" }
+            }); ;
         }
 
         [HttpGet("{login}/games")]

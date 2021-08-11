@@ -10,6 +10,8 @@ namespace Checkers.Data
         public User()
         {
             Achievements = new HashSet<Achievement>();
+            FriendFriendNavigations = new HashSet<Friend>();
+            FriendUsers = new HashSet<Friend>();
             GamePlayer1s = new HashSet<Game>();
             GamePlayer2s = new HashSet<Game>();
             GameWinners = new HashSet<Game>();
@@ -33,6 +35,8 @@ namespace Checkers.Data
         public virtual ItemOption SelectedAnimationNavigation { get; set; }
         public virtual ItemOption SelectedCheckersNavigation { get; set; }
         public virtual ICollection<Achievement> Achievements { get; set; }
+        public virtual ICollection<Friend> FriendFriendNavigations { get; set; }
+        public virtual ICollection<Friend> FriendUsers { get; set; }
         public virtual ICollection<Game> GamePlayer1s { get; set; }
         public virtual ICollection<Game> GamePlayer2s { get; set; }
         public virtual ICollection<Game> GameWinners { get; set; }

@@ -1,6 +1,7 @@
-﻿using System;
+﻿using Checkers.Transmission;
+using System;
 using System.Windows.Forms;
-using Checkers.Transmission;
+using static WinFormsClient.Common;
 
 namespace WinFormsClient
 {
@@ -13,10 +14,10 @@ namespace WinFormsClient
 
         private async void EnterButton_Click(object sender, EventArgs e)
         {
-            Common.RegisterClient(LoginTextBox.Text,PasswordTextBox.Text);
+            RegisterClient(LoginTextBox.Text, PasswordTextBox.Text);
             try
             {
-                UserAuthorizationResponse response = await Common.Client.AuthorizeAsync();
+                UserAuthorizationResponse response = await Client.AuthorizeAsync();
                 if (response.Status == ResponseStatus.FAILED)
                     throw new Exception("AuthorizationException, invalid login or password");
                 Hide();
@@ -24,9 +25,9 @@ namespace WinFormsClient
             }
             catch (Exception)
             {
-                MessageBox.Show(this,"Authorization error","Error");
+                MessageBox.Show(this, "Authorization error", "Error");
             }
-                
+
         }
 
     }

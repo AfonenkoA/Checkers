@@ -1,18 +1,31 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 #nullable disable
 
 namespace Checkers.Data
 {
-    public partial class Database : DbContext
+    public partial class GameDatabase : DbContext
     {
-        public Database()
+        public User FindUser(string login)
+        {
+            var result = from u in Users
+                         where u.Login == login
+                         select u;
+            return result.Any() ? result.First() : null;
+        }
+
+        public User FindUser(string login, string password)
+        {
+            User u = FindUser(login);
+            return u.Password == password ? u : null;
+        }
+
+        public GameDatabase()
         {
         }
 
-        public Database(DbContextOptions<Database> options)
+        public GameDatabase(DbContextOptions<GameDatabase> options)
             : base(options)
         {
         }
@@ -20,6 +33,7 @@ namespace Checkers.Data
         public virtual DbSet<Achievement> Achievements { get; set; }
         public virtual DbSet<AchievementOption> AchievementOptions { get; set; }
         public virtual DbSet<EventOption> EventOptions { get; set; }
+        public virtual DbSet<Friend> Friends { get; set; }
         public virtual DbSet<Game> Games { get; set; }
         public virtual DbSet<GamesProgress> GamesProgresses { get; set; }
         public virtual DbSet<Item> Items { get; set; }
@@ -52,13 +66,13 @@ namespace Checkers.Data
                     .WithMany(p => p.Achievements)
                     .HasForeignKey(d => d.AchievementId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Achieveme__achie__4BAC3F29");
+                    .HasConstraintName("FK__Achieveme__achie__398D8EEE");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Achievements)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Achieveme__user___4AB81AF0");
+                    .HasConstraintName("FK__Achieveme__user___38996AB5");
             });
 
             modelBuilder.Entity<AchievementOption>(entity =>
@@ -84,6 +98,27 @@ namespace Checkers.Data
                     .IsRequired()
                     .HasMaxLength(30)
                     .HasColumnName("type");
+            });
+
+            modelBuilder.Entity<Friend>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.FriendId).HasColumnName("friend_id");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+
+                entity.HasOne(d => d.FriendNavigation)
+                    .WithMany(p => p.FriendFriendNavigations)
+                    .HasForeignKey(d => d.FriendId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Friends__friend___4E88ABD4");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.FriendUsers)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Friends__user_id__4D94879B");
             });
 
             modelBuilder.Entity<Game>(entity =>
@@ -120,43 +155,43 @@ namespace Checkers.Data
                     .WithMany(p => p.GamePlayer1Animations)
                     .HasForeignKey(d => d.Player1AnimationId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Games__player1_a__5629CD9C");
+                    .HasConstraintName("FK__Games__player1_a__440B1D61");
 
                 entity.HasOne(d => d.Player1Chekers)
                     .WithMany(p => p.GamePlayer1Chekers)
                     .HasForeignKey(d => d.Player1ChekersId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Games__player1_c__5441852A");
+                    .HasConstraintName("FK__Games__player1_c__4222D4EF");
 
                 entity.HasOne(d => d.Player1)
                     .WithMany(p => p.GamePlayer1s)
                     .HasForeignKey(d => d.Player1Id)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Games__player1_i__52593CB8");
+                    .HasConstraintName("FK__Games__player1_i__403A8C7D");
 
                 entity.HasOne(d => d.Player2Animation)
                     .WithMany(p => p.GamePlayer2Animations)
                     .HasForeignKey(d => d.Player2AnimationId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Games__player2_a__571DF1D5");
+                    .HasConstraintName("FK__Games__player2_a__44FF419A");
 
                 entity.HasOne(d => d.Player2Chekers)
                     .WithMany(p => p.GamePlayer2Chekers)
                     .HasForeignKey(d => d.Player2ChekersId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Games__player2_c__5535A963");
+                    .HasConstraintName("FK__Games__player2_c__4316F928");
 
                 entity.HasOne(d => d.Player2)
                     .WithMany(p => p.GamePlayer2s)
                     .HasForeignKey(d => d.Player2Id)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Games__player2_i__534D60F1");
+                    .HasConstraintName("FK__Games__player2_i__412EB0B6");
 
                 entity.HasOne(d => d.Winner)
                     .WithMany(p => p.GameWinners)
                     .HasForeignKey(d => d.WinnerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Games__winner_id__5812160E");
+                    .HasConstraintName("FK__Games__winner_id__45F365D3");
             });
 
             modelBuilder.Entity<GamesProgress>(entity =>
@@ -186,19 +221,19 @@ namespace Checkers.Data
                     .WithMany(p => p.GamesProgresses)
                     .HasForeignKey(d => d.ActionId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__GamesProg__actio__5CD6CB2B");
+                    .HasConstraintName("FK__GamesProg__actio__4AB81AF0");
 
                 entity.HasOne(d => d.Actor)
                     .WithMany(p => p.GamesProgresses)
                     .HasForeignKey(d => d.ActorId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__GamesProg__actor__5BE2A6F2");
+                    .HasConstraintName("FK__GamesProg__actor__49C3F6B7");
 
                 entity.HasOne(d => d.Game)
                     .WithMany(p => p.GamesProgresses)
                     .HasForeignKey(d => d.GameId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__GamesProg__game___5AEE82B9");
+                    .HasConstraintName("FK__GamesProg__game___48CFD27E");
             });
 
             modelBuilder.Entity<Item>(entity =>
@@ -213,13 +248,13 @@ namespace Checkers.Data
                     .WithMany(p => p.Items)
                     .HasForeignKey(d => d.ItemId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Items__item_id__4F7CD00D");
+                    .HasConstraintName("FK__Items__item_id__3D5E1FD2");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Items)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Items__user_id__4E88ABD4");
+                    .HasConstraintName("FK__Items__user_id__3C69FB99");
             });
 
             modelBuilder.Entity<ItemOption>(entity =>
@@ -254,10 +289,10 @@ namespace Checkers.Data
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasIndex(e => e.Login, "UQ__Users__7838F272D723581D")
+                entity.HasIndex(e => e.Login, "UQ__Users__7838F27272AEFF5F")
                     .IsUnique();
 
-                entity.HasIndex(e => e.Email, "UQ__Users__AB6E616446009C8B")
+                entity.HasIndex(e => e.Email, "UQ__Users__AB6E61644C137B77")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -311,19 +346,19 @@ namespace Checkers.Data
                     .WithMany(p => p.Users)
                     .HasForeignKey(d => d.PictureId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Users__picture_i__4316F928");
+                    .HasConstraintName("FK__Users__picture_i__30F848ED");
 
                 entity.HasOne(d => d.SelectedAnimationNavigation)
                     .WithMany(p => p.UserSelectedAnimationNavigations)
                     .HasForeignKey(d => d.SelectedAnimation)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Users__selected___46E78A0C");
+                    .HasConstraintName("FK__Users__selected___34C8D9D1");
 
                 entity.HasOne(d => d.SelectedCheckersNavigation)
                     .WithMany(p => p.UserSelectedCheckersNavigations)
                     .HasForeignKey(d => d.SelectedCheckers)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Users__selected___44FF419A");
+                    .HasConstraintName("FK__Users__selected___32E0915F");
             });
 
             OnModelCreatingPartial(modelBuilder);

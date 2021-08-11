@@ -1,13 +1,14 @@
-﻿using System.Drawing;
-using System.Windows.Forms;
-using Checkers.Transmission;
+﻿using Checkers.Transmission;
+using System.Drawing;
 using System.Resources;
+using System.Windows.Forms;
+using WinFormsClient.Properties;
 
 namespace WinFormsClient
 {
     public partial class ProfileWindow : Form
     {
-        private static readonly ResourceManager manager = Properties.Resources.ResourceManager;
+        private static readonly ResourceManager manager = Resources.ResourceManager;
         private UserInfo _info;
 
         private void UpdateElements()
@@ -15,7 +16,8 @@ namespace WinFormsClient
             NickLabel.Text = _info.Nick;
             RaitingLabel.Text = _info.Raiting.ToString();
             LastActivityLabel.Text = _info.LastActivity.ToString();
-            ProfilePictureBox.Image = (Image)manager.GetObject($"ProfilePic{_info.PictureID}");
+            if (manager.GetObject($"ProfilePic{_info.PictureID}") is Image image)
+                ProfilePictureBox.Image = image;
         }
 
         public ProfileWindow(UserInfo info)

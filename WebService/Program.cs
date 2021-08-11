@@ -16,7 +16,7 @@ namespace WebService
                 {
                     webBuilder.UseUrls("http://localhost:5005/");
                     webBuilder.UseStartup<Startup>();
-                    
+
                 });
     }
 }
