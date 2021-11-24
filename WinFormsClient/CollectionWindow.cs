@@ -1,14 +1,14 @@
 ﻿using System.Windows.Forms;
 using static System.Array;
 
-namespace WinFormsClient.Windows
+namespace WinFormsClient
 {
-    public partial class CollectionWindow : Form
+    internal sealed partial class CollectionWindow : Form
     {
         private int[] _items;
         private readonly Form _parentForm;
 
-        public int[] Items
+        internal int[] Items
         {
             get => _items;
             set
@@ -19,14 +19,14 @@ namespace WinFormsClient.Windows
             }
         }
 
-        public CollectionWindow(MainMenuWindow mainMenuWindow)
+        internal CollectionWindow(MainMenuWindow mainMenuWindow)
         {
             _parentForm = mainMenuWindow;
             _items = Empty<int>();
             InitializeComponent();
         }
 
-        public void UpdateElements()
+        private void UpdateElements()
         {
             ItemsPanel.Controls.Clear();
             foreach (int item in _items)

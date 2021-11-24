@@ -39,7 +39,7 @@ namespace WinFormsClient
             // 
             this.GameTitleWindow.AutoSize = true;
             this.GameTitleWindow.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.GameTitleWindow.Location = new System.Drawing.Point(25, 19);
+            this.GameTitleWindow.Location = new System.Drawing.Point(22, 17);
             this.GameTitleWindow.Name = "GameTitleWindow";
             this.GameTitleWindow.Size = new System.Drawing.Size(188, 32);
             this.GameTitleWindow.TabIndex = 0;
@@ -49,9 +49,9 @@ namespace WinFormsClient
             // 
             this.PlayOnlineButton.AutoSize = true;
             this.PlayOnlineButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.PlayOnlineButton.Location = new System.Drawing.Point(63, 64);
+            this.PlayOnlineButton.Location = new System.Drawing.Point(55, 57);
             this.PlayOnlineButton.Name = "PlayOnlineButton";
-            this.PlayOnlineButton.Size = new System.Drawing.Size(88, 29);
+            this.PlayOnlineButton.Size = new System.Drawing.Size(82, 27);
             this.PlayOnlineButton.TabIndex = 1;
             this.PlayOnlineButton.Text = "Play Online";
             this.PlayOnlineButton.UseVisualStyleBackColor = true;
@@ -61,9 +61,9 @@ namespace WinFormsClient
             // 
             this.BackToMenuButton.AutoSize = true;
             this.BackToMenuButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.BackToMenuButton.Location = new System.Drawing.Point(63, 99);
+            this.BackToMenuButton.Location = new System.Drawing.Point(55, 89);
             this.BackToMenuButton.Name = "BackToMenuButton";
-            this.BackToMenuButton.Size = new System.Drawing.Size(55, 29);
+            this.BackToMenuButton.Size = new System.Drawing.Size(51, 27);
             this.BackToMenuButton.TabIndex = 2;
             this.BackToMenuButton.Text = "Menu";
             this.BackToMenuButton.UseVisualStyleBackColor = true;
@@ -71,9 +71,9 @@ namespace WinFormsClient
             // 
             // GameSelectWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 19F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(238, 143);
+            this.ClientSize = new System.Drawing.Size(208, 128);
             this.Controls.Add(this.BackToMenuButton);
             this.Controls.Add(this.PlayOnlineButton);
             this.Controls.Add(this.GameTitleWindow);
@@ -81,6 +81,7 @@ namespace WinFormsClient
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "GameSelectWindow";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GameSelectWindow_FormClosed);
+            this.Load += new System.EventHandler(this.GameSelectWindow_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

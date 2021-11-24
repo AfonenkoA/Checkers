@@ -1,26 +1,27 @@
-﻿using Checkers.Data;
-using Checkers.Transmission.InGame;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Checkers.Data.Old;
+using InGame;
 using static System.Text.Json.JsonSerializer;
-using ActionArgs = Checkers.Transmission.InGame.ActionArgs;
+using ActionArgs = Checkers.Transmission;
+using EventArgs = InGame.EventArgs;
+using Game = Checkers.Data.Old.Game;
+using User = Checkers.Data.Old.User;
 
 namespace GameServer
 {
-    class Server
+    internal static class Server
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            int port = 5000;
-            using (var db = new GameDatabase())
-            {
-                TCPServer server = new(port, db);
-                Task.Run(server.Run);
-            }
+            const int port = 5000;
+            using var db = new GameDatabase();
+            TCPServer server = new(port, db);
+            Task.Run(server.Run);
         }
     }
 
@@ -62,17 +63,17 @@ namespace GameServer
         }
 
 
-        public async Task SendEvent<T>(T e) where T : Checkers.Transmission.InGame.EventArgs
+        public async Task SendEvent<T>(T e) where T : EventArgs
         {
             await writer.WriteLineAsync(Serialize(e));
         }
 
-        public async void Listen()
+        private async void Listen()
         {
             while (true)
             {
                 string msg = await reader.ReadLineAsync();
-                switch (Deserialize<ActionArgs>(msg).Type)
+                switch (Deserialize<InGame.ActionArgs>(msg).Type)
                 {
                     case ActionType.Connect:
                         ConnectAction connect = Deserialize<ConnectAction>(msg);
@@ -208,8 +209,8 @@ namespace GameServer
                 Player p = o as Player;
                 Console.WriteLine(action);
                 Task p1Turn, p2Turn, p1Move, p2Move;
-                p1Move = p1.SendEvent(new MoveEventArgs(action));
-                p2Move = p2.SendEvent(new MoveEventArgs(action));
+                p1Move = p1.SendEvent(new ActionArgs.MoveEventArgs(action));
+                p2Move = p2.SendEvent(new ActionArgs.MoveEventArgs(action));
                 if (ReferenceEquals(p1, p))
                 {
                     p1Turn = p1.SendEvent(EnemyTurnEventArgs.Instance);

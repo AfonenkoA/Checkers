@@ -1,16 +1,16 @@
-using Checkers.Client;
 using System;
 using System.Drawing;
 using System.Resources;
 using System.Windows.Forms;
+using Checkers.Client;
 
 namespace WinFormsClient
 {
 
 
-    public class ItemPanel : FlowLayoutPanel
+    public sealed class ItemPanel : FlowLayoutPanel
     {
-        private class ItemLabel : Label
+        private sealed class ItemLabel : Label
         {
             public ItemLabel(string text)
             {
@@ -20,7 +20,7 @@ namespace WinFormsClient
             }
         }
 
-        private static readonly ResourceManager manager = Properties.Resources.ResourceManager;
+        private static readonly ResourceManager Manager = Properties.Resources.ResourceManager;
         public ItemPanel(int id)
         {
             WrapContents = false;
@@ -31,22 +31,22 @@ namespace WinFormsClient
             {
                 Height = 100,
                 Width = 100,
-                Image = manager.GetObject($"Item{id}Pic") as Image,
+                Image = Manager.GetObject($"Item{id}Pic") as Image,
                 SizeMode = PictureBoxSizeMode.Zoom,
             });
-            Controls.Add(new ItemLabel(manager.GetString($"Item{id}Title") ?? string.Empty));
-            Controls.Add(new ItemLabel(manager.GetString($"Item{id}Desc") ?? string.Empty));
+            Controls.Add(new ItemLabel(Manager.GetString($"Item{id}Title") ?? string.Empty));
+            Controls.Add(new ItemLabel(Manager.GetString($"Item{id}Desc") ?? string.Empty));
         }
     }
 
 
-    public static class Common
+    internal static class Common
     {
-        public static GameClient RegisterClient(string login, string password)
+        internal static GameClient RegisterClient(string login, string password)
         {
             return Client = new GameClient(login, password);
         }
-        public static GameClient Client { get; private set; }
+        public static GameClient? Client { get; private set; }
     }
     static class Program
     {

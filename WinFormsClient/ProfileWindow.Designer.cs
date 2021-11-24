@@ -1,7 +1,7 @@
 ﻿
 namespace WinFormsClient
 {
-    partial class ProfileWindow
+    internal sealed partial class ProfileWindow
     {
         /// <summary>
         /// Required designer variable.

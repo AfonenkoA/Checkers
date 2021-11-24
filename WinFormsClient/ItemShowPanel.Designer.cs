@@ -1,7 +1,7 @@
 ﻿
 namespace WinFormsClient
 {
-    partial class ItemShowPanel
+    internal sealed partial class ItemShowPanel
     {
         /// <summary> 
         /// Required designer variable.

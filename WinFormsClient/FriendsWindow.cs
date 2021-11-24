@@ -1,18 +1,19 @@
-﻿using Checkers.Transmission;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Checkers.Transmission;
 using static System.Array;
 using static WinFormsClient.Common;
 
 namespace WinFormsClient
 {
-    public partial class FriendsWindow : Form
+    internal sealed partial class FriendsWindow : Form
     {
         private readonly Form _parentForm;
         private string[] _friends;
-        public string[] Friends
+
+        internal string[] Friends
         {
             get => _friends;
             set
@@ -23,19 +24,19 @@ namespace WinFormsClient
             }
         }
 
-        public FriendsWindow(Form form)
+        internal FriendsWindow(Form form)
         {
             _parentForm = form;
             _friends = Empty<string>();
             InitializeComponent();
         }
 
-        public async void UpdateElements()
+        private async void UpdateElements()
         {
             FriendsPanel.Controls.Clear();
             List<Task<UserGetResponse>> tasks = new(_friends.Length);
             foreach (string friend in _friends)
-                tasks.Add(Client.GetUserAsync(friend));
+                tasks.Add(Client?.GetUserAsync(friend)!);
             foreach (var task in tasks)
             {
                 UserGetResponse response = await task;

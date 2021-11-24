@@ -1,7 +1,7 @@
 ﻿
 namespace WinFormsClient
 {
-    partial class FriendsWindow
+    internal sealed partial class FriendsWindow
     {
         /// <summary>
         /// Required designer variable.

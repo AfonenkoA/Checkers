@@ -1,23 +1,42 @@
-﻿using Checkers.Client;
-using Checkers.Data;
-using System;
+﻿using System;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
+using Checkers.Api.Interface;
+using Checkers.Api.WebImplementation;
+using Checkers.Client;
+using Checkers.Data;
+using Checkers.Data.Entity;
+using Checkers.Data.Old;
+using static System.Console;
 using static Checkers.Client.GameClient;
 using static Checkers.Client.GameClient.GameService;
+using User = Checkers.Data.Old.User;
 
-class ConsoleClient
+namespace ConsoleClient;
+
+internal static class ConsoleClient
 {
-    static void Main(string[] args)
+    private static async Task Main()
     {
-        using (GameDatabase db = new())
-        {
-            db.Users.Include(u => u.Achievements);
-            foreach (User user in db.Users)
-                Console.WriteLine(string.Join<Achievement>(" ", user.Achievements.ToArray()));
-        }
-        Console.Read();
+        IAsyncUserApi api = new UserWebApi();
+        WriteLine(await api.CreateUser(new UserCreationData()));
+        Read();
+    }
+    //ForegroundColor = ConsoleColor.Red;
+    //WriteLine("◯");
+    //ForegroundColor = ConsoleColor.Green;
+    //WriteLine("⬛");
+    //ForegroundColor = ConsoleColor.White;
+    //Read();
+    
 
+    private static void TestDatabase()
+    {
+        using GameDatabase db = new();
+        db.Users.Include(u => u.Achievements);
+        foreach (User user in db.Users)
+            Console.WriteLine(string.Join<Achievement>(" ", user.Achievements.ToArray()));
     }
 
     private static void TestGameServer(GameClient client)
@@ -25,14 +44,18 @@ class ConsoleClient
         GameService service = client.Service;
         service.Connect();
         GameController controller = service.Controller;
-        controller.Request();
-        controller.Move(new Position(1, 2), new Position(2, 3));
-        controller.Surrender();
+        if (controller != null)
+        {
+            controller.Request();
+            controller.Move(new Position(1, 2), new Position(2, 3));
+            controller.Surrender();
+        }
+
         service.Disconnect();
     }
 
 
-    private static async void TestAPI(GameClient client)
+    private static async void TestApi(GameClient client)
     {
         try
         {
@@ -50,7 +73,7 @@ class ConsoleClient
     private static void CrateAction(GameController controller)
     {
         Console.WriteLine("1: Move\n2: Emote\n3: Surrender");
-        switch (int.Parse(Console.ReadLine()))
+        switch (int.Parse(ReadLine() ?? string.Empty))
         {
             case 1:
                 controller.Move(new Position(1, 1), new Position(2, 2));

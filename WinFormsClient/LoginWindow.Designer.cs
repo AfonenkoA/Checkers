@@ -1,7 +1,7 @@
 ﻿
 namespace WinFormsClient
 {
-    partial class LoginWindow
+    sealed partial class LoginWindow
     {
         /// <summary>
         ///  Required designer variable.

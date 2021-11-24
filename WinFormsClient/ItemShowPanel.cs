@@ -3,16 +3,16 @@ using System.Windows.Forms;
 
 namespace WinFormsClient
 {
-    public partial class ItemShowPanel : UserControl
+    internal sealed partial class ItemShowPanel : UserControl
     {
-        private static readonly System.Resources.ResourceManager manager = Properties.Resources.ResourceManager;
+        private static readonly System.Resources.ResourceManager Manager = Properties.Resources.ResourceManager;
         public ItemShowPanel(string img, string title, string desc)
         {
             InitializeComponent();
-            if (manager.GetObject(img) is Image image)
+            if (Manager.GetObject(img) is Image image)
                 PictureBox.Image = image;
-            TitleLabel.Text = manager.GetString(title);
-            DescriptionLabel.Text = manager.GetString(desc);
+            TitleLabel.Text = Manager.GetString(title);
+            DescriptionLabel.Text = Manager.GetString(desc);
         }
     }
 }

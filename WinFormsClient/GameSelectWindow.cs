@@ -29,5 +29,10 @@ namespace WinFormsClient
             Hide();
             new GameWindow(this).Show();
         }
+
+        private void GameSelectWindow_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

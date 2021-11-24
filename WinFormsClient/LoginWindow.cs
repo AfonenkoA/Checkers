@@ -1,13 +1,13 @@
-﻿using Checkers.Transmission;
-using System;
+﻿using System;
 using System.Windows.Forms;
+using Checkers.Transmission;
 using static WinFormsClient.Common;
 
 namespace WinFormsClient
 {
-    public partial class LoginWindow : Form
+    public sealed partial class LoginWindow : Form
     {
-        public LoginWindow()
+        internal LoginWindow()
         {
             InitializeComponent();
         }
@@ -17,7 +17,7 @@ namespace WinFormsClient
             RegisterClient(LoginTextBox.Text, PasswordTextBox.Text);
             try
             {
-                UserAuthorizationResponse response = await Client.AuthorizeAsync();
+                UserAuthorizationResponse response = await Client?.AuthorizeAsync()!;
                 if (response.Status == ResponseStatus.FAILED)
                     throw new Exception("AuthorizationException, invalid login or password");
                 Hide();

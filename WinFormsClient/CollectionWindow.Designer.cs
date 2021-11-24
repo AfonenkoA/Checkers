@@ -1,7 +1,7 @@
 ﻿
-namespace WinFormsClient.Windows
+namespace WinFormsClient
 {
-    partial class CollectionWindow
+    internal sealed partial class CollectionWindow
     {
         /// <summary>
         /// Required designer variable.

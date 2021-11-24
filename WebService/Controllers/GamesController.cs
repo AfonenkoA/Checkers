@@ -1,15 +1,15 @@
-﻿using Checkers.Transmission;
+﻿using System;
+using Checkers.Transmission;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using static System.Text.Json.JsonSerializer;
 
-namespace WevService.Controllers
+namespace WebService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class GamesController : ControllerBase
     {
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public string GameGet([FromRoute] int id)
         {
             return Serialize(new GameGetRespose()
@@ -26,9 +26,9 @@ namespace WevService.Controllers
                 Player1AnimationsID = 1,
                 Player2AnimationsID = 1,
                 StartTime = DateTime.Now,
-                Actions = new GameAction[]
+                Actions = new[]
                 {
-                    new GameAction()
+                    new GameAction
                     {
                         ActionNumber = 1,
                         ActorID = 1,

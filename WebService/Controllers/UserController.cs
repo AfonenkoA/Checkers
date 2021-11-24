@@ -1,179 +1,127 @@
-﻿using Checkers.Data;
-using Checkers.Transmission;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Linq;
-using System.Text.Json;
-using static System.Text.Json.JsonSerializer;
+using Checkers.Api;
+using Checkers.Api.WebImplementation;
+using Checkers.Data;
+using Checkers.Data.Entity;
+using Checkers.Data.Repository.Interface;
+using Checkers.Data.Repository.MSSqlImplementation;
+using Microsoft.AspNetCore.Mvc;
 
-namespace WevService.Controllers
+namespace WebService.Controllers;
+
+[Route("api/"+WebApiBase.UserRoute)]
+[ApiController]
+public class UserController : Controller
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UserController : ControllerBase
+    private static readonly IUserRepository Repository = new UserRepository();
+
+    [HttpPost]
+    public IActionResult CreateUser([FromBody] UserCreationData user)
     {
-        private static readonly GameDatabase database = new();
+        return Repository.CreateUser(user) ? OkResult : BadRequestResult;
+    }
 
-        [HttpGet("{login}")]
-        public string SimpleUserGet([FromRoute] string login)
+    [HttpDelete]
+    public IActionResult DeleteUser([FromQuery] Credential credential)
+    {
+        return Repository.DeleteUser(credential) ? OkResult : BadRequestResult;
+    }
+
+    [HttpGet]
+    public JsonResult GetSelf([FromQuery] Credential credential)
+    {
+        return new JsonResult(Repository.GetSelf(credential));
+    }
+
+    [HttpGet("{id:int}")]
+    public JsonResult GetUser([FromQuery] Credential credential, [FromRoute] int id)
+    {
+        return new JsonResult(Repository.GetUser(id));
+    }
+
+    //User Item Activities
+    [HttpGet]
+    public IActionResult ActionHandler([FromQuery] Credential credential, [FromQuery] string action, [FromQuery] string val)
+    {
+        return action switch
         {
-            User user = database.FindUser(login);
-            if (user == null)
-                return Serialize(BasicResponse.Failed);
-            return Serialize(
-                new UserGetResponse()
-                {
-                    Status = ResponseStatus.OK,
-                    Info = new UserInfo()
-                    {
-                        Nick = user.Nick,
-                        Raiting = user.Rating,
-                        PictureID = user.PictureId,
-                        LastActivity = user.LastActivity
-                    }
-                });
+            UserApiAction.SelectCheckersValue => SelectCheckers(credential, int.Parse(val)),
+            UserApiAction.SelectAnimationValue => SelectAnimation(credential, int.Parse(val)),
+            UserApiAction.AuthenticateValue => Authenticate(credential),
+            UserApiAction.BuyValue => BuyItem(credential, int.Parse(val)),
+            UserApiAction.UpdateNickValue => UpdateUserNick(credential, val),
+            UserApiAction.UpdateLoginValue => UpdateUserLogin(credential, val),
+            UserApiAction.UpdatePasswordValue => UpdateUserPassword(credential, val),
+            UserApiAction.UpdateEmailValue => UpdateUserEmail(credential, val),
+            UserApiAction.AddFriendValue => AddFriend(credential, int.Parse(val)),
+            UserApiAction.DeleteFriendValue => DeleteFriend(credential, int.Parse(val)),
+            UserApiAction.AcceptFriendValue => AcceptFriend(credential, int.Parse(val)),
+            UserApiAction.GetUsersByNickValue => GetUsersByNick(val),
+            _ => throw new NotImplementedException()
+        };
 
+    }
 
-        }
+    private static IActionResult SelectAnimation(Credential credential, int animationId)
+    {
+        return Repository.SelectAnimation(credential,animationId) ? OkResult : BadRequestResult;
+    }
 
-        [HttpGet]
-        public string SequreUserGet([FromQuery] string login, [FromQuery] string password, [FromQuery] string action)
-        {
-            User user = database.FindUser(login, password);
-            if (user == null)
-                return Serialize(BasicResponse.Failed);
-            return action switch
-            {
-                "info" => Serialize(
-                                new UserInfoResponse()
-                                {
-                                    Status = ResponseStatus.OK,
-                                    Info = new UserInfo()
-                                    {
-                                        Nick = login,
-                                        LastActivity = DateTime.Now,
-                                        PictureID = 1,
-                                        Raiting = 1000
-                                    },
-                                    Email = login + "@example.com",
-                                }),
-                "authorize" => Serialize(new UserAuthorizationResponse() { Status = ResponseStatus.OK }),
-                _ => Serialize(BasicResponse.Failed),
-            };
-        }
+    private static IActionResult SelectCheckers(Credential credential, int checkersId)
+    {
+        return Repository.SelectCheckers(credential,checkersId) ? OkResult : BadRequestResult;
+    }
 
-        [HttpPost]
-        public string SequreUserPost([FromBody] JsonElement json)
-        {
-            UserUpdateRequest request = Deserialize<UserUpdateRequest>(json.ToString());
-            return Serialize(
-                new UserInfoResponse()
-                {
-                    Status = ResponseStatus.OK,
-                    Email = request.Login + "@example.com",
-                    Info = new UserInfo()
-                    {
-                        Nick = request.Login,
-                        LastActivity = DateTime.Now,
-                        PictureID = 1,
-                        Raiting = 1000
-                    }
-                });
-        }
+    private static IActionResult BuyItem(Credential credential, int itemId)
+    {
+        return new OkResult();
+    }
 
-        [HttpDelete]
-        public string Delete([FromQuery] string login, [FromQuery] string password)
-        {
-            return Serialize(new UserDeleteResponse() { Status = ResponseStatus.OK });
-        }
+    //User Account Activities 
+    private static IActionResult Authenticate(Credential user)
+    {
+        return Repository.Authenticate(user) ? OkResult : BadRequestResult;
+    }
 
-        [HttpGet("{login}/items")]
-        public string SequreUserItemsGet([FromRoute] string login, [FromQuery] string password)
-        {
-            User user = database.FindUser(login, password);
-            if (user == null)
-                return Serialize(BasicResponse.Failed);
+    private static IActionResult UpdateUserNick(Credential credential, string nick)
+    {
+        return Repository.UpdateUserNick(credential,nick) ? OkResult : BadRequestResult;
+    }
 
-            var items = from item in database.Items
-                        where user.Id == item.UserId
-                        select item.ItemId;
+    private static IActionResult UpdateUserLogin(Credential credential, string login)
+    {
+        return Repository.UpdateUserLogin(credential,login) ? OkResult : BadRequestResult;
+    }
 
-            return Serialize(new UserItemsResponse()
-            {
-                Status = ResponseStatus.OK,
-                SelectedAnimationsID = 1,
-                SelectedCheckersID = 1,
-                Items = items.ToArray()
-            }); ;
-        }
+    private static IActionResult UpdateUserPassword(Credential credential, string password)
+    {
+        return Repository.UpdateUserPassword(credential,password) ? OkResult : BadRequestResult;
+    }
 
-        [HttpPut("{login}/items")]
-        public string SequreUserItemsPut([FromRoute] string login, [FromBody] JsonElement json)
-        {
-            UserItemsUpdateRequest request = Deserialize<UserItemsUpdateRequest>(json.ToString());
-            return Serialize(new UserItemsResponse()
-            {
-                Status = ResponseStatus.OK,
-                SelectedAnimationsID = 1,
-                SelectedCheckersID = 1,
-                Items = new int[] { 1, 2, 3 }
-            });
-        }
+    private static IActionResult UpdateUserEmail(Credential credential, string email)
+    {
+        return Repository.UpdateUserEmail(credential,email) ? OkResult : BadRequestResult;
+    }
 
-        [HttpGet("{login}/achievements")]
-        public string UserAchievementsGet([FromRoute] string login)
-        {
-            User user = database.FindUser(login);
-            if (user == null)
-                return Serialize(BasicResponse.Failed);
-            var achievements = from a in database.Achievements
-                               where a.UserId == user.Id
-                               select a.Id;
-            return Serialize(new UserAchievementsGetResponse()
-            {
-                Status = ResponseStatus.OK,
-                Achievements = achievements.ToArray()
-            });
-        }
+    //Friends
+    private static IActionResult GetUsersByNick(string pattern)
+    {
+        return new JsonResult(Repository.GetUsersByNick($"%{pattern}%"));
+    }
 
-        [HttpGet("{login}/friends")]
-        public string UserFriendsGet([FromRoute] string login, [FromQuery] string password)
-        {
-            User user = database.FindUser(login, password);
-            if (user == null)
-                return Serialize(BasicResponse.Failed);
+    private static IActionResult AddFriend(Credential credential, int userId)
+    {
+        return new OkResult();
+    }
 
-            var result = from uf in database.Friends
-                         where uf.UserId == user.Id
-                         join u in database.Users on uf.FriendId equals u.Id
-                         select u.Login;
+    private static IActionResult DeleteFriend(Credential credential, int userId)
+    {
+        return new OkResult();
+    }
 
-            return Serialize(new UserFriendsResponse()
-            {
-                Status = ResponseStatus.OK,
-                Friends = result.ToArray()
-            });
-        }
-
-        [HttpPut("{login}/friends")]
-        public string UserFriendsPut([FromRoute] string login, [FromBody] JsonElement json)
-        {
-            UserFriendsUpdateRequest request = Deserialize<UserFriendsUpdateRequest>(json.ToString());
-            return Serialize(new UserFriendsResponse()
-            {
-                Status = ResponseStatus.OK,
-                Friends = new string[] { "biba", "boba" }
-            }); ;
-        }
-
-        [HttpGet("{login}/games")]
-        public string UserGamesGet([FromRoute] string login)
-        {
-            return Serialize(new UserGamesGetResponse()
-            {
-                Status = ResponseStatus.OK,
-                Games = new int[] { 1, 2, 3 }
-            });
-        }
+    private static IActionResult AcceptFriend(Credential credential, int userId)
+    {
+        return new OkResult();
     }
 }
