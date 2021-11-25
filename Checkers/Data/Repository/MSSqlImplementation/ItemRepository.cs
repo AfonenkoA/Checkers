@@ -6,87 +6,86 @@ using Checkers.Data.Repository.Interface;
 using Microsoft.Data.SqlClient;
 using static Checkers.Data.Repository.MSSqlImplementation.ResourceRepository;
 
-namespace Checkers.Data.Repository.MSSqlImplementation
+namespace Checkers.Data.Repository.MSSqlImplementation;
+
+public sealed class ItemRepository : Repository, IItemRepository
 {
-    public sealed class ItemRepository : Repository, IItemRepository
+    public const string ItemTable = "[Item]";
+    public const string ItemTypeTable = "[ItemType]";
+
+    public const string ItemTypeVar = "@item_type";
+
+    public static readonly string PictureTable = $"[{ItemType.Picture}]";
+    public static readonly string AchievementTable = $"[{ItemType.Achievement}]";
+    public static readonly string CheckersTable = $"[{ItemType.CheckersSkin}]";
+    public static readonly string AnimationTable = $"[{ItemType.Animation}]";
+    public static readonly string LootBoxTable = $"[{ItemType.LootBox}]";
+    public const string ItemId = "[item_id]";
+
+    public const string Detail = "[detail]";
+    public const string ItemName = "[item_name]";
+    public const string ItemTypeName = "[item_type_name]";
+    public const string ItemTypeId = "[item_type_id]";
+    public const string Updated = "[updated]";
+    public const string Price = "[price]";
+
+    public const string DetailVar = "@detail";
+    public const string ItemNameVar = "@item_name";
+    public const string PriceVar = "@price";
+    public const string PathVar = "@path";
+
+    public const string SelectItemsProc = "[SP_SelectItems]";
+    public const string SelectItemProc = "[SP_SelectItem]";
+    public const string SelectItemPictureProc = "[SP_SelectItemPicture]";
+    public const string CreateItemProc = "[SP_CreateItem]";
+
+    public static readonly ItemRepository Instance = new();
+    public IEnumerable<ItemHash> GetItems()
     {
-        public const string ItemTable = "[Item]";
-        public const string ItemTypeTable = "[ItemType]";
-
-        public const string ItemTypeVar = "@item_type";
-
-        public static readonly string PictureTable = $"[{ItemType.Picture}]";
-        public static readonly string AchievementTable = $"[{ItemType.Achievement}]";
-        public static readonly string CheckersTable = $"[{ItemType.CheckersSkin}]";
-        public static readonly string AnimationTable = $"[{ItemType.Animation}]";
-        public static readonly string LootBoxTable = $"[{ItemType.LootBox}]";
-        public const string ItemId = "[item_id]";
-
-        public const string Detail = "[detail]";
-        public const string ItemName = "[item_name]";
-        public const string ItemTypeName = "[item_type_name]";
-        public const string ItemTypeId = "[item_type_id]";
-        public const string Updated = "[updated]";
-        public const string Price = "[price]";
-
-        public const string DetailVar = "@detail";
-        public const string ItemNameVar = "@item_name";
-        public const string PriceVar = "@price";
-        public const string PathVar = "@path";
-
-        public const string SelectItemsProc = "[SP_SelectItems]";
-        public const string SelectItemProc = "[SP_SelectItem]";
-        public const string SelectItemPictureProc = "[SP_SelectItemPicture]";
-        public const string CreateItemProc = "[SP_CreateItem]";
-
-        public static readonly ItemRepository Instance = new();
-        public IEnumerable<ItemHash> GetItems()
+        using var command =  new SqlCommand(SelectItemsProc, Connection)
         {
-            using var command =  new SqlCommand(SelectItemsProc, Connection)
-            {
-                CommandType = CommandType.StoredProcedure
-            };
-            using var reader = command.ExecuteReader();
-            List<ItemHash> items = new();
-            while (reader.Read())
-                items.Add(new ItemHash {Id = reader.GetFieldValue<int>(Id),
-                    Updated = reader.GetFieldValue<DateTime>(Updated)});
-            return items;
-        }
+            CommandType = CommandType.StoredProcedure
+        };
+        using var reader = command.ExecuteReader();
+        List<ItemHash> items = new();
+        while (reader.Read())
+            items.Add(new ItemHash {Id = reader.GetFieldValue<int>(Id),
+                Updated = reader.GetFieldValue<DateTime>(Updated)});
+        return items;
+    }
 
-        public ItemInfo GetItemInfo(int id)
+    public ItemInfo GetItemInfo(int id)
+    {
+        using var command = new SqlCommand(SelectItemProc, Connection)
         {
-            using var command = new SqlCommand(SelectItemProc, Connection)
+            CommandType = CommandType.StoredProcedure
+        };
+        command.Parameters.Add(new SqlParameter {ParameterName = IdVar, SqlDbType = SqlDbType.Int, Value = id});
+        using var reader = command.ExecuteReader();
+        if (reader.Read())
+            return new ItemInfo
             {
-                CommandType = CommandType.StoredProcedure
+                Id = reader.GetFieldValue<int>(Id),
+                Detail = reader.GetFieldValue<string>(Detail),
+                Extension = reader.GetFieldValue<string>(ResourceExtension),
+                Name = reader.GetFieldValue<string>(ItemName),
+                Type = (ItemType) reader.GetFieldValue<int>(ItemTypeId),
+                Updated = reader.GetFieldValue<DateTime>(Updated),
+                Price = reader.GetFieldValue<int>(Price)
             };
-            command.Parameters.Add(new SqlParameter {ParameterName = IdVar, SqlDbType = SqlDbType.Int, Value = id});
-            using var reader = command.ExecuteReader();
-            if (reader.Read())
-                return new ItemInfo
-                {
-                    Id = reader.GetFieldValue<int>(Id),
-                    Detail = reader.GetFieldValue<string>(Detail),
-                    Extension = reader.GetFieldValue<string>(ResourceExtension),
-                    Name = reader.GetFieldValue<string>(ItemName),
-                    Type = (ItemType) reader.GetFieldValue<int>(ItemTypeId),
-                    Updated = reader.GetFieldValue<DateTime>(Updated),
-                    Price = reader.GetFieldValue<int>(Price)
-                };
-            return ItemInfo.Invalid;
-        }
+        return ItemInfo.Invalid;
+    }
 
-        public (byte[],string) GetItemImage(int id)
+    public (byte[],string) GetItemImage(int id)
+    {
+        using var command = new SqlCommand(SelectItemPictureProc, Connection)
         {
-            using var command = new SqlCommand(SelectItemPictureProc, Connection)
-            {
-                CommandType = CommandType.StoredProcedure
-            };
-            command.Parameters.Add(new SqlParameter { ParameterName = IdVar, SqlDbType = SqlDbType.Int, Value = id });
-            using var reader = command.ExecuteReader();
-            return reader.Read() ? 
-                (reader.GetFieldValue<byte[]>(ResourceBytes), reader.GetFieldValue<string>(ResourceExtension)) : 
-                (Array.Empty<byte>(), string.Empty);
-        }
+            CommandType = CommandType.StoredProcedure
+        };
+        command.Parameters.Add(new SqlParameter { ParameterName = IdVar, SqlDbType = SqlDbType.Int, Value = id });
+        using var reader = command.ExecuteReader();
+        return reader.Read() ? 
+            (reader.GetFieldValue<byte[]>(ResourceBytes), reader.GetFieldValue<string>(ResourceExtension)) : 
+            (Array.Empty<byte>(), string.Empty);
     }
 }

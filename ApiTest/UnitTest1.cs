@@ -3,18 +3,17 @@ using Checkers.Api.Interface;
 using Checkers.Api.WebImplementation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ApiTest
+namespace ApiTest;
+
+[TestClass]
+public class UnitTest1
 {
-    [TestClass]
-    public class UnitTest1
+    private static readonly IAsyncItemApi ItemApi = new ItemWebApi();
+    [TestMethod]
+    public void GetAllItems()
     {
-        private static readonly IAsyncItemApi ItemApi = new ItemWebApi();
-        [TestMethod]
-        public void GetAllItems()
-        {
-            var (success, items) = ItemApi.TryGetItems().GetAwaiter().GetResult();
-            Assert.IsTrue(success);
-            Assert.IsTrue(items.Any());
-        }
+        var (success, items) = ItemApi.TryGetItems().GetAwaiter().GetResult();
+        Assert.IsTrue(success);
+        Assert.IsTrue(items.Any());
     }
 }

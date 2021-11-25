@@ -1,5 +1,5 @@
 ﻿
-namespace WinFormsClient
+namespace OldWinFormsClient
 {
     partial class MainMenuWindow
     {

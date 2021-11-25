@@ -1,5 +1,5 @@
 ﻿
-namespace WinFormsClient
+namespace OldWinFormsClient
 {
     internal sealed partial class ProfileWindow
     {

@@ -1,5 +1,5 @@
 ﻿
-namespace WinFormsClient
+namespace OldWinFormsClient
 {
     sealed partial class LoginWindow
     {
