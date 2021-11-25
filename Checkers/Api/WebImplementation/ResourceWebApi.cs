@@ -2,7 +2,6 @@
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Checkers.Api.Interface;
-using Checkers.Data;
 using Checkers.Data.Entity;
 using static System.Text.Json.JsonSerializer;
 

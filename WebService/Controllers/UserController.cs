@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
 using Checkers.Api;
 using Checkers.Api.WebImplementation;
-using Checkers.Data;
 using Checkers.Data.Entity;
 using Checkers.Data.Repository.Interface;
 using Checkers.Data.Repository.MSSqlImplementation;
@@ -26,12 +24,6 @@ public class UserController : Controller
     public IActionResult DeleteUser([FromQuery] Credential credential)
     {
         return Repository.DeleteUser(credential) ? OkResult : BadRequestResult;
-    }
-
-    [HttpGet]
-    public JsonResult GetSelf([FromQuery] Credential credential)
-    {
-        return new JsonResult(Repository.GetSelf(credential));
     }
 
     [HttpGet("{id:int}")]

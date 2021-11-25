@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Checkers.Data.Entity;
 
+
 public sealed class UserCreationData
 {
     public string Nick { get; set; } = string.Empty;
@@ -13,6 +14,14 @@ public sealed class UserCreationData
     public string Email { get; set; } = string.Empty;
 }
 
+public enum UserType
+{
+    Player,
+    Editor,
+    Moderator,
+    Support,
+    Admin
+}
 
 public class PublicUserData 
 {
@@ -51,6 +60,6 @@ public sealed class User : FriendUserData
     public new static readonly User Invalid = new();
 
     public IEnumerable<int> Items { get; set; } = Enumerable.Empty<int>();
-    public IEnumerable<Friend> Friends { get; set; } = Enumerable.Empty<Friend>();
+    public IEnumerable<Friendship> Friends { get; set; } = Enumerable.Empty<Friendship>();
     public IEnumerable<int> Games { get; set; } = Enumerable.Empty<int>();
 }

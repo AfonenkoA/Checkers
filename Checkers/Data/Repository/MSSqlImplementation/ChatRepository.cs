@@ -7,6 +7,10 @@ namespace Checkers.Data.Repository.MSSqlImplementation
 {
     public class ChatRepository : Repository, IChatRepository
     {
+        public const string ChatTable = "[Chat]";
+
+        public const string ChatId = "[chat_id]";
+        public const string ChatName = "[chat_name]";
 
         public IEnumerable<Message> GetMessages(int chatId, DateTime from)
         {

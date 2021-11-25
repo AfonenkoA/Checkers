@@ -13,6 +13,10 @@ public sealed class UserRepository : Repository,IUserRepository
     public const string UserTable = "[User]";
     public const string UserItemTable = "[UserItem]";
     public const string UserItemExtendedView = "[UserItemExtended]";
+    public const string UserTypeTable = "[UserType]";
+    public const string FriendshipStateTable = "[FriendshipState]";
+    public const string FriendshipTable = "[Friendship]";
+
 
     public const string Nick = "[nick]";
     public const string Login = "[login]";
@@ -23,8 +27,15 @@ public sealed class UserRepository : Repository,IUserRepository
     public const string CheckersId = "[checkers_id]";
     public const string AnimationId = "[animation_id]";
     public const string UserId = "[user_id]";
-
+    public const string UserTypeId = "[user_type_id]";
+    public const string UserTypeName = "[user_type_name]";
+    public const string User1Id = "[user1_id]";
+    public const string User2Id = "[user2_id]";
+    public const string AcceptDate = "[accept_date]";
     public const string Email = "[email]";
+    public const string FriendshipStateName = "friendship_state_name";
+    public const string FriendshipStateId = "friendship_state_id";
+
     public const string NickVar = "@nick";
     public const string LoginVar = "@login";
     public const string PasswordVar = "@password";
@@ -34,17 +45,20 @@ public sealed class UserRepository : Repository,IUserRepository
     public const string NewPasswordVar = "@new_password";
     public const string NewEmailVar = "@new_email";
 
-    public const string CreateUserProc = "[CreateUser]";
-    public const string SelectUserItemProc = "[SelectUserItem]";
-    public const string SelectUserProc = "[SelectUser]";
-    public const string UpdateUserNickProc = "[UpdateUserNick]";
-    public const string UpdateUserLoginProc = "[UpdateUserLogin]";
-    public const string UpdateUserPasswordProc = "[UpdateUserPassword]";
-    public const string UpdateUserEmailProc = "[UpdateUserEmailProc]";
-    public const string SelectUserByNickProc = "[SelectUserByNick]";
-    public const string AuthenticateProc = "[Authenticate]";
-    public const string UpdateUserAnimationProc = "[UpdateUserAnimationProc]";
-    public const string UpdateUserCheckersProc = "[UpdateUserCheckersProc]";
+    public const string CreateUserProc = "[SP_CreateUser]";
+    public const string SelectUserItemProc = "[SP_SelectUserItem]";
+    public const string SelectUserProc = "[SP_SelectUser]";
+    public const string UpdateUserNickProc = "[SP_UpdateUserNick]";
+    public const string UpdateUserLoginProc = "[SP_UpdateUserLogin]";
+    public const string UpdateUserPasswordProc = "[SP_UpdateUserPassword]";
+    public const string UpdateUserEmailProc = "[SP_UpdateUserEmail]";
+    public const string SelectUserByNickProc = "[SP_SelectUserByNick]";
+    public const string AuthenticateProc = "[SP_Authenticate]";
+    public const string UpdateUserAnimationProc = "[SP_UpdateUserAnimation]";
+    public const string UpdateUserCheckersProc = "[SP_UpdateUserCheckers]";
+    public const string UpdateUserActivityProc = "[SP_UpdateUserActivity]";
+
+    public const string UserAuthCondition = $"{Login}={LoginVar} AND {Password}={PasswordVar}";
 
     public bool CreateUser(UserCreationData user)
     {
@@ -65,7 +79,7 @@ public sealed class UserRepository : Repository,IUserRepository
 
     public bool DeleteUser(Credential credential)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public PublicUserData GetUser(int userId)
@@ -110,12 +124,12 @@ public sealed class UserRepository : Repository,IUserRepository
 
     public User GetSelf(Credential credential)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public FriendUserData GetFriend(Credential credential, int friendId)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public bool SelectAnimation(Credential credential, int animationId)
@@ -152,7 +166,7 @@ public sealed class UserRepository : Repository,IUserRepository
 
     public bool BuyItem(Credential credential, int itemId)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public bool Authenticate(Credential user)
@@ -263,16 +277,16 @@ public sealed class UserRepository : Repository,IUserRepository
 
     public bool AddFriend(Credential credential, int userId)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public bool DeleteFriend(Credential credential, int userId)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public bool AcceptFriend(Credential credential, int userId)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 }

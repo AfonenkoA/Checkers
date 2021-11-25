@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.Http;
-using Checkers.Data;
 using Checkers.Data.Entity;
 using static System.Text.Json.JsonSerializer;
 

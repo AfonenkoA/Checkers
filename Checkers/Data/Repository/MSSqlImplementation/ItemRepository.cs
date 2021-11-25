@@ -4,6 +4,7 @@ using System.Data;
 using Checkers.Data.Entity;
 using Checkers.Data.Repository.Interface;
 using Microsoft.Data.SqlClient;
+using static Checkers.Data.Repository.MSSqlImplementation.ResourceRepository;
 
 namespace Checkers.Data.Repository.MSSqlImplementation
 {
@@ -20,18 +21,24 @@ namespace Checkers.Data.Repository.MSSqlImplementation
         public static readonly string AnimationTable = $"[{ItemType.Animation}]";
         public static readonly string LootBoxTable = $"[{ItemType.LootBox}]";
         public const string ItemId = "[item_id]";
-        public const string SelectItemsProc = "[SelectItems]";
-        public const string SelectItemProc = "[SelectItem]";
-        public const string SelectItemPictureProc = "[SelectItemPicture]";
+
         public const string Detail = "[detail]";
         public const string ItemName = "[item_name]";
         public const string ItemTypeName = "[item_type_name]";
-        public const string Type = "[type]";
-        public const string Extension = "[extension]";
+        public const string ItemTypeId = "[item_type_id]";
         public const string Updated = "[updated]";
         public const string Price = "[price]";
-        public const string Picture = "[picture]";
-        
+
+        public const string DetailVar = "@detail";
+        public const string ItemNameVar = "@item_name";
+        public const string PriceVar = "@price";
+        public const string PathVar = "@path";
+
+        public const string SelectItemsProc = "[SP_SelectItems]";
+        public const string SelectItemProc = "[SP_SelectItem]";
+        public const string SelectItemPictureProc = "[SP_SelectItemPicture]";
+        public const string CreateItemProc = "[SP_CreateItem]";
+
         public static readonly ItemRepository Instance = new();
         public IEnumerable<ItemHash> GetItems()
         {
@@ -60,9 +67,9 @@ namespace Checkers.Data.Repository.MSSqlImplementation
                 {
                     Id = reader.GetFieldValue<int>(Id),
                     Detail = reader.GetFieldValue<string>(Detail),
-                    Extension = reader.GetFieldValue<string>(Extension),
+                    Extension = reader.GetFieldValue<string>(ResourceExtension),
                     Name = reader.GetFieldValue<string>(ItemName),
-                    Type = (ItemType) reader.GetFieldValue<int>(Type),
+                    Type = (ItemType) reader.GetFieldValue<int>(ItemTypeId),
                     Updated = reader.GetFieldValue<DateTime>(Updated),
                     Price = reader.GetFieldValue<int>(Price)
                 };
@@ -78,7 +85,7 @@ namespace Checkers.Data.Repository.MSSqlImplementation
             command.Parameters.Add(new SqlParameter { ParameterName = IdVar, SqlDbType = SqlDbType.Int, Value = id });
             using var reader = command.ExecuteReader();
             return reader.Read() ? 
-                (reader.GetFieldValue<byte[]>(Picture), reader.GetFieldValue<string>(Extension)) : 
+                (reader.GetFieldValue<byte[]>(ResourceBytes), reader.GetFieldValue<string>(ResourceExtension)) : 
                 (Array.Empty<byte>(), string.Empty);
         }
     }

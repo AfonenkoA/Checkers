@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Checkers.Data;
 using Checkers.Data.Entity;
 
 namespace Checkers.Api.Interface;

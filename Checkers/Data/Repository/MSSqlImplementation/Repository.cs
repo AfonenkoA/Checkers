@@ -8,9 +8,12 @@ public class Repository
     public const string IdVar = "@id";
     public const string StringType = "NVARCHAR(300)";
     public const string Schema = "Checkers.dbo";
+    public const string Identity = $"{Id}				INT				NOT NULL	IDENTITY(1,1)	PRIMARY KEY";
+
+
     private const string ConnectionString = @"Data Source=DELL;Initial Catalog=Checkers;Integrated Security=True";
 
-    public static string Fk(string s1, string s2) => $"FK_{Unwrap(s1)}_{Unwrap(s2)}";
+    public static string Fk(string s1, string s2, string s ="") => $"CONSTRAINT FK_{Unwrap(s1)}_{Unwrap(s2)}{s}    FOREIGN KEY REFERENCES {s2}({Id})";
 
     public static string Unwrap(string s) => s.Replace("[", "").Replace("]", "");
 

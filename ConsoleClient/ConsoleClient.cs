@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Checkers.Api.Interface;
 using Checkers.Api.WebImplementation;
 using Checkers.Client;
-using Checkers.Data;
 using Checkers.Data.Entity;
 using Checkers.Data.Old;
 using static System.Console;
@@ -36,7 +35,7 @@ internal static class ConsoleClient
         using GameDatabase db = new();
         db.Users.Include(u => u.Achievements);
         foreach (User user in db.Users)
-            Console.WriteLine(string.Join<Achievement>(" ", user.Achievements.ToArray()));
+            WriteLine(string.Join<Achievement>(" ", user.Achievements.ToArray()));
     }
 
     private static void TestGameServer(GameClient client)
@@ -59,20 +58,20 @@ internal static class ConsoleClient
     {
         try
         {
-            Console.WriteLine(await client.GetGameAsync(3));
-            Console.WriteLine(await client.AuthorizeAsync());
-            Console.WriteLine(await client.GetAchievementsAsync());
-            Console.WriteLine(await client.GetFriendsAsync());
-            Console.WriteLine(await client.GetGamesAsync());
-            Console.WriteLine(await client.GetItemsAsync());
+            WriteLine(await client.GetGameAsync(3));
+            WriteLine(await client.AuthorizeAsync());
+            WriteLine(await client.GetAchievementsAsync());
+            WriteLine(await client.GetFriendsAsync());
+            WriteLine(await client.GetGamesAsync());
+            WriteLine(await client.GetItemsAsync());
         }
         catch (Exception ex)
-        { Console.WriteLine(ex); }
+        { WriteLine(ex); }
     }
 
     private static void CrateAction(GameController controller)
     {
-        Console.WriteLine("1: Move\n2: Emote\n3: Surrender");
+        WriteLine("1: Move\n2: Emote\n3: Surrender");
         switch (int.Parse(ReadLine() ?? string.Empty))
         {
             case 1:

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Checkers.Api.Interface;
-using Checkers.Data;
 using Checkers.Data.Entity;
 
 namespace Checkers.Api.WebImplementation;

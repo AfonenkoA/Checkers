@@ -3,7 +3,7 @@ using Checkers.Data.Entity;
 
 namespace Checkers.Data.Repository.Interface
 {
-    internal interface IForumRepository
+    public interface IForumRepository
     {
         bool CreatePost(Credential credential, PostCreationData post);
         bool UpdateTitle(Credential credential, int postId, string title);

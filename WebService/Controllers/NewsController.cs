@@ -1,42 +1,44 @@
-﻿using System.Linq;
-using Checkers.Api.WebImplementation;
-using Checkers.Data;
+﻿using Checkers.Api.WebImplementation;
 using Checkers.Data.Entity;
+using Checkers.Data.Repository.Interface;
+using Checkers.Data.Repository.MSSqlImplementation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebService.Controllers;
 
 [ApiController]
 [Route("api/"+WebApiBase.NewsRoute)]
-public class NewsController
+public class NewsController : Controller
 {
+    private static readonly INewsRepository Repository = new NewsRepository();
     [HttpPost]
     public IActionResult CreateArticle([FromQuery] Credential credential, [FromBody] ArticleCreationData article)
     {
-        return new OkResult();
+
+        return Repository.CreateArticle(credential,article) ? OkResult : BadRequestResult;
     }
 
     [HttpPost("{id:int}")]
     public IActionResult UpdateArticle([FromQuery] Credential credential, [FromQuery] ArticleCreationData article)
     {
-        return new OkResult();
+        return BadRequestResult;
     }
 
     [HttpDelete("{id:int}")]
     public IActionResult DeleteArticle([FromQuery] Credential credential, [FromRoute] int id)
     {
-        return new OkResult();
+        return BadRequestResult;
     }
 
     [HttpGet("{id:int}")]
     public JsonResult GetArticle([FromRoute] int id)
     {
-        return new JsonResult(new Article());
+        return new JsonResult(Repository.GetArticle(id));
     }
 
     [HttpGet]
     public JsonResult GetNews()
     {
-        return new JsonResult(Enumerable.Repeat(new Article(),10));
+        return new JsonResult(Repository.GetNews());
     }
 }

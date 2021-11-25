@@ -1,5 +1,4 @@
 ﻿using Checkers.Api.WebImplementation;
-using Checkers.Data;
 using Checkers.Data.Entity;
 using Microsoft.AspNetCore.Mvc;
 
