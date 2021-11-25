@@ -2,6 +2,8 @@
 using System.Linq;
 using Checkers.Api.WebImplementation;
 using Checkers.Data.Entity;
+using Checkers.Data.Repository.Interface;
+using Checkers.Data.Repository.MSSqlImplementation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebService.Controllers;
@@ -10,10 +12,11 @@ namespace WebService.Controllers;
 [Route("api/"+WebApiBase.ChatRoute)]
 public class ChatController
 {
+    private static readonly IChatRepository Repository = new ChatRepository();
     [HttpGet("{id:int}")]
-    public JsonResult GetMessages([FromRoute] int id, [FromQuery] DateTime from)
+    public JsonResult GetMessages([FromQuery] Credential credential,[FromRoute] int id, [FromQuery] DateTime from)
     {
-        return new JsonResult(Enumerable.Repeat(new Message(),10));
+        return new JsonResult(Repository.GetMessages(credential,id,from));
     }
 
     [HttpPost("{id:int}")]

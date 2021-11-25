@@ -44,6 +44,10 @@ public sealed class UserRepository : Repository,IUserRepository
     public const string NewLoginVar = "@new_login";
     public const string NewPasswordVar = "@new_password";
     public const string NewEmailVar = "@new_email";
+    public const string UserIdVar = "@user_id";
+    public const string UserTypeNameVar = "@user_type_name";
+    public const string User1IdVar = "@user1_id";
+    public const string User2IdVar = "@user2_id";
 
     public const string CreateUserProc = "[SP_CreateUser]";
     public const string SelectUserItemProc = "[SP_SelectUserItem]";
@@ -57,15 +61,13 @@ public sealed class UserRepository : Repository,IUserRepository
     public const string UpdateUserAnimationProc = "[SP_UpdateUserAnimation]";
     public const string UpdateUserCheckersProc = "[SP_UpdateUserCheckers]";
     public const string UpdateUserActivityProc = "[SP_UpdateUserActivity]";
+    public const string CreateFriendship = "[SP_CreateFriendship]";
 
     public const string UserAuthCondition = $"{Login}={LoginVar} AND {Password}={PasswordVar}";
 
     public bool CreateUser(UserCreationData user)
     {
-        using var command = new SqlCommand(CreateUserProc, Connection)
-        {
-            CommandType = CommandType.StoredProcedure
-        };
+        using var command = CreateProcedure(CreateUserProc);
         command.Parameters.AddRange(
             new []
             {
@@ -85,7 +87,7 @@ public sealed class UserRepository : Repository,IUserRepository
     public PublicUserData GetUser(int userId)
     {
         var user = PublicUserData.Invalid;
-        using (var command = new SqlCommand(SelectUserProc, Connection) {CommandType = CommandType.StoredProcedure})
+        using (var command = CreateProcedure(SelectUserProc))
         {
             command.Parameters.Add(new SqlParameter {ParameterName = IdVar, SqlDbType = SqlDbType.Int, Value = userId});
 
@@ -107,10 +109,7 @@ public sealed class UserRepository : Repository,IUserRepository
 
     private static IEnumerable<int> GetUserItem(int id,ItemType type)
     {
-        using var command = new SqlCommand(SelectUserItemProc, Connection)
-        {
-            CommandType = CommandType.StoredProcedure
-        };
+        using var command = CreateProcedure(SelectUserItemProc);
         command.Parameters.AddRange(new []{
             new SqlParameter { ParameterName = IdVar, SqlDbType = SqlDbType.Int, Value = id},
             new SqlParameter{ParameterName = ItemTypeVar,SqlDbType = SqlDbType.NVarChar,Value = type}
@@ -134,10 +133,7 @@ public sealed class UserRepository : Repository,IUserRepository
 
     public bool SelectAnimation(Credential credential, int animationId)
     {
-        using var command = new SqlCommand(UpdateUserAnimationProc, Connection)
-        {
-            CommandType = CommandType.StoredProcedure
-        };
+        using var command = CreateProcedure(UpdateUserAnimationProc);
         command.Parameters.AddRange(
             new[]
             {
@@ -150,10 +146,7 @@ public sealed class UserRepository : Repository,IUserRepository
 
     public bool SelectCheckers(Credential credential, int checkersId)
     {
-        using var command = new SqlCommand(UpdateUserCheckersProc, Connection)
-        {
-            CommandType = CommandType.StoredProcedure
-        };
+        using var command = CreateProcedure(UpdateUserCheckersProc);
         command.Parameters.AddRange(
             new[]
             {
@@ -171,10 +164,7 @@ public sealed class UserRepository : Repository,IUserRepository
 
     public bool Authenticate(Credential user)
     {
-        using var command = new SqlCommand(UpdateUserAnimationProc, Connection)
-        {
-            CommandType = CommandType.StoredProcedure
-        };
+        using var command = CreateProcedure(AuthenticateProc);
         command.Parameters.AddRange(
             new[]
             {
@@ -187,10 +177,7 @@ public sealed class UserRepository : Repository,IUserRepository
 
     public bool UpdateUserNick(Credential credential, string nick)
     {
-        using var command = new SqlCommand(UpdateUserNickProc, Connection)
-        {
-            CommandType = CommandType.StoredProcedure
-        };
+        using var command = CreateProcedure(UpdateUserNickProc);
         command.Parameters.AddRange(
             new[]
             {
@@ -203,10 +190,7 @@ public sealed class UserRepository : Repository,IUserRepository
 
     public bool UpdateUserLogin(Credential credential, string login)
     {
-        using var command = new SqlCommand(UpdateUserLoginProc, Connection)
-        {
-            CommandType = CommandType.StoredProcedure
-        };
+        using var command = CreateProcedure(UpdateUserLoginProc);
         command.Parameters.AddRange(
             new[]
             {
@@ -219,10 +203,7 @@ public sealed class UserRepository : Repository,IUserRepository
 
     public bool UpdateUserPassword(Credential credential, string password)
     {
-        using var command = new SqlCommand(UpdateUserPasswordProc, Connection)
-        {
-            CommandType = CommandType.StoredProcedure
-        };
+        using var command = CreateProcedure(UpdateUserPasswordProc);
         command.Parameters.AddRange(
             new[]
             {
@@ -235,10 +216,7 @@ public sealed class UserRepository : Repository,IUserRepository
 
     public bool UpdateUserEmail(Credential credential, string email)
     {
-        using var command = new SqlCommand(UpdateUserEmailProc, Connection)
-        {
-            CommandType = CommandType.StoredProcedure
-        };
+        using var command = CreateProcedure(UpdateUserEmailProc);
         command.Parameters.AddRange(
             new[]
             {
@@ -251,10 +229,7 @@ public sealed class UserRepository : Repository,IUserRepository
 
     public IEnumerable<PublicUserData> GetUsersByNick(string pattern)
     {
-        using var command = new SqlCommand(UpdateUserAnimationProc, Connection)
-        {
-            CommandType = CommandType.StoredProcedure
-        };
+        using var command = CreateProcedure(UpdateUserAnimationProc);
         command.Parameters.AddRange(
             new[]
             {

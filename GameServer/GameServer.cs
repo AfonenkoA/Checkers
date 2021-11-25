@@ -35,11 +35,11 @@ class PlayerFactory
 
 class Player : IDisposable
 {
-    public event EventHandler<MoveActionArgs> OnMove = (o, a) => { };
-    public event EventHandler<EmoteActionArgs> OnEmote = (o, a) => { };
-    public event EventHandler<SurrenderActionArgs> OnSurrender = (o, a) => { };
-    public event EventHandler<RequestForGameActionArgs> OnRequest = (o, a) => { };
-    public event EventHandler<DisconnectActionArgs> OnDisconnect = (o, a) => { };
+    public event EventHandler<MoveActionArgs> OnMove = (_, _) => { };
+    public event EventHandler<EmoteActionArgs> OnEmote = (_, _) => { };
+    public event EventHandler<SurrenderActionArgs> OnSurrender = (_, _) => { };
+    public event EventHandler<RequestForGameActionArgs> OnRequest = (_, _) => { };
+    public event EventHandler<DisconnectActionArgs> OnDisconnect = (_, _) => { };
 
     private readonly TcpClient client;
     private readonly StreamReader reader;
@@ -132,7 +132,7 @@ class TCPServer
             Player p = new(await listener.AcceptTcpClientAsync(), database);
             Console.WriteLine($"Подключен пользователь {p}");
             list.Add(p);
-            p.OnRequest += (o, a) =>
+            p.OnRequest += (_, _) =>
             {
                 gameQueue.Enqueue(p);
                 if (gameQueue.Count >= 2)

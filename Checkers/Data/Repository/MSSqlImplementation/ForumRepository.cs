@@ -30,10 +30,7 @@ public class ForumRepository : MessageRepository, IForumRepository
 
     public bool CreatePost(Credential credential, PostCreationData post)
     {
-        using var command = new SqlCommand(CreatePostProc, Connection)
-        {
-            CommandType = CommandType.StoredProcedure
-        };
+        using var command = CreateProcedure(CreatePostProc);
         command.Parameters.AddRange(
             new[]
             {
@@ -69,7 +66,7 @@ public class ForumRepository : MessageRepository, IForumRepository
     public Post GetPost(int postId)
     {
         var post = new Post();
-        using var command = new SqlCommand(SelectPostProc, Connection) { CommandType = CommandType.StoredProcedure };
+        using var command = CreateProcedure(SelectPostProc);
         command.Parameters.Add(new SqlParameter { ParameterName = IdVar, SqlDbType = SqlDbType.Int, Value = postId });
         using var reader = command.ExecuteReader();
         if (!reader.Read()) return post;
@@ -88,10 +85,7 @@ public class ForumRepository : MessageRepository, IForumRepository
 
     public IEnumerable<PostInfo> GetPosts()
     {
-        using var command =  new SqlCommand(SelectPostsProc, Connection)
-        {
-            CommandType = CommandType.StoredProcedure
-        };
+        using var command = CreateProcedure(SelectPostsProc);
         using var reader = command.ExecuteReader();
         List<PostInfo> list = new();
         while (reader.Read())

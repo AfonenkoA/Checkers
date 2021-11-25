@@ -8,7 +8,7 @@ namespace Checkers.Api.WebImplementation;
 
 public class ChatWebApi : WebApiBase, IAsyncChatApi
 {
-    public Task<(bool, IEnumerable<Message>)> TryGetMessages(int chatId, DateTime from)
+    public Task<(bool, IEnumerable<Message>)> TryGetMessages(Credential credential,int chatId, DateTime from)
     {
         throw new NotImplementedException();
     }

@@ -42,10 +42,7 @@ public sealed class ItemRepository : Repository, IItemRepository
     public static readonly ItemRepository Instance = new();
     public IEnumerable<ItemHash> GetItems()
     {
-        using var command =  new SqlCommand(SelectItemsProc, Connection)
-        {
-            CommandType = CommandType.StoredProcedure
-        };
+        using var command = CreateProcedure(SelectItemsProc);
         using var reader = command.ExecuteReader();
         List<ItemHash> items = new();
         while (reader.Read())
@@ -56,10 +53,7 @@ public sealed class ItemRepository : Repository, IItemRepository
 
     public ItemInfo GetItemInfo(int id)
     {
-        using var command = new SqlCommand(SelectItemProc, Connection)
-        {
-            CommandType = CommandType.StoredProcedure
-        };
+        using var command = CreateProcedure(SelectItemProc);
         command.Parameters.Add(new SqlParameter {ParameterName = IdVar, SqlDbType = SqlDbType.Int, Value = id});
         using var reader = command.ExecuteReader();
         if (reader.Read())
@@ -78,10 +72,7 @@ public sealed class ItemRepository : Repository, IItemRepository
 
     public (byte[],string) GetItemImage(int id)
     {
-        using var command = new SqlCommand(SelectItemPictureProc, Connection)
-        {
-            CommandType = CommandType.StoredProcedure
-        };
+        using var command = CreateProcedure(SelectItemPictureProc);
         command.Parameters.Add(new SqlParameter { ParameterName = IdVar, SqlDbType = SqlDbType.Int, Value = id });
         using var reader = command.ExecuteReader();
         return reader.Read() ? 

@@ -2,7 +2,8 @@
 
 namespace Checkers.Data.Repository.Interface;
 
-internal interface IResourceRepository
+public interface IResourceRepository
 {
-    int CreatePicture(Credential credential, byte[] picture, string ext);
+    int CreateFile(Credential credential, byte[] picture, string ext);
+    (byte[], string) GetFile(int id);
 }

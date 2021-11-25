@@ -7,6 +7,6 @@ namespace Checkers.Api.Interface;
 
 public interface IAsyncChatApi
 {
-    Task<(bool,IEnumerable<Message>)> TryGetMessages(int chatId, DateTime from);
+    Task<(bool,IEnumerable<Message>)> TryGetMessages(Credential credential,int chatId, DateTime from);
     Task<bool> SendMessage(Credential credential,int chatId, string message);
 }

@@ -2,6 +2,12 @@
 
 namespace Checkers.Data.Entity;
 
+public enum ChatType
+{
+    Public,
+    Private
+}
+
 public sealed class Message
 {
     public int Id { get; set; } = -1;

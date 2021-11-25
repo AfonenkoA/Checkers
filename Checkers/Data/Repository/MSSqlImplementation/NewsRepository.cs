@@ -33,10 +33,7 @@ public sealed class NewsRepository: MessageRepository, INewsRepository
 
     public bool CreateArticle(Credential credential, ArticleCreationData article)
     {
-        using var command = new SqlCommand(CreateArticleProc, Connection)
-        {
-            CommandType = CommandType.StoredProcedure
-        };
+        using var command = CreateProcedure(CreateArticleProc);
         command.Parameters.AddRange(
             new[]
             {
@@ -83,7 +80,7 @@ public sealed class NewsRepository: MessageRepository, INewsRepository
     public Article GetArticle(int articleId)
     {
         var article = new Article();
-        using var command = new SqlCommand(SelectArticleProc, Connection) { CommandType = CommandType.StoredProcedure };
+        using var command = CreateProcedure(SelectArticleProc);
         command.Parameters.Add(new SqlParameter { ParameterName = IdVar, SqlDbType = SqlDbType.Int, Value = articleId });
         using var reader = command.ExecuteReader();
         if (!reader.Read()) return article;
@@ -99,7 +96,7 @@ public sealed class NewsRepository: MessageRepository, INewsRepository
     public IEnumerable<ArticleInfo> GetNews()
     {
         var list = new List<ArticleInfo>();
-        using var command = new SqlCommand(SelectNewsProc, Connection) { CommandType = CommandType.StoredProcedure };
+        using var command = CreateProcedure(SelectNewsProc);
         using var reader = command.ExecuteReader();
         if (!reader.Read()) return list;
         list.Add(new ArticleInfo

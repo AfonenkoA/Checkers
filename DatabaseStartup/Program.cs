@@ -23,7 +23,7 @@ CREATE TABLE {ResourceTable}
 (
 {Identity},
 {ResourceExtension}     {StringType}	NOT NULL,
-{ResourceBytes}         VARBINARY(MAX)	NOT NULL,
+{ResourceBytes}         {BinaryType}	NOT NULL,
 );
 
 
@@ -103,10 +103,17 @@ CREATE TABLE {UserItemTable}
 {ItemId}            INT				NOT NULL	{Fk(UserItemTable,ItemTable)},
 );
 
+CREATE TABLE {ChatTypeTable}
+(
+{Identity},
+{ChatTypeName}      {StringType}    NOT NULL
+);
+
 CREATE TABLE {ChatTable}
 (
 {Identity},
-{ChatName}  {StringType}    NOT NULL
+{ChatName}      {StringType}    NOT NULL,
+{ChatTypeId}    INT             NOT NULL {Fk(ChatTable,ChatTypeTable)}
 );
 
 CREATE TABLE {FriendshipStateTable}
@@ -159,6 +166,35 @@ CREATE TABLE {ArticleTable}
 );
 
 
+GO
+CREATE PROCEDURE {SelectResourceProc} {IdVar} INT
+AS
+BEGIN
+    SELECT * FROM {Schema}.{ResourceTable} WHERE {Id}={IdVar}
+END
+
+GO
+CREATE PROCEDURE {CreateChatProc} {ChatNameVar} {StringType}, {ChatTypeNameVar} {StringType}
+AS
+BEGIN
+    INSERT INTO {Schema}.{ChatTable}({ChatName},{ChatTypeId}) 
+    VALUES ({ChatNameVar},(SELECT {Id} FROM {Schema}.{ChatTypeTable} WHERE {ChatTypeName} = {ChatTypeNameVar}));
+    RETURN @@IDENTITY
+END
+
+GO
+CREATE PROCEDURE {CreateFriendship} {User1IdVar} INT,{User2IdVar} INT
+AS
+BEGIN
+    DECLARE {ChatIdVar} INT, @u1_login {StringType}, @u2_login {StringType}, {ChatNameVar} {StringType}
+    SET @u1_login = (SELECT {Login} FROM {Schema}.{UserTable} WHERE {Id}={User1IdVar});
+    SET @u2_login = (SELECT {Login} FROM {Schema}.{UserTable} WHERE {Id}={User2IdVar});
+    SET {ChatNameVar} = N'Chat '+@u1_login+N' to '+ @u2_login;
+    EXEC {ChatIdVar} = {CreateChatProc} {ChatNameVar}, '{ChatType.Private}'
+    INSERT INTO {Schema}.{FriendshipTable}({User1Id},{User2Id},{ChatId},{FriendshipStateId})
+    VALUES ({User1IdVar},{User2IdVar},{ChatIdVar},(SELECT {Id} FROM {Schema}.{FriendshipStateTable} WHERE {FriendshipStateName}='{FriendshipState.Accepted}'));
+END
+
 
 GO
 CREATE PROCEDURE {UpdateUserActivityProc} {LoginVar} {StringType}, {PasswordVar} {StringType}
@@ -171,8 +207,9 @@ GO
 CREATE PROCEDURE {SelectItemPictureProc} {IdVar} INT
 AS
 BEGIN
-    SELECT {ResourceBytes}, {ResourceExtension}
-    FROM {Schema}.{ResourceTable} WHERE {Id}=(SELECT {ResourceId} FROM {Schema}.{ItemTable} WHERE {Id}={IdVar});
+    DECLARE {ResourceIdVar} INT
+    SET {ResourceIdVar} = (SELECT {ResourceId} FROM {Schema}.{ItemTable} WHERE {Id}={IdVar});
+    EXEC {SelectResourceProc} {ResourceIdVar};
 END
 
 GO
@@ -197,23 +234,30 @@ CREATE PROCEDURE {CreateUserProc}
 {NickVar} {StringType},
 {LoginVar} {StringType},
 {PasswordVar} {StringType},
-{EmailVar} {StringType}
+{EmailVar} {StringType},
+{UserTypeNameVar} {StringType}
 AS
 BEGIN
-    DECLARE @user_id INT
-    INSERT INTO {Schema}.{UserTable}({Nick},{Login},{Password},{Email})
-    VALUES ({NickVar},{LoginVar},{PasswordVar},{EmailVar});
-    SET @user_id = @@IDENTITY;
-    INSERT INTO {UserItemTable}({UserId},{ItemId}) VALUES (@user_id,(SELECT {ItemId} FROM {AnimationTable} WHERE {Id}=1));
-    INSERT INTO {UserItemTable}({UserId},{ItemId}) VALUES (@user_id,(SELECT {ItemId} FROM {CheckersTable} WHERE {Id}=1));
-    INSERT INTO {UserItemTable}({UserId},{ItemId}) VALUES (@user_id,(SELECT {ItemId} FROM {PictureTable} WHERE {Id}=1));
+    DECLARE {UserIdVar} INT, @support_id INT
+    INSERT INTO {Schema}.{UserTable}({Nick},{Login},{Password},{Email},{UserTypeId})
+    VALUES ({NickVar},{LoginVar},{PasswordVar},{EmailVar},(SELECT {Id} FROM {UserTypeTable} WHERE {UserTypeName}={UserTypeNameVar}));
+    SET {UserIdVar} = @@IDENTITY;
+    IF {UserTypeNameVar}!='{UserType.Support}'
+        BEGIN
+        SET @support_id = (SELECT {Id} FROM {Schema}.{UserTable} WHERE {UserTypeId}=(SELECT {Id} FROM {UserTypeTable} WHERE {UserTypeName}='{UserType.Support}'));
+        EXEC {CreateFriendship} {UserIdVar}, @support_id
+        END
+    INSERT INTO {UserItemTable}({UserId},{ItemId}) VALUES ({UserIdVar},(SELECT {ItemId} FROM {AnimationTable} WHERE {Id}=1));
+    INSERT INTO {UserItemTable}({UserId},{ItemId}) VALUES ({UserIdVar},(SELECT {ItemId} FROM {CheckersTable} WHERE {Id}=1));
+    INSERT INTO {UserItemTable}({UserId},{ItemId}) VALUES ({UserIdVar},(SELECT {ItemId} FROM {PictureTable} WHERE {Id}=1));
+    RETURN {UserIdVar}
 END
 
 GO
 CREATE PROCEDURE {SelectUserProc} {IdVar} INT
 AS
 BEGIN
-    SELECT {Id},{Nick},{PictureId},{CheckersId},{AnimationId},{SocialCredit},{LastActivity}
+    SELECT {Id},{Nick},{PictureId},{CheckersId},{AnimationId},{SocialCredit},{LastActivity},{UserTypeId}
     FROM {Schema}.{UserTable}
     WHERE {Id}={IdVar}
 END
@@ -271,8 +315,13 @@ GO
 CREATE PROCEDURE {AuthenticateProc} {LoginVar} {StringType}, {PasswordVar} {StringType}
 AS
 BEGIN
+    DECLARE {IdVar} INT
     EXEC {UpdateUserActivityProc} {LoginVar},{PasswordVar};
-    SELECT {Id} FROM {Schema}.{UserTable} WHERE {UserAuthCondition};
+    SET {IdVar} = (SELECT {Id} FROM {Schema}.{UserTable} WHERE {UserAuthCondition});
+    IF {IdVar} IS NOT NULL
+        RETURN {IdVar};
+    ELSE
+        RETURN {InvalidId};
 END
 
 
@@ -295,6 +344,15 @@ BEGIN
 END
 
 GO
+CREATE PROCEDURE {CreateResourceProc} {ResourceExtensionVar} {StringType}, {ResourceBytesVar} {BinaryType}
+AS
+BEGIN
+    INSERT INTO {Schema}.{ResourceTable}({ResourceExtension},{ResourceBytes}) 
+    VALUES ({ResourceExtensionVar},{ResourceBytesVar});
+    RETURN @@IDENTITY;
+END
+
+GO
 CREATE PROCEDURE {CreateItemProc}
 {ItemTypeVar} {StringType},
 {ItemNameVar} {StringType},
@@ -303,15 +361,15 @@ CREATE PROCEDURE {CreateItemProc}
 {PriceVar} INT
 AS
 BEGIN
-    DECLARE @ext {StringType}, @id INT, @sql {StringType}, @bytes VARBINARY(MAX), @type_id INT
+    DECLARE {ResourceExtensionVar} {StringType}, {IdVar} INT, @sql {StringType}, {ResourceBytesVar} {BinaryType}, @type_id INT
     SET @type_id = (SELECT {Id} FROM {ItemTypeTable} WHERE {ItemTypeName}={ItemTypeVar});
-    SET @ext = (SELECT RIGHT({PathVar}, CHARINDEX('.', REVERSE({PathVar}) + '.') - 1));
-    SET @sql = FORMATMESSAGE ( 'SELECT @bytes = BulkColumn FROM OPENROWSET ( BULK ''%s'', SINGLE_BLOB ) AS x;', @path );
-    EXEC sp_executesql @sql, N'@bytes VARBINARY(MAX) OUT', @bytes = @bytes OUT;
-    INSERT INTO {Schema}.{ResourceTable}({ResourceExtension},{ResourceBytes}) VALUES (@ext,@bytes);
-    SET @id=@@IDENTITY;
+    SET {ResourceExtensionVar} = (SELECT RIGHT({PathVar}, CHARINDEX('.', REVERSE({PathVar}) + '.') - 1));
+    SET @sql = FORMATMESSAGE ( 'SELECT {ResourceBytesVar} = BulkColumn FROM OPENROWSET ( BULK ''%s'', SINGLE_BLOB ) AS x;', @path );
+    EXEC sp_executesql @sql, N'{ResourceBytesVar} {BinaryType} OUT', {ResourceBytesVar} = {ResourceBytesVar} OUT;
+    EXEC  {IdVar}={CreateResourceProc} {ResourceExtensionVar} ,{ResourceBytesVar}
     INSERT INTO {Schema}.{ItemTable}({ItemName},{ItemTypeId},{Detail},{ResourceId},{Price})
-    VALUES ({ItemNameVar},@type_id,{DetailVar},@id,{PriceVar});
+    VALUES ({ItemNameVar},@type_id,{DetailVar},{IdVar},{PriceVar});
+    RETURN @@IDENTITY;
 END
 
 GO
@@ -319,16 +377,21 @@ CREATE PROCEDURE {CreatePostProc} {LoginVar} {StringType}, {PasswordVar} {String
 {PostTitleVar} {StringType}, {PostContentVar} {StringType},{PostPictureIdVar} INT
 AS
 BEGIN
-    DECLARE @id INT, @user_id INT
-    CREATE TABLE #Temp(id INT);
-    INSERT INTO #Temp EXEC {AuthenticateProc} {LoginVar}, {PasswordVar};
-    SET @user_id = (SELECT * FROM #Temp);
-    INSERT INTO {Schema}.{ChatTable}({ChatName}) VALUES (N'Chat ' + {PostTitleVar});
-    SET @id = @@IDENTITY;
-    INSERT INTO {Schema}.{PostTable}({PostContent},{PostTitle},{PostPictureId},{ChatId},{PostAuthorId})
-    VALUES ({PostContentVar},{PostTitleVar},{PostPictureIdVar},@id,@user_id);
-    DROP TABLE #Temp;
-    SELECT @@IDENTITY AS {PostId};
+    DECLARE {IdVar} INT, {UserIdVar} INT, {ChatNameVar} {StringType}
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar};
+    IF {UserIdVar}!={InvalidId}
+        BEGIN
+        SET {ChatNameVar} = N'Chat ' + {PostTitleVar};
+        EXEC {IdVar} = {CreateChatProc} {ChatNameVar}, '{ChatType.Public}';
+        IF {IdVar} IS NOT NULL
+            BEGIN
+            INSERT INTO {Schema}.{PostTable}({PostContent},{PostTitle},{PostPictureId},{ChatId},{PostAuthorId})
+            VALUES ({PostContentVar},{PostTitleVar},{PostPictureIdVar},{IdVar},{UserIdVar});
+            RETURN @@IDENTITY;
+            END
+        END
+    ELSE
+        RETURN {InvalidId};
 END
 
 GO
@@ -337,19 +400,28 @@ CREATE PROCEDURE {CreateArticleProc} {LoginVar} {StringType}, {PasswordVar} {Str
 {ArticleContentVar} {StringType}, {ArticlePictureIdVar} INT
 AS
 BEGIN
-    DECLARE @id INT, @user_id INT, @post {StringType}
+    DECLARE {IdVar} INT, {UserIdVar} INT, @post {StringType}, @user_type_id INT
     SET @post = N'Discussion ' + {ArticleTitleVar};
-    CREATE TABLE #Temp(id INT);
-    INSERT INTO #Temp EXEC {AuthenticateProc} {LoginVar}, {PasswordVar};
-    SET @user_id = (SELECT * FROM #Temp);
-    TRUNCATE TABLE #Temp;
-    EXEC {CreatePostProc} {LoginVar},{PasswordVar},{ArticleTitleVar},@post, {ArticlePictureIdVar};
-    SET @id = @@IDENTITY;
-    INSERT INTO {Schema}.{ArticleTable}({ArticleTitle},{ArticleContent},{ArticleAbstract},{ArticleAuthorId},{ArticlePictureId},{ArticlePostId})
-    VALUES  ({ArticleTitleVar},{ArticleContentVar},{ArticleAbstractVar},@user_id,{ArticlePictureIdVar},@id);
-    DROP TABLE #Temp;
-    SELECT @@IDENTITY AS {ArticleId};
+    EXEC {UserIdVar}={AuthenticateProc} {LoginVar}, {PasswordVar};
+    IF {UserIdVar}!={InvalidId}
+        BEGIN
+        SET @user_type_id = (SELECT {UserTypeId} FROM {Schema}.{UserTable} WHERE {Id}={UserIdVar});
+        IF @user_type_id IN (SELECT {Id} FROM {Schema}.{UserTypeTable} WHERE {UserTypeName} IN ('{UserType.Admin}','{UserType.Editor}'))
+            BEGIN
+            EXEC {IdVar}={CreatePostProc} {LoginVar},{PasswordVar},{ArticleTitleVar},@post, {ArticlePictureIdVar};
+            IF {IdVar}!={InvalidId}
+                BEGIN
+                INSERT INTO {Schema}.{ArticleTable}({ArticleTitle},{ArticleContent},{ArticleAbstract},{ArticleAuthorId},{ArticlePictureId},{ArticlePostId})
+                VALUES  ({ArticleTitleVar},{ArticleContentVar},{ArticleAbstractVar},{UserIdVar},{ArticlePictureIdVar},{IdVar});
+                RETURN @@IDENTITY
+                END
+            END
+        END
+    ELSE
+        RETURN {InvalidId};
 END
+
+GO
 
 
 GO
@@ -396,6 +468,34 @@ BEGIN
 END
 
 GO
+CREATE PROCEDURE {SendMessageProc} {LoginVar} {StringType},{PasswordVar} {StringType},
+{ChatIdVar} INT,{MessageContentVar} {StringType}
+AS
+BEGIN
+    DECLARE {UserIdVar} INT
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar},{PasswordVar};
+    IF {UserIdVar}!={InvalidId}
+        IF {ChatIdVar} IN 
+        (SELECT {ChatId} FROM {FriendshipTable} WHERE {User1Id}={UserIdVar} OR {User2Id}={UserIdVar}) OR 
+        '{ChatType.Public}'=(SELECT {ChatTypeName} FROM {ChatTypeTable} WHERE {Id} = (SELECT {ChatTypeId} FROM {ChatTable} WHERE {Id}={ChatIdVar}))
+            INSERT INTO {Schema}.{MessageTable}({ChatId},{UserId},{MessageContent})
+            VALUES ({ChatIdVar},{UserIdVar},{MessageContentVar}); 
+END
+
+GO
+CREATE PROCEDURE {SelectMessageProc} {LoginVar} {StringType}, {PasswordVar} {StringType}, {ChatIdVar} INT
+AS
+BEGIN
+    DECLARE {UserIdVar} INT
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar},{PasswordVar};
+    IF {UserIdVar}!={InvalidId}
+            SELECT * FROM {Schema}.{MessageTable} WHERE {ChatId}={ChatIdVar};
+END
+
+
+
+--Values
+GO
 INSERT INTO {ItemTypeTable}({ItemTypeName}) 
 VALUES ('{ItemType.Picture}'),
 ('{ItemType.Achievement}'),
@@ -409,6 +509,13 @@ INSERT INTO {UserTypeTable}({UserTypeName}) VALUES
 ('{UserType.Moderator}'),
 ('{UserType.Support}'),
 ('{UserType.Player}')
+
+INSERT INTO {ChatTypeTable}({ChatTypeName}) VALUES ('{ChatType.Public}'),('{ChatType.Private}');
+
+INSERT INTO {FriendshipStateTable}({FriendshipStateName}) VALUES
+('{FriendshipState.Waiting}'),
+('{FriendshipState.Accepted}'),
+('{FriendshipState.Canceled}');
 
 EXEC {CreateItemProc} '{ItemType.Picture}','Picture 1','First Picture detail','{path}\{image}\1.png',100;
 EXEC {CreateItemProc} '{ItemType.Achievement}','Achievement 1','First Achievement detail','{path}\{image}\2.png',100;
@@ -437,11 +544,18 @@ JOIN {ResourceTable} AS R ON R.{Id}=I.{ResourceId}
 
 GO
 Use Checkers
-EXEC {CreateUserProc} 'b','b','b','b';
+EXEC {CreateChatProc} '{CommonChatName}','{ChatType.Public}'
+
+EXEC {CreateUserProc} 'Support','Support','Support','Support','{UserType.Support}';
+EXEC {CreateUserProc} 'Admin','Admin','Admin','Admin','{UserType.Admin}';
+
 INSERT INTO {UserItemTable}({UserId},{ItemId})
 VALUES (
 (SELECT TOP 1 {Id} FROM {UserTable}),
 (SELECT TOP 1 {ItemId} FROM {AchievementTable}));
 
-EXEC {CreateArticleProc} 'b','b','Title','Abstract','Content', 1;
+EXEC {CreateArticleProc} 'Admin','Admin','Title','Abstract','Content', 1;
+EXEC {SendMessageProc} 'Admin', 'Admin', {CommonChatId}, N'Привет всем';
+EXEC {SendMessageProc} 'Admin', 'Admin', {CommonChatId}, N'Удачи и приятной игры';
+EXEC {SendMessageProc} 'Support', 'Support', 2, N'Если что-то не получается, пиши сюда'
 ");
