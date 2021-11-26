@@ -10,7 +10,7 @@ namespace WebService.Controllers;
 
 [ApiController]
 [Route("api/"+WebApiBase.ChatRoute)]
-public class ChatController
+public class ChatController : Controller
 {
     private static readonly IChatRepository Repository = new ChatRepository();
     [HttpGet("{id:int}")]
@@ -22,6 +22,6 @@ public class ChatController
     [HttpPost("{id:int}")]
     public IActionResult SendMessage([FromQuery] Credential credential,[FromRoute] int id,[FromBody] string message)
     {
-        return new OkResult();
+        return Repository.CreateMessage(credential,id,message) ? OkResult : BadRequestResult;
     }
 }

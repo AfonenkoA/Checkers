@@ -19,6 +19,8 @@ public sealed class ChatRepository : MessageRepository, IChatRepository
     public const string ChatName = "[chat_name]";
 
     public const string CreateChatProc = "[SP_CreateChat]";
+    public const string GetChatTypeByNameProc = "[SP_GetChatTypeByName]";
+
     public const string ChatNameVar = "@chat_name";
     public const string ChatIdVar = "@chat_id";
     public const string ChatTypeNameVar = "@chat_type_name";
@@ -26,6 +28,7 @@ public sealed class ChatRepository : MessageRepository, IChatRepository
     public const string CommonChatId = "1";
 
     public const string CommonChatName = "Common chat";
+    
 
     public IEnumerable<Message> GetMessages(Credential credential, int chatId, DateTime from)
     {

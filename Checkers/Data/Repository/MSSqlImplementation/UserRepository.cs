@@ -48,6 +48,11 @@ public sealed class UserRepository : Repository,IUserRepository
     public const string UserTypeNameVar = "@user_type_name";
     public const string User1IdVar = "@user1_id";
     public const string User2IdVar = "@user2_id";
+    public const string UserTypeIdVar = "@user_type_id";
+    public const string AdminTypeIdVar = "@admin_type_id";
+    public const string RequestedTypeIdVar = "@req_type_id";
+    public const string FriendshipStateNameVar = "@friendship_state";
+    public const string AccessVar = "@access";
 
     public const string CreateUserProc = "[SP_CreateUser]";
     public const string SelectUserItemProc = "[SP_SelectUserItem]";
@@ -62,6 +67,12 @@ public sealed class UserRepository : Repository,IUserRepository
     public const string UpdateUserCheckersProc = "[SP_UpdateUserCheckers]";
     public const string UpdateUserActivityProc = "[SP_UpdateUserActivity]";
     public const string CreateFriendship = "[SP_CreateFriendship]";
+    public const string GetUserTypeByNameProc = "[SP_GetUserTypeByName]";
+    public const string CheckAccessProc = "[SP_CheckAccess]";
+    public const string GetFriendshipStateByNameProc = "[SP_GetFriendshipStateByName]";
+
+    public const string ValidAccess = "1";
+    public const string InvalidAccess = "-1";
 
     public const string UserAuthCondition = $"{Login}={LoginVar} AND {Password}={PasswordVar}";
 

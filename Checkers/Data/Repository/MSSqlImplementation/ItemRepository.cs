@@ -33,11 +33,17 @@ public sealed class ItemRepository : Repository, IItemRepository
     public const string ItemNameVar = "@item_name";
     public const string PriceVar = "@price";
     public const string PathVar = "@path";
+    public const string ItemTypeNameVar = "@item_type_name";
+    public const string ItemTypeIdVar = "@item_type_id";
 
     public const string SelectItemsProc = "[SP_SelectItems]";
     public const string SelectItemProc = "[SP_SelectItem]";
     public const string SelectItemPictureProc = "[SP_SelectItemPicture]";
     public const string CreateItemProc = "[SP_CreateItem]";
+    public const string SetItemsProc = "[SP_SetItems]";
+    public const string GetItemTypeByNameProc = "[SP_GetItemTypeByName]"; 
+
+    public const string ItemTypeCursor = "ItemTypeCursor";
 
     public static readonly ItemRepository Instance = new();
     public IEnumerable<ItemHash> GetItems()
