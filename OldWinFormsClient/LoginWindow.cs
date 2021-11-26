@@ -18,7 +18,7 @@ public sealed partial class LoginWindow : Form
         try
         {
             UserAuthorizationResponse response = await Client?.AuthorizeAsync()!;
-            if (response.Status == ResponseStatus.FAILED)
+            if (response.Status == ResponseStatus.Failed)
                 throw new Exception("AuthorizationException, invalid login or password");
             Hide();
             new MainMenuWindow(this).Show();
@@ -30,4 +30,8 @@ public sealed partial class LoginWindow : Form
 
     }
 
+    private void LoginWindow_Load(object sender, EventArgs e)
+    {
+
+    }
 }

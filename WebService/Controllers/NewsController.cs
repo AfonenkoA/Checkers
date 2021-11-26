@@ -10,12 +10,17 @@ namespace WebService.Controllers;
 [Route("api/"+WebApiBase.NewsRoute)]
 public class NewsController : Controller
 {
-    private static readonly INewsRepository Repository = new NewsRepository();
+    public NewsController(RepositoryFactory factory)
+    {
+        _repository = factory.GetRepository<NewsRepository>();
+    }
+
+    private readonly INewsRepository _repository;
     [HttpPost]
     public IActionResult CreateArticle([FromQuery] Credential credential, [FromBody] ArticleCreationData article)
     {
 
-        return Repository.CreateArticle(credential,article) ? OkResult : BadRequestResult;
+        return _repository.CreateArticle(credential,article) ? OkResult : BadRequestResult;
     }
 
     [HttpPost("{id:int}")]
@@ -33,12 +38,12 @@ public class NewsController : Controller
     [HttpGet("{id:int}")]
     public JsonResult GetArticle([FromRoute] int id)
     {
-        return new JsonResult(Repository.GetArticle(id));
+        return new JsonResult(_repository.GetArticle(id));
     }
 
     [HttpGet]
     public JsonResult GetNews()
     {
-        return new JsonResult(Repository.GetNews());
+        return new JsonResult(_repository.GetNews());
     }
 }

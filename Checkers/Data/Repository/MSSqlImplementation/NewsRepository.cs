@@ -8,12 +8,12 @@ using static Checkers.Data.Repository.MSSqlImplementation.UserRepository;
 
 namespace Checkers.Data.Repository.MSSqlImplementation;
 
-public sealed class NewsRepository: MessageRepository, INewsRepository
+public sealed class NewsRepository: Repository, INewsRepository
 {
     public const string ArticleTable = "[Article]";
     public const string ArticleAuthorId = "[article_author_id]";
     public const string ArticleTitle = "[article_title]";
-    public const string ArticleAbstract = "[abstract]";
+    public const string ArticleAbstract = "[article_abstract]";
     public const string ArticleContent = "[article_content]";
     public const string ArticleCreated = "[article_created]";
     public const string ArticlePictureId = "[article_picture_id]";
@@ -24,12 +24,19 @@ public sealed class NewsRepository: MessageRepository, INewsRepository
     public const string SelectArticleInfoProc = "[SP_SelectArticleInfo]";
     public const string SelectArticleProc = "[SP_SelectArticleProc]";
     public const string SelectNewsProc = "[SP_SelectNews]";
+    public const string UpdateArticleTitleProc = "[SP_UpdateArticleTitle]";
+    public const string UpdateArticleContentProc = "[SP_UpdateArticleContent]";
+    public const string UpdateArticleAbstractProc = "[SP_UpdateArticleAbstract]";
+    public const string UpdateArticlePictureIdProc = "[SP_UpdateArticlePictureId]";
+    public const string UpdateArticlePostIdProc = "[SP_UpdateArticlePostId]";
 
     public const string ArticleTitleVar = "@article_title";
     public const string ArticleAbstractVar = "@abstract";
     public const string ArticlePictureIdVar = "@article_picture_id";
     public const string ArticleContentVar = "@article_content";
+    public const string ArticlePostIdVar = "@article_post_id";
 
+    public NewsRepository(SqlConnection connection) : base(connection) { }
 
     public bool CreateArticle(Credential credential, ArticleCreationData article)
     {
@@ -62,12 +69,12 @@ public sealed class NewsRepository: MessageRepository, INewsRepository
         throw new NotImplementedException();
     }
 
-    public bool UpdatePicture(Credential credential, int id, int pictureId)
+    public bool UpdatePictureId(Credential credential, int id, int pictureId)
     {
         throw new NotImplementedException();
     }
 
-    public bool UpdatePost(Credential credential, int id, int postId)
+    public bool UpdatePostId(Credential credential, int id, int postId)
     {
         throw new NotImplementedException();
     }

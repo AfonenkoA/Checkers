@@ -11,24 +11,29 @@ namespace WebService.Controllers;
 [ApiController]
 public class ItemController : Controller
 {
-    private static readonly IItemRepository Repository = ItemRepository.Instance;
+    public ItemController(RepositoryFactory factory)
+    {
+        _repository = factory.GetRepository<ItemRepository>();
+    }
+
+    private readonly IItemRepository _repository;
     [HttpGet]
     public JsonResult GetItems()
     {
-        return new JsonResult(Repository.GetItems());
+        return new JsonResult(_repository.GetItems());
     }
 
     [HttpGet("{id:int}")]
     public IActionResult GetItemInfo(int id)
     {
-        var result = Repository.GetItemInfo(id);
+        var result = _repository.GetItemInfo(id);
         return result.IsValid ? new JsonResult(result) : BadRequestResult;
     }
 
     [HttpGet("{id:int}/img")]
     public IActionResult GetItemImage(int id)
     {
-        var (pic, ext) = Repository.GetItemImage(id);
+        var (pic, ext) = _repository.GetItemImage(id);
         return pic.Any() ? new FileStreamResult(new MemoryStream(pic), $"image/{ext}") : BadRequestResult;
     }
 }

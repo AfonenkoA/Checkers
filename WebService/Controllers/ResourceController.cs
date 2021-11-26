@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Linq;
-using System.Resources;
 using Checkers.Api.WebImplementation;
 using Checkers.Data.Entity;
 using Checkers.Data.Repository.Interface;
@@ -13,17 +12,21 @@ namespace WebService.Controllers;
 [Route("api/"+WebApiBase.ResourceRoute)]
 public class ResourceController : Controller
 {
-    private static readonly IResourceRepository Repository = new ResourceRepository();
+    public ResourceController(RepositoryFactory factory)
+    {
+        _repository = factory.GetRepository<ResourceRepository>();
+    }
+    private readonly IResourceRepository _repository;
     [HttpPost]
     public IActionResult UploadFile([FromQuery] Credential credential,[FromBody] byte[] picture, [FromQuery] string ext)
     {
-        return new JsonResult(Repository.CreateFile(credential,picture,ext));
+        return new JsonResult(_repository.CreateFile(credential,picture,ext));
     }
 
     [HttpGet("{id:int}")]
     public IActionResult GetFile([FromRoute] int id)
     {
-        var (pic, ext) = Repository.GetFile(id);
+        var (pic, ext) = _repository.GetFile(id);
         return pic.Any() ? new FileStreamResult(new MemoryStream(pic), $"image/{ext}") : BadRequestResult;
     }
 }

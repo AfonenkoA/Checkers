@@ -8,7 +8,7 @@ using static Checkers.Data.Repository.MSSqlImplementation.UserRepository;
 
 namespace Checkers.Data.Repository.MSSqlImplementation;
 
-public class ForumRepository : MessageRepository, IForumRepository
+public sealed class ForumRepository : Repository, IForumRepository
 {
     public const string PostTable = "[Post]";
 
@@ -22,11 +22,18 @@ public class ForumRepository : MessageRepository, IForumRepository
     public const string PostTitleVar = "@post_title";
     public const string PostContentVar = "@post_content";
     public const string PostPictureIdVar = "@post_picture_id";
+    public const string PostIdVar = "@post_id";
 
     public const string CreatePostProc = "[SP_CreatePost]";
     public const string SelectPostInfoProc = "[SP_SelectPostInfo]";
     public const string SelectPostProc = "[SP_SelectPost]";
     public const string SelectPostsProc = "[SP_SelectPosts]";
+    public const string CommentPostProc = "[SP_CommentPost]";
+    public const string UpdatePostTitleProc = "[SP_UpdatePostTitle]";
+    public const string UpdatePostContentProc = "[SP_UpdatePostContent]";
+    public const string UpdatePostPictureIdProc = "[SP_UpdatePostPictureId]";
+
+    public ForumRepository(SqlConnection connection) : base(connection) { }
 
     public bool CreatePost(Credential credential, PostCreationData post)
     {
@@ -53,7 +60,7 @@ public class ForumRepository : MessageRepository, IForumRepository
         throw new NotImplementedException();
     }
 
-    public bool UpdatePicture(Credential credential, int postId, int imageId)
+    public bool UpdatePictureId(Credential credential, int postId, int imageId)
     {
         throw new NotImplementedException();
     }

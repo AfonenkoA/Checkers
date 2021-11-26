@@ -9,7 +9,7 @@ public class Request
 
     public class GameGetRequest : Request
     {
-        public int GameID { get; set; }
+        public int GameId { get; set; }
     }
 
     public class UserRequest : Request
@@ -92,9 +92,9 @@ public class Request
 
     public sealed class UserItemsUpdateRequest : SequreRequest
     {
-        public int? NewItemID { get; set; }
-        public int? NewSelectedCheckersID { get; set; }
-        public int? NewSelectedAnimationsID { get; set; }
+        public int? NewItemId { get; set; }
+        public int? NewSelectedCheckersId { get; set; }
+        public int? NewSelectedAnimationsId { get; set; }
         public UserItemsUpdateRequest()
         { }
         public UserItemsUpdateRequest(SequreRequest request)
@@ -139,25 +139,25 @@ public class Request
 
     public enum ResponseStatus
     {
-        OK,
-        FAILED
+        Ok,
+        Failed
     }
 
     public class BasicResponse
     {
-        public static readonly BasicResponse Failed = new() { Status = ResponseStatus.FAILED };
+        public static readonly BasicResponse Failed = new() { Status = ResponseStatus.Failed };
         public ResponseStatus Status { get; set; }
     }
 
 
     public sealed class UserAuthorizationResponse : BasicResponse
     {
-        public new static readonly UserAuthorizationResponse Failed = new() { Status = ResponseStatus.FAILED };
+        public new static readonly UserAuthorizationResponse Failed = new() { Status = ResponseStatus.Failed };
     }
 
     public sealed class UserGamesGetResponse : BasicResponse
     {
-        public new static readonly UserGamesGetResponse Failed = new() { Status = ResponseStatus.FAILED };
+        public new static readonly UserGamesGetResponse Failed = new() { Status = ResponseStatus.Failed };
         public int[]? Games { get; set; }
     }
 
@@ -165,7 +165,7 @@ public class Request
     {
         public string Nick { get; set; }
         public int Raiting { get; set; }
-        public int PictureID { get; set; }
+        public int PictureId { get; set; }
         public DateTime LastActivity { get; set; }
     }
 
@@ -173,39 +173,39 @@ public class Request
     {
         public int ActionNumber { get; set; }
         public TimeSpan ActionTime { get; set; }
-        public int ActorID { get; set; }
+        public int ActorId { get; set; }
         public string ActionDescription { get; set; }
     }
 
     public sealed class UserGetResponse : BasicResponse
     {
-        public new static readonly UserGetResponse Failed = new() { Status = ResponseStatus.FAILED };
+        public new static readonly UserGetResponse Failed = new() { Status = ResponseStatus.Failed };
         public UserInfo Info { get; set; }
     }
 
     public sealed class UserDeleteResponse : BasicResponse
     {
-        public new static readonly UserDeleteResponse Failed = new() { Status = ResponseStatus.FAILED };
+        public new static readonly UserDeleteResponse Failed = new() { Status = ResponseStatus.Failed };
     }
 
     public sealed class UserAchievementsGetResponse : BasicResponse
     {
-        public new static readonly UserAchievementsGetResponse Failed = new() { Status = ResponseStatus.FAILED };
+        public new static readonly UserAchievementsGetResponse Failed = new() { Status = ResponseStatus.Failed };
         public int[]? Achievements { get; set; }
     }
 
     public sealed class GameGetRespose : BasicResponse
     {
-        public new static readonly GameGetRespose Failed = new() { Status = ResponseStatus.FAILED };
-        public int ID { get; set; }
-        public int Player1ID { get; set; }
-        public int Player2ID { get; set; }
-        public int Player1CheckersID { get; set; }
-        public int Player2CheckersID { get; set; }
-        public int Player1AnimationsID { get; set; }
-        public int Player2AnimationsID { get; set; }
+        public new static readonly GameGetRespose Failed = new() { Status = ResponseStatus.Failed };
+        public int Id { get; set; }
+        public int Player1Id { get; set; }
+        public int Player2Id { get; set; }
+        public int Player1CheckersId { get; set; }
+        public int Player2CheckersId { get; set; }
+        public int Player1AnimationsId { get; set; }
+        public int Player2AnimationsId { get; set; }
         public DateTime StartTime { get; set; }
-        public int WinnerID { get; set; }
+        public int WinnerId { get; set; }
         public int Player1RaitingChange { get; set; }
         public int Player2RaitingChange { get; set; }
         public GameAction[]? Actions { get; set; }
@@ -213,22 +213,22 @@ public class Request
 
     public sealed class UserInfoResponse : BasicResponse
     {
-        public new static readonly UserInfoResponse Failed = new() { Status = ResponseStatus.FAILED };
+        public new static readonly UserInfoResponse Failed = new() { Status = ResponseStatus.Failed };
         public UserInfo Info { get; set; }
         public string? Email { get; set; }
     }
 
     public sealed class UserItemsResponse : BasicResponse
     {
-        public new static readonly UserItemsResponse Failed = new() { Status = ResponseStatus.FAILED };
+        public new static readonly UserItemsResponse Failed = new() { Status = ResponseStatus.Failed };
         public int[]? Items { get; set; }
-        public int SelectedCheckersID { get; set; }
-        public int SelectedAnimationsID { get; set; }
+        public int SelectedCheckersId { get; set; }
+        public int SelectedAnimationsId { get; set; }
     }
 
     public sealed class UserFriendsResponse : BasicResponse
     {
-        public new static readonly UserFriendsResponse Failed = new() { Status = ResponseStatus.FAILED };
+        public new static readonly UserFriendsResponse Failed = new() { Status = ResponseStatus.Failed };
         public string[]? Friends { get; set; }
     }
 }
@@ -314,11 +314,11 @@ namespace InGame
 
     public class EmoteEventArgs : EventArgs
     {
-        public int EmotionID { get; set; }
+        public int EmotionId { get; set; }
         public EmoteEventArgs() : base(EventType.Emote) { }
         public EmoteEventArgs(EmoteActionArgs action) : this()
         {
-            EmotionID = action.EmotionID;
+            EmotionId = action.EmotionId;
         }
     }
     public enum ActionType
@@ -364,7 +364,7 @@ namespace InGame
     }
     public sealed class EmoteActionArgs : ActionArgs
     {
-        public int EmotionID { get; set; }
+        public int EmotionId { get; set; }
         public EmoteActionArgs() : base(ActionType.Emote) { }
     }
     public sealed class SurrenderActionArgs : ActionArgs

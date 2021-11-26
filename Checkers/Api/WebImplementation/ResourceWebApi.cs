@@ -7,7 +7,7 @@ using static System.Text.Json.JsonSerializer;
 
 namespace Checkers.Api.WebImplementation;
 
-public class AsyncResourceWebApi : WebApiBase, IAsyncResourceService
+public sealed class AsyncResourceWebApi : WebApiBase, IAsyncResourceService
 {
     //не факт, что так
     public Task<(bool, int)> TryUploadPicture(Credential credential, byte[] picture, string ext) =>

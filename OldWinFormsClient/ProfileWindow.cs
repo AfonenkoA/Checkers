@@ -17,7 +17,7 @@ internal sealed partial class ProfileWindow : Form
         NickLabel.Text = _info.Nick;
         RaitingLabel.Text = _info.Raiting.ToString();
         LastActivityLabel.Text = _info.LastActivity.ToString(CultureInfo.InvariantCulture);
-        if (Manager.GetObject($"ProfilePic{_info.PictureID}") is Image image)
+        if (Manager.GetObject($"ProfilePic{_info.PictureId}") is Image image)
             ProfilePictureBox.Image = image;
     }
 

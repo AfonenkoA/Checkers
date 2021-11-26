@@ -9,8 +9,8 @@ public interface INewsRepository
     bool UpdateTitle(Credential credential, int id, string title);
     bool UpdateAbstract(Credential credential, int id, string @abstract);
     bool UpdateContent(Credential credential, int id, string content);
-    bool UpdatePicture(Credential credential, int id, int pictureId);
-    bool UpdatePost(Credential credential, int id, int postId);
+    bool UpdatePictureId(Credential credential, int id, int pictureId);
+    bool UpdatePostId(Credential credential, int id, int postId);
     bool DeleteArticle(Credential credential, int articleId);
     Article GetArticle(int articleId);
     IEnumerable<ArticleInfo> GetNews();

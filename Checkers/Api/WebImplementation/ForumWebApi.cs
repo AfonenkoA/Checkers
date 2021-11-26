@@ -5,7 +5,7 @@ using Checkers.Data.Entity;
 
 namespace Checkers.Api.WebImplementation;
 
-public class ForumWebApi : WebApiBase, IAsyncForumApi
+public sealed class ForumWebApi : WebApiBase, IAsyncForumApi
 {
     public Task<bool> CreatePost(Credential credential, PostCreationData post)
     {

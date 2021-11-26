@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Net.Http;
 using Checkers.Data.Entity;
-using static System.Text.Json.JsonSerializer;
 
 namespace Checkers.Api.WebImplementation;
-
-
 
 public class WebApiBase
 {
@@ -19,9 +16,9 @@ public class WebApiBase
     public const string ResourceRoute = "res";
     public const string GameRoute = "game";
 
-    protected static string Query(Credential c) => $"?credential={Serialize(c)}";
-    protected static string Query(ApiAction action) => $"&action={action}";
-    protected static string Query(object val) => $"&value={val}";
+    protected static string Query(Credential c) => $"?login={c.Login}&password={c.Password}";
+    private static string Query(ApiAction action) => $"&action={action}";
+    private static string Query(object val) => $"&value={val}";
 
     protected static string Query(Credential c, int id) => Query(c) + Query(id);
     protected static string Query(ApiAction action, object val) => Query(action) + Query(val);

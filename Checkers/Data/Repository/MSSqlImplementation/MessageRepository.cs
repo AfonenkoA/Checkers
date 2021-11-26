@@ -1,6 +1,6 @@
 ﻿namespace Checkers.Data.Repository.MSSqlImplementation;
 
-public class MessageRepository : Repository
+public static class MessageRepository
 {
     public const string MessageTable = "[Message]";
     public const string MessageContent = "[message_content]";

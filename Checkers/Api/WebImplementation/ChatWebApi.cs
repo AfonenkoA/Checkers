@@ -6,7 +6,7 @@ using Checkers.Data.Entity;
 
 namespace Checkers.Api.WebImplementation;
 
-public class ChatWebApi : WebApiBase, IAsyncChatApi
+public sealed class ChatWebApi : WebApiBase, IAsyncChatApi
 {
     public Task<(bool, IEnumerable<Message>)> TryGetMessages(Credential credential,int chatId, DateTime from)
     {

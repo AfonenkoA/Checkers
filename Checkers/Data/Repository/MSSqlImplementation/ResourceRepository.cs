@@ -6,13 +6,14 @@ using Microsoft.Data.SqlClient;
 
 namespace Checkers.Data.Repository.MSSqlImplementation;
 
-public class ResourceRepository : Repository, IResourceRepository
+public sealed class ResourceRepository : Repository, IResourceRepository
 {
     public const string ResourceTable = "[ResourceTable]";
 
     public const string ResourceBytes = "[resource_bytes]";
     public const string ResourceId = "[resource_id]";
     public const string ResourceExtension = "[resource_extension]";
+    
 
     public const string ResourceExtensionVar = "@resource_extension";
     public const string ResourceBytesVar = "@resource_bytes";
@@ -21,11 +22,11 @@ public class ResourceRepository : Repository, IResourceRepository
     public const string CreateResourceProc= "[SP_CreateResource]";
     public const string SelectResourceProc = "[SP_SelectResource]";
 
+    public ResourceRepository(SqlConnection connection) : base(connection) { }
 
     public int CreateFile(Credential credential, byte[] picture, string ext)
     {
-        using var command = new SqlCommand(CreateResourceProc, Connection)
-            {CommandType = CommandType.StoredProcedure};
+        using var command = CreateProcedure(CreateResourceProc);
         
             command.Parameters.AddRange(new []
             {
@@ -38,8 +39,7 @@ public class ResourceRepository : Repository, IResourceRepository
 
     public (byte[], string) GetFile(int id)
     {
-        using var command = new SqlCommand(SelectResourceProc, Connection)
-            { CommandType = CommandType.StoredProcedure };
+        using var command = CreateProcedure(SelectResourceProc);
 
         command.Parameters.Add(new SqlParameter { ParameterName = ResourceExtensionVar, SqlDbType = SqlDbType.Int, Value = id });
 

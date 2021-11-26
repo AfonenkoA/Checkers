@@ -10,17 +10,16 @@ namespace WebService.Controllers;
 [Route("api/" + WebApiBase.ForumRoute)]
 public class ForumController : Controller
 {
-    private static readonly IForumRepository Repository = new ForumRepository();
+    public ForumController(RepositoryFactory factory)
+    {
+        _repository = factory.GetRepository<ForumRepository>();
+    }
+
+    private readonly IForumRepository _repository;
     [HttpPost]
     public IActionResult CreatePost([FromQuery] Credential credential, [FromBody] PostCreationData post)
     {
-        return Repository.CreatePost(credential, post) ? OkResult : BadRequestResult;
-    }
-
-    [HttpPost("{id:int}")]
-    public IActionResult UpdatePost([FromQuery] Credential credential, [FromBody] PostCreationData post)
-    {
-        return BadRequestResult;
+        return _repository.CreatePost(credential, post) ? OkResult : BadRequestResult;
     }
 
     [HttpDelete("{id:int}")]
@@ -32,18 +31,18 @@ public class ForumController : Controller
     [HttpGet("{id:int}")]
     public JsonResult GetPost(int id)
     {
-        return new JsonResult(Repository.GetPost(id));
+        return new JsonResult(_repository.GetPost(id));
     }
 
     [HttpPost("{id:int}")]
-    public IActionResult CommentPost([FromRoute]int postId,[FromBody] string comment)
+    public IActionResult CommentPost([FromQuery]Credential credential,[FromRoute]int postId,[FromBody] string comment)
     {
-        return BadRequestResult;
+        return _repository.CommentPost(credential,postId,comment) ? OkResult : BadRequestResult;
     }
 
 
     public JsonResult GetPosts()
     {
-        return new JsonResult(Repository.GetPosts());
+        return new JsonResult(_repository.GetPosts());
     }
 }

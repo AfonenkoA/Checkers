@@ -4,32 +4,35 @@ using System.Text.Json;
 using Checkers.Data.Old;
 using Checkers.Transmission;
 using Microsoft.AspNetCore.Mvc;
-using static System.Text.Json.JsonSerializer;
-using User = Checkers.Data.Old.User;
 
-namespace WebService.Controllers;
+namespace WebService.Controllers.Old;
 
 [Route("api/user")]
 [ApiController]
-public class OldUserController : ControllerBase
+public class UserController : ControllerBase
 {
-    private static readonly GameDatabase database = new();
+    public UserController(DatabaseFactory factory)
+    {
+        database = factory.Database;
+    }
+
+    private readonly GameDatabase database;
 
     [HttpGet("{login}")]
     public string SimpleUserGet([FromRoute] string login)
     {
         var user = database.FindUser(login);
         if (user == null)
-            return Serialize(BasicResponse.Failed);
-        return Serialize(
-            new UserGetResponse()
+            return JsonSerializer.Serialize(BasicResponse.Failed);
+        return JsonSerializer.Serialize(
+            new UserGetResponse
             {
-                Status = ResponseStatus.OK,
-                Info = new UserInfo()
+                Status = ResponseStatus.Ok,
+                Info = new UserInfo
                 {
                     Nick = user.Nick,
                     Raiting = user.Rating,
-                    PictureID = user.PictureId,
+                    PictureId = user.PictureId,
                     LastActivity = user.LastActivity
                 }
             });
@@ -42,41 +45,41 @@ public class OldUserController : ControllerBase
     {
         User user = database.FindUser(login, password);
         if (user == null)
-            return Serialize(BasicResponse.Failed);
+            return JsonSerializer.Serialize(BasicResponse.Failed);
         return action switch
         {
-            "info" => Serialize(
-                new UserInfoResponse()
+            "info" => JsonSerializer.Serialize(
+                new UserInfoResponse
                 {
-                    Status = ResponseStatus.OK,
-                    Info = new UserInfo()
+                    Status = ResponseStatus.Ok,
+                    Info = new UserInfo
                     {
                         Nick = login,
                         LastActivity = DateTime.Now,
-                        PictureID = 1,
+                        PictureId = 1,
                         Raiting = 1000
                     },
                     Email = login + "@example.com",
                 }),
-            "authorize" => Serialize(new UserAuthorizationResponse() { Status = ResponseStatus.OK }),
-            _ => Serialize(BasicResponse.Failed),
+            "authorize" => JsonSerializer.Serialize(new UserAuthorizationResponse { Status = ResponseStatus.Ok }),
+            _ => JsonSerializer.Serialize(BasicResponse.Failed),
         };
     }
 
     [HttpPost]
     public string SequreUserPost([FromBody] JsonElement json)
     {
-        UserUpdateRequest request = Deserialize<UserUpdateRequest>(json.ToString());
-        return Serialize(
-            new UserInfoResponse()
+        UserUpdateRequest request = JsonSerializer.Deserialize<UserUpdateRequest>(json.ToString());
+        return JsonSerializer.Serialize(
+            new UserInfoResponse
             {
-                Status = ResponseStatus.OK,
+                Status = ResponseStatus.Ok,
                 Email = request.Login + "@example.com",
-                Info = new UserInfo()
+                Info = new UserInfo
                 {
                     Nick = request.Login,
                     LastActivity = DateTime.Now,
-                    PictureID = 1,
+                    PictureId = 1,
                     Raiting = 1000
                 }
             });
@@ -85,7 +88,7 @@ public class OldUserController : ControllerBase
     [HttpDelete]
     public string Delete([FromQuery] string login, [FromQuery] string password)
     {
-        return Serialize(new UserDeleteResponse() { Status = ResponseStatus.OK });
+        return JsonSerializer.Serialize(new UserDeleteResponse { Status = ResponseStatus.Ok });
     }
 
     [HttpGet("{login}/items")]
@@ -93,17 +96,17 @@ public class OldUserController : ControllerBase
     {
         User user = database.FindUser(login, password);
         if (user == null)
-            return Serialize(BasicResponse.Failed);
+            return JsonSerializer.Serialize(BasicResponse.Failed);
 
         var items = from item in database.Items
             where user.Id == item.UserId
             select item.ItemId;
 
-        return Serialize(new UserItemsResponse()
+        return JsonSerializer.Serialize(new UserItemsResponse
         {
-            Status = ResponseStatus.OK,
-            SelectedAnimationsID = 1,
-            SelectedCheckersID = 1,
+            Status = ResponseStatus.Ok,
+            SelectedAnimationsId = 1,
+            SelectedCheckersId = 1,
             Items = items.ToArray()
         }); ;
     }
@@ -111,12 +114,12 @@ public class OldUserController : ControllerBase
     [HttpPut("{login}/items")]
     public string SequreUserItemsPut([FromRoute] string login, [FromBody] JsonElement json)
     {
-        UserItemsUpdateRequest request = Deserialize<UserItemsUpdateRequest>(json.ToString());
-        return Serialize(new UserItemsResponse()
+        UserItemsUpdateRequest request = JsonSerializer.Deserialize<UserItemsUpdateRequest>(json.ToString());
+        return JsonSerializer.Serialize(new UserItemsResponse
         {
-            Status = ResponseStatus.OK,
-            SelectedAnimationsID = 1,
-            SelectedCheckersID = 1,
+            Status = ResponseStatus.Ok,
+            SelectedAnimationsId = 1,
+            SelectedCheckersId = 1,
             Items = new int[] { 1, 2, 3 }
         });
     }
@@ -126,13 +129,13 @@ public class OldUserController : ControllerBase
     {
         User user = database.FindUser(login);
         if (user == null)
-            return Serialize(BasicResponse.Failed);
+            return JsonSerializer.Serialize(BasicResponse.Failed);
         var achievements = from a in database.Achievements
             where a.UserId == user.Id
             select a.Id;
-        return Serialize(new UserAchievementsGetResponse()
+        return JsonSerializer.Serialize(new UserAchievementsGetResponse
         {
-            Status = ResponseStatus.OK,
+            Status = ResponseStatus.Ok,
             Achievements = achievements.ToArray()
         });
     }
@@ -142,16 +145,16 @@ public class OldUserController : ControllerBase
     {
         User user = database.FindUser(login, password);
         if (user == null)
-            return Serialize(BasicResponse.Failed);
+            return JsonSerializer.Serialize(BasicResponse.Failed);
 
         var result = from uf in database.Friends
             where uf.UserId == user.Id
             join u in database.Users on uf.FriendId equals u.Id
             select u.Login;
 
-        return Serialize(new UserFriendsResponse()
+        return JsonSerializer.Serialize(new UserFriendsResponse
         {
-            Status = ResponseStatus.OK,
+            Status = ResponseStatus.Ok,
             Friends = result.ToArray()
         });
     }
@@ -159,10 +162,10 @@ public class OldUserController : ControllerBase
     [HttpPut("{login}/friends")]
     public string UserFriendsPut([FromRoute] string login, [FromBody] JsonElement json)
     {
-        UserFriendsUpdateRequest request = Deserialize<UserFriendsUpdateRequest>(json.ToString());
-        return Serialize(new UserFriendsResponse()
+        UserFriendsUpdateRequest request = JsonSerializer.Deserialize<UserFriendsUpdateRequest>(json.ToString());
+        return JsonSerializer.Serialize(new UserFriendsResponse
         {
-            Status = ResponseStatus.OK,
+            Status = ResponseStatus.Ok,
             Friends = new string[] { "biba", "boba" }
         }); ;
     }
@@ -170,9 +173,9 @@ public class OldUserController : ControllerBase
     [HttpGet("{login}/games")]
     public string UserGamesGet([FromRoute] string login)
     {
-        return Serialize(new UserGamesGetResponse()
+        return JsonSerializer.Serialize(new UserGamesGetResponse
         {
-            Status = ResponseStatus.OK,
+            Status = ResponseStatus.Ok,
             Games = new int[] { 1, 2, 3 }
         });
     }

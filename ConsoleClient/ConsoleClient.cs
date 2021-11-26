@@ -32,7 +32,7 @@ internal static class ConsoleClient
 
     private static void TestDatabase()
     {
-        using GameDatabase db = new();
+        using GameDatabase db = new DatabaseFactory("").Database;
         db.Users.Include(u => u.Achievements);
         foreach (User user in db.Users)
             WriteLine(string.Join<Achievement>(" ", user.Achievements.ToArray()));

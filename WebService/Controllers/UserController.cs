@@ -12,7 +12,12 @@ namespace WebService.Controllers;
 [ApiController]
 public class UserController : Controller
 {
-    private static readonly IUserRepository Repository = new UserRepository();
+    public UserController(RepositoryFactory factory)
+    {
+        Repository = factory.GetRepository<UserRepository>();
+    }
+
+    private readonly IUserRepository Repository;
 
     [HttpPost]
     public IActionResult CreateUser([FromBody] UserCreationData user)
@@ -55,65 +60,65 @@ public class UserController : Controller
 
     }
 
-    private static IActionResult SelectAnimation(Credential credential, int animationId)
+    private IActionResult SelectAnimation(Credential credential, int animationId)
     {
         return Repository.SelectAnimation(credential,animationId) ? OkResult : BadRequestResult;
     }
 
-    private static IActionResult SelectCheckers(Credential credential, int checkersId)
+    private IActionResult SelectCheckers(Credential credential, int checkersId)
     {
         return Repository.SelectCheckers(credential,checkersId) ? OkResult : BadRequestResult;
     }
 
     private static IActionResult BuyItem(Credential credential, int itemId)
     {
-        return new OkResult();
+        return BadRequestResult;
     }
 
     //User Account Activities 
-    private static IActionResult Authenticate(Credential user)
+    private IActionResult Authenticate(Credential user)
     {
         return Repository.Authenticate(user) ? OkResult : BadRequestResult;
     }
 
-    private static IActionResult UpdateUserNick(Credential credential, string nick)
+    private IActionResult UpdateUserNick(Credential credential, string nick)
     {
         return Repository.UpdateUserNick(credential,nick) ? OkResult : BadRequestResult;
     }
 
-    private static IActionResult UpdateUserLogin(Credential credential, string login)
+    private IActionResult UpdateUserLogin(Credential credential, string login)
     {
         return Repository.UpdateUserLogin(credential,login) ? OkResult : BadRequestResult;
     }
 
-    private static IActionResult UpdateUserPassword(Credential credential, string password)
+    private IActionResult UpdateUserPassword(Credential credential, string password)
     {
         return Repository.UpdateUserPassword(credential,password) ? OkResult : BadRequestResult;
     }
 
-    private static IActionResult UpdateUserEmail(Credential credential, string email)
+    private IActionResult UpdateUserEmail(Credential credential, string email)
     {
         return Repository.UpdateUserEmail(credential,email) ? OkResult : BadRequestResult;
     }
 
     //Friends
-    private static IActionResult GetUsersByNick(string pattern)
+    private IActionResult GetUsersByNick(string pattern)
     {
         return new JsonResult(Repository.GetUsersByNick($"%{pattern}%"));
     }
 
-    private static IActionResult AddFriend(Credential credential, int userId)
+    private IActionResult AddFriend(Credential credential, int userId)
     {
-        return new OkResult();
+        return Repository.AddFriend(credential,userId) ? OkResult : BadRequestResult;
     }
 
-    private static IActionResult DeleteFriend(Credential credential, int userId)
+    private IActionResult DeleteFriend(Credential credential, int userId)
     {
-        return new OkResult();
+        return BadRequestResult;
     }
 
-    private static IActionResult AcceptFriend(Credential credential, int userId)
+    private IActionResult AcceptFriend(Credential credential, int userId)
     {
-        return new OkResult();
+        return BadRequestResult;
     }
 }

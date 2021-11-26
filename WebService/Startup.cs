@@ -1,3 +1,5 @@
+using Checkers.Data.Old;
+using Checkers.Data.Repository.MSSqlImplementation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -11,14 +13,17 @@ public class Startup
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
+
     }
 
-    public IConfiguration Configuration { get; }
+    private IConfiguration Configuration { get; }
 
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-
+        var config = Configuration.GetSection("DatabaseConfig").Get<DatabaseConfig>();
+        services.AddSingleton(new RepositoryFactory(config.Current));
+        services.AddSingleton(new DatabaseFactory(config.Old));
         services.AddControllers();
     }
 

@@ -5,7 +5,7 @@ using Checkers.Data.Entity;
 
 namespace Checkers.Api.WebImplementation;
 
-public class StatisticsWebApi : WebApiBase, IAsyncStatisticsApi
+public sealed class StatisticsWebApi : WebApiBase, IAsyncStatisticsApi
 {
     public Task<(bool, IDictionary<int, PublicUserData>)> TryGetTopPlayers()
     {

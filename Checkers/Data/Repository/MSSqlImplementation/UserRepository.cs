@@ -67,14 +67,17 @@ public sealed class UserRepository : Repository,IUserRepository
     public const string UpdateUserCheckersProc = "[SP_UpdateUserCheckers]";
     public const string UpdateUserActivityProc = "[SP_UpdateUserActivity]";
     public const string CreateFriendship = "[SP_CreateFriendship]";
-    public const string GetUserTypeByNameProc = "[SP_GetUserTypeByName]";
+    public const string GetUserTypeByTypeNameProc = "[SP_GetUserTypeByName]";
     public const string CheckAccessProc = "[SP_CheckAccess]";
     public const string GetFriendshipStateByNameProc = "[SP_GetFriendshipStateByName]";
+    public const string UserAddItem = "[SP_AddUserItem]";
 
     public const string ValidAccess = "1";
     public const string InvalidAccess = "-1";
 
     public const string UserAuthCondition = $"{Login}={LoginVar} AND {Password}={PasswordVar}";
+
+    public UserRepository(SqlConnection connection) : base(connection) { }
 
     public bool CreateUser(UserCreationData user)
     {
@@ -118,7 +121,7 @@ public sealed class UserRepository : Repository,IUserRepository
         return PublicUserData.Invalid;
     }
 
-    private static IEnumerable<int> GetUserItem(int id,ItemType type)
+    private IEnumerable<int> GetUserItem(int id,ItemType type)
     {
         using var command = CreateProcedure(SelectUserItemProc);
         command.Parameters.AddRange(new []{

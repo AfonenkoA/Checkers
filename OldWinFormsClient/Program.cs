@@ -25,7 +25,7 @@ public sealed class ItemPanel : FlowLayoutPanel
         AutoScroll = false;
         AutoSize = true;
         FlowDirection = FlowDirection.TopDown;
-        Controls.Add(new PictureBox()
+        Controls.Add(new PictureBox
         {
             Height = 100,
             Width = 100,

@@ -52,8 +52,8 @@ public readonly struct Position
 
 public struct Checker
 {
-    public readonly CheckerType type;
-    public readonly Position position;
+    public readonly CheckerType Type;
+    public readonly Position Position;
 }
 
 public sealed class GameClient
@@ -139,12 +139,12 @@ public sealed class GameClient
 
             public void Move(Position from, Position to)
             {
-                Send(JsonSerializer.Serialize(new MoveActionArgs() { From = from, To = to }));
+                Send(JsonSerializer.Serialize(new MoveActionArgs { From = from, To = to }));
             }
 
             public void Emote(int emotionId)
             {
-                Send(JsonSerializer.Serialize(new EmoteActionArgs() { EmotionID = emotionId }));
+                Send(JsonSerializer.Serialize(new EmoteActionArgs { EmotionId = emotionId }));
             }
 
             public void Surrender()
@@ -180,7 +180,7 @@ public sealed class GameClient
             tcp.Connect(IPAddress.Loopback, 5000);
             _writer = new(tcp.GetStream()) { AutoFlush = true };
             Controller = new GameController(_writer);
-            _writer.WriteLine(JsonSerializer.Serialize(new ConnectAction() { Login = _client.Login, Password = _client.Password }));
+            _writer.WriteLine(JsonSerializer.Serialize(new ConnectAction { Login = _client.Login, Password = _client.Password }));
             Task.Run(Listen);
         }
 

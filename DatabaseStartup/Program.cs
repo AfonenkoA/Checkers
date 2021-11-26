@@ -8,6 +8,7 @@ using static Checkers.Data.Repository.MSSqlImplementation.MessageRepository;
 using static Checkers.Data.Repository.MSSqlImplementation.ResourceRepository;
 using static Checkers.Data.Repository.MSSqlImplementation.ForumRepository;
 using static Checkers.Data.Repository.MSSqlImplementation.NewsRepository;
+using static Checkers.Data.Repository.MSSqlImplementation.StatisticsRepository;
 
 const string image = "img";
 var path = Directory.GetCurrentDirectory();
@@ -167,14 +168,14 @@ CREATE TABLE {ArticleTable}
 
 
 GO
-CREATE PROCEDURE {GetItemTypeByNameProc} {ItemTypeNameVar} {StringType}
+CREATE PROCEDURE {GetItemTypeByTypeNameProc} {ItemTypeNameVar} {StringType}
 AS
 BEGIN
     RETURN (SELECT {Id} FROM {Schema}.{ItemTypeTable} WHERE {ItemTypeName}={ItemTypeNameVar})
 END
 
 GO
-CREATE PROCEDURE {GetUserTypeByNameProc} {UserTypeNameVar} {StringType}
+CREATE PROCEDURE {GetUserTypeByTypeNameProc} {UserTypeNameVar} {StringType}
 AS
 BEGIN
     RETURN (SELECT {Id} FROM {Schema}.{UserTypeTable} WHERE {UserTypeName}={UserTypeNameVar})
@@ -200,8 +201,8 @@ AS
 BEGIN
     DECLARE {UserTypeIdVar} INT, {AdminTypeIdVar} INT, {RequestedTypeIdVar} INT
     SET {UserTypeIdVar} = (SELECT {UserTypeId} FROM {Schema}.{UserTable} WHERE {Id}={IdVar});
-    EXEC {AdminTypeIdVar} = {GetUserTypeByNameProc}'{UserType.Admin}';
-    EXEC {RequestedTypeIdVar} = {GetUserTypeByNameProc} {UserTypeNameVar}
+    EXEC {AdminTypeIdVar} = {GetUserTypeByTypeNameProc}'{UserType.Admin}';
+    EXEC {RequestedTypeIdVar} = {GetUserTypeByTypeNameProc} {UserTypeNameVar}
     IF {UserTypeIdVar}={AdminTypeIdVar} OR {UserTypeIdVar}={RequestedTypeIdVar}
         RETURN {ValidAccess}
     ELSE
@@ -221,9 +222,11 @@ CREATE PROCEDURE {CreateChatProc} {ChatNameVar} {StringType}, {ChatTypeNameVar} 
 AS
 BEGIN
     DECLARE {IdVar} INT
+    BEGIN TRANSACTION;  
     EXEC {IdVar} = {GetChatTypeByNameProc} {ChatTypeNameVar};
     INSERT INTO {Schema}.{ChatTable}({ChatName},{ChatTypeId}) 
     VALUES ({ChatNameVar},{IdVar});
+    COMMIT;
     RETURN @@IDENTITY
 END
 
@@ -232,6 +235,7 @@ CREATE PROCEDURE {CreateFriendship} {User1IdVar} INT,{User2IdVar} INT
 AS
 BEGIN
     DECLARE {ChatIdVar} INT, @u1_login {StringType}, @u2_login {StringType}, {ChatNameVar} {StringType}, {IdVar} INT
+    BEGIN TRANSACTION;  
     SET @u1_login = (SELECT {Login} FROM {Schema}.{UserTable} WHERE {Id}={User1IdVar});
     SET @u2_login = (SELECT {Login} FROM {Schema}.{UserTable} WHERE {Id}={User2IdVar});
     SET {ChatNameVar} = N'Chat '+@u1_login+N' to '+ @u2_login;
@@ -239,6 +243,7 @@ BEGIN
     EXEC {IdVar} = {GetFriendshipStateByNameProc} '{FriendshipState.Accepted}';
     INSERT INTO {Schema}.{FriendshipTable}({User1Id},{User2Id},{ChatId},{FriendshipStateId})
     VALUES ({User1IdVar},{User2IdVar},{ChatIdVar},{IdVar});
+    COMMIT;
 END
 
 
@@ -276,6 +281,13 @@ BEGIN
 END
 
 GO
+CREATE PROCEDURE {UserAddItem} {UserIdVar} INT, {ItemIdVar} INT
+AS
+BEGIN
+    INSERT INTO {Schema}.{UserItemTable}({UserId},{ItemId}) VALUES ({UserIdVar},{ItemIdVar}); 
+END
+
+GO
 CREATE PROCEDURE {CreateUserProc}
 {NickVar} {StringType},
 {LoginVar} {StringType},
@@ -285,18 +297,23 @@ CREATE PROCEDURE {CreateUserProc}
 AS
 BEGIN
     DECLARE {UserIdVar} INT, @support_id INT, {IdVar} INT
+    BEGIN TRANSACTION;  
     INSERT INTO {Schema}.{UserTable}({Nick},{Login},{Password},{Email},{UserTypeId})
     VALUES ({NickVar},{LoginVar},{PasswordVar},{EmailVar},(SELECT {Id} FROM {UserTypeTable} WHERE {UserTypeName}={UserTypeNameVar}));
     SET {UserIdVar} = @@IDENTITY;
     IF {UserTypeNameVar}!='{UserType.Support}'
         BEGIN
-        EXEC {IdVar} = {GetUserTypeByNameProc} '{UserType.Support}'
+        EXEC {IdVar} = {GetUserTypeByTypeNameProc} '{UserType.Support}'
         SET @support_id = (SELECT TOP 1 {Id} FROM {Schema}.{UserTable} WHERE {UserTypeId} = {IdVar});
         EXEC {CreateFriendship} {UserIdVar}, @support_id
         END
-    INSERT INTO {UserItemTable}({UserId},{ItemId}) VALUES ({UserIdVar},(SELECT {ItemId} FROM {AnimationTable} WHERE {Id}=1));
-    INSERT INTO {UserItemTable}({UserId},{ItemId}) VALUES ({UserIdVar},(SELECT {ItemId} FROM {CheckersTable} WHERE {Id}=1));
-    INSERT INTO {UserItemTable}({UserId},{ItemId}) VALUES ({UserIdVar},(SELECT {ItemId} FROM {PictureTable} WHERE {Id}=1));
+    SET {IdVar} = (SELECT TOP 1 {ItemId} FROM {AnimationTable});
+    EXEC {UserAddItem} {UserIdVar}, {IdVar};
+    SET {IdVar} = (SELECT TOP 1 {ItemId} FROM {CheckersTable});
+    EXEC {UserAddItem} {UserIdVar}, {IdVar};
+    SET {IdVar} = (SELECT TOP 1 {ItemId} FROM {PictureTable});
+    EXEC {UserAddItem} {UserIdVar}, {IdVar};
+    COMMIT;
     RETURN {UserIdVar}
 END
 
@@ -314,7 +331,7 @@ CREATE PROCEDURE {SelectUserItemProc} {IdVar} INT, {ItemTypeVar} {StringType}
 AS
 BEGIN
     DECLARE {ItemTypeIdVar} INT
-    EXEC {ItemTypeIdVar} = {GetItemTypeByNameProc} {ItemTypeVar}
+    EXEC {ItemTypeIdVar} = {GetItemTypeByTypeNameProc} {ItemTypeVar}
     SELECT I.{Id} FROM {Schema}.{UserItemTable} AS UI 
     JOIN {ItemTable} AS I ON UI.{ItemId}=I.{Id}  WHERE I.{ItemTypeId}={ItemTypeIdVar}; 
 END
@@ -382,7 +399,7 @@ BEGIN
     EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar}
     EXEC {UpdateUserActivityProc} {LoginVar},{PasswordVar};
     IF {IdVar} IN (SELECT {ItemId} FROM {Schema}.{UserItemTable} WHERE {UserId}={UserIdVar})
-        UPDATE {Schema}.{UserTable} SET {AnimationId}={IdVar};
+        UPDATE {Schema}.{UserTable} SET {AnimationId}={IdVar} WHERE {UserAuthCondition};
 END
 
 GO
@@ -393,7 +410,7 @@ BEGIN
     EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar}
     EXEC {UpdateUserActivityProc} {LoginVar},{PasswordVar};
     IF {IdVar} IN (SELECT {ItemId} FROM {Schema}.{UserItemTable} WHERE {UserId}={UserIdVar})
-        UPDATE {Schema}.{UserTable} SET {CheckersId}={IdVar};
+        UPDATE {Schema}.{UserTable} SET {CheckersId}={IdVar} WHERE {UserAuthCondition};
 END
 
 GO
@@ -415,6 +432,7 @@ CREATE PROCEDURE {CreateItemProc}
 AS
 BEGIN
     DECLARE {ResourceExtensionVar} {StringType}, {IdVar} INT, @sql {StringType}, {ResourceBytesVar} {BinaryType}, @type_id INT
+    BEGIN TRANSACTION;  
     SET @type_id = (SELECT {Id} FROM {ItemTypeTable} WHERE {ItemTypeName}={ItemTypeVar});
     SET {ResourceExtensionVar} = (SELECT RIGHT({PathVar}, CHARINDEX('.', REVERSE({PathVar}) + '.') - 1));
     SET @sql = FORMATMESSAGE ( 'SELECT {ResourceBytesVar} = BulkColumn FROM OPENROWSET ( BULK ''%s'', SINGLE_BLOB ) AS x;', @path );
@@ -422,6 +440,7 @@ BEGIN
     EXEC  {IdVar}={CreateResourceProc} {ResourceExtensionVar} ,{ResourceBytesVar}
     INSERT INTO {Schema}.{ItemTable}({ItemName},{ItemTypeId},{Detail},{ResourceId},{Price})
     VALUES ({ItemNameVar},@type_id,{DetailVar},{IdVar},{PriceVar});
+    COMMIT;
     RETURN @@IDENTITY;
 END
 
@@ -430,6 +449,7 @@ CREATE PROCEDURE {CreatePostProc} {LoginVar} {StringType}, {PasswordVar} {String
 {PostTitleVar} {StringType}, {PostContentVar} {StringType},{PostPictureIdVar} INT
 AS
 BEGIN
+    BEGIN TRANSACTION;
     DECLARE {IdVar} INT, {UserIdVar} INT, {ChatNameVar} {StringType}
     EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar};
     IF {UserIdVar}!={InvalidId}
@@ -440,11 +460,17 @@ BEGIN
             BEGIN
             INSERT INTO {Schema}.{PostTable}({PostContent},{PostTitle},{PostPictureId},{ChatId},{PostAuthorId})
             VALUES ({PostContentVar},{PostTitleVar},{PostPictureIdVar},{IdVar},{UserIdVar});
+            COMMIT;
             RETURN @@IDENTITY;
             END
+        ROLLBACK;
         END
     ELSE
+        BEGIN
+        ROLLBACK;
         RETURN {InvalidId};
+        END
+    
 END
 
 GO
@@ -453,6 +479,7 @@ CREATE PROCEDURE {CreateArticleProc} {LoginVar} {StringType}, {PasswordVar} {Str
 {ArticleContentVar} {StringType}, {ArticlePictureIdVar} INT
 AS
 BEGIN
+    BEGIN TRANSACTION;
     DECLARE {IdVar} INT, {UserIdVar} INT, @post {StringType}, {AccessVar} INT
     SET @post = N'Discussion ' + {ArticleTitleVar};
     EXEC {UserIdVar}={AuthenticateProc} {LoginVar}, {PasswordVar};
@@ -466,12 +493,18 @@ BEGIN
                 BEGIN
                 INSERT INTO {Schema}.{ArticleTable}({ArticleTitle},{ArticleContent},{ArticleAbstract},{ArticleAuthorId},{ArticlePictureId},{ArticlePostId})
                 VALUES  ({ArticleTitleVar},{ArticleContentVar},{ArticleAbstractVar},{UserIdVar},{ArticlePictureIdVar},{IdVar});
+                COMMIT;
                 RETURN @@IDENTITY
                 END
             END
+        ROLLBACK;
         END
     ELSE
+        BEGIN
+        ROLLBACK;
         RETURN {InvalidId};
+        END
+    
 END
 
 GO
@@ -549,20 +582,167 @@ BEGIN
 END
 
 GO
-CREATE PROCEDURE {SetItemsProc}
+CREATE PROCEDURE {CreateAnimationProc}
+{ItemNameVar} {StringType},
+{DetailVar} {StringType},
+{PathVar} {StringType},
+{PriceVar} INT
 AS
 BEGIN
     DECLARE {IdVar} INT
-    EXEC {IdVar} = {GetItemTypeByNameProc} '{ItemType.Achievement}';
-    INSERT INTO {AchievementTable}({ItemId}) (SELECT {Id} FROM {ItemTable} WHERE {ItemTypeId}={IdVar}); 
-    EXEC {IdVar} = {GetItemTypeByNameProc} '{ItemType.CheckersSkin}';
-    INSERT INTO {CheckersTable}({ItemId}) (SELECT {Id} FROM {ItemTable} WHERE {ItemTypeId}={IdVar});
-    EXEC {IdVar} = {GetItemTypeByNameProc} '{ItemType.Animation}';
-    INSERT INTO {AnimationTable}({ItemId}) (SELECT {Id} FROM {ItemTable} WHERE {ItemTypeId}={IdVar}); 
-    EXEC {IdVar} = {GetItemTypeByNameProc} '{ItemType.Picture}';
-    INSERT INTO {PictureTable}({ItemId}) (SELECT {Id} FROM {ItemTable} WHERE {ItemTypeId}={IdVar}); 
-    EXEC {IdVar} = {GetItemTypeByNameProc} '{ItemType.LootBox}';
-    INSERT INTO {LootBoxTable}({ItemId}) (SELECT {Id} FROM {ItemTable} WHERE {ItemTypeId}={IdVar}); 
+    EXEC {IdVar} = {CreateItemProc} '{ItemType.Animation}' ,{ItemNameVar},{DetailVar},{PathVar},{PriceVar}
+    INSERT INTO {Schema}.{AnimationTable}({ItemId}) VALUES({IdVar}); 
+    RETURN {IdVar}
+END
+
+GO
+CREATE PROCEDURE {CreateAchievementProc}
+{ItemNameVar} {StringType},
+{DetailVar} {StringType},
+{PathVar} {StringType},
+{PriceVar} INT
+AS
+BEGIN
+    DECLARE {IdVar} INT
+    EXEC {IdVar} = {CreateItemProc} '{ItemType.Achievement}' ,{ItemNameVar},{DetailVar},{PathVar},{PriceVar}
+    INSERT INTO {Schema}.{AchievementTable}({ItemId}) VALUES({IdVar}); 
+    RETURN {IdVar}
+END
+
+GO
+CREATE PROCEDURE {CreateCheckersSkinProc}
+{ItemNameVar} {StringType},
+{DetailVar} {StringType},
+{PathVar} {StringType},
+{PriceVar} INT
+AS
+BEGIN
+    DECLARE {IdVar} INT
+    EXEC {IdVar} = {CreateItemProc} '{ItemType.CheckersSkin}' ,{ItemNameVar},{DetailVar},{PathVar},{PriceVar}
+    INSERT INTO {Schema}.{CheckersTable}({ItemId}) VALUES({IdVar}); 
+    RETURN {IdVar}
+END
+
+GO
+CREATE PROCEDURE {CreatePictureProc}
+{ItemNameVar} {StringType},
+{DetailVar} {StringType},
+{PathVar} {StringType},
+{PriceVar} INT
+AS
+BEGIN
+    DECLARE {IdVar} INT
+    EXEC {IdVar} = {CreateItemProc} '{ItemType.Picture}' ,{ItemNameVar},{DetailVar},{PathVar},{PriceVar}
+    INSERT INTO {Schema}.{PictureTable}({ItemId}) VALUES({IdVar}); 
+    RETURN {IdVar}
+END
+
+GO
+CREATE PROCEDURE {CreateLootBoxProc}
+{ItemNameVar} {StringType},
+{DetailVar} {StringType},
+{PathVar} {StringType},
+{PriceVar} INT
+AS
+BEGIN
+    DECLARE {IdVar} INT
+    EXEC {IdVar} = {CreateItemProc} '{ItemType.LootBox}' ,{ItemNameVar},{DetailVar},{PathVar},{PriceVar}
+    INSERT INTO {Schema}.{LootBoxTable}({ItemId}) VALUES({IdVar}); 
+    RETURN {IdVar}
+END
+
+GO
+CREATE PROCEDURE {UpdateArticleTitleProc} {IdVar} INT, {ArticleTitleVar} {StringType}
+AS
+BEGIN
+    UPDATE {Schema}.{ArticleTable} SET {ArticleTitle} = {ArticleTitleVar} WHERE {Id}={IdVar}
+END
+
+GO
+CREATE PROCEDURE {UpdateArticleAbstractProc} {IdVar} INT, {ArticleAbstractVar} {StringType}
+AS
+BEGIN
+    UPDATE {Schema}.{ArticleTable} SET {ArticleAbstract} = {ArticleAbstractVar} WHERE {Id}={IdVar}
+END
+
+GO
+CREATE PROCEDURE {UpdateArticleContentProc} {IdVar} INT, {ArticleContentVar} {StringType}
+AS
+BEGIN
+    UPDATE {Schema}.{ArticleTable} SET {ArticleContent} = {ArticleContentVar} WHERE {Id}={IdVar}
+END
+
+GO
+CREATE PROCEDURE {UpdateArticlePictureIdProc} {IdVar} INT, {ArticlePictureIdVar} INT
+AS
+BEGIN
+    UPDATE {Schema}.{ArticleTable} SET {ArticlePictureId} = {ArticlePictureIdVar} WHERE {Id}={IdVar}
+END
+
+GO
+CREATE PROCEDURE {UpdateArticlePostIdProc} {IdVar} INT, {ArticlePostIdVar} INT
+AS
+BEGIN
+    UPDATE {Schema}.{ArticleTable} SET {ArticlePostId} = {ArticlePostIdVar} WHERE {Id}={IdVar}
+END
+
+GO
+CREATE PROCEDURE {UpdatePostTitleProc} {IdVar} INT, {PostTitleVar} {StringType}
+AS
+BEGIN
+    UPDATE {Schema}.{PostTable} SET {PostTitle}={PostTitleVar} WHERE {Id}={IdVar}
+END
+
+GO
+CREATE PROCEDURE {UpdatePostContentProc} {IdVar} INT, {PostContentVar} {StringType}
+AS
+BEGIN
+    UPDATE {Schema}.{PostTable} SET {PostContent}={PostContentVar} WHERE {Id}={IdVar}
+END
+
+GO
+CREATE PROCEDURE {UpdatePostPictureIdProc} {IdVar} INT, {PostPictureIdVar} INT
+AS
+BEGIN
+    UPDATE {Schema}.{PostTable} SET {PostPictureId}={PostPictureIdVar} WHERE {Id}={IdVar}
+END
+
+GO
+CREATE PROCEDURE {CommentPostProc} {LoginVar} {StringType}, {PasswordVar} {StringType},
+{PostIdVar} INT, {MessageContentVar} {StringType}
+AS
+BEGIN
+    DECLARE {IdVar} INT
+    SET {IdVar} = (SELECT {ChatId} FROM {Schema}.{PostTable} WHERE {IdVar}={PostIdVar});
+    INSERT INTO {Schema}.{MessageTable}({ChatId},{MessageContent}) VALUES ({IdVar},{MessageContentVar});
+END
+
+GO 
+CREATE PROCEDURE {SelectTopPlayersProc}
+AS
+BEGIN
+    WITH {OrderedPlayers} AS
+    (SELECT ROW_NUMBER() OVER(ORDER BY {SocialCredit} DESC) AS {StatisticPosition},
+    {Id},{Nick},{PictureId},{CheckersId},{AnimationId},{SocialCredit},{LastActivity},{UserTypeId}
+    FROM {Schema}.{UserTable})
+    SELECT * FROM {OrderedPlayers}
+    WHERE {StatisticPosition} < 2
+    ORDER BY {SocialCredit} DESC;
+END
+
+GO
+CREATE PROCEDURE {SelectTopPlayersAuthProc} {LoginVar} {StringType}, {PasswordVar} {StringType}
+AS
+BEGIN
+    DECLARE {IdVar} INT
+    EXEC {IdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar};
+    WITH {OrderedPlayers} AS
+    (SELECT ROW_NUMBER() OVER(ORDER BY {SocialCredit} DESC) AS {StatisticPosition},
+    {Id},{Nick},{PictureId},{CheckersId},{AnimationId},{SocialCredit},{LastActivity},{UserTypeId}
+    FROM {Schema}.{UserTable})
+    SELECT * FROM {OrderedPlayers}
+    WHERE {StatisticPosition} < 2 OR {Id}={IdVar}
+    ORDER BY {SocialCredit} DESC;
 END
 
 
@@ -588,11 +768,10 @@ INSERT INTO {FriendshipStateTable}({FriendshipStateName}) VALUES
 ('{FriendshipState.Accepted}'),
 ('{FriendshipState.Canceled}');
 
-EXEC {CreateItemProc} '{ItemType.Picture}','Picture 1','First Picture detail','{path}\{image}\1.png',100;
-EXEC {CreateItemProc} '{ItemType.Achievement}','Achievement 1','First Achievement detail','{path}\{image}\2.png',100;
-EXEC {CreateItemProc} '{ItemType.CheckersSkin}','CheckersSkin 1','First CheckersSkin detail','{path}\{image}\3.png',100;
-EXEC {CreateItemProc} '{ItemType.Animation}','Animation 1','First Animation detail','{path}\{image}\4.png',100;
-EXEC {SetItemsProc}
+EXEC {CreatePictureProc} 'Picture 1','First Picture detail','{path}\{image}\1.png',100;
+EXEC {CreateAchievementProc} 'Achievement 1','First Achievement detail','{path}\{image}\2.png',100;
+EXEC {CreateCheckersSkinProc} 'CheckersSkin 1','First CheckersSkin detail','{path}\{image}\3.png',100;
+EXEC {CreateAnimationProc} 'Animation 1','First Animation detail','{path}\{image}\4.png',100;
 
 GO
 CREATE VIEW {UserItemExtendedView} AS

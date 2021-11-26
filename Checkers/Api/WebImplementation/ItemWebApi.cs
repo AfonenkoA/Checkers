@@ -7,7 +7,7 @@ using static System.Text.Json.JsonSerializer;
 
 namespace Checkers.Api.WebImplementation;
 
-public class ItemWebApi : WebApiBase, IAsyncItemApi
+public sealed class ItemWebApi : WebApiBase, IAsyncItemApi
 {
     public Task<(bool, IEnumerable<ItemHash>)> TryGetItems() =>
         Client.GetStringAsync(ItemRoute)

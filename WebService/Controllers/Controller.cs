@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Checkers.Data.Old;
+using Checkers.Data.Repository.MSSqlImplementation;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebService.Controllers;
 
+
 public class Controller
 {
-    public static readonly IActionResult OkResult = new OkResult();
-    public static readonly IActionResult BadRequestResult = new BadRequestResult();
+    protected static readonly IActionResult OkResult = new OkResult();
+    protected static readonly IActionResult BadRequestResult = new BadRequestResult();
 }

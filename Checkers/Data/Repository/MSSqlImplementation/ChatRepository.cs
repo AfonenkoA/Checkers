@@ -5,10 +5,11 @@ using Checkers.Data.Entity;
 using Checkers.Data.Repository.Interface;
 using Microsoft.Data.SqlClient;
 using static Checkers.Data.Repository.MSSqlImplementation.UserRepository;
+using static Checkers.Data.Repository.MSSqlImplementation.MessageRepository;
 
 namespace Checkers.Data.Repository.MSSqlImplementation;
 
-public sealed class ChatRepository : MessageRepository, IChatRepository
+public sealed class ChatRepository : Repository, IChatRepository
 {
     public const string ChatTable = "[Chat]";
     public const string ChatTypeTable = "[ChatType]";
@@ -28,7 +29,9 @@ public sealed class ChatRepository : MessageRepository, IChatRepository
     public const string CommonChatId = "1";
 
     public const string CommonChatName = "Common chat";
-    
+
+
+    public ChatRepository(SqlConnection connection) : base(connection){}
 
     public IEnumerable<Message> GetMessages(Credential credential, int chatId, DateTime from)
     {

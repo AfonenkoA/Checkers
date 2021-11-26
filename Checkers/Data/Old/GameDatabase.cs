@@ -21,8 +21,11 @@ public class GameDatabase : DbContext
         return u.Password == password ? u : null;
     }
 
-    public GameDatabase()
+    private readonly string _connection;
+
+    public GameDatabase(string connection)
     {
+        _connection = connection;
     }
 
     public GameDatabase(DbContextOptions<GameDatabase> options)
@@ -45,7 +48,7 @@ public class GameDatabase : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseSqlServer(@"Server=(LocalDB)\MSSQLLocalDB;Database=Checkers;Trusted_Connection=True;");
+            optionsBuilder.UseSqlServer(_connection);
         }
     }
 

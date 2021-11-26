@@ -8,7 +8,7 @@ using static System.Text.Json.JsonSerializer;
 
 namespace Checkers.Api.WebImplementation;
 
-public class NewsWebApi : WebApiBase,  IAsyncNewsApi
+public sealed class NewsWebApi : WebApiBase,  IAsyncNewsApi
 {
     public Task<bool> CreateArticle(Credential credential, ArticleCreationData article) =>
         Client.PostAsJsonAsync(NewsRoute + Query(credential), article)

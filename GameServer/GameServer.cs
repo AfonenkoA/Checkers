@@ -19,8 +19,8 @@ internal static class Server
     private static void Main(string[] args)
     {
         const int port = 5000;
-        using var db = new GameDatabase();
-        TCPServer server = new(port, db);
+        using var db = new DatabaseFactory(args[0]).Database;
+        TcpServer server = new(port, db);
         Task.Run(server.Run);
     }
 }
@@ -33,7 +33,7 @@ class PlayerFactory
     }
 }
 
-class Player : IDisposable
+internal sealed class Player : IDisposable
 {
     public event EventHandler<MoveActionArgs> OnMove = (_, _) => { };
     public event EventHandler<EmoteActionArgs> OnEmote = (_, _) => { };
@@ -109,14 +109,14 @@ class Player : IDisposable
         client.Close();
     }
 }
-class TCPServer
+class TcpServer
 {
     private readonly GameDatabase database;
     private readonly IPAddress ipAddress;
     private readonly int port;
     private readonly List<Player> list = new();
     private readonly Queue<Player> gameQueue = new();
-    public TCPServer(int port, GameDatabase database)
+    public TcpServer(int port, GameDatabase database)
     {
         ipAddress = IPAddress.Loopback;
         this.port = port;
@@ -175,7 +175,7 @@ class TCPServer
             this.database = database;
             this.p1 = p1;
             this.p2 = p2;
-            game = new Game()
+            game = new Game
             {
                 Player1Id = p1.Id,
                 Player2Id = p2.Id,
@@ -196,8 +196,8 @@ class TCPServer
 
         public void Start()
         {
-            Task p1Start = p1.SendEvent(new GameStartEventArgs() { EnemyNick = p1.Nick });
-            Task p2Start = p2.SendEvent(new GameStartEventArgs() { EnemyNick = p2.Nick });
+            Task p1Start = p1.SendEvent(new GameStartEventArgs { EnemyNick = p1.Nick });
+            Task p2Start = p2.SendEvent(new GameStartEventArgs { EnemyNick = p2.Nick });
             Task.WaitAll(p1Start, p2Start);
             Task p1Turn = p1.SendEvent(YourTurnEventArgs.Instance);
             Task p2Turn = p2.SendEvent(EnemyTurnEventArgs.Instance);
@@ -245,8 +245,8 @@ class TCPServer
                 p1Result = GameResult.Win;
                 p2Result = GameResult.Lose;
             }
-            Task p1End = p1.SendEvent(new GameEndEventArgs() { Result = p1Result });
-            Task p2End = p2.SendEvent(new GameEndEventArgs() { Result = p2Result });
+            Task p1End = p1.SendEvent(new GameEndEventArgs { Result = p1Result });
+            Task p2End = p2.SendEvent(new GameEndEventArgs { Result = p2Result });
             Task.WaitAll(p1End, p2End);
             Unsubscribe();
         }
