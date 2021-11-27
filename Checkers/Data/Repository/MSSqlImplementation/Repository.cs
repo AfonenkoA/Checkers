@@ -42,13 +42,14 @@ public class Repository
     {
         get
         {
-            if (_isOpened) return _connection;
-            _connection.Open();
-            _isOpened = true;
-            return _connection;
+            lock (this)
+            {
+                if (_connection.State == ConnectionState.Closed)
+                    _connection.Open();
+                return _connection;
+            }
         }
     }
-    private bool _isOpened;
 
     protected Repository(SqlConnection connection)
     {

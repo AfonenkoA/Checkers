@@ -52,6 +52,7 @@ public sealed class UserRepository : Repository, IUserRepository
     public const string RequestedTypeIdVar = "@req_type_id";
     public const string FriendshipStateNameVar = "@friendship_state";
     public const string AccessVar = "@access";
+    public const string CurrencyVar = "@currency";
 
     public const string CreateUserProc = "[SP_CreateUser]";
     public const string SelectUserItemProc = "[SP_SelectUserItem]";
@@ -70,7 +71,10 @@ public sealed class UserRepository : Repository, IUserRepository
     public const string CheckAccessProc = "[SP_CheckAccess]";
     public const string GetFriendshipStateByNameProc = "[SP_GetFriendshipStateByName]";
     public const string UserAddItemProc = "[SP_AddUserItem]";
-    public const string BuyItemProc = "[SP_BuyItem]";
+    public const string UserBuyItemProc = "[SP_UserBuyItem]";
+    public const string SelectAllUserItemProc = "[SP_SelectAllUserItem]";
+    public const string SelectFriendChatIdProc = "[SP_SelectFriendChatId]";
+    public const string SelectUserFriendshipProc = "[SP_SelectUserFrienship]";
 
     public const int ValidAccess = 1;
     public const int InvalidAccess = -1;
@@ -108,7 +112,9 @@ public sealed class UserRepository : Repository, IUserRepository
 
             using var reader = command.ExecuteReader();
             if (reader.Read())
-                user = reader.GetUser();
+                user = new PublicUserData(reader.GetUser());
+            else
+                return user;
         }
         user.Achievements = GetUserItems(userId, ItemType.Achievement);
         return user;
@@ -129,14 +135,65 @@ public sealed class UserRepository : Repository, IUserRepository
         return items;
     }
 
+    private int Auth(Credential credential)
+    {
+        using var command = CreateProcedure(AuthenticateProc);
+        command.Parameters.AddRange(new[]
+        {
+            LoginParameter(credential.Login),
+            PasswordParameter(credential.Password)
+        });
+        command.ExecuteNonQuery();
+        return command.GetReturn();
+    }
+
     public User GetSelf(Credential credential)
     {
-        throw new NotImplementedException();
+        var userId = Auth(credential);
+        if (userId == InvalidId)
+            return User.Invalid;
+
+        var user = new User(GetUser(userId));
+        using (var command = CreateProcedure(SelectAllUserItemProc))
+        {
+            command.Parameters.Add(IdParameter(userId));
+            using var reader = command.ExecuteReader();
+            var list = new List<int>();
+            while (reader.Read())
+                list.Add(reader.GetFieldValue<int>(ItemId));
+            user.Items = list;
+        }
+        using (var command = CreateProcedure(SelectUserFriendshipProc))
+        {
+            command.Parameters.Add(IdParameter(userId));
+            using var reader = command.ExecuteReader();
+            var list = new List<Friendship>();
+            while (reader.Read())
+                list.Add(reader.GetFriendship());
+            user.Friends = list;
+        }
+        return user;
     }
 
     public FriendUserData GetFriend(Credential credential, int friendId)
     {
-        throw new NotImplementedException();
+        var userId = Auth(credential);
+        if (userId == InvalidId)
+            return FriendUserData.Invalid;
+
+        var user = new FriendUserData(GetUser(userId))
+        {
+            Achievements = GetUserItems(userId, ItemType.Achievement)
+        };
+        using var command = CreateProcedure(SelectFriendChatIdProc);
+        command.Parameters.AddRange(new []
+        {
+            new SqlParameter {ParameterName = User1IdVar,SqlDbType = SqlDbType.Int,Value = userId},
+            new SqlParameter {ParameterName = User2IdVar,SqlDbType = SqlDbType.Int,Value = friendId}
+        });
+        command.ExecuteNonQuery();
+        user.ChatId = command.GetReturn();
+        return user;
     }
 
     public bool SelectAnimation(Credential credential, int animationId)
@@ -167,20 +224,19 @@ public sealed class UserRepository : Repository, IUserRepository
 
     public bool BuyItem(Credential credential, int itemId)
     {
-        throw new NotImplementedException();
+        using var command = CreateProcedure(UserBuyItemProc);
+        command.Parameters.AddRange(new[]
+        {
+            LoginParameter(credential.Login),
+            PasswordParameter(credential.Password),
+            IdParameter(itemId)
+        });
+        return command.ExecuteNonQuery() > 0;
     }
 
     public bool Authenticate(Credential user)
     {
-        using var command = CreateProcedure(AuthenticateProc);
-        command.Parameters.AddRange(
-            new[]
-            {
-                LoginParameter(user.Login),
-                PasswordParameter(user.Password)
-            });
-        command.ExecuteNonQuery();
-        return command.GetReturn() != InvalidId;
+        return Auth(user) != InvalidId;
     }
 
     public bool UpdateUserNick(Credential credential, string nick)
@@ -246,7 +302,13 @@ public sealed class UserRepository : Repository, IUserRepository
         using var reader = command.ExecuteReader();
         List<PublicUserData> list = new();
         while (reader.Read())
-            list.Add(reader.GetUser());
+        {
+            var user = reader.GetUser();
+            list.Add(new PublicUserData(user)
+            {
+                Achievements = GetUserItems(user.Id, ItemType.Achievement)
+            });
+        }
         return list;
     }
 

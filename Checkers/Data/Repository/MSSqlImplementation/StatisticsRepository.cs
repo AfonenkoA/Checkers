@@ -17,17 +17,18 @@ public sealed class StatisticsRepository : Repository, IStatisticsRepository
 
     internal StatisticsRepository(SqlConnection connection) : base(connection) { }
 
-    public IDictionary<int, PublicUserData> GetTopPlayers()
+    public IDictionary<int, BasicUserData> GetTopPlayers()
     {
         using var command = CreateProcedure(SelectTopPlayersProc);
         using var reader = command.ExecuteReader();
-        var dict = new Dictionary<int,PublicUserData>();
+        var dict = new Dictionary<int,BasicUserData>();
         while (reader.Read())
-            dict.Add(reader.GetFieldValue<int>(StatisticPosition),reader.GetUser());
+            dict.Add(reader.GetFieldValue<int>(StatisticPosition), reader.GetUser());
+
         return dict;
     }
 
-    public IDictionary<int, PublicUserData> GetTopPlayers(Credential credential)
+    public IDictionary<int, BasicUserData> GetTopPlayers(Credential credential)
     {
         using var command = CreateProcedure(SelectTopPlayersProc);
         command.Parameters.AddRange(
@@ -37,7 +38,7 @@ public sealed class StatisticsRepository : Repository, IStatisticsRepository
                 PasswordParameter(credential.Password)
             });
         using var reader = command.ExecuteReader();
-        var dict = new Dictionary<int, PublicUserData>();
+        var dict = new Dictionary<int, BasicUserData>();
         while (reader.Read())
             dict.Add(reader.GetFieldValue<int>(StatisticPosition), reader.GetUser());
         return dict;

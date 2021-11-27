@@ -11,9 +11,9 @@ namespace Checkers.Data.Repository.MSSqlImplementation;
 internal static class SqlExtensions
 {
     internal static int GetReturn(this SqlCommand command) => (int)command.Parameters["@RETURN_VALUE"].Value;
-    internal static T GetFieldValue<T>(this SqlDataReader reader, string col) => (T)reader[Repository.Unwrap(col)];
+    internal static T GetFieldValue<T>(this SqlDataReader reader, string col) => (T)reader[Unwrap(col)];
 
-    internal static PublicUserData GetUser(this SqlDataReader reader) =>
+    internal static BasicUserData GetUser(this SqlDataReader reader) =>
         new()
         {
             Id = reader.GetFieldValue<int>(Id),
@@ -40,6 +40,13 @@ internal static class SqlExtensions
             Title = reader.GetFieldValue<string>(PostTitle),
             Content = reader.GetFieldValue<string>(PostContent),
             PictureId = reader.GetFieldValue<int>(PostPictureId)
+        };
+
+    internal static Friendship GetFriendship(this SqlDataReader reader) =>
+        new()
+        {
+            Id = reader.GetFieldValue<int>(User2Id),
+            State = FriendshipState.Accepted
         };
 
 internal static SqlParameter LoginParameter(string login) =>

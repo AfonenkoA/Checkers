@@ -7,64 +7,14 @@ public class Request
     {
     }
 
-    public class GameGetRequest : Request
-    {
-        public int GameId { get; set; }
-    }
-
-    public class UserRequest : Request
+public class UserRequest : Request
     {
         public string? Login { get; set; }
-        public UserRequest() { }
     }
 
     public class SequreRequest : UserRequest
     {
         public string? Password { get; set; }
-        public SequreRequest() : base()
-        { }
-    }
-
-    public class UserAuthorizationRequest : SequreRequest
-    {
-        public UserAuthorizationRequest()
-        {
-        }
-
-        public UserAuthorizationRequest(SequreRequest request) : this()
-        {
-            Login = request.Login;
-            Password = request.Password;
-        }
-    }
-
-    public class UserInfoRequest : SequreRequest
-    {
-        public UserInfoRequest()
-        {
-        }
-
-        public UserInfoRequest(SequreRequest request) : this()
-        {
-            Login = request.Login;
-            Password = request.Password;
-        }
-    }
-
-    public class UserCreationRequest : SequreRequest
-    {
-        public string? Email { get; set; }
-        public string? Nick { get; set; }
-
-        public UserCreationRequest(SequreRequest request) : this()
-        {
-            Login = request.Login;
-            Password = request.Password;
-        }
-
-        public UserCreationRequest()
-        {
-        }
     }
 
     public sealed class UserUpdateRequest : SequreRequest
@@ -75,15 +25,6 @@ public class Request
         public UserUpdateRequest()
         { }
         public UserUpdateRequest(SequreRequest request)
-        {
-            Login = request.Login;
-            Password = request.Password;
-        }
-    }
-    public class UserDeleteRequest : SequreRequest
-    {
-        public UserDeleteRequest() { }
-        public UserDeleteRequest(SequreRequest request)
         {
             Login = request.Login;
             Password = request.Password;
@@ -103,17 +44,8 @@ public class Request
             Password = request.Password;
         }
     }
-    public class UserFriendsGetRequest : SequreRequest
-    {
-        public UserFriendsGetRequest()
-        { }
-        public UserFriendsGetRequest(SequreRequest request)
-        {
-            Login = request.Login;
-            Password = request.Password;
-        }
-    }
-    public class UserFriendsUpdateRequest : SequreRequest
+
+    public sealed class UserFriendsUpdateRequest : SequreRequest
     {
         public string? NewFriend { get; set; }
         public string? DeleteFriend { get; set; }
@@ -124,17 +56,6 @@ public class Request
             Login = request.Login;
             Password = request.Password;
         }
-    }
-
-    public class UserAchievementsGetRequest : UserRequest
-    {
-        public UserAchievementsGetRequest()
-        { }
-    }
-    public class UserGamesGetRequest : UserRequest
-    {
-        public UserGamesGetRequest()
-        { }
     }
 
     public enum ResponseStatus
@@ -256,7 +177,7 @@ namespace InGame
         { }
     }
 
-    public class DisconnectEventArgs : EventArgs
+    public sealed class DisconnectEventArgs : EventArgs
     {
         public static readonly DisconnectEventArgs Instance = new();
         public DisconnectEventArgs() : base(EventType.Disconnect) { }
@@ -306,13 +227,13 @@ namespace InGame
         { }
     }
 
-    public class RemoveEventArgs : EventArgs
+    public sealed class RemoveEventArgs : EventArgs
     {
         public Position Position { get; set; }
         public RemoveEventArgs() : base(EventType.Remove) { }
     }
 
-    public class EmoteEventArgs : EventArgs
+    public sealed class EmoteEventArgs : EventArgs
     {
         public int EmotionId { get; set; }
         public EmoteEventArgs() : base(EventType.Emote) { }

@@ -244,7 +244,7 @@ BEGIN
     EXEC {ChatIdVar} = {CreateChatProc} {ChatNameVar}, '{ChatType.Private}';
     EXEC {IdVar} = {GetFriendshipStateByNameProc} '{FriendshipState.Accepted}';
     INSERT INTO {Schema}.{FriendshipTable}({User1Id},{User2Id},{ChatId},{FriendshipStateId})
-    VALUES ({User1IdVar},{User2IdVar},{ChatIdVar},{IdVar});
+    VALUES ({User1IdVar},{User2IdVar},{ChatIdVar},{IdVar}),({User2IdVar},{User1IdVar},{ChatIdVar},{IdVar});
     COMMIT;
 END
 
@@ -552,7 +552,7 @@ BEGIN
         BEGIN
         EXEC {IdVar} = {GetChatTypeByNameProc} '{ChatType.Public}'
         IF {ChatIdVar} IN 
-        (SELECT {ChatId} FROM {FriendshipTable} WHERE {User1Id}={UserIdVar} OR {User2Id}={UserIdVar}) OR 
+        (SELECT {ChatId} FROM {FriendshipTable} WHERE {User1Id}={UserIdVar}) OR 
         (SELECT {ChatTypeId} FROM {ChatTable} WHERE {Id}={ChatIdVar}) = {IdVar}
             INSERT INTO {Schema}.{MessageTable}({ChatId},{UserId},{MessageContent})
             VALUES ({ChatIdVar},{UserIdVar},{MessageContentVar}); 
@@ -767,6 +767,43 @@ BEGIN
     WHERE {StatisticPosition} < 2 OR {Id}={IdVar}
     ORDER BY {SocialCredit} DESC;
 END
+
+GO
+CREATE PROCEDURE {SelectAllUserItemProc} {IdVar} INT
+AS
+BEGIN
+    SELECT {ItemId} FROM {Schema}.{UserItemTable} WHERE {UserId}={IdVar}
+END
+
+GO
+CREATE PROCEDURE {SelectFriendChatIdProc} {User1IdVar} INT, {User2IdVar} INT
+AS
+BEGIN
+    RETURN (SELECT {ChatId} FROM {Schema}.{FriendshipTable} WHERE {User1Id} = {User1IdVar} AND {User2Id} = {User2IdVar})
+END
+
+GO
+CREATE PROCEDURE {SelectUserFriendshipProc} {UserIdVar} INT
+AS
+BEGIN
+    SELECT * FROM {Schema}.{FriendshipTable} WHERE {User1Id} = {UserIdVar}
+END
+
+GO
+CREATE PROCEDURE {UserBuyItemProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
+AS
+BEGIN
+    DECLARE {UserIdVar} INT, {PriceVar} INT, {CurrencyVar} INT
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar},{PasswordVar}
+    SET {PriceVar} = (SELECT {Price} FROM {Schema}.{ItemTable} WHERE {Id}={IdVar});
+    SET {CurrencyVar} = (SELECT {Currency} FROM {Schema}.{UserTable} WHERE {Id}={UserIdVar});
+    IF {CurrencyVar}>={PriceVar}
+        BEGIN
+        INSERT INTO {Schema}.{UserItemTable}({UserId},{ItemId}) VALUES ({UserIdVar},{IdVar});
+        UPDATE {Schema}.{UserTable} SET {Currency} = ({CurrencyVar}-{PriceVar}) WHERE {Id}={UserIdVar};
+        END
+END
+
 
 
 GO
