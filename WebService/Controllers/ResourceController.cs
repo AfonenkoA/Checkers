@@ -21,7 +21,7 @@ public class ResourceController : Controller
     [HttpPost]
     public IActionResult UploadFile([FromQuery] Credential credential,[FromBody] string picture, [FromQuery] string ext)
     {
-        return new JsonResult(_repository.CreateFile(credential,Convert.FromBase64String(picture),ext));
+        return Json(_repository.CreateFile(credential,Convert.FromBase64String(picture),ext));
     }
 
     [HttpGet("{id:int}")]

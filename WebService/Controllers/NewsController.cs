@@ -36,14 +36,14 @@ public class NewsController : Controller
     }
 
     [HttpGet("{id:int}")]
-    public JsonResult GetArticle([FromRoute] int id)
+    public IActionResult GetArticle([FromRoute] int id)
     {
-        return new JsonResult(_repository.GetArticle(id));
+        return Json(_repository.GetArticle(id));
     }
 
     [HttpGet]
-    public JsonResult GetNews()
+    public IActionResult GetNews()
     {
-        return new JsonResult(_repository.GetNews());
+        return Json(_repository.GetNews());
     }
 }

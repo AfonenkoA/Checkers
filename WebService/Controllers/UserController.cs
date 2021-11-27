@@ -33,9 +33,9 @@ public class UserController : Controller
     }
 
     [HttpGet("{id:int}")]
-    public JsonResult GetUser([FromQuery] Credential credential, [FromRoute] int id)
+    public IActionResult GetUser([FromQuery] Credential credential, [FromRoute] int id)
     {
-        return new JsonResult(_repository.GetUser(id));
+        return Json(_repository.GetUser(id));
     }
 
     //User Item Activities
@@ -105,7 +105,7 @@ public class UserController : Controller
     //Friends
     private IActionResult GetUsersByNick(string pattern)
     {
-        return new JsonResult(_repository.GetUsersByNick($"%{pattern}%"));
+        return Json(_repository.GetUsersByNick($"%{pattern}%"));
     }
 
     private IActionResult AddFriend(Credential credential, int userId)
@@ -113,12 +113,12 @@ public class UserController : Controller
         return _repository.AddFriend(credential,userId) ? OkResult : BadRequestResult;
     }
 
-    private IActionResult DeleteFriend(Credential credential, int userId)
+    private static IActionResult DeleteFriend(Credential credential, int userId)
     {
         return BadRequestResult;
     }
 
-    private IActionResult AcceptFriend(Credential credential, int userId)
+    private static IActionResult AcceptFriend(Credential credential, int userId)
     {
         return BadRequestResult;
     }

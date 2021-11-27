@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json;
 using Checkers.Api.WebImplementation;
 using Checkers.Data.Entity;
 using Checkers.Data.Repository.Interface;
@@ -19,9 +20,9 @@ public class ChatController : Controller
 
     private readonly IChatRepository _repository;
     [HttpGet("{id:int}")]
-    public JsonResult GetMessages([FromQuery] Credential credential,[FromRoute] int id, [FromQuery] DateTime from)
+    public IActionResult GetMessages([FromQuery] Credential credential,[FromRoute] int id, [FromQuery] DateTime from)
     {
-        return new JsonResult(_repository.GetMessages(credential,id,from));
+        return Json(_repository.GetMessages(credential,id,from));
     }
 
     [HttpPost("{id:int}")]

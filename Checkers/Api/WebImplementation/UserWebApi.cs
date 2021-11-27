@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Checkers.Api.Interface;
 using Checkers.Api.Interface.Action;
 using Checkers.Data.Entity;
-using static System.Text.Json.JsonSerializer;
 
 namespace Checkers.Api.WebImplementation;
 

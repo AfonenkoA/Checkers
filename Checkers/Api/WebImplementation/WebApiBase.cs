@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Text.Json;
 using Checkers.Api.Interface.Action;
 using Checkers.Data.Entity;
 
@@ -7,6 +8,14 @@ namespace Checkers.Api.WebImplementation;
 
 public class WebApiBase
 {
+    private static readonly JsonSerializerOptions Options = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+    protected static T? Deserialize<T>(string s)
+    {
+        return JsonSerializer.Deserialize<T>(s, Options);
+    }
     protected static readonly HttpClient Client = new(){BaseAddress = new Uri("http://localhost:5005/api/")};
     public const string UserRoute = "newuser";
     public const string ItemRoute = "item";

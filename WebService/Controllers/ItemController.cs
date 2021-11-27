@@ -18,16 +18,16 @@ public class ItemController : Controller
 
     private readonly IItemRepository _repository;
     [HttpGet]
-    public JsonResult GetItems()
+    public IActionResult GetItems()
     {
-        return new JsonResult(_repository.GetItems());
+        return Json(_repository.GetItems());
     }
 
     [HttpGet("{id:int}")]
     public IActionResult GetItemInfo(int id)
     {
         var result = _repository.GetItemInfo(id);
-        return result.IsValid ? new JsonResult(result) : BadRequestResult;
+        return result.IsValid ? Json(result) : BadRequestResult;
     }
 
     [HttpGet("{id:int}/img")]

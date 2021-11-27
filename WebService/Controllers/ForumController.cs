@@ -29,14 +29,14 @@ public class ForumController : Controller
     }
 
     [HttpGet("{id:int}")]
-    public JsonResult GetPost(int id)
+    public IActionResult GetPost(int id)
     {
-        return new JsonResult(_repository.GetPost(id));
+        return Json(_repository.GetPost(id));
     }
 
 
-    public JsonResult GetPosts()
+    public IActionResult GetPosts()
     {
-        return new JsonResult(_repository.GetPosts());
+        return Json(_repository.GetPosts());
     }
 }

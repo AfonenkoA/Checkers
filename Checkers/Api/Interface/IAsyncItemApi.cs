@@ -9,5 +9,5 @@ public interface IAsyncItemApi
     Task<(bool,IEnumerable<ItemHash>)> TryGetItems();
     Task<(bool,ItemInfo)> TryGetItemInfo(int id);
     string GetItemImageUrl(int id);
-    Task<byte[]> GetItemImage(int id);
+    Task<(bool, byte[])> TryGetItemImage(int id);
 }

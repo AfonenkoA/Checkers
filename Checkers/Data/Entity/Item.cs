@@ -9,8 +9,7 @@ public enum ItemType
     Achievement,
     CheckersSkin,
     Animation,
-    LootBox,
-    
+    LootBox
 }
 
 public class ItemHash
