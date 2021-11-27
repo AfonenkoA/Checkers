@@ -19,7 +19,7 @@ internal static class Server
     private static void Main(string[] args)
     {
         const int port = 5000;
-        using var db = new DatabaseFactory(args[0]).Database;
+        using var db = new GameDatabase.Factory(args[0]).Get();
         TcpServer server = new(port, db);
         Task.Run(server.Run);
     }

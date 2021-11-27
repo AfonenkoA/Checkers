@@ -10,9 +10,9 @@ namespace WebService.Controllers;
 [Route("api/" + WebApiBase.ForumRoute)]
 public class ForumController : Controller
 {
-    public ForumController(RepositoryFactory factory)
+    public ForumController(Repository.Factory factory)
     {
-        _repository = factory.GetRepository<ForumRepository>();
+        _repository = factory.Get<ForumRepository>();
     }
 
     private readonly IForumRepository _repository;
@@ -32,12 +32,6 @@ public class ForumController : Controller
     public JsonResult GetPost(int id)
     {
         return new JsonResult(_repository.GetPost(id));
-    }
-
-    [HttpPost("{id:int}")]
-    public IActionResult CommentPost([FromQuery]Credential credential,[FromRoute]int postId,[FromBody] string comment)
-    {
-        return _repository.CommentPost(credential,postId,comment) ? OkResult : BadRequestResult;
     }
 
 

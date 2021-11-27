@@ -5,10 +5,11 @@ using Checkers.Data.Entity;
 using Checkers.Data.Repository.Interface;
 using Microsoft.Data.SqlClient;
 using static Checkers.Data.Repository.MSSqlImplementation.ItemRepository;
+using static Checkers.Data.Repository.MSSqlImplementation.SqlExtensions;
 
 namespace Checkers.Data.Repository.MSSqlImplementation;
 
-public sealed class UserRepository : Repository,IUserRepository
+public sealed class UserRepository : Repository, IUserRepository
 {
     public const string UserTable = "[User]";
     public const string UserItemTable = "[UserItem]";
@@ -16,7 +17,6 @@ public sealed class UserRepository : Repository,IUserRepository
     public const string UserTypeTable = "[UserType]";
     public const string FriendshipStateTable = "[FriendshipState]";
     public const string FriendshipTable = "[Friendship]";
-
 
     public const string Nick = "[nick]";
     public const string Login = "[login]";
@@ -32,6 +32,7 @@ public sealed class UserRepository : Repository,IUserRepository
     public const string User1Id = "[user1_id]";
     public const string User2Id = "[user2_id]";
     public const string AcceptDate = "[accept_date]";
+    public const string Currency = "[currency]";
     public const string Email = "[email]";
     public const string FriendshipStateName = "friendship_state_name";
     public const string FriendshipStateId = "friendship_state_id";
@@ -40,10 +41,8 @@ public sealed class UserRepository : Repository,IUserRepository
     public const string LoginVar = "@login";
     public const string PasswordVar = "@password";
     public const string EmailVar = "@email";
-    public const string NewNickVar = "@new_nick";
     public const string NewLoginVar = "@new_login";
     public const string NewPasswordVar = "@new_password";
-    public const string NewEmailVar = "@new_email";
     public const string UserIdVar = "@user_id";
     public const string UserTypeNameVar = "@user_type_name";
     public const string User1IdVar = "@user1_id";
@@ -66,31 +65,33 @@ public sealed class UserRepository : Repository,IUserRepository
     public const string UpdateUserAnimationProc = "[SP_UpdateUserAnimation]";
     public const string UpdateUserCheckersProc = "[SP_UpdateUserCheckers]";
     public const string UpdateUserActivityProc = "[SP_UpdateUserActivity]";
-    public const string CreateFriendship = "[SP_CreateFriendship]";
+    public const string CreateFriendshipProc = "[SP_CreateFriendship]";
     public const string GetUserTypeByTypeNameProc = "[SP_GetUserTypeByName]";
     public const string CheckAccessProc = "[SP_CheckAccess]";
     public const string GetFriendshipStateByNameProc = "[SP_GetFriendshipStateByName]";
-    public const string UserAddItem = "[SP_AddUserItem]";
+    public const string UserAddItemProc = "[SP_AddUserItem]";
+    public const string BuyItemProc = "[SP_BuyItem]";
 
-    public const string ValidAccess = "1";
-    public const string InvalidAccess = "-1";
+    public const int ValidAccess = 1;
+    public const int InvalidAccess = -1;
 
     public const string UserAuthCondition = $"{Login}={LoginVar} AND {Password}={PasswordVar}";
 
-    public UserRepository(SqlConnection connection) : base(connection) { }
+
+    internal UserRepository(SqlConnection connection) : base(connection) { }
 
     public bool CreateUser(UserCreationData user)
     {
         using var command = CreateProcedure(CreateUserProc);
         command.Parameters.AddRange(
-            new []
+            new[]
             {
-                new SqlParameter{ParameterName = LoginVar, SqlDbType = SqlDbType.NVarChar, Value = user.Login},
-                new SqlParameter{ParameterName = PasswordVar,SqlDbType = SqlDbType.NVarChar,Value = user.Password},
+                LoginParameter(user.Login),
+                PasswordParameter(user.Password),
                 new SqlParameter{ParameterName = NickVar,SqlDbType = SqlDbType.NVarChar,Value = user.Nick},
                 new SqlParameter{ParameterName = EmailVar,SqlDbType = SqlDbType.NVarChar,Value = user.Email},
             });
-        return command.ExecuteNonQuery()>0;
+        return command.ExecuteNonQuery() > 0;
     }
 
     public bool DeleteUser(Credential credential)
@@ -103,34 +104,27 @@ public sealed class UserRepository : Repository,IUserRepository
         var user = PublicUserData.Invalid;
         using (var command = CreateProcedure(SelectUserProc))
         {
-            command.Parameters.Add(new SqlParameter {ParameterName = IdVar, SqlDbType = SqlDbType.Int, Value = userId});
+            command.Parameters.Add(IdParameter(userId));
 
             using var reader = command.ExecuteReader();
             if (reader.Read())
-            {
-                user.Id = reader.GetFieldValue<int>(Id);
-                user.Nick = reader.GetFieldValue<string>(Nick);
-                user.SocialCredit = reader.GetFieldValue<int>(SocialCredit);
-                user.PictureId = reader.GetFieldValue<int>(PictureId);
-                user.SelectedAnimationId = reader.GetFieldValue<int>(AnimationId);
-                user.SelectedCheckersId = reader.GetFieldValue<int>(CheckersId);
-                user.LastActivity = reader.GetFieldValue<DateTime>(LastActivity);
-            }
+                user = reader.GetUser();
         }
-        user.Achievements = GetUserItem(userId, ItemType.Achievement);
-        return PublicUserData.Invalid;
+        user.Achievements = GetUserItems(userId, ItemType.Achievement);
+        return user;
     }
 
-    private IEnumerable<int> GetUserItem(int id,ItemType type)
+    private IEnumerable<int> GetUserItems(int id, ItemType type)
     {
         using var command = CreateProcedure(SelectUserItemProc);
-        command.Parameters.AddRange(new []{
-            new SqlParameter { ParameterName = IdVar, SqlDbType = SqlDbType.Int, Value = id},
+        command.Parameters.AddRange(new[]
+        {
+            IdParameter(id),
             new SqlParameter{ParameterName = ItemTypeVar,SqlDbType = SqlDbType.NVarChar,Value = type}
         });
         using var reader = command.ExecuteReader();
         List<int> items = new();
-        if(reader.Read())
+        if (reader.Read())
             items.Add(reader.GetFieldValue<int>(Id));
         return items;
     }
@@ -151,9 +145,9 @@ public sealed class UserRepository : Repository,IUserRepository
         command.Parameters.AddRange(
             new[]
             {
-                new SqlParameter{ParameterName = LoginVar, SqlDbType = SqlDbType.NVarChar, Value = credential.Login},
-                new SqlParameter{ParameterName = PasswordVar,SqlDbType = SqlDbType.NVarChar,Value = credential.Password},
-                new SqlParameter{ParameterName = IdVar,SqlDbType = SqlDbType.Int,Value = animationId}
+                LoginParameter(credential.Login),
+                PasswordParameter(credential.Password),
+                IdParameter(animationId)
             });
         return command.ExecuteNonQuery() > 0;
     }
@@ -164,9 +158,9 @@ public sealed class UserRepository : Repository,IUserRepository
         command.Parameters.AddRange(
             new[]
             {
-                new SqlParameter{ParameterName = LoginVar, SqlDbType = SqlDbType.NVarChar, Value = credential.Login},
-                new SqlParameter{ParameterName = PasswordVar,SqlDbType = SqlDbType.NVarChar,Value = credential.Password},
-                new SqlParameter{ParameterName = IdVar,SqlDbType = SqlDbType.Int,Value = checkersId}
+                LoginParameter(credential.Login),
+                PasswordParameter(credential.Password),
+                IdParameter(checkersId)
             });
         return command.ExecuteNonQuery() > 0;
     }
@@ -182,11 +176,11 @@ public sealed class UserRepository : Repository,IUserRepository
         command.Parameters.AddRange(
             new[]
             {
-                new SqlParameter{ParameterName = LoginVar, SqlDbType = SqlDbType.NVarChar, Value = user.Login},
-                new SqlParameter{ParameterName = PasswordVar,SqlDbType = SqlDbType.NVarChar,Value = user.Password},
+                LoginParameter(user.Login),
+                PasswordParameter(user.Password)
             });
-        using var reader = command.ExecuteReader();
-        return reader.Read();
+        command.ExecuteNonQuery();
+        return command.GetReturn() != InvalidId;
     }
 
     public bool UpdateUserNick(Credential credential, string nick)
@@ -195,9 +189,9 @@ public sealed class UserRepository : Repository,IUserRepository
         command.Parameters.AddRange(
             new[]
             {
-                new SqlParameter{ParameterName = LoginVar, SqlDbType = SqlDbType.NVarChar, Value = credential.Login},
-                new SqlParameter{ParameterName = PasswordVar,SqlDbType = SqlDbType.NVarChar,Value = credential.Password},
-                new SqlParameter{ParameterName = IdVar,SqlDbType = SqlDbType.NVarChar,Value = nick}
+                LoginParameter(credential.Login),
+                PasswordParameter(credential.Password),
+                new SqlParameter{ParameterName = NickVar,SqlDbType = SqlDbType.NVarChar,Value = nick}
             });
         return command.ExecuteNonQuery() > 0;
     }
@@ -208,9 +202,9 @@ public sealed class UserRepository : Repository,IUserRepository
         command.Parameters.AddRange(
             new[]
             {
-                new SqlParameter{ParameterName = LoginVar, SqlDbType = SqlDbType.NVarChar, Value = credential.Login},
-                new SqlParameter{ParameterName = PasswordVar,SqlDbType = SqlDbType.NVarChar,Value = credential.Password},
-                new SqlParameter{ParameterName = IdVar,SqlDbType = SqlDbType.NVarChar,Value = login}
+                LoginParameter(credential.Login),
+                PasswordParameter(credential.Password),
+                new SqlParameter{ParameterName = NewLoginVar,SqlDbType = SqlDbType.NVarChar,Value = login}
             });
         return command.ExecuteNonQuery() > 0;
     }
@@ -221,9 +215,9 @@ public sealed class UserRepository : Repository,IUserRepository
         command.Parameters.AddRange(
             new[]
             {
-                new SqlParameter{ParameterName = LoginVar, SqlDbType = SqlDbType.NVarChar, Value = credential.Login},
-                new SqlParameter{ParameterName = PasswordVar,SqlDbType = SqlDbType.NVarChar,Value = credential.Password},
-                new SqlParameter{ParameterName = IdVar,SqlDbType = SqlDbType.NVarChar,Value = password}
+                LoginParameter(credential.Login),
+                PasswordParameter(credential.Password),
+                new SqlParameter{ParameterName = NewPasswordVar,SqlDbType = SqlDbType.NVarChar,Value = password}
             });
         return command.ExecuteNonQuery() > 0;
     }
@@ -234,16 +228,16 @@ public sealed class UserRepository : Repository,IUserRepository
         command.Parameters.AddRange(
             new[]
             {
-                new SqlParameter{ParameterName = LoginVar, SqlDbType = SqlDbType.NVarChar, Value = credential.Login},
-                new SqlParameter{ParameterName = PasswordVar,SqlDbType = SqlDbType.NVarChar,Value = credential.Password},
-                new SqlParameter{ParameterName = IdVar,SqlDbType = SqlDbType.NVarChar,Value = email}
+                LoginParameter(credential.Login),
+                PasswordParameter(credential.Password),
+                new SqlParameter{ParameterName = EmailVar,SqlDbType = SqlDbType.NVarChar,Value = email}
             });
         return command.ExecuteNonQuery() > 0;
     }
 
     public IEnumerable<PublicUserData> GetUsersByNick(string pattern)
     {
-        using var command = CreateProcedure(UpdateUserAnimationProc);
+        using var command = CreateProcedure(SelectUserByNickProc);
         command.Parameters.AddRange(
             new[]
             {
@@ -252,21 +246,21 @@ public sealed class UserRepository : Repository,IUserRepository
         using var reader = command.ExecuteReader();
         List<PublicUserData> list = new();
         while (reader.Read())
-            list.Add(new PublicUserData
-            {
-                Id = reader.GetFieldValue<int>(Id),
-                Nick = reader.GetFieldValue<string>(Nick),
-                SocialCredit = reader.GetFieldValue<int>(SocialCredit),
-                PictureId = reader.GetFieldValue<int>(PictureId),
-                SelectedAnimationId = reader.GetFieldValue<int>(AnimationId),
-                SelectedCheckersId = reader.GetFieldValue<int>(CheckersId),
-            });
+            list.Add(reader.GetUser());
         return list;
     }
 
     public bool AddFriend(Credential credential, int userId)
     {
-        throw new NotImplementedException();
+        using var command = CreateProcedure(CreateFriendshipProc);
+        command.Parameters.AddRange(
+            new[]
+            {
+                LoginParameter(credential.Login),
+                PasswordParameter(credential.Password),
+                IdParameter(userId)
+            });
+        return command.ExecuteNonQuery() > 0;
     }
 
     public bool DeleteFriend(Credential credential, int userId)

@@ -4,7 +4,7 @@ using System.Data;
 using Checkers.Data.Entity;
 using Checkers.Data.Repository.Interface;
 using Microsoft.Data.SqlClient;
-using static Checkers.Data.Repository.MSSqlImplementation.UserRepository;
+using static Checkers.Data.Repository.MSSqlImplementation.SqlExtensions;
 
 namespace Checkers.Data.Repository.MSSqlImplementation;
 
@@ -18,10 +18,8 @@ public sealed class NewsRepository: Repository, INewsRepository
     public const string ArticleCreated = "[article_created]";
     public const string ArticlePictureId = "[article_picture_id]";
     public const string ArticlePostId = "[article_post_id]";
-    public const string ArticleId = "[article_id]";
 
     public const string CreateArticleProc = "[SP_CreateArticle]";
-    public const string SelectArticleInfoProc = "[SP_SelectArticleInfo]";
     public const string SelectArticleProc = "[SP_SelectArticleProc]";
     public const string SelectNewsProc = "[SP_SelectNews]";
     public const string UpdateArticleTitleProc = "[SP_UpdateArticleTitle]";
@@ -36,7 +34,7 @@ public sealed class NewsRepository: Repository, INewsRepository
     public const string ArticleContentVar = "@article_content";
     public const string ArticlePostIdVar = "@article_post_id";
 
-    public NewsRepository(SqlConnection connection) : base(connection) { }
+    internal NewsRepository(SqlConnection connection) : base(connection) { }
 
     public bool CreateArticle(Credential credential, ArticleCreationData article)
     {
@@ -44,8 +42,8 @@ public sealed class NewsRepository: Repository, INewsRepository
         command.Parameters.AddRange(
             new[]
             {
-                new SqlParameter{ParameterName = LoginVar, SqlDbType = SqlDbType.NVarChar, Value = credential.Login},
-                new SqlParameter{ParameterName = PasswordVar,SqlDbType = SqlDbType.NVarChar,Value = credential.Password},
+                LoginParameter(credential.Login),
+                PasswordParameter(credential.Password),
                 new SqlParameter{ParameterName = ArticleTitleVar,SqlDbType = SqlDbType.NVarChar,Value = article.Title},
                 new SqlParameter{ParameterName = ArticleAbstract,SqlDbType = SqlDbType.NVarChar,Value = article.Abstract},
                 new SqlParameter{ParameterName = ArticleContent,SqlDbType = SqlDbType.NVarChar,Value = article.Content},
@@ -56,27 +54,72 @@ public sealed class NewsRepository: Repository, INewsRepository
 
     public bool UpdateTitle(Credential credential, int id, string title)
     {
-        throw new NotImplementedException();
+        using var command = CreateProcedure(UpdateArticleTitleProc);
+        command.Parameters.AddRange(
+            new[]
+            {
+                LoginParameter(credential.Login),
+                PasswordParameter(credential.Password),
+                IdParameter(id),
+                new SqlParameter{ParameterName = ArticleTitleVar,SqlDbType = SqlDbType.NVarChar,Value = title}
+            });
+        return command.ExecuteNonQuery() > 0;
     }
 
     public bool UpdateAbstract(Credential credential, int id, string @abstract)
     {
-        throw new NotImplementedException();
+        using var command = CreateProcedure(UpdateArticleAbstractProc);
+        command.Parameters.AddRange(
+            new[]
+            {
+                LoginParameter(credential.Login),
+                PasswordParameter(credential.Password),
+                IdParameter(id),
+                new SqlParameter{ParameterName = ArticleAbstractVar,SqlDbType = SqlDbType.NVarChar,Value = @abstract}
+            });
+        return command.ExecuteNonQuery() > 0;
     }
 
     public bool UpdateContent(Credential credential, int id, string content)
     {
-        throw new NotImplementedException();
+        using var command = CreateProcedure(UpdateArticleContentProc);
+        command.Parameters.AddRange(
+            new[]
+            {
+                LoginParameter(credential.Login),
+                PasswordParameter(credential.Password),
+                IdParameter(id),
+                new SqlParameter{ParameterName = ArticleContentVar,SqlDbType = SqlDbType.NVarChar,Value = content}
+            });
+        return command.ExecuteNonQuery() > 0;
     }
 
     public bool UpdatePictureId(Credential credential, int id, int pictureId)
     {
-        throw new NotImplementedException();
+        using var command = CreateProcedure(UpdateArticlePictureIdProc);
+        command.Parameters.AddRange(
+            new[]
+            {
+                LoginParameter(credential.Login),
+                PasswordParameter(credential.Password),
+                IdParameter(id),
+                new SqlParameter{ParameterName = ArticlePictureIdVar,SqlDbType = SqlDbType.Int,Value = pictureId}
+            });
+        return command.ExecuteNonQuery() > 0;
     }
 
     public bool UpdatePostId(Credential credential, int id, int postId)
     {
-        throw new NotImplementedException();
+        using var command = CreateProcedure(UpdateArticlePostIdProc);
+        command.Parameters.AddRange(
+            new[]
+            {
+                LoginParameter(credential.Login),
+                PasswordParameter(credential.Password),
+                IdParameter(id),
+                new SqlParameter{ParameterName = ArticlePostIdVar,SqlDbType = SqlDbType.Int,Value = postId}
+            });
+        return command.ExecuteNonQuery() > 0;
     }
 
     public bool DeleteArticle(Credential credential, int articleId)
@@ -86,18 +129,16 @@ public sealed class NewsRepository: Repository, INewsRepository
 
     public Article GetArticle(int articleId)
     {
-        var article = new Article();
         using var command = CreateProcedure(SelectArticleProc);
         command.Parameters.Add(new SqlParameter { ParameterName = IdVar, SqlDbType = SqlDbType.Int, Value = articleId });
         using var reader = command.ExecuteReader();
-        if (!reader.Read()) return article;
-        article.Id = reader.GetFieldValue<int>(Id);
-        article.Title = reader.GetFieldValue<string>(ArticleTitle);
-        article.Abstract = reader.GetFieldValue<string>(ArticleAbstract);
-        article.PictureId = reader.GetFieldValue<int>(ArticlePictureId);
-        article.Updated = reader.GetFieldValue<DateTime>(ArticleCreated);
-        article.PostId = reader.GetFieldValue<int>(ArticlePostId);
-        return article;
+        if (!reader.Read()) return Article.Invalid;
+        return new Article(reader.GetArticle())
+        {
+            PostId = reader.GetFieldValue<int>(ArticlePostId),
+            Content = reader.GetFieldValue<string>(ArticleContent),
+            Updated = reader.GetFieldValue<DateTime>(ArticleCreated)
+        };
     }
 
     public IEnumerable<ArticleInfo> GetNews()
@@ -106,13 +147,7 @@ public sealed class NewsRepository: Repository, INewsRepository
         using var command = CreateProcedure(SelectNewsProc);
         using var reader = command.ExecuteReader();
         if (!reader.Read()) return list;
-        list.Add(new ArticleInfo
-        {
-            Id = reader.GetFieldValue<int>(Id),
-            Title = reader.GetFieldValue<string>(ArticleTitle),
-            Abstract = reader.GetFieldValue<string>(ArticleAbstract),
-            PictureId = reader.GetFieldValue<int>(ArticlePictureId)
-        });
+        list.Add(reader.GetArticle());
         return list;
     }
     

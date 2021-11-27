@@ -10,9 +10,9 @@ namespace WebService.Controllers;
 [Route("api/"+WebApiBase.NewsRoute)]
 public class NewsController : Controller
 {
-    public NewsController(RepositoryFactory factory)
+    public NewsController(Repository.Factory factory)
     {
-        _repository = factory.GetRepository<NewsRepository>();
+        _repository = factory.Get<NewsRepository>();
     }
 
     private readonly INewsRepository _repository;

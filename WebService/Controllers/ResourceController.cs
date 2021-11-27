@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using Checkers.Api.WebImplementation;
 using Checkers.Data.Entity;
@@ -12,15 +13,15 @@ namespace WebService.Controllers;
 [Route("api/"+WebApiBase.ResourceRoute)]
 public class ResourceController : Controller
 {
-    public ResourceController(RepositoryFactory factory)
+    public ResourceController(Repository.Factory factory)
     {
-        _repository = factory.GetRepository<ResourceRepository>();
+        _repository = factory.Get<ResourceRepository>();
     }
     private readonly IResourceRepository _repository;
     [HttpPost]
-    public IActionResult UploadFile([FromQuery] Credential credential,[FromBody] byte[] picture, [FromQuery] string ext)
+    public IActionResult UploadFile([FromQuery] Credential credential,[FromBody] string picture, [FromQuery] string ext)
     {
-        return new JsonResult(_repository.CreateFile(credential,picture,ext));
+        return new JsonResult(_repository.CreateFile(credential,Convert.FromBase64String(picture),ext));
     }
 
     [HttpGet("{id:int}")]

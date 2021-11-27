@@ -12,6 +12,5 @@ public interface IAsyncForumApi
     Task<bool> UpdatePicture(Credential credential,int postId, int imageId);
     Task<bool> DeletePost(Credential credential, int postId);
     Task<(bool,Post)> TryGetPost(int postId);
-    Task<bool> CommentPost(Credential credential, int postId, string comment);
     Task<(bool,IEnumerable<PostInfo>)> TryGetPosts();
 }

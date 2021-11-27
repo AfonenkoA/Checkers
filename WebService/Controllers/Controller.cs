@@ -1,6 +1,4 @@
-﻿using Checkers.Data.Old;
-using Checkers.Data.Repository.MSSqlImplementation;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace WebService.Controllers;
 

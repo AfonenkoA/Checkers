@@ -12,9 +12,9 @@ namespace WebService.Controllers;
 public class ChatController : Controller
 {
 
-    public ChatController(RepositoryFactory factory)
+    public ChatController(Repository.Factory factory)
     {
-        _repository = factory.GetRepository<ChatRepository>();
+        _repository = factory.Get<ChatRepository>();
     }
 
     private readonly IChatRepository _repository;

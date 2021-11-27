@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
+using System.Reflection;
 using Microsoft.Data.SqlClient;
 
 namespace Checkers.Data.Repository.MSSqlImplementation;
@@ -7,11 +9,32 @@ public class Repository
 {
     public const string Id = "id";
     public const string IdVar = "@id";
-    public const string StringType = "NVARCHAR(300)";
+    public const string StringType = "NVARCHAR(MAX)";
+    public const string UniqueStringType = "NVARCHAR(300)";
     public const string BinaryType = "VARBINARY(MAX)";
     public const string Schema = "Checkers.dbo";
     public const string Identity = $"{Id}			INT				NOT NULL	IDENTITY(1,1)	PRIMARY KEY";
-    public const string InvalidId = "-1";
+    public const int InvalidId = -1;
+
+    public sealed class Factory
+    {
+        private static readonly Exception Fail = new InvalidOperationException();
+        private readonly SqlConnection connection;
+        public Factory(string connection)
+        {
+            this.connection = new SqlConnection(connection);
+        }
+
+        public T Get<T>() where T : Repository
+        {
+            var type = typeof(T);
+            var instance = type.Assembly.CreateInstance(
+                type.FullName ?? throw Fail, false,
+                BindingFlags.Instance | BindingFlags.NonPublic,
+                null, new object[]{connection}, null, null);
+            return (T?) instance ?? throw Fail;
+        }
+    }
 
     private readonly SqlConnection _connection;
 
@@ -34,14 +57,8 @@ public class Repository
 
     protected SqlCommand CreateProcedure(string name)=> new(name, Connection){CommandType = CommandType.StoredProcedure};
     
-    public static string Fk(string s1, string s2, string s ="") =>
-        $"CONSTRAINT FK_{Unwrap(s1)}_{Unwrap(s2)}{s}    FOREIGN KEY REFERENCES {s2}({Id})";
+    public static string Fk(string t1, string t2, string s ="") =>
+        $"CONSTRAINT FK_{Unwrap(t1)}_{Unwrap(t2)}{s}    FOREIGN KEY REFERENCES {t2}({Id})";
     internal static string Unwrap(string s) => s.Replace("[", "").Replace("]", "");
 
-}
-
-internal static class SqlExtensions
-{
-    internal static int GetReturn(this SqlCommand command) => (int)command.Parameters["@RETURN_VALUE"].Value;
-    internal static T GetFieldValue<T>(this SqlDataReader reader, string col) => (T)reader[Repository.Unwrap(col)];
 }

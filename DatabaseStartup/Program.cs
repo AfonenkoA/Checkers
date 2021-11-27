@@ -31,7 +31,7 @@ CREATE TABLE {ResourceTable}
 CREATE TABLE {ItemTypeTable}
 (
 {Identity},
-{ItemTypeName}	{StringType}	NOT NULL	UNIQUE
+{ItemTypeName}	{UniqueStringType}	NOT NULL	UNIQUE
 );
 
 CREATE TABLE {ItemTable}
@@ -41,7 +41,7 @@ CREATE TABLE {ItemTable}
 {ItemTypeId}    INT             NOT NULL	{Fk(ItemTable,ItemTypeTable)},
 {ResourceId}    INT             NOT NULL	{Fk(ItemTable, ResourceTable)},
 {Detail}        {StringType}    NOT NULL,
-{ItemName}		{StringType}	NOT NULL,
+{ItemName}		{UniqueStringType}	NOT NULL    UNIQUE,
 {Price}		    INT				NOT NULL
 );
 
@@ -79,7 +79,7 @@ CREATE TABLE {AnimationTable}
 CREATE TABLE {UserTypeTable}
 (
 {Identity},
-{UserTypeName}  {StringType}    NOT NULL
+{UserTypeName}  {UniqueStringType}    NOT NULL UNIQUE
 );
 
 CREATE TABLE {UserTable}
@@ -88,11 +88,12 @@ CREATE TABLE {UserTable}
 {UserTypeId}        INT		        NOT NULL	{Fk(UserTable, UserTypeTable)}      DEFAULT 1,
 {LastActivity}	    DATETIME		NOT NULL	DEFAULT GETDATE(),
 {Nick}              {StringType}    NOT NULL,
-{Login}		        {StringType}	NOT NULL	UNIQUE,
+{Login}		        {UniqueStringType}	NOT NULL	UNIQUE,
 {Password}		    {StringType}	NOT NULL,
 {Email}			    {StringType}	NOT NULL,
 {PictureId}		    INT				NOT NULL	{Fk(UserTable,PictureTable)}        DEFAULT 1,
 {SocialCredit}      INT             NOT NULL    DEFAULT 1000,
+{Currency}          INT             NOT NULL    DEFAULT 1000,
 {CheckersId}        INT             NOT NULL    {Fk(UserTable,CheckersTable)}       DEFAULT 1,
 {AnimationId}       INT             NOT NULL    {Fk(UserTable,AnimationTable)}      DEFAULT 1
 );
@@ -107,20 +108,20 @@ CREATE TABLE {UserItemTable}
 CREATE TABLE {ChatTypeTable}
 (
 {Identity},
-{ChatTypeName}      {StringType}    NOT NULL
+{ChatTypeName}      {UniqueStringType}    NOT NULL UNIQUE
 );
 
 CREATE TABLE {ChatTable}
 (
 {Identity},
-{ChatName}      {StringType}    NOT NULL,
-{ChatTypeId}    INT             NOT NULL {Fk(ChatTable,ChatTypeTable)}
+{ChatName}      {UniqueStringType}  NOT NULL  UNIQUE,
+{ChatTypeId}    INT                 NOT NULL {Fk(ChatTable,ChatTypeTable)}
 );
 
 CREATE TABLE {FriendshipStateTable}
 (
 {Identity},
-{FriendshipStateName} {StringType}  NOT NULL
+{FriendshipStateName} {UniqueStringType}  NOT NULL UNIQUE
 );
 
 CREATE TABLE {FriendshipTable}
@@ -168,40 +169,40 @@ CREATE TABLE {ArticleTable}
 
 
 GO
-CREATE PROCEDURE {GetItemTypeByTypeNameProc} {ItemTypeNameVar} {StringType}
+CREATE PROCEDURE {GetItemTypeByTypeNameProc} {ItemTypeNameVar} {UniqueStringType}
 AS
 BEGIN
     RETURN (SELECT {Id} FROM {Schema}.{ItemTypeTable} WHERE {ItemTypeName}={ItemTypeNameVar})
 END
 
 GO
-CREATE PROCEDURE {GetUserTypeByTypeNameProc} {UserTypeNameVar} {StringType}
+CREATE PROCEDURE {GetUserTypeByTypeNameProc} {UserTypeNameVar} {UniqueStringType}
 AS
 BEGIN
     RETURN (SELECT {Id} FROM {Schema}.{UserTypeTable} WHERE {UserTypeName}={UserTypeNameVar})
 END
 
 GO
-CREATE PROCEDURE {GetChatTypeByNameProc} {ChatTypeNameVar} {StringType}
+CREATE PROCEDURE {GetChatTypeByNameProc} {ChatTypeNameVar} {UniqueStringType}
 AS
 BEGIN
     RETURN (SELECT {Id} FROM {Schema}.{ChatTypeTable} WHERE {ChatTypeName}={ChatTypeNameVar})
 END
 
 GO
-CREATE PROCEDURE {GetFriendshipStateByNameProc} {FriendshipStateNameVar} {StringType}
+CREATE PROCEDURE {GetFriendshipStateByNameProc} {FriendshipStateNameVar} {UniqueStringType}
 AS
 BEGIN
     RETURN (SELECT {Id} FROM {Schema}.{FriendshipStateTable} WHERE {FriendshipStateName}={FriendshipStateNameVar})
 END
 
 GO
-CREATE PROCEDURE {CheckAccessProc} {IdVar} INT, {UserTypeNameVar} {StringType}
+CREATE PROCEDURE {CheckAccessProc} {IdVar} INT, {UserTypeNameVar} {UniqueStringType}
 AS
 BEGIN
     DECLARE {UserTypeIdVar} INT, {AdminTypeIdVar} INT, {RequestedTypeIdVar} INT
     SET {UserTypeIdVar} = (SELECT {UserTypeId} FROM {Schema}.{UserTable} WHERE {Id}={IdVar});
-    EXEC {AdminTypeIdVar} = {GetUserTypeByTypeNameProc}'{UserType.Admin}';
+    EXEC {AdminTypeIdVar} = {GetUserTypeByTypeNameProc} '{UserType.Admin}';
     EXEC {RequestedTypeIdVar} = {GetUserTypeByTypeNameProc} {UserTypeNameVar}
     IF {UserTypeIdVar}={AdminTypeIdVar} OR {UserTypeIdVar}={RequestedTypeIdVar}
         RETURN {ValidAccess}
@@ -218,7 +219,7 @@ BEGIN
 END
 
 GO
-CREATE PROCEDURE {CreateChatProc} {ChatNameVar} {StringType}, {ChatTypeNameVar} {StringType}
+CREATE PROCEDURE {CreateChatProc} {ChatNameVar} {UniqueStringType}, {ChatTypeNameVar} {UniqueStringType}
 AS
 BEGIN
     DECLARE {IdVar} INT
@@ -231,10 +232,11 @@ BEGIN
 END
 
 GO
-CREATE PROCEDURE {CreateFriendship} {User1IdVar} INT,{User2IdVar} INT
+CREATE PROCEDURE {CreateFriendshipProc} {User1IdVar} INT,{User2IdVar} INT
 AS
 BEGIN
-    DECLARE {ChatIdVar} INT, @u1_login {StringType}, @u2_login {StringType}, {ChatNameVar} {StringType}, {IdVar} INT
+    DECLARE {ChatIdVar} INT, @u1_login {UniqueStringType}, @u2_login {UniqueStringType},
+    {ChatNameVar} {UniqueStringType}, {IdVar} INT
     BEGIN TRANSACTION;  
     SET @u1_login = (SELECT {Login} FROM {Schema}.{UserTable} WHERE {Id}={User1IdVar});
     SET @u2_login = (SELECT {Login} FROM {Schema}.{UserTable} WHERE {Id}={User2IdVar});
@@ -248,10 +250,10 @@ END
 
 
 GO
-CREATE PROCEDURE {UpdateUserActivityProc} {LoginVar} {StringType}, {PasswordVar} {StringType}
+CREATE PROCEDURE {UpdateUserActivityProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
 AS
 BEGIN
-    UPDATE {UserTable} SET {LastActivity}=GETDATE() WHERE {UserAuthCondition}
+    UPDATE {Schema}.{UserTable} SET {LastActivity}=GETDATE() WHERE {UserAuthCondition}
 END
 
 GO
@@ -281,7 +283,7 @@ BEGIN
 END
 
 GO
-CREATE PROCEDURE {UserAddItem} {UserIdVar} INT, {ItemIdVar} INT
+CREATE PROCEDURE {UserAddItemProc} {UserIdVar} INT, {ItemIdVar} INT
 AS
 BEGIN
     INSERT INTO {Schema}.{UserItemTable}({UserId},{ItemId}) VALUES ({UserIdVar},{ItemIdVar}); 
@@ -290,10 +292,10 @@ END
 GO
 CREATE PROCEDURE {CreateUserProc}
 {NickVar} {StringType},
-{LoginVar} {StringType},
+{LoginVar} {UniqueStringType},
 {PasswordVar} {StringType},
 {EmailVar} {StringType},
-{UserTypeNameVar} {StringType}
+{UserTypeNameVar} {UniqueStringType}
 AS
 BEGIN
     DECLARE {UserIdVar} INT, @support_id INT, {IdVar} INT
@@ -305,14 +307,14 @@ BEGIN
         BEGIN
         EXEC {IdVar} = {GetUserTypeByTypeNameProc} '{UserType.Support}'
         SET @support_id = (SELECT TOP 1 {Id} FROM {Schema}.{UserTable} WHERE {UserTypeId} = {IdVar});
-        EXEC {CreateFriendship} {UserIdVar}, @support_id
+        EXEC {CreateFriendshipProc} {UserIdVar}, @support_id
         END
     SET {IdVar} = (SELECT TOP 1 {ItemId} FROM {AnimationTable});
-    EXEC {UserAddItem} {UserIdVar}, {IdVar};
+    EXEC {UserAddItemProc} {UserIdVar}, {IdVar};
     SET {IdVar} = (SELECT TOP 1 {ItemId} FROM {CheckersTable});
-    EXEC {UserAddItem} {UserIdVar}, {IdVar};
+    EXEC {UserAddItemProc} {UserIdVar}, {IdVar};
     SET {IdVar} = (SELECT TOP 1 {ItemId} FROM {PictureTable});
-    EXEC {UserAddItem} {UserIdVar}, {IdVar};
+    EXEC {UserAddItemProc} {UserIdVar}, {IdVar};
     COMMIT;
     RETURN {UserIdVar}
 END
@@ -321,9 +323,7 @@ GO
 CREATE PROCEDURE {SelectUserProc} {IdVar} INT
 AS
 BEGIN
-    SELECT {Id},{Nick},{PictureId},{CheckersId},{AnimationId},{SocialCredit},{LastActivity},{UserTypeId}
-    FROM {Schema}.{UserTable}
-    WHERE {Id}={IdVar}
+    SELECT * FROM {Schema}.{UserTable} WHERE {Id}={IdVar}
 END
 
 GO 
@@ -337,15 +337,15 @@ BEGIN
 END
 
 GO  
-CREATE PROCEDURE {UpdateUserNickProc} {LoginVar} {StringType}, {PasswordVar} {StringType}, {NewNickVar} {StringType}
+CREATE PROCEDURE {UpdateUserNickProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {NickVar} {StringType}
 AS
 BEGIN
     EXEC {UpdateUserActivityProc} {LoginVar},{PasswordVar};
-    UPDATE {Schema}.{UserTable} SET {Nick}={NewNickVar} WHERE {UserAuthCondition};
+    UPDATE {Schema}.{UserTable} SET {Nick}={NickVar} WHERE {UserAuthCondition};
 END
 
 GO  
-CREATE PROCEDURE {UpdateUserLoginProc} {LoginVar} {StringType}, {PasswordVar} {StringType}, {NewLoginVar} {StringType}
+CREATE PROCEDURE {UpdateUserLoginProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {NewLoginVar} {UniqueStringType}
 AS
 BEGIN
     EXEC {UpdateUserActivityProc} {LoginVar},{PasswordVar};
@@ -353,7 +353,7 @@ BEGIN
 END
 
 GO  
-CREATE PROCEDURE {UpdateUserPasswordProc} {LoginVar} {StringType}, {PasswordVar} {StringType}, {NewPasswordVar} {StringType}
+CREATE PROCEDURE {UpdateUserPasswordProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {NewPasswordVar} {StringType}
 AS
 BEGIN
     EXEC {UpdateUserActivityProc} {LoginVar},{PasswordVar};
@@ -361,24 +361,22 @@ BEGIN
 END
 
 GO  
-CREATE PROCEDURE {UpdateUserEmailProc} {LoginVar} {StringType}, {PasswordVar} {StringType}, {NewEmailVar} {StringType}
+CREATE PROCEDURE {UpdateUserEmailProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {EmailVar} {StringType}
 AS
 BEGIN
     EXEC {UpdateUserActivityProc} {LoginVar},{PasswordVar};
-    UPDATE {Schema}.{UserTable} SET {Email}={NewEmailVar} WHERE {UserAuthCondition};
+    UPDATE {Schema}.{UserTable} SET {Email}={EmailVar} WHERE {UserAuthCondition};
 END
 
 GO
 CREATE PROCEDURE {SelectUserByNickProc} {NickVar} {StringType}
 AS
 BEGIN
-    SELECT {Id},{Nick},{PictureId},{CheckersId},{AnimationId},{SocialCredit}
-    FROM {Schema}.{UserTable}
-    WHERE {Nick} LIKE {NickVar}
+    SELECT * FROM {Schema}.{UserTable} WHERE {Nick} LIKE {NickVar}
 END
 
 GO
-CREATE PROCEDURE {AuthenticateProc} {LoginVar} {StringType}, {PasswordVar} {StringType}
+CREATE PROCEDURE {AuthenticateProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
 AS
 BEGIN
     DECLARE {IdVar} INT
@@ -392,7 +390,7 @@ END
 
 
 GO
-CREATE PROCEDURE {UpdateUserAnimationProc} {LoginVar} {StringType}, {PasswordVar} {StringType}, {IdVar} INT
+CREATE PROCEDURE {UpdateUserAnimationProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
 AS
 BEGIN
     DECLARE {UserIdVar} INT;
@@ -403,7 +401,7 @@ BEGIN
 END
 
 GO
-CREATE PROCEDURE {UpdateUserCheckersProc} {LoginVar} {StringType}, {PasswordVar} {StringType}, {IdVar} INT
+CREATE PROCEDURE {UpdateUserCheckersProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
 AS
 BEGIN
     DECLARE {UserIdVar} INT;
@@ -425,7 +423,7 @@ END
 GO
 CREATE PROCEDURE {CreateItemProc}
 {ItemTypeVar} {StringType},
-{ItemNameVar} {StringType},
+{ItemNameVar} {UniqueStringType},
 {DetailVar} {StringType},
 {PathVar} {StringType},
 {PriceVar} INT
@@ -445,12 +443,12 @@ BEGIN
 END
 
 GO
-CREATE PROCEDURE {CreatePostProc} {LoginVar} {StringType}, {PasswordVar} {StringType},
+CREATE PROCEDURE {CreatePostProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
 {PostTitleVar} {StringType}, {PostContentVar} {StringType},{PostPictureIdVar} INT
 AS
 BEGIN
     BEGIN TRANSACTION;
-    DECLARE {IdVar} INT, {UserIdVar} INT, {ChatNameVar} {StringType}
+    DECLARE {IdVar} INT, {UserIdVar} INT, {ChatNameVar} {UniqueStringType}
     EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar};
     IF {UserIdVar}!={InvalidId}
         BEGIN
@@ -474,7 +472,7 @@ BEGIN
 END
 
 GO
-CREATE PROCEDURE {CreateArticleProc} {LoginVar} {StringType}, {PasswordVar} {StringType},
+CREATE PROCEDURE {CreateArticleProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
 {ArticleTitleVar} {StringType}, {ArticleAbstractVar} {StringType}, 
 {ArticleContentVar} {StringType}, {ArticlePictureIdVar} INT
 AS
@@ -508,16 +506,6 @@ BEGIN
 END
 
 GO
-
-
-GO
-CREATE PROCEDURE {SelectArticleInfoProc} {IdVar} INT
-AS
-BEGIN
-    SELECT {Id},{ArticlePictureId},{ArticleTitle},{ArticleAbstract},{ArticlePictureId} FROM {Schema}.{ArticleTable} WHERE {Id}={IdVar};
-END
-
-GO
 CREATE PROCEDURE {SelectArticleProc} {IdVar} INT
 AS
 BEGIN
@@ -528,7 +516,7 @@ GO
 CREATE PROCEDURE {SelectNewsProc}
 AS
 BEGIN
-    SELECT {Id},{ArticlePictureId},{ArticleTitle},{ArticleAbstract},{ArticlePictureId} FROM {Schema}.{ArticleTable};
+    SELECT * FROM {Schema}.{ArticleTable};
 END
 
 
@@ -554,7 +542,7 @@ BEGIN
 END
 
 GO
-CREATE PROCEDURE {SendMessageProc} {LoginVar} {StringType},{PasswordVar} {StringType},
+CREATE PROCEDURE {SendMessageProc} {LoginVar} {UniqueStringType},{PasswordVar} {StringType},
 {ChatIdVar} INT,{MessageContentVar} {StringType}
 AS
 BEGIN
@@ -572,7 +560,7 @@ BEGIN
 END
 
 GO
-CREATE PROCEDURE {SelectMessageProc} {LoginVar} {StringType}, {PasswordVar} {StringType}, {ChatIdVar} INT
+CREATE PROCEDURE {SelectMessageProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {ChatIdVar} INT
 AS
 BEGIN
     DECLARE {UserIdVar} INT
@@ -583,7 +571,7 @@ END
 
 GO
 CREATE PROCEDURE {CreateAnimationProc}
-{ItemNameVar} {StringType},
+{ItemNameVar} {UniqueStringType},
 {DetailVar} {StringType},
 {PathVar} {StringType},
 {PriceVar} INT
@@ -597,7 +585,7 @@ END
 
 GO
 CREATE PROCEDURE {CreateAchievementProc}
-{ItemNameVar} {StringType},
+{ItemNameVar} {UniqueStringType},
 {DetailVar} {StringType},
 {PathVar} {StringType},
 {PriceVar} INT
@@ -611,7 +599,7 @@ END
 
 GO
 CREATE PROCEDURE {CreateCheckersSkinProc}
-{ItemNameVar} {StringType},
+{ItemNameVar} {UniqueStringType},
 {DetailVar} {StringType},
 {PathVar} {StringType},
 {PriceVar} INT
@@ -625,7 +613,7 @@ END
 
 GO
 CREATE PROCEDURE {CreatePictureProc}
-{ItemNameVar} {StringType},
+{ItemNameVar} {UniqueStringType},
 {DetailVar} {StringType},
 {PathVar} {StringType},
 {PriceVar} INT
@@ -639,7 +627,7 @@ END
 
 GO
 CREATE PROCEDURE {CreateLootBoxProc}
-{ItemNameVar} {StringType},
+{ItemNameVar} {UniqueStringType},
 {DetailVar} {StringType},
 {PathVar} {StringType},
 {PriceVar} INT
@@ -651,70 +639,107 @@ BEGIN
     RETURN {IdVar}
 END
 
+--Article
 GO
-CREATE PROCEDURE {UpdateArticleTitleProc} {IdVar} INT, {ArticleTitleVar} {StringType}
+CREATE PROCEDURE {UpdateArticleTitleProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
+{IdVar} INT, {ArticleTitleVar} {StringType}
 AS
 BEGIN
-    UPDATE {Schema}.{ArticleTable} SET {ArticleTitle} = {ArticleTitleVar} WHERE {Id}={IdVar}
+    DECLARE {AccessVar} INT, {UserIdVar} INT
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar};
+    EXEC {AccessVar} = {CheckAccessProc} {UserIdVar}, '{UserType.Editor}'
+    IF {AccessVar}={ValidAccess}
+        UPDATE {Schema}.{ArticleTable} SET {ArticleTitle} = {ArticleTitleVar} WHERE {Id}={IdVar}
 END
 
 GO
-CREATE PROCEDURE {UpdateArticleAbstractProc} {IdVar} INT, {ArticleAbstractVar} {StringType}
+CREATE PROCEDURE {UpdateArticleAbstractProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
+{IdVar} INT, {ArticleAbstractVar} {StringType}
 AS
 BEGIN
-    UPDATE {Schema}.{ArticleTable} SET {ArticleAbstract} = {ArticleAbstractVar} WHERE {Id}={IdVar}
+    DECLARE {AccessVar} INT, {UserIdVar} INT
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar};
+    EXEC {AccessVar} = {CheckAccessProc} {UserIdVar}, '{UserType.Editor}'
+    IF {AccessVar}={ValidAccess}
+        UPDATE {Schema}.{ArticleTable} SET {ArticleAbstract} = {ArticleAbstractVar} WHERE {Id}={IdVar}
 END
 
 GO
-CREATE PROCEDURE {UpdateArticleContentProc} {IdVar} INT, {ArticleContentVar} {StringType}
+CREATE PROCEDURE {UpdateArticleContentProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
+{IdVar} INT, {ArticleContentVar} {StringType}
 AS
 BEGIN
-    UPDATE {Schema}.{ArticleTable} SET {ArticleContent} = {ArticleContentVar} WHERE {Id}={IdVar}
+    DECLARE {AccessVar} INT, {UserIdVar} INT
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar};
+    EXEC {AccessVar} = {CheckAccessProc} {UserIdVar}, '{UserType.Editor}'
+    IF {AccessVar}={ValidAccess}
+        UPDATE {Schema}.{ArticleTable} SET {ArticleContent} = {ArticleContentVar} WHERE {Id}={IdVar}
 END
 
 GO
-CREATE PROCEDURE {UpdateArticlePictureIdProc} {IdVar} INT, {ArticlePictureIdVar} INT
+CREATE PROCEDURE {UpdateArticlePictureIdProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
+{IdVar} INT, {ArticlePictureIdVar} INT
 AS
 BEGIN
-    UPDATE {Schema}.{ArticleTable} SET {ArticlePictureId} = {ArticlePictureIdVar} WHERE {Id}={IdVar}
+    DECLARE {AccessVar} INT, {UserIdVar} INT
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar};
+    EXEC {AccessVar} = {CheckAccessProc} {UserIdVar}, '{UserType.Editor}'
+    IF {AccessVar}={ValidAccess}
+        UPDATE {Schema}.{ArticleTable} SET {ArticlePictureId} = {ArticlePictureIdVar} WHERE {Id}={IdVar}
+END
+
+--Post
+GO
+CREATE PROCEDURE {UpdateArticlePostIdProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
+{IdVar} INT, {ArticlePostIdVar} INT
+AS
+BEGIN
+    DECLARE {AccessVar} INT, {UserIdVar} INT, {PostAuthorIdVar} INT
+    SET {PostAuthorIdVar} = (SELECT {PostAuthorId} FROM {Schema}.{PostTable} WHERE {Id}={IdVar});
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar}
+    EXEC {AccessVar} = {CheckAccessProc} {UserIdVar}, '{UserType.Moderator}'
+    IF {AccessVar}={ValidAccess}
+        UPDATE {Schema}.{ArticleTable} SET {ArticlePostId} = {ArticlePostIdVar} WHERE {Id}={IdVar}
+END
+
+
+GO
+CREATE PROCEDURE {UpdatePostTitleProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
+{IdVar} INT, {PostTitleVar} {StringType}
+AS
+BEGIN
+    DECLARE {AccessVar} INT, {UserIdVar} INT, {PostAuthorIdVar} INT
+    SET {PostAuthorIdVar} = (SELECT {PostAuthorId} FROM {Schema}.{PostTable} WHERE {Id}={IdVar});
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar}
+    EXEC {AccessVar} = {CheckAccessProc} {UserIdVar}, '{UserType.Moderator}'
+    IF {PostAuthorIdVar}={UserIdVar} OR {AccessVar}={ValidAccess}
+        UPDATE {Schema}.{PostTable} SET {PostTitle}={PostTitleVar} WHERE {Id}={IdVar}
 END
 
 GO
-CREATE PROCEDURE {UpdateArticlePostIdProc} {IdVar} INT, {ArticlePostIdVar} INT
+CREATE PROCEDURE {UpdatePostContentProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
+{IdVar} INT, {PostContentVar} {StringType}
 AS
 BEGIN
-    UPDATE {Schema}.{ArticleTable} SET {ArticlePostId} = {ArticlePostIdVar} WHERE {Id}={IdVar}
+    DECLARE {AccessVar} INT, {UserIdVar} INT, {PostAuthorIdVar} INT
+    SET {PostAuthorIdVar} = (SELECT {PostAuthorId} FROM {Schema}.{PostTable} WHERE {Id}={IdVar});
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar}
+    EXEC {AccessVar} = {CheckAccessProc} {UserIdVar}, '{UserType.Moderator}'
+    IF {PostAuthorIdVar}={UserIdVar} OR {AccessVar}={ValidAccess}
+        UPDATE {Schema}.{PostTable} SET {PostContent}={PostContentVar} WHERE {Id}={IdVar}
 END
 
 GO
-CREATE PROCEDURE {UpdatePostTitleProc} {IdVar} INT, {PostTitleVar} {StringType}
+CREATE PROCEDURE {UpdatePostPictureIdProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, 
+{IdVar} INT, {PostPictureIdVar} INT
 AS
 BEGIN
-    UPDATE {Schema}.{PostTable} SET {PostTitle}={PostTitleVar} WHERE {Id}={IdVar}
-END
-
-GO
-CREATE PROCEDURE {UpdatePostContentProc} {IdVar} INT, {PostContentVar} {StringType}
-AS
-BEGIN
-    UPDATE {Schema}.{PostTable} SET {PostContent}={PostContentVar} WHERE {Id}={IdVar}
-END
-
-GO
-CREATE PROCEDURE {UpdatePostPictureIdProc} {IdVar} INT, {PostPictureIdVar} INT
-AS
-BEGIN
-    UPDATE {Schema}.{PostTable} SET {PostPictureId}={PostPictureIdVar} WHERE {Id}={IdVar}
-END
-
-GO
-CREATE PROCEDURE {CommentPostProc} {LoginVar} {StringType}, {PasswordVar} {StringType},
-{PostIdVar} INT, {MessageContentVar} {StringType}
-AS
-BEGIN
-    DECLARE {IdVar} INT
-    SET {IdVar} = (SELECT {ChatId} FROM {Schema}.{PostTable} WHERE {IdVar}={PostIdVar});
-    INSERT INTO {Schema}.{MessageTable}({ChatId},{MessageContent}) VALUES ({IdVar},{MessageContentVar});
+    DECLARE {AccessVar} INT, {UserIdVar} INT, {PostAuthorIdVar} INT
+    SET {PostAuthorIdVar} = (SELECT {PostAuthorId} FROM {Schema}.{PostTable} WHERE {Id}={IdVar});
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar}
+    EXEC {AccessVar} = {CheckAccessProc} {UserIdVar}, '{UserType.Moderator}'
+    IF {PostAuthorIdVar}={UserIdVar} OR {AccessVar}={ValidAccess}
+        UPDATE {Schema}.{PostTable} SET {PostPictureId}={PostPictureIdVar} WHERE {Id}={IdVar}
 END
 
 GO 
@@ -722,24 +747,22 @@ CREATE PROCEDURE {SelectTopPlayersProc}
 AS
 BEGIN
     WITH {OrderedPlayers} AS
-    (SELECT ROW_NUMBER() OVER(ORDER BY {SocialCredit} DESC) AS {StatisticPosition},
-    {Id},{Nick},{PictureId},{CheckersId},{AnimationId},{SocialCredit},{LastActivity},{UserTypeId}
-    FROM {Schema}.{UserTable})
+    (SELECT ROW_NUMBER() OVER(ORDER BY {SocialCredit} DESC) AS {StatisticPosition}, U.*
+    FROM {Schema}.{UserTable} AS U) 
     SELECT * FROM {OrderedPlayers}
     WHERE {StatisticPosition} < 2
     ORDER BY {SocialCredit} DESC;
 END
 
 GO
-CREATE PROCEDURE {SelectTopPlayersAuthProc} {LoginVar} {StringType}, {PasswordVar} {StringType}
+CREATE PROCEDURE {SelectTopPlayersAuthProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
 AS
 BEGIN
     DECLARE {IdVar} INT
     EXEC {IdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar};
     WITH {OrderedPlayers} AS
-    (SELECT ROW_NUMBER() OVER(ORDER BY {SocialCredit} DESC) AS {StatisticPosition},
-    {Id},{Nick},{PictureId},{CheckersId},{AnimationId},{SocialCredit},{LastActivity},{UserTypeId}
-    FROM {Schema}.{UserTable})
+    (SELECT ROW_NUMBER() OVER(ORDER BY {SocialCredit} DESC) AS {StatisticPosition}, U.*
+    FROM {Schema}.{UserTable} AS U)
     SELECT * FROM {OrderedPlayers}
     WHERE {StatisticPosition} < 2 OR {Id}={IdVar}
     ORDER BY {SocialCredit} DESC;

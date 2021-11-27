@@ -11,6 +11,5 @@ public interface IForumRepository
     bool UpdatePictureId(Credential credential, int postId, int imageId);
     bool DeletePost(Credential credential, int postId);
     Post GetPost(int postId);
-    bool CommentPost(Credential credential, int postId, string comment);
     IEnumerable<PostInfo> GetPosts();
 }

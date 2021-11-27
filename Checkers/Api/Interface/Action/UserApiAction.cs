@@ -1,19 +1,4 @@
-﻿namespace Checkers.Api;
-
-public class ApiAction
-{
-    private readonly string name;
-
-    protected ApiAction(string name)
-    {
-        this.name = name;
-    }
-
-    public override string ToString()
-    {
-        return name;
-    }
-}
+﻿namespace Checkers.Api.Interface.Action;
 
 public sealed class UserApiAction : ApiAction
 {
@@ -47,37 +32,4 @@ public sealed class UserApiAction : ApiAction
     public const string DeleteFriendValue = "delete-friend";
     public const string AcceptFriendValue = "accept-friend";
     public const string GetUsersByNickValue = "get-by-nick";
-}
-
-
-public sealed class ItemApiAction : ApiAction
-{
-    private ItemApiAction(string name) : base(name)
-    { }
-}
-
-public sealed class ResourceApiAction : ApiAction
-{
-    private ResourceApiAction(string name) : base(name)
-    { }
-
-    public static readonly ResourceApiAction Upload = new(UploadValue); 
-
-    public const string UploadValue = "upload";
-}
-
-public sealed class NewsApiAction : ApiAction
-{
-    private NewsApiAction(string name) : base(name)
-    {
-    }
-
-    public static readonly NewsApiAction Create = new(CreateValue);
-    public static readonly NewsApiAction Update = new(UpdateValue);
-    public static readonly NewsApiAction Delete = new(DeleteValue);
-
-
-    public const string CreateValue = "create";
-    public const string UpdateValue = "update";
-    public const string DeleteValue = "delete";
 }

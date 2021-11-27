@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Checkers.Data.Entity;
 
@@ -14,10 +12,20 @@ public class PostCreationData
 public class PostInfo : PostCreationData
 {
     public int Id { get; set; } = -1;
+    public static readonly PostInfo Invalid = new();
 }
 
 public sealed class Post : PostInfo
 {
-    public IEnumerable<Message> Comments { get; set; } = Enumerable.Empty<Message>();
+    public Post(PostInfo data)
+    {
+        Id = data.Id;
+        Title = data.Title;
+        Content = data.Content;
+        PictureId = data.PictureId;
+    }
+    public int AuthorId { get; set; } = -1;
+    public int ChatId { get; set; } = -1;
     public DateTime Created { get; set; } = DateTime.MinValue;
+    public new static readonly Post Invalid = new(PostInfo.Invalid);
 }

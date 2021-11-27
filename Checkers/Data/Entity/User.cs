@@ -49,15 +49,28 @@ public class PublicUserData
 
 public class FriendUserData : PublicUserData
 {
-    public new static readonly FriendUserData Invalid = new();
+    public FriendUserData(PublicUserData data)
+    {
+        Id = data.Id;
+        Nick = data.Nick;
+        SocialCredit = data.SocialCredit;
+        PictureId = data.PictureId;
+        LastActivity = data.LastActivity;
+    }
 
-    public int CharId { get; set; } = -1;
+    public new static readonly FriendUserData Invalid = new(PublicUserData.Invalid);
+
+    public int ChatId { get; set; } = -1;
 }
 
 
 public sealed class User : FriendUserData
 {
-    public new static readonly User Invalid = new();
+    public User(FriendUserData data) : base(data)
+    {
+        ChatId = data.ChatId;
+    }
+    public new static readonly User Invalid = new(FriendUserData.Invalid);
 
     public IEnumerable<int> Items { get; set; } = Enumerable.Empty<int>();
     public IEnumerable<Friendship> Friends { get; set; } = Enumerable.Empty<Friendship>();

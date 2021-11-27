@@ -11,9 +11,9 @@ namespace WebService.Controllers.Old;
 [ApiController]
 public class UserController : ControllerBase
 {
-    public UserController(DatabaseFactory factory)
+    public UserController(GameDatabase.Factory factory)
     {
-        database = factory.Database;
+        database = factory.Get();
     }
 
     private readonly GameDatabase database;

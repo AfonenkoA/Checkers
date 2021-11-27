@@ -41,7 +41,6 @@ public sealed class ItemRepository : Repository, IItemRepository
     public const string SelectItemProc = "[SP_SelectItem]";
     public const string SelectItemPictureProc = "[SP_SelectItemPicture]";
     public const string CreateItemProc = "[SP_CreateItem]";
-    public const string SetItemsProc = "[SP_SetItems]";
     public const string GetItemTypeByTypeNameProc = "[SP_GetItemTypeByName]";
     public const string CreatePictureProc = "[SP_CreatePicture]";
     public const string CreateAchievementProc = "[SP_CreateAchievement]";
@@ -51,7 +50,7 @@ public sealed class ItemRepository : Repository, IItemRepository
 
     public const string ItemTypeCursor = "ItemTypeCursor";
 
-    public ItemRepository(SqlConnection connection) : base(connection) { }
+    internal ItemRepository(SqlConnection connection) : base(connection) { }
 
     public IEnumerable<ItemHash> GetItems()
     {

@@ -1,5 +1,6 @@
 ﻿using System;
 using Checkers.Api;
+using Checkers.Api.Interface.Action;
 using Checkers.Api.WebImplementation;
 using Checkers.Data.Entity;
 using Checkers.Data.Repository.Interface;
@@ -12,34 +13,34 @@ namespace WebService.Controllers;
 [ApiController]
 public class UserController : Controller
 {
-    public UserController(RepositoryFactory factory)
+    public UserController(Repository.Factory factory)
     {
-        Repository = factory.GetRepository<UserRepository>();
+        _repository = factory.Get<UserRepository>();
     }
 
-    private readonly IUserRepository Repository;
+    private readonly IUserRepository _repository;
 
     [HttpPost]
     public IActionResult CreateUser([FromBody] UserCreationData user)
     {
-        return Repository.CreateUser(user) ? OkResult : BadRequestResult;
+        return _repository.CreateUser(user) ? OkResult : BadRequestResult;
     }
 
     [HttpDelete]
     public IActionResult DeleteUser([FromQuery] Credential credential)
     {
-        return Repository.DeleteUser(credential) ? OkResult : BadRequestResult;
+        return _repository.DeleteUser(credential) ? OkResult : BadRequestResult;
     }
 
     [HttpGet("{id:int}")]
     public JsonResult GetUser([FromQuery] Credential credential, [FromRoute] int id)
     {
-        return new JsonResult(Repository.GetUser(id));
+        return new JsonResult(_repository.GetUser(id));
     }
 
     //User Item Activities
-    [HttpGet]
-    public IActionResult ActionHandler([FromQuery] Credential credential, [FromQuery] string action, [FromQuery] string val)
+    [HttpPost]
+    public IActionResult ActionHandler([FromQuery] Credential credential, [FromQuery] string action, [FromBody] string val)
     {
         return action switch
         {
@@ -62,12 +63,12 @@ public class UserController : Controller
 
     private IActionResult SelectAnimation(Credential credential, int animationId)
     {
-        return Repository.SelectAnimation(credential,animationId) ? OkResult : BadRequestResult;
+        return _repository.SelectAnimation(credential,animationId) ? OkResult : BadRequestResult;
     }
 
     private IActionResult SelectCheckers(Credential credential, int checkersId)
     {
-        return Repository.SelectCheckers(credential,checkersId) ? OkResult : BadRequestResult;
+        return _repository.SelectCheckers(credential,checkersId) ? OkResult : BadRequestResult;
     }
 
     private static IActionResult BuyItem(Credential credential, int itemId)
@@ -78,38 +79,38 @@ public class UserController : Controller
     //User Account Activities 
     private IActionResult Authenticate(Credential user)
     {
-        return Repository.Authenticate(user) ? OkResult : BadRequestResult;
+        return _repository.Authenticate(user) ? OkResult : BadRequestResult;
     }
 
     private IActionResult UpdateUserNick(Credential credential, string nick)
     {
-        return Repository.UpdateUserNick(credential,nick) ? OkResult : BadRequestResult;
+        return _repository.UpdateUserNick(credential,nick) ? OkResult : BadRequestResult;
     }
 
     private IActionResult UpdateUserLogin(Credential credential, string login)
     {
-        return Repository.UpdateUserLogin(credential,login) ? OkResult : BadRequestResult;
+        return _repository.UpdateUserLogin(credential,login) ? OkResult : BadRequestResult;
     }
 
     private IActionResult UpdateUserPassword(Credential credential, string password)
     {
-        return Repository.UpdateUserPassword(credential,password) ? OkResult : BadRequestResult;
+        return _repository.UpdateUserPassword(credential,password) ? OkResult : BadRequestResult;
     }
 
     private IActionResult UpdateUserEmail(Credential credential, string email)
     {
-        return Repository.UpdateUserEmail(credential,email) ? OkResult : BadRequestResult;
+        return _repository.UpdateUserEmail(credential,email) ? OkResult : BadRequestResult;
     }
 
     //Friends
     private IActionResult GetUsersByNick(string pattern)
     {
-        return new JsonResult(Repository.GetUsersByNick($"%{pattern}%"));
+        return new JsonResult(_repository.GetUsersByNick($"%{pattern}%"));
     }
 
     private IActionResult AddFriend(Credential credential, int userId)
     {
-        return Repository.AddFriend(credential,userId) ? OkResult : BadRequestResult;
+        return _repository.AddFriend(credential,userId) ? OkResult : BadRequestResult;
     }
 
     private IActionResult DeleteFriend(Credential credential, int userId)

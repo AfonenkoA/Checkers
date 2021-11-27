@@ -5,6 +5,6 @@ namespace Checkers.Api.Interface;
 
 public interface IAsyncResourceService
 {
-    Task<(bool,int)> TryUploadPicture(Credential credential, byte[] picture, string ext);
-    string GetPictureUrl(int id);
+    Task<(bool,int)> TryUploadFile(Credential credential, byte[] picture, string ext);
+    string GetFileUrl(int id);
 }

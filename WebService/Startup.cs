@@ -8,12 +8,11 @@ using Microsoft.Extensions.Hosting;
 
 namespace WebService;
 
-public class Startup
+public sealed class Startup
 {
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
-
     }
 
     private IConfiguration Configuration { get; }
@@ -22,8 +21,8 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         var config = Configuration.GetSection("DatabaseConfig").Get<DatabaseConfig>();
-        services.AddSingleton(new RepositoryFactory(config.Current));
-        services.AddSingleton(new DatabaseFactory(config.Old));
+        services.AddSingleton(new Repository.Factory(config.Current));
+        services.AddSingleton(new GameDatabase.Factory(config.Old));
         services.AddControllers();
     }
 

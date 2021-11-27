@@ -7,6 +7,18 @@ namespace Checkers.Data.Old;
 
 public class GameDatabase : DbContext
 {
+    public sealed class Factory
+    {
+        private readonly GameDatabase _database;
+
+        public Factory(string connection)
+        {
+            _database = new GameDatabase(connection);
+        }
+
+        public GameDatabase Get() => _database;
+    }
+
     public User FindUser(string login)
     {
         var result = from u in Users
@@ -23,12 +35,12 @@ public class GameDatabase : DbContext
 
     private readonly string _connection;
 
-    public GameDatabase(string connection)
+    internal GameDatabase(string connection)
     {
         _connection = connection;
     }
 
-    public GameDatabase(DbContextOptions<GameDatabase> options)
+    internal GameDatabase(DbContextOptions<GameDatabase> options)
         : base(options)
     {
     }
