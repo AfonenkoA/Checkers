@@ -1,9 +1,6 @@
-using System.Linq;
 using System.Threading.Tasks;
 using Checkers.Api.Interface;
 using Checkers.Api.WebImplementation;
-using Checkers.Data.Entity;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ApiTest;
@@ -22,8 +19,7 @@ public class ItemTest
     [TestMethod]
     public async Task GetItemInfo()
     {
-        var (success,info) = await ItemApi.TryGetItemInfo(1);
+        var (success,_) = await ItemApi.TryGetItemInfo(1);
         Assert.IsTrue(success);
-        Assert.IsTrue(info.IsValid);
     }
 }

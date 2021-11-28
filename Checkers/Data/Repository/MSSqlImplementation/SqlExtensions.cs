@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using Checkers.Data.Entity;
 using Microsoft.Data.SqlClient;
 using static Checkers.Data.Repository.MSSqlImplementation.UserRepository;
@@ -22,6 +23,8 @@ internal static class SqlExtensions
             PictureId = reader.GetFieldValue<int>(PictureId),
             SelectedAnimationId = reader.GetFieldValue<int>(AnimationId),
             SelectedCheckersId = reader.GetFieldValue<int>(CheckersId),
+            LastActivity = reader.GetFieldValue<DateTime>(LastActivity),
+            Type = reader.GetFieldValue<UserType>(UserTypeId)
         };
 
     internal static ArticleInfo GetArticle(this SqlDataReader reader) =>

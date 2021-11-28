@@ -11,7 +11,7 @@ namespace WebService.Controllers;
 [ApiController]
 public class ItemController : Controller
 {
-    public ItemController(Repository.Factory factory)
+    public ItemController(RepositoryFactory factory)
     {
         _repository = factory.Get<ItemRepository>();
     }

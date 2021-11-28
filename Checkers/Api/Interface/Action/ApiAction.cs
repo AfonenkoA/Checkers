@@ -2,15 +2,15 @@
 
 public class ApiAction
 {
-    private readonly string name;
+    private readonly string _name;
 
     protected ApiAction(string name)
     {
-        this.name = name;
+        _name = name;
     }
 
     public override string ToString()
     {
-        return name;
+        return _name;
     }
 }

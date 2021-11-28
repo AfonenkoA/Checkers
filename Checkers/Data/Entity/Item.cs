@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Text.Json.Serialization;
+using static Checkers.Data.Entity.EntityValues;
 
 namespace Checkers.Data.Entity;
 
@@ -9,36 +11,43 @@ public enum ItemType
     Achievement,
     CheckersSkin,
     Animation,
-    LootBox
+    LootBox,
+    Invalid
 }
 
 public class ItemHash
 {
-    public int Id { get; set; } = -1;
-    public DateTime Updated { get; set; } = DateTime.MinValue;
+    public int Id { get; set; } = InvalidId;
+    public DateTime Updated { get; set; } = InvalidDate;
     
     [JsonIgnore]
-    public virtual bool IsValid => !(Id == -1 || Updated == DateTime.MinValue);
+    public virtual bool IsValid => !(Id == InvalidId ||
+                                     Updated == InvalidDate);
 }
 
 public class ItemInfo : ItemHash
 {
-    public ItemType Type { get; set; }
-    public int Price { get; set; } = -1;
     public static readonly ItemInfo Invalid = new();
-    public string Extension { get; set; } = string.Empty;
-    public string Name { get; set; } = string.Empty;
-    public string Detail { get; set; } = string.Empty;
+
+    public ItemType Type { get; set; }
+    public int Price { get; set; } = InvalidId;
+    public string Extension { get; set; } = InvalidString;
+    public string Name { get; set; } = InvalidString;
+    public string Detail { get; set; } = InvalidString;
 
     [JsonIgnore]
     public override bool IsValid => base.IsValid &&
-                               !(Name == string.Empty ||
-                                 Detail == string.Empty ||
-                                 Extension == string.Empty ||
-                                 Price == -1);
+                               !(Name == InvalidString ||
+                                 Detail == InvalidString ||
+                                 Extension == InvalidString ||
+                                 Price == InvalidId || 
+                                 Type == ItemType.Invalid);
 }
 
 public sealed class Item : ItemInfo
 {
     public byte[] Image { get; set; } = Array.Empty<byte>();
+
+    [JsonIgnore] public override bool IsValid => base.IsValid && Image.Any();
+
 }

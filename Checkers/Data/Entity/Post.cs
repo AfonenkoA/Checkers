@@ -1,22 +1,32 @@
 ﻿using System;
+using System.Text.Json.Serialization;
+using static Checkers.Data.Entity.EntityValues;
 
 namespace Checkers.Data.Entity;
 
 public class PostCreationData
 {
-    public string Content { get; set; } = string.Empty;
-    public int PictureId { get; set; } = -1;
-    public string Title { get; set; } = string.Empty;
+    public string Content { get; init; } = InvalidString;
+    public int PictureId { get; init; } = InvalidId;
+    public string Title { get; init; } = InvalidString;
+
+    [JsonIgnore]
+    public virtual bool IsValid => !(Content == InvalidString ||
+                                     PictureId == InvalidId ||
+                                     Title == InvalidString);
 }
 
 public class PostInfo : PostCreationData
 {
-    public int Id { get; set; } = -1;
     public static readonly PostInfo Invalid = new();
+
+    public int Id { get; init; } = InvalidId;
+    [JsonIgnore] public override bool IsValid => base.IsValid && Id != InvalidId;
 }
 
 public sealed class Post : PostInfo
 {
+    public new static readonly Post Invalid = new(PostInfo.Invalid);
     public Post(PostInfo data)
     {
         Id = data.Id;
@@ -24,8 +34,12 @@ public sealed class Post : PostInfo
         Content = data.Content;
         PictureId = data.PictureId;
     }
-    public int AuthorId { get; set; } = -1;
-    public int ChatId { get; set; } = -1;
-    public DateTime Created { get; set; } = DateTime.MinValue;
-    public new static readonly Post Invalid = new(PostInfo.Invalid);
+    public int AuthorId { get; init; } = InvalidId;
+    public int ChatId { get; init; } = InvalidId;
+    public DateTime Created { get; init; } = InvalidDate;
+
+    [JsonIgnore]
+    public override bool IsValid => base.IsValid && !(AuthorId == InvalidId ||
+                                                      ChatId == InvalidId ||
+                                                      Created == InvalidDate);
 }

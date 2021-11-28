@@ -10,7 +10,7 @@ namespace WebService.Controllers;
 [Route("api/" + WebApiBase.ForumRoute)]
 public class ForumController : Controller
 {
-    public ForumController(Repository.Factory factory)
+    public ForumController(RepositoryFactory factory)
     {
         _repository = factory.Get<ForumRepository>();
     }

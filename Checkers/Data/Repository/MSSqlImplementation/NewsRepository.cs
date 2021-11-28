@@ -137,7 +137,7 @@ public sealed class NewsRepository: Repository, INewsRepository
         {
             PostId = reader.GetFieldValue<int>(ArticlePostId),
             Content = reader.GetFieldValue<string>(ArticleContent),
-            Updated = reader.GetFieldValue<DateTime>(ArticleCreated)
+            Created = reader.GetFieldValue<DateTime>(ArticleCreated)
         };
     }
 

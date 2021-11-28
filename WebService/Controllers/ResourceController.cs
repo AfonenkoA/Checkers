@@ -13,7 +13,7 @@ namespace WebService.Controllers;
 [Route("api/"+WebApiBase.ResourceRoute)]
 public class ResourceController : Controller
 {
-    public ResourceController(Repository.Factory factory)
+    public ResourceController(RepositoryFactory factory)
     {
         _repository = factory.Get<ResourceRepository>();
     }

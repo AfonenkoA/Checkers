@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
+using static Checkers.Data.Entity.EntityValues;
 
 namespace Checkers.Data.Entity;
 
 
 public sealed class UserCreationData
 {
-    public string Nick { get; set; } = string.Empty;
-    public string Login { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
+    public string Nick { get; set; } = InvalidString;
+    public string Login { get; set; } = InvalidString;
+    public string Password { get; set; } = InvalidString;
+    public string Email { get; set; } = InvalidString;
 }
 
 public enum UserType
@@ -20,29 +21,32 @@ public enum UserType
     Editor,
     Moderator,
     Support,
-    Admin
+    Admin,
+    Invalid
 }
 
 public class BasicUserData
 {
     public static readonly BasicUserData Invalid = new();
-    public int Id { get; set; } = -1;
-    public string Nick { get; set; } = string.Empty;
-    public int SocialCredit { get; set; } = -1;
-    public int PictureId { get; set; } = -1;
-    public DateTime LastActivity { get; set; } = DateTime.MinValue;
 
-    public int SelectedCheckersId { get; set; } = -1;
-    public int SelectedAnimationId { get; set; } = -1;
+    public int Id { get; init; } = InvalidId;
+    public string Nick { get; init; } = InvalidString;
+    public int SocialCredit { get; init; } = InvalidId;
+    public int PictureId { get; init; } = InvalidId;
+    public DateTime LastActivity { get; init; } = InvalidDate;
+    public int SelectedCheckersId { get; init; } = InvalidId;
+    public int SelectedAnimationId { get; init; } = InvalidId;
+    public UserType Type { get; init; } = UserType.Invalid;
 
     [JsonIgnore]
-    public bool IsValid => !(Id == -1 ||
-                             Nick == string.Empty ||
-                             SocialCredit == -1 ||
-                             PictureId == -1 ||
-                             LastActivity == DateTime.MinValue ||
-                             SelectedCheckersId == -1 ||
-                             SelectedAnimationId == -1);
+    public virtual bool IsValid => !(Id == InvalidId ||
+                             Nick == InvalidString ||
+                             SocialCredit == InvalidId ||
+                             PictureId == InvalidId ||
+                             LastActivity == InvalidDate ||
+                             SelectedCheckersId == InvalidId ||
+                             SelectedAnimationId == InvalidId ||
+                             Type == UserType.Invalid);
 }
 
 public class PublicUserData : BasicUserData
@@ -59,7 +63,9 @@ public class PublicUserData : BasicUserData
         SelectedCheckersId = data.SelectedCheckersId;
     }
 
-    public IEnumerable<int> Achievements { get; set; } = Enumerable.Empty<int>();
+    public IEnumerable<int> Achievements { get; set; } = InvalidEnumerable;
+
+    [JsonIgnore] public override bool IsValid => base.IsValid && Achievements.Any();
 }
 
 
@@ -67,17 +73,19 @@ public sealed class FriendUserData : PublicUserData
 {
     public FriendUserData(PublicUserData data) : base(data)
     {
+        Achievements = data.Achievements;
     }
     public new static readonly FriendUserData Invalid = new(PublicUserData.Invalid);
 
-    public int ChatId { get; set; } = -1;
+    public int ChatId { get; set; } = InvalidId;
+
+    [JsonIgnore] public override bool IsValid => base.IsValid && ChatId != InvalidId;
 }
 
 
 public sealed class User : BasicUserData
 {
 
- 
     public new static readonly User Invalid = new(BasicUserData.Invalid);
 
     public User(BasicUserData data)
@@ -91,7 +99,10 @@ public sealed class User : BasicUserData
         SelectedCheckersId = data.SelectedCheckersId;
     }
 
-    public IEnumerable<int> Items { get; set; } = Enumerable.Empty<int>();
+    public IEnumerable<int> Items { get; set; } = InvalidEnumerable;
     public IEnumerable<Friendship> Friends { get; set; } = Enumerable.Empty<Friendship>();
-    public IEnumerable<int> Games { get; set; } = Enumerable.Empty<int>();
+    public IEnumerable<int> Games { get; set; } = InvalidEnumerable;
+
+    [JsonIgnore]
+    public override bool IsValid => base.IsValid && Items.Any();
 }

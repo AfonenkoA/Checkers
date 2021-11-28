@@ -1,23 +1,35 @@
 ﻿using System;
-using static System.String;
+using System.Text.Json.Serialization;
+using static Checkers.Data.Entity.EntityValues;
 
 namespace Checkers.Data.Entity;
 
-
 public sealed class ArticleCreationData
 {
-    public string Content { get; set; } = Empty;
-    public int PictureId { get; set; } = -1;
-    public string Title { get; set; } = Empty;
-    public string Abstract { get; set; } = Empty;
+    public string Content { get; set; } = InvalidString;
+    public int PictureId { get; set; } = InvalidId;
+    public string Title { get; set; } = InvalidString;
+    public string Abstract { get; set; } = InvalidString;
+
+    [JsonIgnore]
+    public bool IsValid => !(Content == InvalidString ||
+                             PictureId == InvalidId ||
+                             Title == InvalidString ||
+                             Abstract == InvalidString);
 }
 
 public class ArticleInfo
 {
-    public int Id { get; set; } = -1;
-    public int PictureId { get; set; } = -1;
-    public string Title { get; set; } = Empty;
-    public string Abstract { get; set; } = Empty;
+    public int Id { get; set; } = InvalidId;
+    public int PictureId { get; set; } = InvalidId;
+    public string Title { get; set; } = InvalidString;
+    public string Abstract { get; set; } = InvalidString;
+
+    [JsonIgnore]
+    public virtual bool IsValid => !(Id== InvalidId ||
+                             PictureId == InvalidId ||
+                             Title == InvalidString ||
+                             Abstract == InvalidString);
 
     public static readonly ArticleInfo Invalid = new();
 }
@@ -31,8 +43,15 @@ public sealed class Article : ArticleInfo
         Title = data.Title;
         Abstract = data.Abstract;
     }
-    public string Content { get; set; } = Empty;
-    public int PostId { get; set; } = -1;
-    public DateTime Updated { get; set; } = DateTime.MinValue;
+
+    public string Content { get; set; } = InvalidString;
+    public int PostId { get; set; } = InvalidId;
+    public DateTime Created { get; set; } = InvalidDate;
     public new static readonly Article Invalid = new(ArticleInfo.Invalid);
+
+    [JsonIgnore]
+    public override bool IsValid => base.IsValid && 
+                                    !(Content == InvalidString ||
+                                      PostId == InvalidId ||
+                                      Created == InvalidDate);
 }

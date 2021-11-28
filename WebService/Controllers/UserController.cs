@@ -1,5 +1,4 @@
 ﻿using System;
-using Checkers.Api;
 using Checkers.Api.Interface.Action;
 using Checkers.Api.WebImplementation;
 using Checkers.Data.Entity;
@@ -13,7 +12,7 @@ namespace WebService.Controllers;
 [ApiController]
 public class UserController : Controller
 {
-    public UserController(Repository.Factory factory)
+    public UserController(RepositoryFactory factory)
     {
         _repository = factory.Get<UserRepository>();
     }

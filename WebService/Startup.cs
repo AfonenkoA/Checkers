@@ -21,7 +21,7 @@ public sealed class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         var config = Configuration.GetSection("DatabaseConfig").Get<DatabaseConfig>();
-        services.AddSingleton(new Repository.Factory(config.Current));
+        services.AddSingleton(new RepositoryFactory(config.Current));
         services.AddSingleton(new GameDatabase.Factory(config.Old));
         services.AddControllers();
     }

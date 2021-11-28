@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.Json;
 using Checkers.Api.WebImplementation;
 using Checkers.Data.Entity;
 using Checkers.Data.Repository.Interface;
@@ -13,7 +12,7 @@ namespace WebService.Controllers;
 public class ChatController : Controller
 {
 
-    public ChatController(Repository.Factory factory)
+    public ChatController(RepositoryFactory factory)
     {
         _repository = factory.Get<ChatRepository>();
     }

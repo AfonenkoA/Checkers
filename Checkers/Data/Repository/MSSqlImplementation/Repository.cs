@@ -1,6 +1,4 @@
-﻿using System;
-using System.Data;
-using System.Reflection;
+﻿using System.Data;
 using Microsoft.Data.SqlClient;
 
 namespace Checkers.Data.Repository.MSSqlImplementation;
@@ -16,25 +14,6 @@ public class Repository
     public const string Identity = $"{Id}			INT				NOT NULL	IDENTITY(1,1)	PRIMARY KEY";
     public const int InvalidId = -1;
 
-    public sealed class Factory
-    {
-        private static readonly Exception Fail = new InvalidOperationException();
-        private readonly SqlConnection connection;
-        public Factory(string connection)
-        {
-            this.connection = new SqlConnection(connection);
-        }
-
-        public T Get<T>() where T : Repository
-        {
-            var type = typeof(T);
-            var instance = type.Assembly.CreateInstance(
-                type.FullName ?? throw Fail, false,
-                BindingFlags.Instance | BindingFlags.NonPublic,
-                null, new object[]{connection}, null, null);
-            return (T?) instance ?? throw Fail;
-        }
-    }
 
     private readonly SqlConnection _connection;
 
