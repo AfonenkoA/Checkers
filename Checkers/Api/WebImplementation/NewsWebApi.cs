@@ -4,6 +4,8 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Checkers.Api.Interface;
 using Checkers.Data.Entity;
+using static Checkers.Api.Interface.Action.NewsApiAction;
+
 
 namespace Checkers.Api.WebImplementation;
 
@@ -13,31 +15,21 @@ public sealed class NewsWebApi : WebApiBase,  IAsyncNewsApi
         Client.PostAsJsonAsync(NewsRoute + Query(credential), article)
             .ContinueWith(task => task.Result.IsSuccessStatusCode);
 
-    public Task<bool> UpdateTitle(Credential credential, int id, string title)
-    {
-        throw new System.NotImplementedException();
-    }
+    public Task<bool> UpdateTitle(Credential credential, int id, string title) =>
+        Client.PutAsJsonAsync(NewsRoute + $"/{id}" + Query(credential,UpdateArticleTitle), title)
+            .ContinueWith(task => task.Result.IsSuccessStatusCode);
 
-    public Task<bool> UpdateAbstract(Credential credential, int id, string @abstract)
-    {
-        throw new System.NotImplementedException();
-    }
+    public Task<bool> UpdateAbstract(Credential credential, int id, string @abstract) =>
+        Client.PutAsJsonAsync(NewsRoute + $"/{id}" + Query(credential, UpdateArticleAbstract), @abstract)
+            .ContinueWith(task => task.Result.IsSuccessStatusCode);
 
-    public Task<bool> UpdateContent(Credential credential, int id, string content)
-    {
-        throw new System.NotImplementedException();
-    }
+    public Task<bool> UpdateContent(Credential credential, int id, string content) =>
+        Client.PutAsJsonAsync(NewsRoute + $"/{id}" + Query(credential, UpdateArticleContent), content)
+            .ContinueWith(task => task.Result.IsSuccessStatusCode);
 
-    public Task<bool> UpdatePicture(Credential credential, int id, int pictureId)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public Task<bool> UpdatePost(Credential credential, int id, int postId)
-    {
-        throw new System.NotImplementedException();
-    }
-
+    public Task<bool> UpdatePicture(Credential credential, int id, int pictureId) =>
+        Client.PutAsJsonAsync(NewsRoute + $"/{id}" + Query(credential, UpdateArticlePictureId), pictureId)
+            .ContinueWith(task => task.Result.IsSuccessStatusCode);
 
     public Task<bool> DeleteArticle(Credential credential, int articleId) =>
         Client.DeleteAsync(NewsRoute + $"/{articleId}" + Query(credential))

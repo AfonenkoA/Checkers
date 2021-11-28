@@ -18,7 +18,6 @@ public sealed class UserApiAction : ApiAction
     internal static readonly UserApiAction AcceptFriend = new(AcceptFriendValue);
     internal static readonly UserApiAction GetUsersByNick = new(GetUsersByNickValue);
 
-
     //Values
     public const string SelectCheckersValue = "select-checkers";
     public const string SelectAnimationValue = "select-animation";

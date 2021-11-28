@@ -12,21 +12,14 @@ namespace WebService.Controllers;
 public class ChatController : Controller
 {
 
-    public ChatController(RepositoryFactory factory)
-    {
-        _repository = factory.Get<ChatRepository>();
-    }
+    public ChatController(RepositoryFactory factory) => _repository = factory.Get<ChatRepository>();
 
     private readonly IChatRepository _repository;
     [HttpGet("{id:int}")]
-    public IActionResult GetMessages([FromQuery] Credential credential,[FromRoute] int id, [FromQuery] DateTime from)
-    {
-        return Json(_repository.GetMessages(credential,id,from));
-    }
+    public IActionResult GetMessages([FromQuery] Credential credential,[FromRoute] int id, [FromQuery] DateTime from) =>
+        Json(_repository.GetMessages(credential,id,@from));
 
     [HttpPost("{id:int}")]
-    public IActionResult SendMessage([FromQuery] Credential credential,[FromRoute] int id,[FromBody] string message)
-    {
-        return _repository.CreateMessage(credential,id,message) ? OkResult : BadRequestResult;
-    }
+    public IActionResult SendMessage([FromQuery] Credential credential,[FromRoute] int id,[FromBody] string message) =>
+        _repository.CreateMessage(credential,id,message) ? OkResult : BadRequestResult;
 }

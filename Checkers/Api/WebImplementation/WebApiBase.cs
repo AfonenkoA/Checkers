@@ -28,10 +28,9 @@ public class WebApiBase
 
     protected static string Query(Credential c) => $"?login={c.Login}&password={c.Password}";
     private static string Query(ApiAction action) => $"&action={action}";
-    private static string Query(object val) => $"&value={val}";
-
-    protected static string Query(Credential c, int id) => Query(c) + Query(id);
-    protected static string Query(ApiAction action, object val) => Query(action) + Query(val);
-    protected static string Query(Credential c, ApiAction apiAction, object val) => Query(c, apiAction) + Query(val);
+    private static string Query(string val) => $"&val={val}";
+    protected static string Query(Credential c, string val) => Query(c) + Query(val);
+    protected static string Query(ApiAction action, string val) => "?" + Query(action) + Query(val);
+    
     protected static string Query(Credential c, ApiAction apiAction) => Query(c) + Query(apiAction);
 }

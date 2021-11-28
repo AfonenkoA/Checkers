@@ -1,10 +1,10 @@
 ﻿using System;
-using Checkers.Api.Interface.Action;
 using Checkers.Api.WebImplementation;
 using Checkers.Data.Entity;
 using Checkers.Data.Repository.Interface;
 using Checkers.Data.Repository.MSSqlImplementation;
 using Microsoft.AspNetCore.Mvc;
+using static Checkers.Api.Interface.Action.UserApiAction;
 
 namespace WebService.Controllers;
 
@@ -12,113 +12,76 @@ namespace WebService.Controllers;
 [ApiController]
 public class UserController : Controller
 {
-    public UserController(RepositoryFactory factory)
-    {
-        _repository = factory.Get<UserRepository>();
-    }
+    public UserController(RepositoryFactory factory) => _repository = factory.Get<UserRepository>();
 
     private readonly IUserRepository _repository;
 
     [HttpPost]
-    public IActionResult CreateUser([FromBody] UserCreationData user)
-    {
-        return _repository.CreateUser(user) ? OkResult : BadRequestResult;
-    }
+    public IActionResult CreateUser([FromBody] UserCreationData user) =>
+        _repository.CreateUser(user) ? OkResult : BadRequestResult;
 
     [HttpDelete]
-    public IActionResult DeleteUser([FromQuery] Credential credential)
-    {
-        return _repository.DeleteUser(credential) ? OkResult : BadRequestResult;
-    }
+    public IActionResult DeleteUser([FromQuery] Credential credential) =>
+        _repository.DeleteUser(credential) ? OkResult : BadRequestResult;
 
+    //доработать friend
     [HttpGet("{id:int}")]
-    public IActionResult GetUser([FromQuery] Credential credential, [FromRoute] int id)
-    {
-        return Json(_repository.GetUser(id));
-    }
+    public IActionResult GetUser([FromQuery] Credential credential, [FromRoute] int id) => 
+        Json(_repository.GetUser(id));
 
-    //User Item Activities
-    [HttpPost]
-    public IActionResult ActionHandler([FromQuery] Credential credential, [FromQuery] string action, [FromBody] string val)
-    {
-        return action switch
+    [HttpPut]
+    public IActionResult ActionHandler([FromQuery] Credential credential, [FromQuery] string action, [FromBody] string val) =>
+        action switch
         {
-            UserApiAction.SelectCheckersValue => SelectCheckers(credential, int.Parse(val)),
-            UserApiAction.SelectAnimationValue => SelectAnimation(credential, int.Parse(val)),
-            UserApiAction.AuthenticateValue => Authenticate(credential),
-            UserApiAction.BuyValue => BuyItem(credential, int.Parse(val)),
-            UserApiAction.UpdateNickValue => UpdateUserNick(credential, val),
-            UserApiAction.UpdateLoginValue => UpdateUserLogin(credential, val),
-            UserApiAction.UpdatePasswordValue => UpdateUserPassword(credential, val),
-            UserApiAction.UpdateEmailValue => UpdateUserEmail(credential, val),
-            UserApiAction.AddFriendValue => AddFriend(credential, int.Parse(val)),
-            UserApiAction.DeleteFriendValue => DeleteFriend(credential, int.Parse(val)),
-            UserApiAction.AcceptFriendValue => AcceptFriend(credential, int.Parse(val)),
-            UserApiAction.GetUsersByNickValue => GetUsersByNick(val),
-            _ => throw new NotImplementedException()
+            SelectCheckersValue => SelectCheckers(credential, int.Parse(val)),
+            SelectAnimationValue => SelectAnimation(credential, int.Parse(val)),
+            AuthenticateValue => Authenticate(credential),
+            BuyValue => BuyItem(credential, int.Parse(val)),
+            UpdateNickValue => UpdateUserNick(credential, val),
+            UpdateLoginValue => UpdateUserLogin(credential, val),
+            UpdatePasswordValue => UpdateUserPassword(credential, val),
+            UpdateEmailValue => UpdateUserEmail(credential, val),
+            AddFriendValue => AddFriend(credential, int.Parse(val)),
+            DeleteFriendValue => DeleteFriend(credential, int.Parse(val)),
+            AcceptFriendValue => AcceptFriend(credential, int.Parse(val)),
+            GetUsersByNickValue => GetUsersByNick(val),
+            _ => BadRequestResult
         };
 
-    }
+    private IActionResult SelectAnimation(Credential credential, int animationId) =>
+        _repository.SelectAnimation(credential,animationId) ? OkResult : BadRequestResult;
 
-    private IActionResult SelectAnimation(Credential credential, int animationId)
-    {
-        return _repository.SelectAnimation(credential,animationId) ? OkResult : BadRequestResult;
-    }
+    private IActionResult SelectCheckers(Credential credential, int checkersId) =>
+        _repository.SelectCheckers(credential,checkersId) ? OkResult : BadRequestResult;
 
-    private IActionResult SelectCheckers(Credential credential, int checkersId)
-    {
-        return _repository.SelectCheckers(credential,checkersId) ? OkResult : BadRequestResult;
-    }
-
-    private static IActionResult BuyItem(Credential credential, int itemId)
-    {
-        return BadRequestResult;
-    }
+    private static IActionResult BuyItem(Credential credential, int itemId) 
+        => BadRequestResult;
 
     //User Account Activities 
-    private IActionResult Authenticate(Credential user)
-    {
-        return _repository.Authenticate(user) ? OkResult : BadRequestResult;
-    }
+    private IActionResult Authenticate(Credential user) =>
+        _repository.Authenticate(user) ? OkResult : BadRequestResult;
 
-    private IActionResult UpdateUserNick(Credential credential, string nick)
-    {
-        return _repository.UpdateUserNick(credential,nick) ? OkResult : BadRequestResult;
-    }
+    private IActionResult UpdateUserNick(Credential credential, string nick) =>
+        _repository.UpdateUserNick(credential,nick) ? OkResult : BadRequestResult;
 
-    private IActionResult UpdateUserLogin(Credential credential, string login)
-    {
-        return _repository.UpdateUserLogin(credential,login) ? OkResult : BadRequestResult;
-    }
+    private IActionResult UpdateUserLogin(Credential credential, string login) =>
+        _repository.UpdateUserLogin(credential,login) ? OkResult : BadRequestResult;
 
-    private IActionResult UpdateUserPassword(Credential credential, string password)
-    {
-        return _repository.UpdateUserPassword(credential,password) ? OkResult : BadRequestResult;
-    }
+    private IActionResult UpdateUserPassword(Credential credential, string password) =>
+        _repository.UpdateUserPassword(credential,password) ? OkResult : BadRequestResult;
 
-    private IActionResult UpdateUserEmail(Credential credential, string email)
-    {
-        return _repository.UpdateUserEmail(credential,email) ? OkResult : BadRequestResult;
-    }
+    private IActionResult UpdateUserEmail(Credential credential, string email) =>
+        _repository.UpdateUserEmail(credential,email) ? OkResult : BadRequestResult;
 
     //Friends
-    private IActionResult GetUsersByNick(string pattern)
-    {
-        return Json(_repository.GetUsersByNick($"%{pattern}%"));
-    }
+    private IActionResult GetUsersByNick(string pattern) =>
+        Json(_repository.GetUsersByNick($"%{pattern}%"));
+    
 
-    private IActionResult AddFriend(Credential credential, int userId)
-    {
-        return _repository.AddFriend(credential,userId) ? OkResult : BadRequestResult;
-    }
+    private IActionResult AddFriend(Credential credential, int userId) =>
+        _repository.AddFriend(credential,userId) ? OkResult : BadRequestResult;
 
-    private static IActionResult DeleteFriend(Credential credential, int userId)
-    {
-        return BadRequestResult;
-    }
+    private static IActionResult DeleteFriend(Credential credential, int userId) => BadRequestResult;
 
-    private static IActionResult AcceptFriend(Credential credential, int userId)
-    {
-        return BadRequestResult;
-    }
+    private static IActionResult AcceptFriend(Credential credential, int userId) => BadRequestResult;
 }

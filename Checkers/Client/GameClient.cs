@@ -108,13 +108,13 @@ public sealed class GameClient
             {
                 var ind = false;
                 for (int i = 0; i < 8; i++)
-                for (int j = 0; j < 8; j++)
-                {
-                    if (ind == !ind)
-                        Schema[i, j] = CellType.Black;
-                    else
-                        Schema[i, j] = CellType.White;
-                }
+                    for (int j = 0; j < 8; j++)
+                    {
+                        if (ind == !ind)
+                            Schema[i, j] = CellType.Black;
+                        else
+                            Schema[i, j] = CellType.White;
+                    }
                 List<Checker> list = new();
 
                 Checkers = list;
@@ -246,36 +246,44 @@ public sealed class GameClient
         }
     }
 
-    public async Task<UserAuthorizationResponse> AuthorizeAsync() => JsonSerializer.Deserialize<UserAuthorizationResponse>(
-                                                                         await _httpClient.GetStringAsync(UserUri + _query + "action=authorize")) ??
-                                                                     UserAuthorizationResponse.Failed;
+    public async Task<UserAuthorizationResponse> AuthorizeAsync() =>
+        JsonSerializer.Deserialize<UserAuthorizationResponse>(
+            await _httpClient.GetStringAsync(UserUri + _query + "action=authorize")) ??
+        UserAuthorizationResponse.Failed;
 
-    public async Task<UserInfoResponse> GetUserInfoAsync() => JsonSerializer.Deserialize<UserInfoResponse>(
-                                                                  await _httpClient.GetStringAsync(UserUri + _query + "action=info")) ??
-                                                              UserInfoResponse.Failed;
-    
+    public async Task<UserInfoResponse> GetUserInfoAsync() => 
+        JsonSerializer.Deserialize<UserInfoResponse>(
+            await _httpClient.GetStringAsync(UserUri + _query + "action=info")) ??
+        UserInfoResponse.Failed;
+
 
     public async Task<UserAchievementsGetResponse> GetAchievementsAsync() =>
-        JsonSerializer.Deserialize<UserAchievementsGetResponse>(await _httpClient.GetStringAsync(AchievementsUri)) ??
+        JsonSerializer.Deserialize<UserAchievementsGetResponse>(
+            await _httpClient.GetStringAsync(AchievementsUri)) ??
         UserAchievementsGetResponse.Failed;
 
     public async Task<UserFriendsResponse> GetFriendsAsync() =>
-        JsonSerializer.Deserialize<UserFriendsResponse>(await _httpClient.GetStringAsync(FriendsUri + _query)) ??
+        JsonSerializer.Deserialize<UserFriendsResponse>(
+            await _httpClient.GetStringAsync(FriendsUri + _query)) ??
         UserFriendsResponse.Failed;
 
     public async Task<UserGamesGetResponse> GetGamesAsync() =>
-        JsonSerializer.Deserialize<UserGamesGetResponse>(await _httpClient.GetStringAsync(UserGamesUri)) ??
+        JsonSerializer.Deserialize<UserGamesGetResponse>(
+            await _httpClient.GetStringAsync(UserGamesUri)) ??
         UserGamesGetResponse.Failed;
 
     public async Task<GameGetRespose> GetGameAsync(int id) =>
-        JsonSerializer.Deserialize<GameGetRespose>(await _httpClient.GetStringAsync(GameUri + id)) ??
+        JsonSerializer.Deserialize<GameGetRespose>(
+            await _httpClient.GetStringAsync(GameUri + id)) ??
         GameGetRespose.Failed;
 
     public async Task<UserItemsResponse> GetItemsAsync() =>
-        JsonSerializer.Deserialize<UserItemsResponse>(await _httpClient.GetStringAsync(ItemsUri + _query)) ??
+        JsonSerializer.Deserialize<UserItemsResponse>(
+            await _httpClient.GetStringAsync(ItemsUri + _query)) ??
         UserItemsResponse.Failed;
 
     public async Task<UserGetResponse> GetUserAsync(string login) =>
-        JsonSerializer.Deserialize<UserGetResponse>(await _httpClient.GetStringAsync(UserUri + login)) ?? 
+        JsonSerializer.Deserialize<UserGetResponse>(
+            await _httpClient.GetStringAsync(UserUri + login)) ??
         UserGetResponse.Failed;
 }

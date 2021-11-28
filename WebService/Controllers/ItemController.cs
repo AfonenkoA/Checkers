@@ -11,17 +11,11 @@ namespace WebService.Controllers;
 [ApiController]
 public class ItemController : Controller
 {
-    public ItemController(RepositoryFactory factory)
-    {
-        _repository = factory.Get<ItemRepository>();
-    }
+    public ItemController(RepositoryFactory factory) => _repository = factory.Get<ItemRepository>();
 
     private readonly IItemRepository _repository;
     [HttpGet]
-    public IActionResult GetItems()
-    {
-        return Json(_repository.GetItems());
-    }
+    public IActionResult GetItems() => Json(_repository.GetItems());
 
     [HttpGet("{id:int}")]
     public IActionResult GetItemInfo(int id)
