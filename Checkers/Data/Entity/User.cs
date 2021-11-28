@@ -9,10 +9,10 @@ namespace Checkers.Data.Entity;
 
 public sealed class UserCreationData
 {
-    public string Nick { get; set; } = InvalidString;
-    public string Login { get; set; } = InvalidString;
-    public string Password { get; set; } = InvalidString;
-    public string Email { get; set; } = InvalidString;
+    public string Nick { get; init; } = InvalidString;
+    public string Login { get; init; } = InvalidString;
+    public string Password { get; init; } = InvalidString;
+    public string Email { get; init; } = InvalidString;
 }
 
 public enum UserType

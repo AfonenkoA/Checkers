@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebService.Controllers;
 
 
-public class Controller
+public class ControllerBase
 {
     private static readonly JsonSerializerOptions Options = new()
     {

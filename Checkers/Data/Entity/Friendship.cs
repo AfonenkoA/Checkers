@@ -12,8 +12,8 @@ public enum FriendshipState
 
 public sealed class Friendship
 {
-    public int Id { get; set; } = InvalidId;
-    public FriendshipState State { get; set; } = FriendshipState.Invalid;
+    public int Id { get; init; } = InvalidId;
+    public FriendshipState State { get; init; } = FriendshipState.Invalid;
 
     [JsonIgnore]
     public bool IsValid => !(Id == InvalidId ||

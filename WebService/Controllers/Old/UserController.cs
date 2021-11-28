@@ -9,7 +9,7 @@ namespace WebService.Controllers.Old;
 
 [Route("api/user")]
 [ApiController]
-public class UserController : ControllerBase
+public class UserController : Microsoft.AspNetCore.Mvc.ControllerBase
 {
     public UserController(GameDatabase.Factory factory)
     {

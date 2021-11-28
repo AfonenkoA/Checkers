@@ -1,15 +1,15 @@
 ﻿using System.IO;
 using System.Linq;
-using Checkers.Api.WebImplementation;
 using Checkers.Data.Repository.Interface;
 using Checkers.Data.Repository.MSSqlImplementation;
 using Microsoft.AspNetCore.Mvc;
+using static Checkers.Api.WebImplementation.WebApiBase;
 
 namespace WebService.Controllers;
 
-[Route("api/"+WebApiBase.ItemRoute)]
+[Route("api/" + ItemRoute)]
 [ApiController]
-public class ItemController : Controller
+public class ItemController : ControllerBase
 {
     public ItemController(RepositoryFactory factory) => _repository = factory.Get<ItemRepository>();
 

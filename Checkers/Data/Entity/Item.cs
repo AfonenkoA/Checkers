@@ -17,9 +17,9 @@ public enum ItemType
 
 public class ItemHash
 {
-    public int Id { get; set; } = InvalidId;
-    public DateTime Updated { get; set; } = InvalidDate;
-    
+    public int Id { get; init; } = InvalidId;
+    public DateTime Updated { get; init; } = InvalidDate;
+
     [JsonIgnore]
     public virtual bool IsValid => !(Id == InvalidId ||
                                      Updated == InvalidDate);
@@ -29,24 +29,24 @@ public class ItemInfo : ItemHash
 {
     public static readonly ItemInfo Invalid = new();
 
-    public ItemType Type { get; set; }
-    public int Price { get; set; } = InvalidId;
-    public string Extension { get; set; } = InvalidString;
-    public string Name { get; set; } = InvalidString;
-    public string Detail { get; set; } = InvalidString;
+    public ItemType Type { get; init; }
+    public int Price { get; init; } = InvalidId;
+    public string Extension { get; init; } = InvalidString;
+    public string Name { get; init; } = InvalidString;
+    public string Detail { get; init; } = InvalidString;
 
     [JsonIgnore]
     public override bool IsValid => base.IsValid &&
                                !(Name == InvalidString ||
                                  Detail == InvalidString ||
                                  Extension == InvalidString ||
-                                 Price == InvalidId || 
+                                 Price == InvalidId ||
                                  Type == ItemType.Invalid);
 }
 
 public sealed class Item : ItemInfo
 {
-    public byte[] Image { get; set; } = Array.Empty<byte>();
+    public byte[] Image { get; init; } = Array.Empty<byte>();
 
     [JsonIgnore] public override bool IsValid => base.IsValid && Image.Any();
 

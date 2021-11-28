@@ -26,7 +26,7 @@ public class ArticleInfo
     public string Abstract { get; set; } = InvalidString;
 
     [JsonIgnore]
-    public virtual bool IsValid => !(Id== InvalidId ||
+    public virtual bool IsValid => !(Id == InvalidId ||
                              PictureId == InvalidId ||
                              Title == InvalidString ||
                              Abstract == InvalidString);
@@ -50,7 +50,7 @@ public sealed class Article : ArticleInfo
     public new static readonly Article Invalid = new(ArticleInfo.Invalid);
 
     [JsonIgnore]
-    public override bool IsValid => base.IsValid && 
+    public override bool IsValid => base.IsValid &&
                                     !(Content == InvalidString ||
                                       PostId == InvalidId ||
                                       Created == InvalidDate);

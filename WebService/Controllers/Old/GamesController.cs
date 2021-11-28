@@ -7,7 +7,7 @@ namespace WebService.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class GamesController : ControllerBase
+public class GamesController : Microsoft.AspNetCore.Mvc.ControllerBase
 {
 
     [HttpGet("{id:int}")]

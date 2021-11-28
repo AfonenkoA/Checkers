@@ -5,17 +5,8 @@ namespace Checkers.Data.Entity;
 
 public sealed class Credential
 {
-    public string Login { get; set; } = InvalidString;
-    public string Password { get; set; } = InvalidString;
-
-    public Credential(string login, string password)
-    {
-        Login = login;
-        Password = password;
-    }
-
-    public Credential()
-    { }
+    public string Login { get; init; } = InvalidString;
+    public string Password { get; init; } = InvalidString;
 
     [JsonIgnore]
     public bool IsValid => !(Login == InvalidString ||

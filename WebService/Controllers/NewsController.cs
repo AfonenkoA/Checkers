@@ -1,15 +1,15 @@
-﻿using Checkers.Api.WebImplementation;
-using Checkers.Data.Entity;
+﻿using Checkers.Data.Entity;
 using Checkers.Data.Repository.Interface;
 using Checkers.Data.Repository.MSSqlImplementation;
 using Microsoft.AspNetCore.Mvc;
 using static Checkers.Api.Interface.Action.NewsApiAction;
+using static Checkers.Api.WebImplementation.WebApiBase;
 
 namespace WebService.Controllers;
 
 [ApiController]
-[Route("api/" + WebApiBase.NewsRoute)]
-public class NewsController : Controller
+[Route("api/" + NewsRoute)]
+public class NewsController : ControllerBase
 {
     public NewsController(RepositoryFactory factory) => _repository = factory.Get<NewsRepository>();
 
