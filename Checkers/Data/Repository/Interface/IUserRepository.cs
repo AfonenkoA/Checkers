@@ -21,6 +21,7 @@ public interface IUserRepository
     bool UpdateUserLogin(Credential credential, string login);
     bool UpdateUserPassword(Credential credential, string password);
     bool UpdateUserEmail(Credential credential, string email);
+    bool UpdateUserPicture(Credential credential, int pictureId);
 
     IEnumerable<PublicUserData> GetUsersByNick(string pattern);
     bool AddFriend(Credential credential, int userId);

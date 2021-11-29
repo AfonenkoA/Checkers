@@ -43,6 +43,7 @@ public sealed class UserRepository : Repository, IUserRepository
     public const string EmailVar = "@email";
     public const string NewLoginVar = "@new_login";
     public const string NewPasswordVar = "@new_password";
+    public const string UserPictureIdVar = "@user_picture_id";
     public const string UserIdVar = "@user_id";
     public const string UserTypeNameVar = "@user_type_name";
     public const string User1IdVar = "@user1_id";
@@ -75,6 +76,8 @@ public sealed class UserRepository : Repository, IUserRepository
     public const string SelectAllUserItemProc = "[SP_SelectAllUserItem]";
     public const string SelectFriendChatIdProc = "[SP_SelectFriendChatId]";
     public const string SelectUserFriendshipProc = "[SP_SelectUserFrienship]";
+    public const string UpdateUserPictureProc = "[SP_UpdateUserPictureProc]";
+
 
     public const int ValidAccess = 1;
     public const int InvalidAccess = -1;
@@ -289,6 +292,11 @@ public sealed class UserRepository : Repository, IUserRepository
                 new SqlParameter{ParameterName = EmailVar,SqlDbType = SqlDbType.NVarChar,Value = email}
             });
         return command.ExecuteNonQuery() > 0;
+    }
+
+    public bool UpdateUserPicture(Credential credential, int pictureId)
+    {
+        throw new NotImplementedException();
     }
 
     public IEnumerable<PublicUserData> GetUsersByNick(string pattern)

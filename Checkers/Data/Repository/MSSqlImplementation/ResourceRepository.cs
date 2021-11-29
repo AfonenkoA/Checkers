@@ -22,6 +22,7 @@ public sealed class ResourceRepository : Repository, IResourceRepository
 
     public const string CreateResourceProc= "[SP_CreateResource]";
     public const string SelectResourceProc = "[SP_SelectResource]";
+    public const string CreateResourceFromFileProc = "[SP_CreateResourceFromFile]";
 
     internal ResourceRepository(SqlConnection connection) : base(connection) { }
 

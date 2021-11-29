@@ -81,6 +81,11 @@ public sealed class UserWebApi : WebApiBase, IAsyncUserApi
         Client.PutAsJsonAsync(UserRoute + Query(credential, UpdateEmail), email)
             .ContinueWith(task => task.Result.IsSuccessStatusCode);
 
+    public Task<bool> UpdateUserPicture(Credential credential, int pictureId)
+    {
+        throw new System.NotImplementedException();
+    }
+
     public Task<(bool, IEnumerable<PublicUserData>)> TryGetUsersByNick(string pattern) =>
         Client.GetStringAsync(UserRoute + Query(GetUsersByNick, pattern))
             .ContinueWith(task => Deserialize<IEnumerable<PublicUserData>>(task.Result))

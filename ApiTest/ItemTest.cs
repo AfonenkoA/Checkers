@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Checkers.Api.Interface;
 using Checkers.Api.WebImplementation;
+using Checkers.Data.Entity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ApiTest;
@@ -9,17 +11,23 @@ namespace ApiTest;
 public class ItemTest
 {
     private static readonly IAsyncItemApi ItemApi = new ItemWebApi();
+
+    private static readonly List<ItemHash> ItemHashes = new();
     [TestMethod]
     public async Task GetAllItems()
     {
-        var (success, _) = await ItemApi.TryGetItems();
+        var (success, items) = await ItemApi.TryGetItems();
+        ItemHashes.AddRange(items);
         Assert.IsTrue(success); 
     }
 
     [TestMethod]
     public async Task GetItemInfo()
     {
-        var (success,_) = await ItemApi.TryGetItemInfo(1);
-        Assert.IsTrue(success);
+        foreach (var itemHash in ItemHashes)
+        {
+            var (success, _) = await ItemApi.TryGetItemInfo(itemHash.Id);
+            Assert.IsTrue(success);
+        }
     }
 }
