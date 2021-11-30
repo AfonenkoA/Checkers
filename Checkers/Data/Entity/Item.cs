@@ -7,7 +7,7 @@ namespace Checkers.Data.Entity;
 
 public enum ItemType
 {
-    Picture,
+    Picture=1,
     Achievement,
     CheckersSkin,
     Animation,

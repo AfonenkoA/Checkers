@@ -13,7 +13,7 @@ public class Repository
     public const string Schema = "Checkers.dbo";
     public const string Identity = $"{Id}			INT				NOT NULL	IDENTITY(1,1)	PRIMARY KEY";
     public const int InvalidId = -1;
-
+    internal const string ReturnValue = "@RETURN_VALUE";
 
     private readonly SqlConnection _connection;
 
@@ -35,8 +35,17 @@ public class Repository
         _connection = connection;
     }
 
-    protected SqlCommand CreateProcedure(string name)=> new(name, Connection){CommandType = CommandType.StoredProcedure};
-    
+    protected SqlCommand CreateProcedure(string name)=> 
+        new(name, Connection){CommandType = CommandType.StoredProcedure};
+
+    protected SqlCommand CreateProcedureReturn(string name)
+    {
+        var cmd = CreateProcedure(name);
+        cmd.Parameters.Add(new SqlParameter(ReturnValue, SqlDbType.Int));
+        cmd.Parameters[ReturnValue].Direction = ParameterDirection.ReturnValue;
+        return cmd;
+    }
+
     public static string Fk(string t1, string t2, string s ="") =>
         $"CONSTRAINT FK_{Unwrap(t1)}_{Unwrap(t2)}{s}    FOREIGN KEY REFERENCES {t2}({Id})";
     internal static string Unwrap(string s) => s.Replace("[", "").Replace("]", "");

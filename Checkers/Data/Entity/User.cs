@@ -17,7 +17,7 @@ public sealed class UserCreationData
 
 public enum UserType
 {
-    Player,
+    Player=1,
     Editor,
     Moderator,
     Support,
@@ -61,11 +61,13 @@ public class PublicUserData : BasicUserData
         LastActivity = data.LastActivity;
         SelectedAnimationId = data.SelectedAnimationId;
         SelectedCheckersId = data.SelectedCheckersId;
+        Type = data.Type;
     }
-
+    [JsonConstructor]
+    public PublicUserData(){}
     public IEnumerable<int> Achievements { get; set; } = InvalidEnumerable;
 
-    [JsonIgnore] public override bool IsValid => base.IsValid && Achievements.Any();
+    [JsonIgnore] public override bool IsValid => base.IsValid;
 }
 
 
@@ -75,6 +77,8 @@ public sealed class FriendUserData : PublicUserData
     {
         Achievements = data.Achievements;
     }
+    [JsonConstructor]
+    public FriendUserData() { }
     public new static readonly FriendUserData Invalid = new(PublicUserData.Invalid);
 
     public int ChatId { get; set; } = InvalidId;
@@ -97,7 +101,11 @@ public sealed class User : BasicUserData
         LastActivity = data.LastActivity;
         SelectedAnimationId = data.SelectedAnimationId;
         SelectedCheckersId = data.SelectedCheckersId;
+        Type = data.Type;
     }
+
+    [JsonConstructor]
+    public User() { }
 
     public IEnumerable<int> Items { get; set; } = InvalidEnumerable;
     public IEnumerable<Friendship> Friends { get; set; } = Enumerable.Empty<Friendship>();

@@ -146,8 +146,8 @@ public sealed class NewsRepository: Repository, INewsRepository
         var list = new List<ArticleInfo>();
         using var command = CreateProcedure(SelectNewsProc);
         using var reader = command.ExecuteReader();
-        if (!reader.Read()) return list;
-        list.Add(reader.GetArticle());
+        while (reader.Read())
+            list.Add(reader.GetArticle());
         return list;
     }
     

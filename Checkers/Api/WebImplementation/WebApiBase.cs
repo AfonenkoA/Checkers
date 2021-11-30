@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Net.Http;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Unicode;
 using Checkers.Api.Interface.Action;
 using Checkers.Data.Entity;
 
@@ -10,7 +12,8 @@ public class WebApiBase
 {
     private static readonly JsonSerializerOptions Options = new()
     {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
     };
     protected static T? Deserialize<T>(string s)
     {
@@ -30,7 +33,6 @@ public class WebApiBase
     private static string Query(ApiAction action) => $"&action={action}";
     private static string Query(string val) => $"&val={val}";
     protected static string Query(Credential c, string val) => Query(c) + Query(val);
-    protected static string Query(ApiAction action, string val) => "?" + Query(action) + Query(val);
-    
+    public static string QueryAction(ApiAction action) => $"?action={action}";
     protected static string Query(Credential c, ApiAction apiAction) => Query(c) + Query(apiAction);
 }

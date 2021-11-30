@@ -6,7 +6,7 @@ namespace Checkers.Data.Entity;
 
 public enum ChatType
 {
-    Public,
+    Public=1,
     Private
 }
 

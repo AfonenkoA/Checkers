@@ -25,7 +25,7 @@ public sealed class UserWebApi : WebApiBase, IAsyncUserApi
             .ContinueWith(task =>
             {
                 var res = task.Result;
-                return res != null ? (true, res) : (false, PublicUserData.Invalid);
+                return res != null ? (res.IsValid, res) : (false, PublicUserData.Invalid);
             });
 
     public Task<(bool, User)> TryGetSelf(Credential credential) =>
@@ -34,12 +34,12 @@ public sealed class UserWebApi : WebApiBase, IAsyncUserApi
             .ContinueWith(task =>
             {
                 var res = task.Result;
-                return res != null ? (true, res) : (false, User.Invalid);
+                return res != null ? (res.IsValid, res) : (false, User.Invalid);
             });
 
     //invalid
     public Task<(bool, FriendUserData)> TryGetFriend(Credential credential, int friendId) =>
-        Client.GetStringAsync(UserRoute + Query(credential,friendId.ToString()))
+        Client.GetStringAsync(UserRoute + Query(credential, friendId.ToString()))
             .ContinueWith(task => Deserialize<FriendUserData>(task.Result))
             .ContinueWith(task =>
             {
@@ -86,14 +86,13 @@ public sealed class UserWebApi : WebApiBase, IAsyncUserApi
         throw new System.NotImplementedException();
     }
 
-    public Task<(bool, IEnumerable<PublicUserData>)> TryGetUsersByNick(string pattern) =>
-        Client.GetStringAsync(UserRoute + Query(GetUsersByNick, pattern))
-            .ContinueWith(task => Deserialize<IEnumerable<PublicUserData>>(task.Result))
-            .ContinueWith(task =>
-            {
-                var res = task.Result;
-                return res != null ? (true, res) : (false, Enumerable.Empty<PublicUserData>());
-            });
+    public async Task<(bool, IEnumerable<PublicUserData>)> TryGetUsersByNick(string pattern)
+    {
+        var resp = await Client.PutAsJsonAsync($"{UserRoute}/{QueryAction(GetUsersByNick)}", pattern);
+        var str = await resp.Content.ReadAsStringAsync();
+        var res = Deserialize<IEnumerable<PublicUserData>>(str);
+        return res != null ? (true, res) : (false, Enumerable.Empty<PublicUserData>());
+    }
 
 
     public Task<bool> AddFriend(Credential credential, int userId) =>

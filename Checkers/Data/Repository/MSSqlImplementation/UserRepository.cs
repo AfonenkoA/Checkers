@@ -97,6 +97,7 @@ public sealed class UserRepository : Repository, IUserRepository
                 PasswordParameter(user.Password),
                 new SqlParameter{ParameterName = NickVar,SqlDbType = SqlDbType.NVarChar,Value = user.Nick},
                 new SqlParameter{ParameterName = EmailVar,SqlDbType = SqlDbType.NVarChar,Value = user.Email},
+                new SqlParameter {ParameterName = UserTypeNameVar,SqlDbType = SqlDbType.NVarChar,Value = UserType.Player}
             });
         return command.ExecuteNonQuery() > 0;
     }
@@ -140,13 +141,13 @@ public sealed class UserRepository : Repository, IUserRepository
 
     private int Auth(Credential credential)
     {
-        using var command = CreateProcedure(AuthenticateProc);
+        using var command = CreateProcedureReturn(AuthenticateProc);
         command.Parameters.AddRange(new[]
         {
             LoginParameter(credential.Login),
             PasswordParameter(credential.Password)
         });
-        command.ExecuteNonQuery();
+        command.ExecuteScalar();
         return command.GetReturn();
     }
 
@@ -155,7 +156,6 @@ public sealed class UserRepository : Repository, IUserRepository
         var userId = Auth(credential);
         if (userId == InvalidId)
             return User.Invalid;
-
         var user = new User(GetUser(userId));
         using (var command = CreateProcedure(SelectAllUserItemProc))
         {
@@ -188,7 +188,7 @@ public sealed class UserRepository : Repository, IUserRepository
         {
             Achievements = GetUserItems(userId, ItemType.Achievement)
         };
-        using var command = CreateProcedure(SelectFriendChatIdProc);
+        using var command = CreateProcedureReturn(SelectFriendChatIdProc);
         command.Parameters.AddRange(new []
         {
             new SqlParameter {ParameterName = User1IdVar,SqlDbType = SqlDbType.Int,Value = userId},
@@ -307,16 +307,20 @@ public sealed class UserRepository : Repository, IUserRepository
             {
                 new SqlParameter{ParameterName = NickVar, SqlDbType = SqlDbType.NVarChar, Value = pattern}
             });
-        using var reader = command.ExecuteReader();
         List<PublicUserData> list = new();
-        while (reader.Read())
+        using (var reader = command.ExecuteReader())
         {
-            var user = reader.GetUser();
-            list.Add(new PublicUserData(user)
+            
+            while (reader.Read())
             {
-                Achievements = GetUserItems(user.Id, ItemType.Achievement)
-            });
+                var user = reader.GetUser();
+                list.Add(new PublicUserData(user));
+            }
         }
+
+        foreach (var user in list)
+            user.Achievements = GetUserItems(user.Id, ItemType.Achievement);
+
         return list;
     }
 

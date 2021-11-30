@@ -28,7 +28,7 @@ public sealed class ResourceRepository : Repository, IResourceRepository
 
     public int CreateFile(Credential credential, byte[] picture, string ext)
     {
-        using var command = CreateProcedure(CreateResourceProc);
+        using var command = CreateProcedureReturn(CreateResourceProc);
         
             command.Parameters.AddRange(new []
             {

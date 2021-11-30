@@ -28,7 +28,7 @@ public class UserTest
     [TestMethod]
     public async Task CreateUser()
     {
-        var data = new UserCreationData {Login = Login, Email = Email, Nick = Nick, Password = Nick};
+        var data = new UserCreationData {Login = Login, Email = Email, Nick = Nick, Password = Password};
         var success = await UserApi.CreateUser(data);
         Assert.IsTrue(success);
     }
@@ -113,7 +113,7 @@ public class UserTest
     [TestMethod]
     public async Task TryGetUsersByNick()
     {
-        var (success,users) = await UserApi.TryGetUsersByNick("");
+        var (success,users) = await UserApi.TryGetUsersByNick("i");
         Assert.IsTrue(users.Any());
         Assert.IsTrue(success);
     }

@@ -4,7 +4,7 @@ namespace Checkers.Data.Entity;
 
 public enum FriendshipState
 {
-    Accepted,
+    Accepted=1,
     Canceled,
     Waiting,
     Invalid

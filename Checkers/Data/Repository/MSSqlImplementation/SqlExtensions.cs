@@ -11,7 +11,6 @@ namespace Checkers.Data.Repository.MSSqlImplementation;
 
 internal static class SqlExtensions
 {
-    internal static int GetReturn(this SqlCommand command) => (int)command.Parameters["@RETURN_VALUE"].Value;
     internal static T GetFieldValue<T>(this SqlDataReader reader, string col) => (T)reader[Unwrap(col)];
 
     internal static BasicUserData GetUser(this SqlDataReader reader) =>
@@ -24,7 +23,7 @@ internal static class SqlExtensions
             SelectedAnimationId = reader.GetFieldValue<int>(AnimationId),
             SelectedCheckersId = reader.GetFieldValue<int>(CheckersId),
             LastActivity = reader.GetFieldValue<DateTime>(LastActivity),
-            Type = reader.GetFieldValue<UserType>(UserTypeId)
+            Type = (UserType)reader.GetFieldValue<int>(UserTypeId)
         };
 
     internal static ArticleInfo GetArticle(this SqlDataReader reader) =>
@@ -52,15 +51,15 @@ internal static class SqlExtensions
             State = FriendshipState.Accepted
         };
 
-internal static SqlParameter LoginParameter(string login) =>
-        new() { ParameterName = LoginVar, SqlDbType = SqlDbType.NVarChar, Value = login };
+    internal static int GetReturn(this SqlCommand command) => (int)command.Parameters[ReturnValue].Value;
+
+    internal static SqlParameter LoginParameter(string login) =>
+            new() { ParameterName = LoginVar, SqlDbType = SqlDbType.NVarChar, Value = login };
 
     internal static SqlParameter PasswordParameter(string password) =>
-        new() { ParameterName = LoginVar, SqlDbType = SqlDbType.NVarChar, Value = password};
+        new() { ParameterName = PasswordVar, SqlDbType = SqlDbType.NVarChar, Value = password };
 
-    internal static SqlParameter IdParameter(int id) => 
-        new() {ParameterName = IdVar, SqlDbType = SqlDbType.Int, Value = id};
-
-
+    internal static SqlParameter IdParameter(int id) =>
+        new() { ParameterName = IdVar, SqlDbType = SqlDbType.Int, Value = id };
 
 }

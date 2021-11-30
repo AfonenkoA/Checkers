@@ -792,10 +792,10 @@ BEGIN
 END
 
 GO
-CREATE PROCEDURE {SelectUserFriendshipProc} {UserIdVar} INT
+CREATE PROCEDURE {SelectUserFriendshipProc} {IdVar} INT
 AS
 BEGIN
-    SELECT * FROM {Schema}.{FriendshipTable} WHERE {User1Id} = {UserIdVar}
+    SELECT * FROM {Schema}.{FriendshipTable} WHERE {User1Id} = {IdVar}
 END
 
 GO
@@ -825,27 +825,27 @@ END
 
 GO
 INSERT INTO {ItemTypeTable}({ItemTypeName}) 
-VALUES ({SqlString(ItemType.Picture)}),
-({SqlString(ItemType.Achievement)}),
-({SqlString(ItemType.CheckersSkin)}),
-({SqlString(ItemType.Animation)}),
-({SqlString(ItemType.LootBox)});
+VALUES ({SqlString((ItemType) 1)}),
+({SqlString((ItemType)2)}),
+({SqlString((ItemType)3)}),
+({SqlString((ItemType)4)}),
+({SqlString((ItemType)5)});
 
 INSERT INTO {UserTypeTable}({UserTypeName}) VALUES 
-({SqlString(UserType.Admin)}),
-({SqlString(UserType.Editor)}),
-({SqlString(UserType.Moderator)}),
-({SqlString(UserType.Support)}),
-({SqlString(UserType.Player)})
+({SqlString((UserType)1)}),
+({SqlString((UserType)2)}),
+({SqlString((UserType)3)}),
+({SqlString((UserType)4)}),
+({SqlString((UserType)5)})
 
 INSERT INTO {ChatTypeTable}({ChatTypeName}) VALUES
-({SqlString(ChatType.Public)}),
-({SqlString(ChatType.Private)});
+({SqlString((ChatType)1)}),
+({SqlString((ChatType)2)});
 
 INSERT INTO {FriendshipStateTable}({FriendshipStateName}) VALUES
-({SqlString(FriendshipState.Waiting)}),
-({SqlString(FriendshipState.Accepted)}),
-({SqlString(FriendshipState.Canceled)});
+({SqlString((FriendshipState)1)}),
+({SqlString((FriendshipState)2)}),
+({SqlString((FriendshipState)3)});
 
 GO
 CREATE VIEW {UserItemExtendedView} AS
@@ -874,14 +874,25 @@ GO
 GO
 {LoadUsers()}
 GO
+{LoadFriends()}
+GO
+{LoadFriendMessages()}
+GO
 {LoadUserPictures()}
 GO
 {LoadNews()}
+GO
+{LoadNewsMessages()}
+GO
+{LoadPosts()}
+GO
+{LoadPostMessages()}
 ");
 
 internal static class CsvTable
 {
-    private static string[] ReadLines(string filename) => File.ReadAllLines(filename, Encoding.ASCII);
+    private static string[] ReadLines(string filename) => File.ReadAllLines(filename);
+    private const string Declaration = $"DECLARE {IdVar} INT\n";
     public const string PictureSource = "AvatarPicture.csv";
     public const string CheckersSource = "CheckersSkins.csv";
     public const string AnimationSource = "Animations.csv";
@@ -890,6 +901,11 @@ internal static class CsvTable
     private const string UserSource = "Users.csv";
     private const string UserPictureSource = "UserAvatars.csv";
     private const string NewsSource = "News.csv";
+    private const string PostSource = "ForumPosts.csv";
+    private const string NewsChatSource = "NewsChat.csv";
+    private const string ForumChatSource = "ForumChat.csv";
+    private const string FriendChatSource = "FriendsChat.csv";
+    private const string FriendshipSource = "Friends.csv";
 
     private static readonly string Path = Directory.GetCurrentDirectory();
     private static readonly Exception LineSplitException = new ArgumentNullException("line.Split(\";\")");
@@ -914,7 +930,6 @@ internal static class CsvTable
 
     public static string LoadUserPictures()
     {
-        const string declaration = $"DECLARE {IdVar} INT\n";
         static string ItemId(string name) => $"(SELECT {Id} FROM {ItemTable} WHERE {ItemName}={name})";
 
         static string PictureId(string item) =>
@@ -922,26 +937,106 @@ internal static class CsvTable
 
         static string Set(string name) => $"SET @id = {PictureId(ItemId(name))}";
         static string ExecUpdate(string log, string pass) => $"EXEC {UpdateUserPictureProc} {log}, {pass}, @id";
-        static string Update(UserPictureArgs u) => $"{Set(u.picName)}\n{ExecUpdate(u.login, u.password)}";
+        static string Update(UserPictureArgs u) => $"{Set(u.PicName)}\n{ExecUpdate(u.Login, u.Password)}";
 
-        return declaration +
+        return Declaration +
                string.Join('\n', ReadLines(DataFile(UserPictureSource))
                    .Select(s => Update(new UserPictureArgs(s))));
     }
 
     public static string LoadNews()
     {
-        const string declaration = $"DECLARE {IdVar} INT\n";
         static string SetPicture(string filename) =>
             $"EXEC {IdVar} = {CreateResourceFromFileProc} {ResourceFile(filename)}\n";
         static string CreateArticle(ArticleArgs a) =>
             SetPicture(a.File) +
             $"EXEC {CreateArticleProc} {a.Login}, {a.Password}, {a.Title}, {a.Abstract}, {a.Content}, {IdVar}";
 
-        return declaration +
+        return Declaration +
                string.Join('\n', ReadLines(DataFile(NewsSource))
                     .Select(s => CreateArticle(new ArticleArgs(s))));
     }
+
+    public static string LoadPosts()
+    {
+        static string SetPicture(string filename) =>
+            $"EXEC {IdVar} = {CreateResourceFromFileProc} {ResourceFile(filename)}\n";
+
+        static string CreatePost(PostArgs p) =>
+            SetPicture(p.File) +
+            $"EXEC {CreatePostProc} {p.Login}, {p.Password}, {p.Title}, {p.Content}, {IdVar}";
+
+        return Declaration +
+               string.Join('\n', ReadLines(DataFile(PostSource))
+                   .Select(s=>CreatePost(new PostArgs(s))));
+    }
+
+    public static string LoadNewsMessages()
+    {
+        static string GetPostId(string title) =>
+            $"(SELECT {ArticlePostId} FROM {ArticleTable} WHERE {ArticleTitle}={title})";
+        
+        static string SetId(string title)
+            => $"SET {IdVar} = (SELECT {ChatId} FROM {PostTable} WHERE {Id} = {GetPostId(title)});\n";
+
+        static string CreateComment(MessageArgs m) =>
+            SetId(m.Direction) +
+            $"EXEC {SendMessageProc} {m.Login}, {m.Password}, {IdVar}, {m.Content}";
+
+        return Declaration +
+               string.Join('\n', ReadLines(DataFile(NewsChatSource))
+                   .Select(s => CreateComment(new MessageArgs(s))));
+    }
+
+    public static string LoadPostMessages()
+    {
+        static string GetChatId(string title) =>
+            $"(SELECT {ChatId} FROM {PostTable} WHERE {PostTitle}={title});\n";
+
+        static string CreateComment(MessageArgs m) =>
+            $"SET {IdVar} = {GetChatId(m.Direction)}" +
+            $"EXEC {SendMessageProc} {m.Login}, {m.Password}, {IdVar}, {m.Content}";
+
+        return Declaration +
+               string.Join('\n', ReadLines(DataFile(ForumChatSource))
+                   .Select(s => CreateComment(new MessageArgs(s))));
+    }
+
+    public static string LoadFriends()
+    {
+        const string declaration = "DECLARE @id1 INT, @id2 INT\n";
+
+        static string GetUserId(string var,string login) =>
+            $"SET {var} = (SELECT {Id} FROM {UserTable} WHERE {Login} = {login});\n";
+
+        static string CreateFriendship(FriendshipArgs f) =>
+            GetUserId("@id1",f.Firend)+
+            GetUserId("@id2",f.Login)+
+            $"EXEC {CreateFriendshipProc} @id1, @id2";
+
+        return declaration +
+               string.Join('\n', ReadLines(DataFile(FriendshipSource))
+                   .Select(s => CreateFriendship(new FriendshipArgs(s))));
+    }
+
+    public static string LoadFriendMessages()
+    {
+        const string declaration = $"DECLARE {IdVar} INT, @id1 INT, @id2 INT\n";
+
+        static string SetUserId(string var, string login) =>
+            $"SET {var} = (SELECT {Id} FROM {UserTable} WHERE {Login}={login});\n";
+        
+        static string SendMessage(MessageArgs m) =>
+            SetUserId("@id1",m.Login) +
+            SetUserId("@id2",m.Direction) +
+            $"SET {IdVar} = (SELECT {ChatId} FROM {FriendshipTable} WHERE {User1Id}=@id1 AND {User2Id}=@id2)\n"+
+            $"EXEC {SendMessageProc} {m.Login}, {m.Password}, {IdVar}, {m.Content}";
+
+        return declaration +
+               string.Join('\n', ReadLines(DataFile(FriendChatSource))
+                   .Select(s => SendMessage(new MessageArgs(s))));
+    }
+
 
     private sealed class ItemArgs
     {
@@ -990,17 +1085,17 @@ internal static class CsvTable
 
     private sealed class UserPictureArgs
     {
-        internal readonly string login;
-        internal readonly string password;
-        internal readonly string picName;
+        internal readonly string Login;
+        internal readonly string Password;
+        internal readonly string PicName;
 
         internal UserPictureArgs(string line)
         {
             var strings = line.Split(";") ??
                           throw LineSplitException;
-            login = SqlString(strings[0]);
-            password = SqlString(strings[1]);
-            picName = SqlString(strings[2]);
+            Login = SqlString(strings[0]);
+            Password = SqlString(strings[1]);
+            PicName = SqlString(strings[2]);
         }
     }
 
@@ -1041,11 +1136,44 @@ internal static class CsvTable
             Login = SqlString(strings[0]);
             Password = SqlString(strings[1]);
             Title = SqlString(strings[2]);
-            Content = SqlString(strings[4]);
-            File = strings[5];
+            Content = SqlString(strings[3]);
+            File = strings[4];
         }
 
-        public override string ToString() =>
-            $"{Login}, {Password}, {Title}, {Content}";
+    }
+
+    private sealed class MessageArgs
+    {
+        internal readonly string Login;
+        internal readonly string Password;
+        internal readonly string Direction;
+        internal readonly string Content;
+
+        internal MessageArgs(string line)
+        {
+            var strings = line.Split(";") ??
+                          throw LineSplitException;
+            Login = SqlString(strings[0]);
+            Password = SqlString(strings[1]);
+            Direction = SqlString(strings[2]);
+            Content = SqlString(strings[3]);
+        }
+    }
+
+    private sealed class FriendshipArgs
+    {
+        internal readonly string Login;
+        internal readonly string Password;
+        internal readonly string Firend;
+
+        internal FriendshipArgs(string line)
+        {
+            var strings = line.Split(";") ??
+                          throw LineSplitException;
+            Login = SqlString(strings[0]);
+            Password = SqlString(strings[1]);
+            Firend = SqlString(strings[2]);
+        }
+
     }
 }
