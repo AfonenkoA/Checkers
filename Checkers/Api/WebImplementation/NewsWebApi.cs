@@ -9,47 +9,62 @@ using static Checkers.Api.Interface.Action.NewsApiAction;
 
 namespace Checkers.Api.WebImplementation;
 
-public sealed class NewsWebApi : WebApiBase,  IAsyncNewsApi
+public sealed class NewsWebApi : WebApiBase, IAsyncNewsApi
 {
-    public Task<bool> CreateArticle(Credential credential, ArticleCreationData article) =>
-        Client.PostAsJsonAsync(NewsRoute + Query(credential), article)
-            .ContinueWith(task => task.Result.IsSuccessStatusCode);
-
-    public Task<bool> UpdateTitle(Credential credential, int id, string title) =>
-        Client.PutAsJsonAsync(NewsRoute + $"/{id}" + Query(credential,UpdateArticleTitle), title)
-            .ContinueWith(task => task.Result.IsSuccessStatusCode);
-
-    public Task<bool> UpdateAbstract(Credential credential, int id, string @abstract) =>
-        Client.PutAsJsonAsync(NewsRoute + $"/{id}" + Query(credential, UpdateArticleAbstract), @abstract)
-            .ContinueWith(task => task.Result.IsSuccessStatusCode);
-
-    public Task<bool> UpdateContent(Credential credential, int id, string content) =>
-        Client.PutAsJsonAsync(NewsRoute + $"/{id}" + Query(credential, UpdateArticleContent), content)
-            .ContinueWith(task => task.Result.IsSuccessStatusCode);
-
-    public Task<bool> UpdatePicture(Credential credential, int id, int pictureId) =>
-        Client.PutAsJsonAsync(NewsRoute + $"/{id}" + Query(credential, UpdateArticlePictureId), pictureId)
-            .ContinueWith(task => task.Result.IsSuccessStatusCode);
-
-    public Task<bool> DeleteArticle(Credential credential, int articleId) =>
-        Client.DeleteAsync(NewsRoute + $"/{articleId}" + Query(credential))
-            .ContinueWith(task => task.Result.IsSuccessStatusCode);
-
-    public Task<(bool, Article)> TryGetArticle(int articleId) =>
-        Client.GetStringAsync(NewsRoute + $"/{articleId}")
-            .ContinueWith(task => Deserialize<Article>(task.Result))
-            .ContinueWith(task =>
-            {
-                var res = task.Result;
-                return res != null ? (true, res) : (false, Article.Invalid);
-            });
-
-    public Task<(bool, IEnumerable<ArticleInfo>)> TryGetNews() =>
-        Client.GetStringAsync(NewsRoute)
-            .ContinueWith(task => Deserialize<IEnumerable<ArticleInfo>>(task.Result))
-            .ContinueWith(task =>
-            {
-                var res = task.Result;
-                return res != null ? (true, res) : (false, Enumerable.Empty<ArticleInfo>());
-            });
+    public async Task<bool> CreateArticle(Credential credential, ArticleCreationData article)
+    {
+        var route = NewsRoute + Query(credential);
+        var response = await Client.PostAsJsonAsync(route, article);
+        return response.IsSuccessStatusCode;
     }
+
+    public async Task<bool> UpdateTitle(Credential credential, int id, string title)
+    {
+        var route = NewsRoute + $"/{id}/" + Query(credential, UpdateArticleTitle);
+        var response = await Client.PutAsJsonAsync(route, title);
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> UpdateAbstract(Credential credential, int id, string @abstract)
+    {
+        var route = NewsRoute + $"/{id}/" + Query(credential, UpdateArticleAbstract);
+        var response = await Client.PutAsJsonAsync(route, @abstract);
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> UpdateContent(Credential credential, int id, string content)
+    {
+        var route = NewsRoute + $"/{id}/" + Query(credential, UpdateArticleContent);
+        var response = await Client.PutAsJsonAsync(route, content);
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> UpdatePicture(Credential credential, int id, int pictureId)
+    {
+        var route = NewsRoute + $"/{id}/" + Query(credential, UpdateArticlePictureId);
+        var response = await Client.PutAsJsonAsync(route, pictureId);
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> DeleteArticle(Credential credential, int articleId)
+    {
+        var route = NewsRoute + $"/{articleId}" + Query(credential);
+        var response = await Client.DeleteAsync(route);
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<(bool, Article)> TryGetArticle(int articleId)
+    {
+        var route = NewsRoute + $"/{articleId}";
+        var response = await Client.GetStringAsync(route);
+        var res = Deserialize<Article>(response);
+        return res != null ? (true, res) : (false, Article.Invalid);
+    }
+
+    public async Task<(bool, IEnumerable<ArticleInfo>)> TryGetNews()
+    {
+        var response = await Client.GetStringAsync(NewsRoute);
+        var res = Deserialize<List<ArticleInfo>>(response);
+        return res != null ? (true, res) : (false, Enumerable.Empty<ArticleInfo>());
+    }
+}

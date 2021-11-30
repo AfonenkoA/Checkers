@@ -8,12 +8,15 @@ namespace Checkers.Api.WebImplementation;
 
 public sealed class AsyncResourceWebApi : WebApiBase, IAsyncResourceService
 {
-    public Task<(bool, int)> TryUploadFile(Credential credential, byte[] picture, string ext) =>
-        Client.PostAsJsonAsync(ResourceRoute + Query(credential),
-            Convert.ToBase64String(picture))
-            .ContinueWith(task => task.Result.Content.ReadAsStringAsync())
-            .Unwrap()
-            .ContinueWith(task => (true, Deserialize<int>(task.Result)));
+    public async Task<(bool, int)> TryUploadFile(Credential credential, byte[] picture, string ext)
+    {
+        var route = ResourceRoute + Query(credential);
+        var value = Convert.ToBase64String(picture);
+        var response = await Client.PostAsJsonAsync(route, value);
+        var res = await response.Content.ReadAsStringAsync();
+        var code = Deserialize<int>(res);
+        return (true, code);
+    }
 
     public string GetFileUrl(int id) => ResourceRoute + $"/{id}";
 }

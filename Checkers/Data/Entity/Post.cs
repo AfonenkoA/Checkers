@@ -34,6 +34,8 @@ public sealed class Post : PostInfo
         Content = data.Content;
         PictureId = data.PictureId;
     }
+    [JsonConstructor]
+    public Post(){}
     public int AuthorId { get; init; } = InvalidId;
     public int ChatId { get; init; } = InvalidId;
     public DateTime Created { get; init; } = InvalidDate;

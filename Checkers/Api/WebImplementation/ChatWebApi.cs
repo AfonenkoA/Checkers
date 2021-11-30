@@ -10,17 +10,18 @@ namespace Checkers.Api.WebImplementation;
 
 public sealed class ChatWebApi : WebApiBase, IAsyncChatApi
 {
-    public Task<(bool, IEnumerable<Message>)> TryGetMessages(Credential credential,int chatId, DateTime _)=>
-    Client.GetStringAsync(ChatRoute+$"/{chatId}"+Query(credential))
-            .ContinueWith(task => Deserialize<List<Message>>(task.Result))
-            .ContinueWith(task =>
-            {
-                var res = task.Result;
-                return res != null ? (res.All(i => i.IsValid), res) :
-                    (false, Enumerable.Empty<Message>());
-            });
+    public async Task<(bool, IEnumerable<Message>)> TryGetMessages(Credential credential, int chatId, DateTime _)
+    {
+        var route = ChatRoute + $"/{chatId}" + Query(credential);
+        var response = await Client.GetStringAsync(route);
+        var res = Deserialize<List<Message>>(response);
+        return res != null ? (res.All(i => i.IsValid), res) : (false, Enumerable.Empty<Message>());
+    }
 
-    public Task<bool> SendMessage(Credential credential, int chatId, string message) =>
-        Client.PostAsJsonAsync(ChatRoute + $"/{chatId}" + Query(credential), message)
-            .ContinueWith(task=>task.Result.IsSuccessStatusCode);
+    public async Task<bool> SendMessage(Credential credential, int chatId, string message)
+    {
+        var route = ChatRoute + $"/{chatId}" + Query(credential);
+        var response = await Client.PostAsJsonAsync(route, message);
+        return response.IsSuccessStatusCode;
+    }
 }

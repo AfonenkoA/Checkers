@@ -17,6 +17,7 @@ public sealed class UserApiAction : ApiAction
     internal static readonly UserApiAction DeleteFriend = new(DeleteFriendValue);
     internal static readonly UserApiAction AcceptFriend = new(AcceptFriendValue);
     internal static readonly UserApiAction GetUsersByNick = new(GetUsersByNickValue);
+    internal static readonly UserApiAction UpdateUserPicture = new(UpdateUserPictureValue);
 
     //Values
     public const string SelectCheckersValue = "select-checkers";
@@ -31,4 +32,5 @@ public sealed class UserApiAction : ApiAction
     public const string DeleteFriendValue = "delete-friend";
     public const string AcceptFriendValue = "accept-friend";
     public const string GetUsersByNickValue = "get-by-nick";
+    public const string UpdateUserPictureValue = "update-picture";
 }

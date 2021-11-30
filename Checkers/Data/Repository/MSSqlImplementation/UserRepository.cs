@@ -296,7 +296,14 @@ public sealed class UserRepository : Repository, IUserRepository
 
     public bool UpdateUserPicture(Credential credential, int pictureId)
     {
-        throw new NotImplementedException();
+        using var command = CreateProcedure(UpdateUserPictureProc);
+        command.Parameters.AddRange(new[]
+        {
+            LoginParameter(credential.Login),
+            PasswordParameter(credential.Password),
+            IdParameter(pictureId)
+        });
+        return command.ExecuteNonQuery()>0;
     }
 
     public IEnumerable<PublicUserData> GetUsersByNick(string pattern)

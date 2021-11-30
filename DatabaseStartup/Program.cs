@@ -396,8 +396,8 @@ BEGIN
     DECLARE {UserIdVar} INT;
     EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar}
     EXEC {UpdateUserActivityProc} {LoginVar},{PasswordVar};
-    IF {IdVar} IN (SELECT {ItemId} FROM {Schema}.{UserItemTable} WHERE {UserId}={UserIdVar})
-        UPDATE {Schema}.{UserTable} SET {AnimationId}={IdVar} WHERE {UserAuthCondition};
+    --IF {IdVar} IN (SELECT {ItemId} FROM {Schema}.{UserItemTable} WHERE {UserId}={UserIdVar})
+    UPDATE {Schema}.{UserTable} SET {AnimationId}={IdVar} WHERE {UserAuthCondition};
 END
 
 GO
@@ -407,8 +407,8 @@ BEGIN
     DECLARE {UserIdVar} INT;
     EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar}
     EXEC {UpdateUserActivityProc} {LoginVar},{PasswordVar};
-    IF {IdVar} IN (SELECT {ItemId} FROM {Schema}.{UserItemTable} WHERE {UserId}={UserIdVar})
-        UPDATE {Schema}.{UserTable} SET {CheckersId}={IdVar} WHERE {UserAuthCondition};
+    --IF {IdVar} IN (SELECT {ItemId} FROM {Schema}.{UserItemTable} WHERE {UserId}={UserIdVar})
+    UPDATE {Schema}.{UserTable} SET {CheckersId}={IdVar} WHERE {UserAuthCondition};
 END
 
 GO

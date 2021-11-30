@@ -11,79 +11,109 @@ namespace Checkers.Api.WebImplementation;
 
 public sealed class UserWebApi : WebApiBase, IAsyncUserApi
 {
-    public Task<bool> CreateUser(UserCreationData user) =>
-        Client.PostAsJsonAsync(UserRoute, user)
-            .ContinueWith(task => task.Result.IsSuccessStatusCode);
+    public async Task<bool> CreateUser(UserCreationData user)
+    {
+        var response = await Client.PostAsJsonAsync(UserRoute, user);
+        return response.IsSuccessStatusCode;
+    }
 
-    public Task<bool> DeleteUser(Credential credential) =>
-        Client.DeleteAsync(UserRoute + Query(credential))
-            .ContinueWith(task => task.Result.IsSuccessStatusCode);
+    public async Task<bool> DeleteUser(Credential credential)
+    {
+        var route = UserRoute + Query(credential);
+        var response = await Client.DeleteAsync(route);
+        return response.IsSuccessStatusCode;
+    }
 
-    public Task<(bool, PublicUserData)> TryGetUser(int userId) =>
-        Client.GetStringAsync(UserRoute + $"/{userId}")
-            .ContinueWith(task => Deserialize<PublicUserData>(task.Result))
-            .ContinueWith(task =>
-            {
-                var res = task.Result;
-                return res != null ? (res.IsValid, res) : (false, PublicUserData.Invalid);
-            });
+    public async Task<(bool, PublicUserData)> TryGetUser(int userId)
+    {
+        var route = UserRoute + $"/{userId}";
+        var response = await Client.GetStringAsync(route);
 
-    public Task<(bool, User)> TryGetSelf(Credential credential) =>
-        Client.GetStringAsync(UserRoute + Query(credential))
-            .ContinueWith(task => Deserialize<User>(task.Result))
-            .ContinueWith(task =>
-            {
-                var res = task.Result;
-                return res != null ? (res.IsValid, res) : (false, User.Invalid);
-            });
+        var res = Deserialize<PublicUserData>(response);
+        return res != null ? (res.IsValid, res) : (false, PublicUserData.Invalid);
+
+    }
+
+    public async Task<(bool, User)> TryGetSelf(Credential credential)
+    {
+        var route = UserRoute + Query(credential);
+        var response = await Client.GetStringAsync(route);
+        var res = Deserialize<User>(response);
+        return res != null ? (res.IsValid, res) : (false, User.Invalid);
+    }
 
     //invalid
-    public Task<(bool, FriendUserData)> TryGetFriend(Credential credential, int friendId) =>
-        Client.GetStringAsync(UserRoute + Query(credential, friendId.ToString()))
-            .ContinueWith(task => Deserialize<FriendUserData>(task.Result))
-            .ContinueWith(task =>
-            {
-                var res = task.Result;
-                return res != null ? (true, res) : (false, FriendUserData.Invalid);
-            });
-
-
-    public Task<bool> SelectAnimation(Credential credential, int animationId) =>
-        Client.PutAsJsonAsync(UserRoute + Query(credential, UserApiAction.SelectAnimation), animationId)
-            .ContinueWith(task => task.Result.IsSuccessStatusCode);
-
-    public Task<bool> SelectCheckers(Credential credential, int checkersId) =>
-        Client.PutAsJsonAsync(UserRoute + Query(credential, UserApiAction.SelectCheckers), checkersId)
-            .ContinueWith(task => task.Result.IsSuccessStatusCode);
-
-    public Task<bool> BuyItem(Credential credential, int itemId) =>
-        Client.PutAsJsonAsync(UserRoute + Query(credential, Buy), itemId)
-            .ContinueWith(task => task.Result.IsSuccessStatusCode);
-
-    public Task<bool> Authenticate(Credential user) =>
-        Client.GetAsync(UserRoute + Query(user, UserApiAction.Authenticate))
-            .ContinueWith(task => task.Result.IsSuccessStatusCode);
-
-
-    public Task<bool> UpdateUserNick(Credential credential, string nick) =>
-        Client.PutAsJsonAsync(UserRoute + Query(credential, UpdateNick), nick)
-            .ContinueWith(task => task.Result.IsSuccessStatusCode);
-
-    public Task<bool> UpdateUserLogin(Credential credential, string login) =>
-        Client.PutAsJsonAsync(UserRoute + Query(credential, UpdateLogin), login)
-            .ContinueWith(task => task.Result.IsSuccessStatusCode);
-
-    public Task<bool> UpdateUserPassword(Credential credential, string password) =>
-        Client.PutAsJsonAsync(UserRoute + Query(credential, UpdatePassword), password)
-            .ContinueWith(task => task.Result.IsSuccessStatusCode);
-
-    public Task<bool> UpdateUserEmail(Credential credential, string email) =>
-        Client.PutAsJsonAsync(UserRoute + Query(credential, UpdateEmail), email)
-            .ContinueWith(task => task.Result.IsSuccessStatusCode);
-
-    public Task<bool> UpdateUserPicture(Credential credential, int pictureId)
+    public async Task<(bool, FriendUserData)> TryGetFriend(Credential credential, int friendId)
     {
-        throw new System.NotImplementedException();
+        var route = UserRoute + $"/{friendId}" + Query(credential);
+        var response = await
+                Client.GetStringAsync(route);
+        var res = Deserialize<FriendUserData>(response);
+        return res != null ? (true, res) : (false, FriendUserData.Invalid);
+    }
+
+
+    public async Task<bool> SelectAnimation(Credential credential, int animationId)
+    {
+        var route = $"{UserRoute}/{Query(credential, UserApiAction.SelectAnimation)}";
+        var response = await Client.PutAsJsonAsync(route, animationId.ToString());
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> SelectCheckers(Credential credential, int checkersId)
+    {
+        var route = UserRoute + Query(credential, UserApiAction.SelectCheckers);
+        var response = await Client.PutAsJsonAsync(route, checkersId.ToString());
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> BuyItem(Credential credential, int itemId)
+    {
+        var route = UserRoute + Query(credential, Buy);
+        var response =await Client.PutAsJsonAsync(route, itemId);
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> Authenticate(Credential user)
+    {
+        var route = UserRoute + Query(user, UserApiAction.Authenticate);
+        var response = await Client.GetAsync(route);
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> UpdateUserNick(Credential credential, string nick)
+    {
+        var route = UserRoute + Query(credential, UpdateNick);
+        var response = await Client.PutAsJsonAsync(route, nick);
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> UpdateUserLogin(Credential credential, string login)
+    {
+        var route = UserRoute + Query(credential, UpdateLogin);
+        var response = await Client.PutAsJsonAsync(route, login);
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> UpdateUserPassword(Credential credential, string password)
+    {
+        var route = UserRoute + Query(credential, UpdatePassword);
+        var response = await Client.PutAsJsonAsync(route, password);
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> UpdateUserEmail(Credential credential, string email)
+    {
+        var route = UserRoute + Query(credential, UpdateEmail);
+        var response = await Client.PutAsJsonAsync(route, email);
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> UpdateUserPicture(Credential credential, int pictureId)
+    {
+        var route = UserRoute + Query(credential, UserApiAction.UpdateUserPicture);
+        var response = await Client.PutAsJsonAsync(route, pictureId.ToString());
+        return response.IsSuccessStatusCode;
     }
 
     public async Task<(bool, IEnumerable<PublicUserData>)> TryGetUsersByNick(string pattern)
@@ -95,15 +125,24 @@ public sealed class UserWebApi : WebApiBase, IAsyncUserApi
     }
 
 
-    public Task<bool> AddFriend(Credential credential, int userId) =>
-        Client.PutAsJsonAsync(UserRoute + Query(credential, UserApiAction.AddFriend), userId)
-            .ContinueWith(task => task.Result.IsSuccessStatusCode);
+    public async Task<bool> AddFriend(Credential credential, int userId)
+    {
+        var route = UserRoute + Query(credential, UserApiAction.AddFriend);
+        var response = await Client.PutAsJsonAsync(route, userId);
+        return response.IsSuccessStatusCode;
+    }
 
-    public Task<bool> DeleteFriend(Credential credential, int userId) =>
-        Client.PutAsJsonAsync(UserRoute + Query(credential, UserApiAction.DeleteFriend), userId)
-            .ContinueWith(task => task.Result.IsSuccessStatusCode);
+    public async Task<bool> DeleteFriend(Credential credential, int userId)
+    {
+        var route = UserRoute + Query(credential, UserApiAction.DeleteFriend);
+        var response = await Client.PutAsJsonAsync(route, userId);
+        return response.IsSuccessStatusCode;
+    }
 
-    public Task<bool> AcceptFriend(Credential credential, int userId) =>
-        Client.PutAsJsonAsync(UserRoute + Query(credential, UserApiAction.AcceptFriend), userId)
-            .ContinueWith(task => task.Result.IsSuccessStatusCode);
+    public async Task<bool> AcceptFriend(Credential credential, int userId)
+    {
+        var route = UserRoute + Query(credential, UserApiAction.AcceptFriend);
+        var response =await Client.PutAsJsonAsync(route, userId);
+        return response.IsSuccessStatusCode;
+    }
 }

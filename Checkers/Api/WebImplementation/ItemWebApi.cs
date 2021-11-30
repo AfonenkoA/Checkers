@@ -9,31 +9,27 @@ namespace Checkers.Api.WebImplementation;
 
 public sealed class ItemWebApi : WebApiBase, IAsyncItemApi
 {
-    public Task<(bool, IEnumerable<ItemHash>)> TryGetItems() =>
-        Client.GetStringAsync(ItemRoute)
-            .ContinueWith(task => Deserialize<List<ItemHash>>(task.Result))
-            .ContinueWith(task =>
-            {
-                var res = task.Result;
-                return res != null ? (res.All(i => i.IsValid), res) : (false,Enumerable.Empty<ItemHash>());
-            });
+    public async Task<(bool, IEnumerable<ItemHash>)> TryGetItems()
+    {
+        var response = await Client.GetStringAsync(ItemRoute);
+        var res = Deserialize<List<ItemHash>>(response);
+        return res != null ? (res.All(i => i.IsValid), res) : (false, Enumerable.Empty<ItemHash>());
+    }
 
-    public Task<(bool, ItemInfo)> TryGetItemInfo(int id) =>
-        Client.GetStringAsync(ItemRoute + $"/{id}")
-            .ContinueWith(task => Deserialize<ItemInfo>(task.Result))
-            .ContinueWith(task =>
-            {
-                var res = task.Result;
-                return res != null ? (res.IsValid, res) : (false, ItemInfo.Invalid);
-            });
+    public async Task<(bool, ItemInfo)> TryGetItemInfo(int id)
+    {
+        var route = ItemRoute + $"/{id}";
+        var response = await Client.GetStringAsync(route);
+        var res = Deserialize<ItemInfo>(response);
+        return res != null ? (res.IsValid, res) : (false, ItemInfo.Invalid);
+    }
 
     public string GetItemImageUrl(int id) => ItemRoute + $"/{id}/img";
 
-    public Task<(bool,byte[])> TryGetItemImage(int id) =>
-        Client.GetByteArrayAsync(ItemRoute + $"/{id}/img")
-            .ContinueWith(task =>
-            {
-                var res = task.Result;
-                return res.Any()?(true, res):(false,Array.Empty<byte>());
-            });
+    public async Task<(bool, byte[])> TryGetItemImage(int id)
+    {
+        var route = ItemRoute + $"/{id}/img";
+        var res = await Client.GetByteArrayAsync(route);
+        return res.Any() ? (true, res) : (false, Array.Empty<byte>());
+    }
 }

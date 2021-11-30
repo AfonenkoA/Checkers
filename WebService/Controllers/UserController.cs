@@ -49,8 +49,12 @@ public class UserController : ControllerBase
             DeleteFriendValue => DeleteFriend(credential, int.Parse(val)),
             AcceptFriendValue => AcceptFriend(credential, int.Parse(val)),
             GetUsersByNickValue => GetUsersByNick(val),
+            UpdateUserPictureValue => UpdateUserPicture(credential,int.Parse(val)),
             _ => BadRequestResult
         };
+
+    private IActionResult UpdateUserPicture(Credential credential, int pictureId)
+        => _repository.UpdateUserPicture(credential, pictureId) ? OkResult : BadRequestResult;
 
     private IActionResult SelectAnimation(Credential credential, int animationId) =>
         _repository.SelectAnimation(credential, animationId) ? OkResult : BadRequestResult;
