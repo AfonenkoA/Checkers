@@ -42,9 +42,9 @@ public sealed class ForumRepository : Repository, IForumRepository
             {
                 LoginParameter(credential.Login),
                 PasswordParameter(credential.Password),
-                new SqlParameter{ParameterName = PostTitle,SqlDbType = SqlDbType.NVarChar,Value = post.Title},
-                new SqlParameter{ParameterName = PostContent,SqlDbType = SqlDbType.NVarChar,Value = post.Content},
-                new SqlParameter{ParameterName = PostPictureId,SqlDbType = SqlDbType.Int,Value = post.PictureId}
+                new SqlParameter{ParameterName = PostTitleVar,SqlDbType = SqlDbType.NVarChar,Value = post.Title},
+                new SqlParameter{ParameterName = PostContentVar,SqlDbType = SqlDbType.NVarChar,Value = post.Content},
+                new SqlParameter{ParameterName = PostPictureIdVar,SqlDbType = SqlDbType.Int,Value = post.PictureId}
             });
         return command.ExecuteNonQuery() > 0;
     }

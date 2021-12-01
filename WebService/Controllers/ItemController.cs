@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Linq;
-using Checkers.Data.Repository.Interface;
+﻿using Checkers.Data.Repository.Interface;
 using Checkers.Data.Repository.MSSqlImplementation;
 using Microsoft.AspNetCore.Mvc;
 using static Checkers.Api.WebImplementation.WebApiBase;
@@ -11,23 +9,38 @@ namespace WebService.Controllers;
 [ApiController]
 public class ItemController : ControllerBase
 {
+
     public ItemController(RepositoryFactory factory) => _repository = factory.Get<ItemRepository>();
 
     private readonly IItemRepository _repository;
-    [HttpGet]
-    public IActionResult GetItems() => Json(_repository.GetItems());
 
-    [HttpGet("{id:int}")]
-    public IActionResult GetItemInfo(int id)
-    {
-        var result = _repository.GetItemInfo(id);
-        return result.IsValid ? Json(result) : BadRequestResult;
-    }
+    [HttpGet,Route("achievement")]
+    public IActionResult GetAchievements() => Json(_repository.GetAchievements());
 
-    [HttpGet("{id:int}/img")]
-    public IActionResult GetItemImage(int id)
-    {
-        var (pic, ext) = _repository.GetItemImage(id);
-        return pic.Any() ? new FileStreamResult(new MemoryStream(pic), $"image/{ext}") : BadRequestResult;
-    }
+    [HttpGet,Route("animation")]
+    public IActionResult GetAnimations() => Json(_repository.GetAnimations());
+
+    [HttpGet,Route("checkers-skin")]
+    public IActionResult GetCheckerSkins() => Json(_repository.GetCheckerSkins());
+    [HttpGet,Route("lootbox")]
+    public IActionResult GetLootBoxes() => Json(_repository.GetLootBoxes());
+
+    [HttpGet,Route("picture")]
+    public IActionResult GetPictures() => Json(_repository.GetPictures());
+
+
+    [HttpGet,Route("animation/{id:int}")]
+    public IActionResult GetAnimation(int id) => Json(_repository.GetAnimation(id));
+
+    [HttpGet,Route("checkers-skin/{id:int}")]
+    public IActionResult GetCheckersSkin(int id) => Json(_repository.GetCheckersSkin(id));
+
+    [HttpGet,Route("lootbox/{id:int}")]
+    public IActionResult GetLootBox(int id) => Json(_repository.GetLootBox(id));
+
+    [HttpGet,Route("picture/{id:int}")]
+    public IActionResult GetPicture(int id) => Json(_repository.GetPicture(id));
+
+    [HttpGet,Route("achievement/{id:int}")]
+    public IActionResult GetAchievement(int id) => Json(_repository.GetAchievement(id));
 }

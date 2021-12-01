@@ -107,10 +107,13 @@ public sealed class User : BasicUserData
     [JsonConstructor]
     public User() { }
 
-    public IEnumerable<int> Items { get; set; } = InvalidEnumerable;
+    public IEnumerable<int> CheckerSkins { get; set; } = InvalidEnumerable;
+    public IEnumerable<int> Animations { get; set; } = InvalidEnumerable;
+ 
     public IEnumerable<Friendship> Friends { get; set; } = Enumerable.Empty<Friendship>();
-    public IEnumerable<int> Games { get; set; } = InvalidEnumerable;
 
     [JsonIgnore]
-    public override bool IsValid => base.IsValid && Items.Any();
+    public override bool IsValid => base.IsValid &&
+                                    CheckerSkins.Any() &&
+                                    Animations.Any();
 }

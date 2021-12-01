@@ -67,12 +67,21 @@ public sealed class UserWebApi : WebApiBase, IAsyncUserApi
         return response.IsSuccessStatusCode;
     }
 
-    public async Task<bool> BuyItem(Credential credential, int itemId)
+    public Task<bool> BuyCheckersSkin(Credential credential, int id)
     {
-        var route = UserRoute + Query(credential, Buy);
-        var response =await Client.PutAsJsonAsync(route, itemId);
-        return response.IsSuccessStatusCode;
+        throw new System.NotImplementedException();
     }
+
+    public Task<bool> BuyAnimation(Credential credential, int id)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task<bool> BuyLootBox(Credential credential, int id)
+    {
+        throw new System.NotImplementedException();
+    }
+
 
     public async Task<bool> Authenticate(Credential user)
     {
@@ -144,5 +153,26 @@ public sealed class UserWebApi : WebApiBase, IAsyncUserApi
         var route = UserRoute + Query(credential, UserApiAction.AcceptFriend);
         var response =await Client.PutAsJsonAsync(route, userId);
         return response.IsSuccessStatusCode;
+    }
+
+    private const string ShopRoute = UserRoute + "/shop";
+    private const string AnimationShop = ShopRoute + "/animation";
+    private const string CheckersSkinShop = ShopRoute + "/checkers-skin";
+    private const string LootBoxShop = ShopRoute + "/lootbox";
+
+
+    public Task<(bool, IEnumerable<int>)> TryGetAvailableAnimations(Credential c)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task<(bool, IEnumerable<int>)> TryGetAvailableCheckers(Credential c)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task<(bool, IEnumerable<int>)> TryGetAvailableLootBoxes(Credential c)
+    {
+        throw new System.NotImplementedException();
     }
 }

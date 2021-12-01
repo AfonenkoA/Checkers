@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Checkers.Api.Interface;
@@ -12,14 +13,28 @@ namespace ApiTest;
 public class ForumTest
 {
     private static readonly IAsyncForumApi ForumApi = new ForumWebApi();
+    private static readonly IAsyncResourceService ResourceService = new AsyncResourceWebApi();
     private static readonly List<PostInfo> Posts = new();
+    private static readonly Credential Credential = new() { Login = "redactor", Password = "redactor" };
+    private const string Title = "Grape Title";
+    private const string Abstract = "Grape Abstract";
+    private const string Content = "Grape Content";
+    private const string NewTitle = "New Grape Title";
+    private const string NewAbstract = "New Grape Abstract";
+    private const string NewContent = "New Grape Content";
+    private const string Ext = "jpg";
+    private const string Image1 = @"Resource\Apple.jpg";
+    private const string Image2 = @"Resource\Grape.jpg";
+
+
+    private static Task<(bool, IEnumerable<PostInfo>)> GetPosts() => ForumApi.TryGetPosts();
 
     [TestMethod]
-    public async Task Test01GetAllPosts()
+    public async Task Test01GetPosts()
     {
-        var (success, posts) = await ForumApi.TryGetPosts();
-        Posts.AddRange(posts);
+        var (success, posts) = await GetPosts();
         Assert.IsTrue(success);
+        Posts.AddRange(posts);
         Assert.IsTrue(Posts.Any());
     }
 
@@ -33,5 +48,50 @@ public class ForumTest
             Assert.IsTrue(post.IsValid);
         }
     }
+
+    [TestMethod]
+    public async Task Test03CreatePost()
+    {
+        var (success, id) = await ResourceService.TryUploadFile(Credential, await File.ReadAllBytesAsync(Image1), Ext);
+        Assert.IsTrue(success);
+        var data = new PostCreationData { Title = Title, Content = Content, PictureId = id };
+        success = await ForumApi.CreatePost(Credential, data);
+        Assert.IsTrue(success);
+    }
+
+
+    private static async Task<int> GetId()
+    {
+        var (_, posts) = await GetPosts();
+        return (from info in posts where info.Title == Title select info.Id).FirstOrDefault();
+    }
+
+    [TestMethod]
+    public async Task Test04UpdateContent()
+    {
+        var id = await GetId();
+        var success = await ForumApi.UpdateContent(Credential, id, NewContent);
+        Assert.IsTrue(success);
+    }
+
+    [TestMethod]
+    public async Task Test05UpdatePicture()
+    {
+        var id = await GetId();
+        var (success, pic) = await ResourceService.TryUploadFile(Credential, await File.ReadAllBytesAsync(Image2), Ext);
+        Assert.IsTrue(success);
+        success = await ForumApi.UpdatePicture(Credential, id, pic);
+        Assert.IsTrue(success);
+    }
+
+    [TestMethod]
+    public async Task Test06UpdateTitle()
+    {
+        var id = await GetId();
+        var success = await ForumApi.UpdateTitle(Credential, id, NewTitle);
+        Assert.IsTrue(success);
+    }
+
+
 
 }

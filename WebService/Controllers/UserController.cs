@@ -1,5 +1,4 @@
-﻿using System;
-using Checkers.Data.Entity;
+﻿using Checkers.Data.Entity;
 using Checkers.Data.Repository.Interface;
 using Checkers.Data.Repository.MSSqlImplementation;
 using Microsoft.AspNetCore.Mvc;

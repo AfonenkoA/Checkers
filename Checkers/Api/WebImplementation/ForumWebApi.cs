@@ -26,7 +26,7 @@ public sealed class ForumWebApi : WebApiBase, IAsyncForumApi
 
     public async Task<bool> UpdateContent(Credential credential, int postId, string content)
     {
-        var route = ForumRoute + $"/{postId}/" + Query(credential, UpdatePostContent);
+        var route = ForumRoute + $"/{postId}" + Query(credential, UpdatePostContent);
         var response = await Client.PutAsJsonAsync(route, content);
         return response.IsSuccessStatusCode;
     }
@@ -34,7 +34,7 @@ public sealed class ForumWebApi : WebApiBase, IAsyncForumApi
     public async Task<bool> UpdatePicture(Credential credential, int postId, int imageId)
     {
         var route = ForumRoute + $"/{postId}" + Query(credential, UpdatePostPicture);
-        var response = await Client.PutAsJsonAsync(route, imageId);
+        var response = await Client.PutAsJsonAsync(route, imageId.ToString());
         return response.IsSuccessStatusCode;
     }
 

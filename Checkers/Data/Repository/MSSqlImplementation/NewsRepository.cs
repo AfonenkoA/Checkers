@@ -45,9 +45,9 @@ public sealed class NewsRepository: Repository, INewsRepository
                 LoginParameter(credential.Login),
                 PasswordParameter(credential.Password),
                 new SqlParameter{ParameterName = ArticleTitleVar,SqlDbType = SqlDbType.NVarChar,Value = article.Title},
-                new SqlParameter{ParameterName = ArticleAbstract,SqlDbType = SqlDbType.NVarChar,Value = article.Abstract},
-                new SqlParameter{ParameterName = ArticleContent,SqlDbType = SqlDbType.NVarChar,Value = article.Content},
-                new SqlParameter{ParameterName = ArticlePictureId,SqlDbType = SqlDbType.Int,Value = article.PictureId}
+                new SqlParameter{ParameterName = ArticleAbstractVar,SqlDbType = SqlDbType.NVarChar,Value = article.Abstract},
+                new SqlParameter{ParameterName = ArticleContentVar,SqlDbType = SqlDbType.NVarChar,Value = article.Content},
+                new SqlParameter{ParameterName = ArticlePictureIdVar,SqlDbType = SqlDbType.Int,Value = article.PictureId}
             });
         return command.ExecuteNonQuery() > 0;
     }

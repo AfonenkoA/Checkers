@@ -1,6 +1,4 @@
-﻿using System.Text;
-using Checkers.Data.Entity;
-using Checkers.Data.Repository.MSSqlImplementation;
+﻿using Checkers.Data.Entity;
 using static System.Console;
 using static Checkers.Data.Repository.MSSqlImplementation.ItemRepository;
 using static Checkers.Data.Repository.MSSqlImplementation.Repository;
@@ -27,54 +25,47 @@ CREATE TABLE {ResourceTable}
 {ResourceBytes}         {BinaryType}	NOT NULL,
 );
 
-
-CREATE TABLE {ItemTypeTable}
-(
-{Identity},
-{ItemTypeName}	{UniqueStringType}	NOT NULL	UNIQUE
-);
-
-CREATE TABLE {ItemTable}
-(
-{Identity},
-{Updated}		DATETIME		NOT NULL	DEFAULT GETDATE(),
-{ItemTypeId}    INT             NOT NULL	{Fk(ItemTable, ItemTypeTable)},
-{ResourceId}    INT             NOT NULL	{Fk(ItemTable, ResourceTable)},
-{Detail}        {StringType}    NOT NULL,
-{ItemName}		{UniqueStringType}	NOT NULL    UNIQUE,
-{Price}		    INT				NOT NULL
-);
-
 CREATE TABLE {PictureTable}
 (
 {Identity},
-{ItemId}		INT		NOT NULL	{Fk(PictureTable, ItemTable)}
+{Name}          {UniqueStringType}      NOT NULL    UNIQUE,
+{ResourceId}    INT                     NOT NULL    {Fk(PictureTable,ResourceTable)}
 );
 
 CREATE TABLE {AchievementTable}
 (
 {Identity},
-{ItemId}		INT		NOT NULL	{Fk(AchievementTable, ItemTable)}
+{Name}          {UniqueStringType}      NOT NULL    UNIQUE,
+{Detail}        {StringType}            NOT NULL,
+{ResourceId}    INT                     NOT NULL    {Fk(AchievementTable, ResourceTable)}
 );
 
 CREATE TABLE {LootBoxTable}
 (
 {Identity},
-{ItemId}		INT		NOT NULL	{Fk(LootBoxTable, ItemTable)}
+{Name}          {UniqueStringType}      NOT NULL    UNIQUE,
+{Detail}        {StringType}            NOT NULL,
+{ResourceId}    INT                     NOT NULL    {Fk(LootBoxTable, ResourceTable)},
+{Price}         INT                     NOT NULL    DEFAULT 100
 );
 
-CREATE TABLE {CheckersTable}
+CREATE TABLE {CheckersSkinTable}
 (
 {Identity},
-{ItemId}		INT		NOT NULL	{Fk(CheckersTable, ItemTable)}
+{Name}          {UniqueStringType}      NOT NULL    UNIQUE,
+{Detail}        {StringType}            NOT NULL,
+{ResourceId}    INT                     NOT NULL    {Fk(CheckersSkinTable, ResourceTable)},
+{Price}         INT                     NOT NULL    DEFAULT 100
 );
 
 CREATE TABLE {AnimationTable}
 (
 {Identity},
-{ItemId}		INT		NOT NULL	{Fk(AnimationTable, ItemTable)}
+{Name}          {UniqueStringType}      NOT NULL    UNIQUE,
+{Detail}        {StringType}            NOT NULL,
+{ResourceId}    INT                     NOT NULL    {Fk(AnimationTable, ResourceTable)},
+{Price}         INT                     NOT NULL    DEFAULT 100
 );
-
 
 CREATE TABLE {UserTypeTable}
 (
@@ -94,15 +85,30 @@ CREATE TABLE {UserTable}
 {PictureId}		    INT				NOT NULL	{Fk(UserTable, PictureTable)}        DEFAULT 1,
 {SocialCredit}      INT             NOT NULL    DEFAULT 1000,
 {Currency}          INT             NOT NULL    DEFAULT 1000,
-{CheckersId}        INT             NOT NULL    {Fk(UserTable, CheckersTable)}       DEFAULT 1,
+{CheckersSkinId}        INT             NOT NULL    {Fk(UserTable, CheckersSkinTable)}       DEFAULT 1,
 {AnimationId}       INT             NOT NULL    {Fk(UserTable, AnimationTable)}      DEFAULT 1
 );
 
-CREATE TABLE {UserItemTable}
+
+CREATE TABLE {UserAnimationTable}
 (
 {Identity},
-{UserId}            INT				NOT NULL	{Fk(UserItemTable, UserTable)},
-{ItemId}            INT				NOT NULL	{Fk(UserItemTable, ItemTable)},
+{AnimationId}   INT     NOT NULL    {Fk(UserAnimationTable,AnimationTable)},
+{UserId}        INT     NOT NULL    {Fk(UserAnimationTable,UserTable)}
+);
+
+CREATE TABLE {UserCheckersSkinTable}
+(
+{Identity},
+{CheckersSkinId}   INT     NOT NULL    {Fk(UserCheckersSkinTable, AnimationTable)},
+{UserId}        INT     NOT NULL    {Fk(UserCheckersSkinTable, UserTable)}
+);
+
+CREATE TABLE {UserAchievementTable}
+(
+{Identity},
+{AchievementId}   INT     NOT NULL    {Fk(UserAchievementTable, AnimationTable)},
+{UserId}        INT     NOT NULL    {Fk(UserAchievementTable, UserTable)}
 );
 
 CREATE TABLE {ChatTypeTable}
@@ -167,13 +173,6 @@ CREATE TABLE {ArticleTable}
 {ArticlePostId}     INT                 NOT NULL    {Fk(ArticleTable, PostTable)},
 );
 
-
-GO
-CREATE PROCEDURE {GetItemTypeByTypeNameProc} {ItemTypeNameVar} {UniqueStringType}
-AS
-BEGIN
-    RETURN (SELECT {Id} FROM {Schema}.{ItemTypeTable} WHERE {ItemTypeName}={ItemTypeNameVar})
-END
 
 GO
 CREATE PROCEDURE {GetUserTypeByTypeNameProc} {UserTypeNameVar} {UniqueStringType}
@@ -256,37 +255,137 @@ BEGIN
     UPDATE {Schema}.{UserTable} SET {LastActivity}=GETDATE() WHERE {UserAuthCondition}
 END
 
+
 GO
-CREATE PROCEDURE {SelectItemPictureProc} {IdVar} INT
+CREATE PROCEDURE {SelectAchievementProc} {IdVar} INT
 AS
 BEGIN
-    DECLARE {ResourceIdVar} INT
-    SET {ResourceIdVar} = (SELECT {ResourceId} FROM {Schema}.{ItemTable} WHERE {Id}={IdVar});
-    EXEC {SelectResourceProc} {ResourceIdVar};
+    SELECT A.*, R.{ResourceExtension}
+    FROM {Schema}.{AchievementTable} AS A 
+    JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=A.{ResourceId}
+    WHERE A.{Id}={IdVar}
 END
 
 GO
-CREATE PROCEDURE {SelectItemProc} {IdVar} INT
+CREATE PROCEDURE {SelectAnimationProc} {IdVar} INT
 AS
 BEGIN
-    SELECT I.{Id},I.{Updated},I.{ItemTypeId},I.{ItemName},I.{Detail},R.{ResourceExtension},I.{Price}
-    FROM {Schema}.{ItemTable} AS I 
-    JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=I.{ResourceId}
-    WHERE I.{Id}={IdVar}
+    SELECT A.*, R.{ResourceExtension}
+    FROM {Schema}.{AnimationTable} AS A 
+    JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=A.{ResourceId}
+    WHERE A.{Id}={IdVar}
 END
 
 GO
-CREATE PROCEDURE {SelectItemsProc}
+CREATE PROCEDURE {SelectCheckersSkinProc} {IdVar} INT
 AS
 BEGIN
-    SELECT {Id}, {Updated} FROM {Schema}.{ItemTable}
+    SELECT CH.*, R.{ResourceExtension}
+    FROM {Schema}.{CheckersSkinTable} AS CH 
+    JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=CH.{ResourceId}
+    WHERE CH.{Id}={IdVar}
 END
 
 GO
-CREATE PROCEDURE {UserAddItemProc} {UserIdVar} INT, {ItemIdVar} INT
+CREATE PROCEDURE {SelectPictureProc} {IdVar} INT
 AS
 BEGIN
-    INSERT INTO {Schema}.{UserItemTable}({UserId},{ItemId}) VALUES ({UserIdVar},{ItemIdVar}); 
+    SELECT P.*, R.{ResourceExtension}
+    FROM {Schema}.{PictureTable} AS P
+    JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=P.{ResourceId}
+    WHERE P.{Id}={IdVar}
+END
+
+GO
+CREATE PROCEDURE {SelectLootBoxProc} {IdVar} INT
+AS
+BEGIN
+    SELECT L.*, R.{ResourceExtension}
+    FROM {Schema}.{LootBoxTable} AS L
+    JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=L.{ResourceId}
+    WHERE L.{Id}={IdVar}
+END
+
+
+GO
+CREATE PROCEDURE {SelectAllAchievementProc}
+AS
+BEGIN
+    SELECT A.*, R.{ResourceExtension}
+    FROM {Schema}.{AchievementTable} AS A
+    JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=A.{ResourceId}
+END
+
+GO
+CREATE PROCEDURE {SelectAllAnimationProc}
+AS
+BEGIN
+    SELECT A.*, R.{ResourceExtension}
+    FROM {Schema}.{AnimationTable} AS A
+    JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=A.{ResourceId}
+END
+
+GO
+CREATE PROCEDURE {SelectAllCheckersSkinProc}
+AS
+BEGIN
+    SELECT CH.*, R.{ResourceExtension}
+    FROM {Schema}.{AnimationTable} AS CH
+    JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=CH.{ResourceId}
+END
+
+GO
+CREATE PROCEDURE {SelectAllPictureProc}
+AS
+BEGIN
+    SELECT P.*, R.{ResourceExtension}
+    FROM {Schema}.{PictureTable} AS P
+    JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=P.{ResourceId}
+END
+
+GO
+CREATE PROCEDURE {SelectAllLootBoxProc}
+AS
+BEGIN
+    SELECT L.*, R.{ResourceExtension}
+    FROM {Schema}.{LootBoxTable} AS L
+    JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=L.{ResourceId}
+END
+
+
+GO
+CREATE PROCEDURE {SelectUserAchievementProc} {IdVar} INT
+AS
+BEGIN
+    SELECT {Id} FROM {Schema}.{UserAchievementTable} WHERE {Id}={IdVar}
+END
+
+GO
+CREATE PROCEDURE {SelectUserAnimationProc} {IdVar} INT
+AS
+BEGIN
+    SELECT {Id} FROM {Schema}.{UserAnimationTable} WHERE {Id}={IdVar}
+END
+
+GO
+CREATE PROCEDURE {SelectUserCheckersSkinProc} {IdVar} INT
+AS
+BEGIN
+    SELECT {Id} FROM {Schema}.{UserCheckersSkinTable} WHERE {Id}={IdVar}
+END
+
+GO
+CREATE PROCEDURE {UserAddAnimationProc} {UserIdVar} INT, {IdVar} INT
+AS
+BEGIN
+    INSERT INTO {UserAnimationTable}({UserId},{AnimationId}) VALUES({UserIdVar},{IdVar}) 
+END
+
+GO
+CREATE PROCEDURE {UserAddCheckersSkinProc} {UserIdVar} INT, {IdVar} INT
+AS
+BEGIN
+    INSERT INTO {UserCheckersSkinTable}({UserId},{CheckersSkinId}) VALUES({UserIdVar},{IdVar}) 
 END
 
 GO
@@ -298,10 +397,13 @@ CREATE PROCEDURE {CreateUserProc}
 {UserTypeNameVar} {UniqueStringType}
 AS
 BEGIN
-    DECLARE {UserIdVar} INT, @support_id INT, {IdVar} INT
-    BEGIN TRANSACTION;  
-    INSERT INTO {Schema}.{UserTable}({Nick},{Login},{Password},{Email},{UserTypeId})
-    VALUES ({NickVar},{LoginVar},{PasswordVar},{EmailVar},(SELECT {Id} FROM {UserTypeTable} WHERE {UserTypeName}={UserTypeNameVar}));
+    DECLARE {UserIdVar} INT, @support_id INT, {IdVar} INT, @ch_id INT, @an_id INT, {UserTypeIdVar} INT, @p_id INT
+    SET {UserTypeIdVar} = (SELECT {Id} FROM {UserTypeTable} WHERE {UserTypeName}={UserTypeNameVar});
+    SET @ch_id = (SELECT TOP 1 {Id} FROM {CheckersSkinTable} ORDER BY {Id});
+    SET @an_id = (SELECT TOP 1 {Id} FROM {AnimationTable} ORDER BY {Id});
+    SET @p_id = (SELECT TOP 1 {Id} FROM {PictureTable} ORDER BY {Id});
+    INSERT INTO {Schema}.{UserTable}({Nick},{Login},{Password},{Email},{UserTypeId},{CheckersSkinId},{AnimationId},{PictureId})
+    VALUES ({NickVar},{LoginVar},{PasswordVar},{EmailVar},{UserTypeIdVar},@ch_id,@an_id,@p_id);
     SET {UserIdVar} = @@IDENTITY;
     IF {UserTypeNameVar}!={SqlString(UserType.Support)}
         BEGIN
@@ -309,13 +411,8 @@ BEGIN
         SET @support_id = (SELECT TOP 1 {Id} FROM {Schema}.{UserTable} WHERE {UserTypeId} = {IdVar});
         EXEC {CreateFriendshipProc} {UserIdVar}, @support_id
         END
-    SET {IdVar} = (SELECT TOP 1 {ItemId} FROM {AnimationTable});
-    EXEC {UserAddItemProc} {UserIdVar}, {IdVar};
-    SET {IdVar} = (SELECT TOP 1 {ItemId} FROM {CheckersTable});
-    EXEC {UserAddItemProc} {UserIdVar}, {IdVar};
-    SET {IdVar} = (SELECT TOP 1 {ItemId} FROM {PictureTable});
-    EXEC {UserAddItemProc} {UserIdVar}, {IdVar};
-    COMMIT;
+    EXEC {UserAddAnimationProc} {UserIdVar}, @ch_id;
+    EXEC {UserAddCheckersSkinProc} {UserIdVar}, @an_id;
     RETURN {UserIdVar}
 END
 
@@ -324,16 +421,6 @@ CREATE PROCEDURE {SelectUserProc} {IdVar} INT
 AS
 BEGIN
     SELECT * FROM {Schema}.{UserTable} WHERE {Id}={IdVar}
-END
-
-GO 
-CREATE PROCEDURE {SelectUserItemProc} {IdVar} INT, {ItemTypeVar} {StringType}
-AS
-BEGIN
-    DECLARE {ItemTypeIdVar} INT
-    EXEC {ItemTypeIdVar} = {GetItemTypeByTypeNameProc} {ItemTypeVar}
-    SELECT I.{Id} FROM {Schema}.{UserItemTable} AS UI 
-    JOIN {ItemTable} AS I ON UI.{ItemId}=I.{Id}  WHERE I.{ItemTypeId}={ItemTypeIdVar}; 
 END
 
 GO  
@@ -396,8 +483,8 @@ BEGIN
     DECLARE {UserIdVar} INT;
     EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar}
     EXEC {UpdateUserActivityProc} {LoginVar},{PasswordVar};
-    --IF {IdVar} IN (SELECT {ItemId} FROM {Schema}.{UserItemTable} WHERE {UserId}={UserIdVar})
-    UPDATE {Schema}.{UserTable} SET {AnimationId}={IdVar} WHERE {UserAuthCondition};
+    IF {IdVar} IN (SELECT {Id} FROM {Schema}.{UserAnimationTable} WHERE {UserId}={UserIdVar})
+        UPDATE {Schema}.{UserTable} SET {AnimationId}={IdVar} WHERE {UserAuthCondition};
 END
 
 GO
@@ -407,8 +494,8 @@ BEGIN
     DECLARE {UserIdVar} INT;
     EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar}
     EXEC {UpdateUserActivityProc} {LoginVar},{PasswordVar};
-    --IF {IdVar} IN (SELECT {ItemId} FROM {Schema}.{UserItemTable} WHERE {UserId}={UserIdVar})
-    UPDATE {Schema}.{UserTable} SET {CheckersId}={IdVar} WHERE {UserAuthCondition};
+    IF {IdVar} IN (SELECT {Id} FROM {Schema}.{UserCheckersSkinTable} WHERE {UserId}={UserIdVar})
+        UPDATE {Schema}.{UserTable} SET {CheckersSkinId}={IdVar} WHERE {UserAuthCondition};
 END
 
 GO
@@ -430,25 +517,6 @@ BEGIN
     EXEC sp_executesql @sql, N'{ResourceBytesVar} {BinaryType} OUT', {ResourceBytesVar} = {ResourceBytesVar} OUT;
     EXEC  {IdVar}={CreateResourceProc} {ResourceExtensionVar} ,{ResourceBytesVar}
     RETURN {IdVar}
-END
-
-GO
-CREATE PROCEDURE {CreateItemProc}
-{ItemTypeVar} {StringType},
-{ItemNameVar} {UniqueStringType},
-{DetailVar} {StringType},
-{PathVar} {StringType},
-{PriceVar} INT
-AS
-BEGIN
-    DECLARE @type_id INT, {IdVar} INT
-    BEGIN TRANSACTION;  
-    SET @type_id = (SELECT {Id} FROM {ItemTypeTable} WHERE {ItemTypeName}={ItemTypeVar});
-    EXEC {IdVar} = {CreateResourceFromFileProc} {PathVar};
-    INSERT INTO {Schema}.{ItemTable}({ItemName},{ItemTypeId},{Detail},{ResourceId},{Price})
-    VALUES ({ItemNameVar},@type_id,{DetailVar},{IdVar},{PriceVar});
-    COMMIT;
-    RETURN @@IDENTITY;
 END
 
 GO
@@ -580,72 +648,69 @@ END
 
 GO
 CREATE PROCEDURE {CreateAnimationProc}
-{ItemNameVar} {UniqueStringType},
-{DetailVar} {StringType},
+{NameVar} {UniqueStringType},
 {PathVar} {StringType},
+{DetailVar} {StringType},
 {PriceVar} INT
 AS
 BEGIN
     DECLARE {IdVar} INT
-    EXEC {IdVar} = {CreateItemProc} {SqlString(ItemType.Animation)}, {ItemNameVar},{DetailVar},{PathVar},{PriceVar}
-    INSERT INTO {Schema}.{AnimationTable}({ItemId}) VALUES({IdVar}); 
-    RETURN {IdVar}
+    EXEC {IdVar} = {CreateResourceFromFileProc} {PathVar}
+    INSERT INTO {Schema}.{AnimationTable}({ResourceId},{Name},{Detail},{Price}) 
+    VALUES({IdVar},{NameVar},{DetailVar},{PriceVar});
 END
 
 GO
 CREATE PROCEDURE {CreateAchievementProc}
-{ItemNameVar} {UniqueStringType},
-{DetailVar} {StringType},
+{NameVar} {UniqueStringType},
 {PathVar} {StringType},
-{PriceVar} INT
+{DetailVar} {StringType}
 AS
 BEGIN
     DECLARE {IdVar} INT
-    EXEC {IdVar} = {CreateItemProc} {SqlString(ItemType.Achievement)} ,{ItemNameVar},{DetailVar},{PathVar},{PriceVar}
-    INSERT INTO {Schema}.{AchievementTable}({ItemId}) VALUES({IdVar}); 
-    RETURN {IdVar}
+    EXEC {IdVar} = {CreateResourceFromFileProc} {PathVar}
+    INSERT INTO {Schema}.{AchievementTable}({ResourceId},{Name},{Detail}) 
+    VALUES({IdVar},{NameVar},{DetailVar});
 END
 
 GO
 CREATE PROCEDURE {CreateCheckersSkinProc}
-{ItemNameVar} {UniqueStringType},
-{DetailVar} {StringType},
+{NameVar} {UniqueStringType},
 {PathVar} {StringType},
+{DetailVar} {StringType},
 {PriceVar} INT
 AS
 BEGIN
     DECLARE {IdVar} INT
-    EXEC {IdVar} = {CreateItemProc} {SqlString(ItemType.CheckersSkin)} ,{ItemNameVar},{DetailVar},{PathVar},{PriceVar}
-    INSERT INTO {Schema}.{CheckersTable}({ItemId}) VALUES({IdVar}); 
-    RETURN {IdVar}
+    EXEC {IdVar} = {CreateResourceFromFileProc} {PathVar}
+    INSERT INTO {Schema}.{CheckersSkinTable}({ResourceId},{Name},{Detail},{Price}) 
+    VALUES({IdVar},{NameVar},{DetailVar},{PriceVar});
 END
 
 GO
 CREATE PROCEDURE {CreatePictureProc}
-{ItemNameVar} {UniqueStringType},
-{DetailVar} {StringType},
-{PathVar} {StringType},
-{PriceVar} INT
+{NameVar} {UniqueStringType},
+{PathVar} {StringType}
 AS
 BEGIN
     DECLARE {IdVar} INT
-    EXEC {IdVar} = {CreateItemProc} {SqlString(ItemType.Picture)} ,{ItemNameVar},{DetailVar},{PathVar},{PriceVar}
-    INSERT INTO {Schema}.{PictureTable}({ItemId}) VALUES({IdVar}); 
-    RETURN {IdVar}
+    EXEC {IdVar} = {CreateResourceFromFileProc} {PathVar}
+    INSERT INTO {Schema}.{PictureTable}({ResourceId},{Name}) 
+    VALUES ({IdVar},{NameVar});
 END
 
 GO
 CREATE PROCEDURE {CreateLootBoxProc}
-{ItemNameVar} {UniqueStringType},
-{DetailVar} {StringType},
+{NameVar} {UniqueStringType},
 {PathVar} {StringType},
+{DetailVar} {StringType},
 {PriceVar} INT
 AS
 BEGIN
     DECLARE {IdVar} INT
-    EXEC {IdVar} = {CreateItemProc} {SqlString(ItemType.LootBox)} ,{ItemNameVar},{DetailVar},{PathVar},{PriceVar}
-    INSERT INTO {Schema}.{LootBoxTable}({ItemId}) VALUES({IdVar}); 
-    RETURN {IdVar}
+    EXEC {IdVar} = {CreateResourceFromFileProc} {PathVar}
+    INSERT INTO {Schema}.{LootBoxTable}({ResourceId},{Name},{Detail},{Price}) 
+    VALUES({IdVar},{NameVar},{DetailVar},{PriceVar});
 END
 
 --Article
@@ -777,12 +842,6 @@ BEGIN
     ORDER BY {SocialCredit} DESC;
 END
 
-GO
-CREATE PROCEDURE {SelectAllUserItemProc} {IdVar} INT
-AS
-BEGIN
-    SELECT {ItemId} FROM {Schema}.{UserItemTable} WHERE {UserId}={IdVar}
-END
 
 GO
 CREATE PROCEDURE {SelectFriendChatIdProc} {User1IdVar} INT, {User2IdVar} INT
@@ -799,18 +858,40 @@ BEGIN
 END
 
 GO
-CREATE PROCEDURE {UserBuyItemProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
+CREATE PROCEDURE {UserBuyAnimationProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
 AS
 BEGIN
     DECLARE {UserIdVar} INT, {PriceVar} INT, {CurrencyVar} INT
     EXEC {UserIdVar} = {AuthenticateProc} {LoginVar},{PasswordVar}
-    SET {PriceVar} = (SELECT {Price} FROM {Schema}.{ItemTable} WHERE {Id}={IdVar});
+    SET {PriceVar} = (SELECT {Price} FROM {Schema}.{AnimationTable} WHERE {Id}={IdVar});
     SET {CurrencyVar} = (SELECT {Currency} FROM {Schema}.{UserTable} WHERE {Id}={UserIdVar});
     IF {CurrencyVar}>={PriceVar}
         BEGIN
-        INSERT INTO {Schema}.{UserItemTable}({UserId},{ItemId}) VALUES ({UserIdVar},{IdVar});
+        EXEC {UserAddAnimationProc} {UserIdVar}, {IdVar}
         UPDATE {Schema}.{UserTable} SET {Currency} = ({CurrencyVar}-{PriceVar}) WHERE {Id}={UserIdVar};
         END
+END
+
+GO
+CREATE PROCEDURE {UserBuyCheckersSkinProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
+AS
+BEGIN
+    DECLARE {UserIdVar} INT, {PriceVar} INT, {CurrencyVar} INT
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar},{PasswordVar}
+    SET {PriceVar} = (SELECT {Price} FROM {Schema}.{CheckersSkinTable} WHERE {Id}={IdVar});
+    SET {CurrencyVar} = (SELECT {Currency} FROM {Schema}.{UserTable} WHERE {Id}={UserIdVar});
+    IF {CurrencyVar}>={PriceVar}
+        BEGIN
+        EXEC {UserAddCheckersSkinProc} {UserIdVar}, {IdVar}
+        UPDATE {Schema}.{UserTable} SET {Currency} = ({CurrencyVar}-{PriceVar}) WHERE {Id}={UserIdVar};
+        END
+END
+
+GO
+CREATE PROCEDURE {UserBuyLootBoxProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
+AS
+BEGIN
+    SELECT 1
 END
 
 GO
@@ -822,15 +903,7 @@ BEGIN
     UPDATE {Schema}.{UserTable} SET {PictureId} = {IdVar} WHERE {Id}={UserIdVar}
 END
 
-
 GO
-INSERT INTO {ItemTypeTable}({ItemTypeName}) 
-VALUES ({SqlString((ItemType) 1)}),
-({SqlString((ItemType)2)}),
-({SqlString((ItemType)3)}),
-({SqlString((ItemType)4)}),
-({SqlString((ItemType)5)});
-
 INSERT INTO {UserTypeTable}({UserTypeName}) VALUES 
 ({SqlString((UserType)1)}),
 ({SqlString((UserType)2)}),
@@ -848,29 +921,19 @@ INSERT INTO {FriendshipStateTable}({FriendshipStateName}) VALUES
 ({SqlString((FriendshipState)3)});
 
 GO
-CREATE VIEW {UserItemExtendedView} AS
-SELECT UI.{UserId},U.{Nick}, UI.{ItemId}, I.{Updated}, I.{Detail}, R.{ResourceExtension}, I.{ItemName}, 
-        I.{Price}, IT.{ItemTypeName}
-FROM {UserItemTable} AS UI
-JOIN {ItemTable} AS I ON UI.{ItemId} = I.{Id}
-JOIN {ItemTypeTable} AS IT ON IT.{Id} = I.{ItemTypeId}
-JOIN {UserTable} AS U ON UI.{UserId} = U.{Id}
-JOIN {ResourceTable} AS R ON R.{Id}=I.{ResourceId}
-
-GO
 Use Checkers
 EXEC {CreateChatProc} {SqlString(CommonChatName)},{SqlString(ChatType.Public)}
 
 GO
-{LoadItems(CreatePictureProc, PictureSource)}
+{LoadAchievements()}
 GO
-{LoadItems(CreateCheckersSkinProc, CheckersSource)}
+{LoadAnimations()}
 GO
-{LoadItems(CreateAnimationProc, AnimationSource)}
+{LoadLootBoxes()}
 GO
-{LoadItems(CreateAchievementProc, AchievementsSource)}
+{LoadPictures()}
 GO
-{LoadItems(CreateLootBoxProc, LootBoxSource)}
+{LoadCheckersSkins()}
 GO
 {LoadUsers()}
 GO
@@ -887,6 +950,8 @@ GO
 {LoadPosts()}
 GO
 {LoadPostMessages()}
+GO
+{LoadCommonChat()}
 ");
 
 internal static class CsvTable
@@ -906,22 +971,37 @@ internal static class CsvTable
     private const string ForumChatSource = "ForumChat.csv";
     private const string FriendChatSource = "FriendsChat.csv";
     private const string FriendshipSource = "Friends.csv";
+    private const string CommonChatSource = "AllChat.csv";
 
     private static readonly string Path = Directory.GetCurrentDirectory();
     private static readonly Exception LineSplitException = new ArgumentNullException("line.Split(\";\")");
 
-    public static string SqlString(object o) => $"N'{o}'";
+    public static string SqlString(object o) => $"N'{o.ToString()?.Replace("\'",@"''")}'";
     private static string DataFile(string filename) => $@"{Path}\Data\{filename}";
     private static string ResourceFile(string filename) => SqlString($@"{Path}\Img\{filename}");
 
     private static string Exec(string command, object args) =>
         $"EXEC {command} {args}";
 
-    public static string LoadItems(string proc, string table) =>
-        string.Join('\n', ReadLines(DataFile(table))
-            .ToList()
-            .Select(s => new ItemArgs(s))
-            .Select(i => Exec(proc, i)));
+    public static string LoadPictures()=>
+    string.Join('\n',ReadLines(DataFile(PictureSource))
+        .Select(s=>Exec(CreatePictureProc,new NamedItemArgs(s))));
+
+    public static string LoadAchievements() =>
+        string.Join('\n', ReadLines(DataFile(AchievementsSource))
+            .Select(s => Exec(CreateAchievementProc, new DetailedItemArgs(s))));
+
+    public static string LoadAnimations() =>
+        string.Join('\n', ReadLines(DataFile(AnimationSource))
+            .Select(s => Exec(CreateAnimationProc, new SoldItemArgs(s))));
+
+    public static string LoadLootBoxes() =>
+        string.Join('\n', ReadLines(DataFile(LootBoxSource))
+            .Select(s => Exec(CreateLootBoxProc, new SoldItemArgs(s))));
+
+    public static string LoadCheckersSkins() =>
+        string.Join('\n', ReadLines(DataFile(CheckersSource))
+            .Select(s => Exec(CreateCheckersSkinProc, new SoldItemArgs(s))));
 
     public static string LoadUsers() =>
         string.Join('\n', ReadLines(DataFile(UserSource))
@@ -930,12 +1010,10 @@ internal static class CsvTable
 
     public static string LoadUserPictures()
     {
-        static string ItemId(string name) => $"(SELECT {Id} FROM {ItemTable} WHERE {ItemName}={name})";
+        static string PictureId(string name) =>
+            $"(SELECT {Id} FROM {PictureTable} WHERE {Name} = {name})";
 
-        static string PictureId(string item) =>
-            $"(SELECT {Id} FROM {PictureTable} WHERE {ItemRepository.ItemId} = {item})";
-
-        static string Set(string name) => $"SET @id = {PictureId(ItemId(name))}";
+        static string Set(string name) => $"SET @id = {PictureId(name)}";
         static string ExecUpdate(string log, string pass) => $"EXEC {UpdateUserPictureProc} {log}, {pass}, @id";
         static string Update(UserPictureArgs u) => $"{Set(u.PicName)}\n{ExecUpdate(u.Login, u.Password)}";
 
@@ -979,13 +1057,13 @@ internal static class CsvTable
         static string SetId(string title)
             => $"SET {IdVar} = (SELECT {ChatId} FROM {PostTable} WHERE {Id} = {GetPostId(title)});\n";
 
-        static string CreateComment(MessageArgs m) =>
+        static string CreateComment(DirectedMessageArgs m) =>
             SetId(m.Direction) +
             $"EXEC {SendMessageProc} {m.Login}, {m.Password}, {IdVar}, {m.Content}";
 
         return Declaration +
                string.Join('\n', ReadLines(DataFile(NewsChatSource))
-                   .Select(s => CreateComment(new MessageArgs(s))));
+                   .Select(s => CreateComment(new DirectedMessageArgs(s))));
     }
 
     public static string LoadPostMessages()
@@ -993,13 +1071,13 @@ internal static class CsvTable
         static string GetChatId(string title) =>
             $"(SELECT {ChatId} FROM {PostTable} WHERE {PostTitle}={title});\n";
 
-        static string CreateComment(MessageArgs m) =>
+        static string CreateComment(DirectedMessageArgs m) =>
             $"SET {IdVar} = {GetChatId(m.Direction)}" +
             $"EXEC {SendMessageProc} {m.Login}, {m.Password}, {IdVar}, {m.Content}";
 
         return Declaration +
                string.Join('\n', ReadLines(DataFile(ForumChatSource))
-                   .Select(s => CreateComment(new MessageArgs(s))));
+                   .Select(s => CreateComment(new DirectedMessageArgs(s))));
     }
 
     public static string LoadFriends()
@@ -1010,7 +1088,7 @@ internal static class CsvTable
             $"SET {var} = (SELECT {Id} FROM {UserTable} WHERE {Login} = {login});\n";
 
         static string CreateFriendship(FriendshipArgs f) =>
-            GetUserId("@id1",f.Firend)+
+            GetUserId("@id1",f.Friend)+
             GetUserId("@id2",f.Login)+
             $"EXEC {CreateFriendshipProc} @id1, @id2";
 
@@ -1026,7 +1104,7 @@ internal static class CsvTable
         static string SetUserId(string var, string login) =>
             $"SET {var} = (SELECT {Id} FROM {UserTable} WHERE {Login}={login});\n";
         
-        static string SendMessage(MessageArgs m) =>
+        static string SendMessage(DirectedMessageArgs m) =>
             SetUserId("@id1",m.Login) +
             SetUserId("@id2",m.Direction) +
             $"SET {IdVar} = (SELECT {ChatId} FROM {FriendshipTable} WHERE {User1Id}=@id1 AND {User2Id}=@id2)\n"+
@@ -1034,30 +1112,67 @@ internal static class CsvTable
 
         return declaration +
                string.Join('\n', ReadLines(DataFile(FriendChatSource))
+                   .Select(s => SendMessage(new DirectedMessageArgs(s))));
+    }
+
+    public static string LoadCommonChat()
+    {
+        string id = $"(SELECT {Id} FROM {ChatTable} WHERE {ChatName}={SqlString(CommonChatName)});\n";
+        string declaration =
+            $"DECLARE {IdVar} INT;\nSET {IdVar}="+id;
+
+        static string SendMessage(MessageArgs m) =>
+            $"EXEC {SendMessageProc} {m.Login}, {m.Password}, {IdVar}, {m.Content}";
+
+        return declaration +
+               string.Join('\n', ReadLines(DataFile(CommonChatSource))
                    .Select(s => SendMessage(new MessageArgs(s))));
     }
 
 
-    private sealed class ItemArgs
+    private class NamedItemArgs
     {
         private readonly string _name;
-        private readonly string _detail;
         private readonly string _path;
-        private readonly string _price;
 
-        internal ItemArgs(string line)
+        internal NamedItemArgs(string line)
         {
             var strings = line.Split(";") ??
                           throw LineSplitException;
 
             _name = SqlString(strings[0]);
-            _detail = SqlString(strings[1]);
-            _path = ResourceFile(strings[2]);
+            _path = ResourceFile(strings[1]);
+        }
+
+        public override string ToString() => $"{_name}, {_path}";
+    }
+
+    private class DetailedItemArgs : NamedItemArgs
+    {
+        private readonly string _detail;
+        internal DetailedItemArgs(string line) : base(line)
+        {
+            var strings = line.Split(";") ??
+                          throw LineSplitException;
+
+            _detail = SqlString(strings[2]);
+        }
+
+        public override string ToString() => base.ToString() + $", {_detail}";
+    }
+
+    private sealed class SoldItemArgs : DetailedItemArgs
+    {
+        private readonly string _price;
+        internal SoldItemArgs(string line) : base(line)
+        {
+            var strings = line.Split(";") ??
+                          throw LineSplitException;
+
             _price = strings[3];
         }
 
-        public override string ToString() =>
-            $"{_name}, {_detail}, {_path}, {_price}";
+        public override string ToString() => base.ToString() + $", {_price}";
     }
 
     private sealed class UserArgs
@@ -1142,11 +1257,10 @@ internal static class CsvTable
 
     }
 
-    private sealed class MessageArgs
+    private class MessageArgs
     {
         internal readonly string Login;
         internal readonly string Password;
-        internal readonly string Direction;
         internal readonly string Content;
 
         internal MessageArgs(string line)
@@ -1155,8 +1269,18 @@ internal static class CsvTable
                           throw LineSplitException;
             Login = SqlString(strings[0]);
             Password = SqlString(strings[1]);
-            Direction = SqlString(strings[2]);
-            Content = SqlString(strings[3]);
+            Content = SqlString(strings[2]);
+        }
+    }
+
+    private class DirectedMessageArgs : MessageArgs
+    {
+        internal readonly string Direction;
+        internal DirectedMessageArgs(string line) : base(line)
+        {
+            var strings = line.Split(";") ??
+                          throw LineSplitException;
+            Direction = SqlString(strings[3]);
         }
     }
 
@@ -1164,7 +1288,7 @@ internal static class CsvTable
     {
         internal readonly string Login;
         internal readonly string Password;
-        internal readonly string Firend;
+        internal readonly string Friend;
 
         internal FriendshipArgs(string line)
         {
@@ -1172,7 +1296,7 @@ internal static class CsvTable
                           throw LineSplitException;
             Login = SqlString(strings[0]);
             Password = SqlString(strings[1]);
-            Firend = SqlString(strings[2]);
+            Friend = SqlString(strings[2]);
         }
 
     }

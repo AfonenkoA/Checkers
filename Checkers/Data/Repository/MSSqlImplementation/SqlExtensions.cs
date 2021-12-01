@@ -6,6 +6,8 @@ using static Checkers.Data.Repository.MSSqlImplementation.UserRepository;
 using static Checkers.Data.Repository.MSSqlImplementation.Repository;
 using static Checkers.Data.Repository.MSSqlImplementation.NewsRepository;
 using static Checkers.Data.Repository.MSSqlImplementation.ForumRepository;
+using static Checkers.Data.Repository.MSSqlImplementation.ItemRepository;
+using static Checkers.Data.Repository.MSSqlImplementation.ResourceRepository;
 
 namespace Checkers.Data.Repository.MSSqlImplementation;
 
@@ -21,7 +23,7 @@ internal static class SqlExtensions
             SocialCredit = reader.GetFieldValue<int>(SocialCredit),
             PictureId = reader.GetFieldValue<int>(PictureId),
             SelectedAnimationId = reader.GetFieldValue<int>(AnimationId),
-            SelectedCheckersId = reader.GetFieldValue<int>(CheckersId),
+            SelectedCheckersId = reader.GetFieldValue<int>(CheckersSkinId),
             LastActivity = reader.GetFieldValue<DateTime>(LastActivity),
             Type = (UserType)reader.GetFieldValue<int>(UserTypeId)
         };
@@ -50,6 +52,27 @@ internal static class SqlExtensions
             Id = reader.GetFieldValue<int>(User2Id),
             State = FriendshipState.Accepted
         };
+
+
+    private static Item GetItem(this SqlDataReader reader) =>
+        new()
+        {
+            Id = reader.GetFieldValue<int>(Id),
+            Resource = new ResourceInfo
+            {
+                Id = reader.GetFieldValue<int>(ResourceId),
+                Extension = reader.GetFieldValue<string>(ResourceExtension)
+            }
+        };
+
+    public static NamedItem GetNamedItem(this SqlDataReader reader) =>
+        new(reader.GetItem()) {Name = reader.GetFieldValue<string>(Name)};
+
+    public static DetailedItem GetDetailedItem(this SqlDataReader reader) =>
+        new(reader.GetNamedItem()) {Detail = reader.GetFieldValue<string>(Detail)};
+
+    public static SoldItem GetSoldItem(this SqlDataReader reader) =>
+        new(reader.GetDetailedItem()) {Price = reader.GetFieldValue<int>(Price)};
 
     internal static int GetReturn(this SqlCommand command) => (int)command.Parameters[ReturnValue].Value;
 

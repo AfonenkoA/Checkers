@@ -13,7 +13,10 @@ public interface IUserRepository
 
     bool SelectAnimation(Credential credential, int animationId);
     bool SelectCheckers(Credential credential, int checkersId);
-    bool BuyItem(Credential credential, int itemId);
+
+    bool BuyCheckersSkin(Credential credential, int id);
+    bool BuyAnimation(Credential credential, int id);
+    bool BuyLootBox(Credential credential, int id);
 
 
     bool Authenticate(Credential user);
@@ -27,4 +30,8 @@ public interface IUserRepository
     bool AddFriend(Credential credential, int userId);
     bool DeleteFriend(Credential credential, int userId);
     bool AcceptFriend(Credential credential, int userId);
+
+    IEnumerable<int> GetAvailableAnimations(Credential c);
+    IEnumerable<int> GetAvailableCheckers(Credential c);
+    IEnumerable<int> GetAvailableLootBoxes(Credential c);
 }

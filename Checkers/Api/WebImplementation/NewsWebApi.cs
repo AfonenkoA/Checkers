@@ -42,7 +42,7 @@ public sealed class NewsWebApi : WebApiBase, IAsyncNewsApi
     public async Task<bool> UpdatePicture(Credential credential, int id, int pictureId)
     {
         var route = NewsRoute + $"/{id}/" + Query(credential, UpdateArticlePictureId);
-        var response = await Client.PutAsJsonAsync(route, pictureId);
+        var response = await Client.PutAsJsonAsync(route, pictureId.ToString());
         return response.IsSuccessStatusCode;
     }
 

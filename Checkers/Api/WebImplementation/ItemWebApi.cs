@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Checkers.Api.Interface;
@@ -9,27 +8,79 @@ namespace Checkers.Api.WebImplementation;
 
 public sealed class ItemWebApi : WebApiBase, IAsyncItemApi
 {
-    public async Task<(bool, IEnumerable<ItemHash>)> TryGetItems()
+    private const string AchievementRoute = ItemRoute + "/achievement";
+    private const string AnimationRoute = ItemRoute + "/animation";
+    private const string PictureRoute = ItemRoute + "/picture";
+    private const string LootBoxRoute = ItemRoute + "/lootbox";
+    private const string CheckersSkinRoute = ItemRoute + "/checkers-skin";
+    
+    public async Task<(bool, IEnumerable<Achievement>)> TryGetAchievements()
     {
-        var response = await Client.GetStringAsync(ItemRoute);
-        var res = Deserialize<List<ItemHash>>(response);
-        return res != null ? (res.All(i => i.IsValid), res) : (false, Enumerable.Empty<ItemHash>());
+        var response = await Client.GetStringAsync(AchievementRoute);
+        var res = Deserialize<IEnumerable<Achievement>>(response);
+        return res != null ? (true, res) :(false, Enumerable.Empty<Achievement>());
     }
 
-    public async Task<(bool, ItemInfo)> TryGetItemInfo(int id)
+    public async Task<(bool, IEnumerable<Animation>)> TryGetAnimations()
     {
-        var route = ItemRoute + $"/{id}";
-        var response = await Client.GetStringAsync(route);
-        var res = Deserialize<ItemInfo>(response);
-        return res != null ? (res.IsValid, res) : (false, ItemInfo.Invalid);
+        var response = await Client.GetStringAsync(AnimationRoute);
+        var res = Deserialize<IEnumerable<Animation>>(response);
+        return res != null ? (true, res) : (false, Enumerable.Empty<Animation>());
     }
 
-    public string GetItemImageUrl(int id) => ItemRoute + $"/{id}/img";
-
-    public async Task<(bool, byte[])> TryGetItemImage(int id)
+    public async Task<(bool, IEnumerable<CheckersSkin>)> TryGetCheckerSkins()
     {
-        var route = ItemRoute + $"/{id}/img";
-        var res = await Client.GetByteArrayAsync(route);
-        return res.Any() ? (true, res) : (false, Array.Empty<byte>());
+        var response = await Client.GetStringAsync(CheckersSkinRoute);
+        var res = Deserialize<IEnumerable<CheckersSkin>>(response);
+        return res != null ? (true, res) : (false, Enumerable.Empty<CheckersSkin>());
+    }
+
+    public async Task<(bool, IEnumerable<LootBox>)> TryGetLootBoxes()
+    {
+        var response = await Client.GetStringAsync(LootBoxRoute);
+        var res = Deserialize<IEnumerable<LootBox>>(response);
+        return res != null ? (true, res) : (false, Enumerable.Empty<LootBox>());
+    }
+
+    public async Task<(bool, IEnumerable<Picture>)> TryGetPictures()
+    {
+        var response = await Client.GetStringAsync(PictureRoute);
+        var res = Deserialize<IEnumerable<Picture>>(response);
+        return res != null ? (true, res) : (false, Enumerable.Empty<Picture>());
+    }
+
+    public async Task<(bool, Achievement)> TryGetAchievement(int id)
+    {
+        var response = await Client.GetStringAsync($"{AchievementRoute}/{id}");
+        var res = Deserialize<Achievement>(response);
+        return res != null ? (res.IsValid, res) : (false, Achievement.Invalid);
+    }
+
+    public async Task<(bool, Animation)> TryGetAnimation(int id)
+    {
+        var response = await Client.GetStringAsync($"{AnimationRoute}/{id}");
+        var res = Deserialize<Animation>(response);
+        return res != null ? (res.IsValid, res) : (false, Animation.Invalid);
+    }
+
+    public async Task<(bool, CheckersSkin)> TryGetCheckersSkin(int id)
+    {
+        var response = await Client.GetStringAsync($"{CheckersSkinRoute}/{id}");
+        var res = Deserialize<CheckersSkin>(response);
+        return res != null ? (res.IsValid, res) : (false, CheckersSkin.Invalid);
+    }
+
+    public async Task<(bool, LootBox)> TryGetLootBox(int id)
+    {
+        var response = await Client.GetStringAsync($"{LootBoxRoute}/{id}");
+        var res = Deserialize<LootBox>(response);
+        return res != null ? (res.IsValid, res) : (false, LootBox.Invalid);
+    }
+
+    public async Task<(bool, Picture)> TryGetPicture(int id)
+    {
+        var response = await Client.GetStringAsync($"{PictureRoute}/{id}");
+        var res = Deserialize<Picture>(response);
+        return res != null ? (res.IsValid, res) : (false, Picture.Invalid);
     }
 }

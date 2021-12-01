@@ -92,7 +92,7 @@ public class UserTest
     [TestMethod]
     public async Task Test10TryGetUsersByNick()
     {
-        var (success,users) = await UserApi.TryGetUsersByNick("i");
+        var (success,users) = await UserApi.TryGetUsersByNick("");
         Assert.IsTrue(users.Any());
         Assert.IsTrue(success);
     }
@@ -111,7 +111,7 @@ public class UserTest
         Assert.IsTrue(success);
     }
 
-    [TestMethod]
+    //[TestMethod]
     public async Task Test13Final()
     {
         var newCredential = new Credential {Login = NewLogin, Password = NewPassword};
