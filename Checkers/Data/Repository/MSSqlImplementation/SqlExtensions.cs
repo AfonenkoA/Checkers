@@ -8,6 +8,7 @@ using static Checkers.Data.Repository.MSSqlImplementation.NewsRepository;
 using static Checkers.Data.Repository.MSSqlImplementation.ForumRepository;
 using static Checkers.Data.Repository.MSSqlImplementation.ItemRepository;
 using static Checkers.Data.Repository.MSSqlImplementation.ResourceRepository;
+using static Checkers.Data.Repository.MSSqlImplementation.MessageRepository;
 
 namespace Checkers.Data.Repository.MSSqlImplementation;
 
@@ -65,14 +66,33 @@ internal static class SqlExtensions
             }
         };
 
-    public static NamedItem GetNamedItem(this SqlDataReader reader) =>
+    public static Message GetMessage(this SqlDataReader reader) =>
+        new()
+        {
+            Id = reader.GetFieldValue<int>(Id),
+            SendTime = reader.GetFieldValue<DateTime>(SendTime),
+            UserId = reader.GetFieldValue<int>(UserId),
+            Content = reader.GetFieldValue<string>(MessageContent)
+        };
+
+    private static NamedItem GetNamedItem(this SqlDataReader reader) =>
         new(reader.GetItem()) {Name = reader.GetFieldValue<string>(Name)};
 
-    public static DetailedItem GetDetailedItem(this SqlDataReader reader) =>
+    private static DetailedItem GetDetailedItem(this SqlDataReader reader) =>
         new(reader.GetNamedItem()) {Detail = reader.GetFieldValue<string>(Detail)};
 
-    public static SoldItem GetSoldItem(this SqlDataReader reader) =>
+    private static SoldItem GetSoldItem(this SqlDataReader reader) =>
         new(reader.GetDetailedItem()) {Price = reader.GetFieldValue<int>(Price)};
+
+    public static Picture GetPicture(this SqlDataReader reader) => new(reader.GetNamedItem());
+
+    public static Achievement GetAchievement(this SqlDataReader reader) => new(reader.GetDetailedItem());
+
+    public static Animation GetAnimation(this SqlDataReader reader) => new(reader.GetSoldItem());
+
+    public static CheckersSkin GetCheckersSkin(this SqlDataReader reader) => new(reader.GetSoldItem());
+
+    public static LootBox GetLootBox(this SqlDataReader reader) => new(reader.GetSoldItem());
 
     internal static int GetReturn(this SqlCommand command) => (int)command.Parameters[ReturnValue].Value;
 

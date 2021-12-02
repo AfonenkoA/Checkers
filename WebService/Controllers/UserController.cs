@@ -32,6 +32,19 @@ public class UserController : ControllerBase
     public IActionResult GetSelf([FromQuery] Credential credential) =>
         Json(_repository.GetSelf(credential));
 
+
+    [HttpGet, Route("shop/animation")]
+    public IActionResult GetAvailableAnimation([FromQuery] Credential credential) =>
+        Json(_repository.GetAvailableAnimations(credential));
+
+    [HttpGet, Route("shop/checkers-skin")]
+    public IActionResult GetAvailableCheckersSkin([FromQuery] Credential credential) =>
+        Json(_repository.GetAvailableCheckers(credential));
+
+    [HttpGet, Route("shop/lootbox")]
+    public IActionResult GetAvailableLootBox([FromQuery] Credential credential) =>
+        Json(_repository.GetAvailableLootBoxes(credential));
+
     [HttpPut]
     public IActionResult ActionHandler([FromQuery] Credential credential, [FromQuery] string action, [FromBody] string val) =>
         action switch
@@ -49,6 +62,9 @@ public class UserController : ControllerBase
             AcceptFriendValue => AcceptFriend(credential, int.Parse(val)),
             GetUsersByNickValue => GetUsersByNick(val),
             UpdateUserPictureValue => UpdateUserPicture(credential,int.Parse(val)),
+            BuyAnimationValue => BuyAnimation(credential,int.Parse(val)),
+            BuyCheckersSkinValue => BuyCheckersSkin(credential,int.Parse(val)),
+            BuyLootBoxValue => BuyLootBox(credential,int.Parse(val)),
             _ => BadRequestResult
         };
 
@@ -84,11 +100,19 @@ public class UserController : ControllerBase
     private IActionResult GetUsersByNick(string pattern) =>
         Json(_repository.GetUsersByNick($"%{pattern}%"));
 
-
     private IActionResult AddFriend(Credential credential, int userId) =>
         _repository.AddFriend(credential, userId) ? OkResult : BadRequestResult;
 
     private static IActionResult DeleteFriend(Credential credential, int userId) => BadRequestResult;
 
     private static IActionResult AcceptFriend(Credential credential, int userId) => BadRequestResult;
+
+    private IActionResult BuyAnimation(Credential credential, int id) =>
+        _repository.BuyAnimation(credential, id) ? OkResult : BadRequestResult;
+
+    private IActionResult BuyCheckersSkin(Credential credential, int id) =>
+        _repository.BuyCheckersSkin(credential, id) ? OkResult : BadRequestResult;
+
+    private IActionResult BuyLootBox(Credential credential, int id) =>
+        _repository.BuyLootBox(credential, id) ? OkResult : BadRequestResult;
 }

@@ -18,6 +18,10 @@ public class ChatController : ControllerBase
     public IActionResult GetMessages([FromQuery] Credential credential, [FromRoute] int id, [FromQuery] DateTime from) =>
         Json(_repository.GetMessages(credential, id, from));
 
+    [HttpGet,Route("public")]
+    public IActionResult GetPublicChat([FromQuery] Credential credential) =>
+        Json(_repository.GetCommonChatId(credential));
+
     [HttpPost("{id:int}")]
     public IActionResult SendMessage([FromQuery] Credential credential, [FromRoute] int id, [FromBody] string message) =>
         _repository.CreateMessage(credential, id, message) ? OkResult : BadRequestResult;

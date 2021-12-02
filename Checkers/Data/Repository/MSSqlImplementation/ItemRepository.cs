@@ -57,7 +57,7 @@ public sealed class ItemRepository : Repository, IItemRepository
         using var reader = command.ExecuteReader();
         List<Achievement> list = new();
         while (reader.Read())
-            list.Add(new Achievement(reader.GetDetailedItem()));
+            list.Add(reader.GetAchievement());
         return list;
     }
 
@@ -67,7 +67,7 @@ public sealed class ItemRepository : Repository, IItemRepository
         using var reader = command.ExecuteReader();
         List<Animation> list = new();
         while (reader.Read())
-            list.Add(new Animation(reader.GetSoldItem()));
+            list.Add(reader.GetAnimation());
         return list;
     }
 
@@ -77,7 +77,7 @@ public sealed class ItemRepository : Repository, IItemRepository
         using var reader = command.ExecuteReader();
         List<CheckersSkin> list = new();
         while (reader.Read())
-            list.Add(new CheckersSkin(reader.GetSoldItem()));
+            list.Add(reader.GetCheckersSkin());
         return list;
     }
 
@@ -87,7 +87,7 @@ public sealed class ItemRepository : Repository, IItemRepository
         using var reader = command.ExecuteReader();
         List<LootBox> list = new();
         while (reader.Read())
-            list.Add(new LootBox(reader.GetSoldItem()));
+            list.Add(reader.GetLootBox());
         return list;
     }
 
@@ -97,7 +97,7 @@ public sealed class ItemRepository : Repository, IItemRepository
         using var reader = command.ExecuteReader();
         List<Picture> list = new();
         while (reader.Read())
-            list.Add(new Picture(reader.GetNamedItem()));
+            list.Add(reader.GetPicture());
         return list;
     }
 
@@ -106,7 +106,7 @@ public sealed class ItemRepository : Repository, IItemRepository
         using var command = CreateProcedure(SelectAchievementProc);
         command.Parameters.Add(IdParameter(id));
         using var reader = command.ExecuteReader();
-        return reader.Read() ? new Achievement(reader.GetDetailedItem()) : Achievement.Invalid;
+        return reader.Read() ? reader.GetAchievement() : Achievement.Invalid;
     }
 
     public Animation GetAnimation(int id)
@@ -114,7 +114,7 @@ public sealed class ItemRepository : Repository, IItemRepository
         using var command = CreateProcedure(SelectAnimationProc);
         command.Parameters.Add(IdParameter(id));
         using var reader = command.ExecuteReader();
-        return reader.Read() ? new Animation(reader.GetSoldItem()) : Animation.Invalid;
+        return reader.Read() ? reader.GetAnimation() : Animation.Invalid;
     }
 
     public CheckersSkin GetCheckersSkin(int id)
@@ -122,7 +122,7 @@ public sealed class ItemRepository : Repository, IItemRepository
         using var command = CreateProcedure(SelectCheckersSkinProc);
         command.Parameters.Add(IdParameter(id));
         using var reader = command.ExecuteReader();
-        return reader.Read() ? new CheckersSkin(reader.GetSoldItem()) : CheckersSkin.Invalid;
+        return reader.Read() ? reader.GetCheckersSkin() : CheckersSkin.Invalid;
     }
 
     public LootBox GetLootBox(int id)
@@ -130,7 +130,7 @@ public sealed class ItemRepository : Repository, IItemRepository
         using var command = CreateProcedure(SelectLootBoxProc);
         command.Parameters.Add(IdParameter(id));
         using var reader = command.ExecuteReader();
-        return reader.Read() ? new LootBox(reader.GetSoldItem()) : LootBox.Invalid;
+        return reader.Read() ? reader.GetLootBox() : LootBox.Invalid;
     }
 
     public Picture GetPicture(int id)
@@ -138,6 +138,6 @@ public sealed class ItemRepository : Repository, IItemRepository
         using var command = CreateProcedure(SelectPictureProc);
         command.Parameters.Add(IdParameter(id));
         using var reader = command.ExecuteReader();
-        return reader.Read() ? new Picture(reader.GetNamedItem()) : Picture.Invalid;
+        return reader.Read() ? reader.GetPicture() : Picture.Invalid;
     }
 }

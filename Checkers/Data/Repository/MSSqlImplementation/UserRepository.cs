@@ -90,6 +90,10 @@ public sealed class UserRepository : Repository, IUserRepository
     public const string SelectUserCheckersSkinProc = "[SP_SelectUserCheckersSkin]";
     public const string SelectUserAnimationProc = "[SP_SelectUserAnimation]";
 
+    public const string UserGetAvailableAnimationProc = "[SP_GetAvailableAnimation]";
+    public const string UserGetAvailableCheckersSkinProc = "[SP_GetAvailableCheckersSkin]";
+    public const string UserGetAvailableLootBoxProc = "[SP_GetAvailableLootBox]";
+
     public const int ValidAccess = 1;
     public const int InvalidAccess = -1;
 
@@ -354,31 +358,82 @@ public sealed class UserRepository : Repository, IUserRepository
 
     public IEnumerable<int> GetAvailableAnimations(Credential c)
     {
-        throw new NotImplementedException();
+        using var command = CreateProcedure(UserGetAvailableAnimationProc);
+        command.Parameters.AddRange(new []
+        {
+            LoginParameter(c.Login),
+            PasswordParameter(c.Password)
+        });
+        List<int> list = new();
+        using var reader = command.ExecuteReader();
+        while (reader.Read())
+            list.Add(reader.GetFieldValue<int>(Id));
+        return list;
     }
 
     public IEnumerable<int> GetAvailableCheckers(Credential c)
     {
-        throw new NotImplementedException();
+        using var command = CreateProcedure(UserGetAvailableCheckersSkinProc);
+        command.Parameters.AddRange(new[]
+        {
+            LoginParameter(c.Login),
+            PasswordParameter(c.Password)
+        });
+        List<int> list = new();
+        using var reader = command.ExecuteReader();
+        while (reader.Read())
+            list.Add(reader.GetFieldValue<int>(Id));
+        return list;
     }
 
     public IEnumerable<int> GetAvailableLootBoxes(Credential c)
     {
-        throw new NotImplementedException();
+        using var command = CreateProcedure(UserGetAvailableLootBoxProc);
+        command.Parameters.AddRange(new[]
+        {
+            LoginParameter(c.Login),
+            PasswordParameter(c.Password)
+        });
+        List<int> list = new();
+        using var reader = command.ExecuteReader();
+        while (reader.Read())
+            list.Add(reader.GetFieldValue<int>(Id));
+        return list;
     }
 
     public bool BuyCheckersSkin(Credential credential, int id)
     {
-        throw new NotImplementedException();
+        using var command = CreateProcedure(UserBuyCheckersSkinProc);
+        command.Parameters.AddRange(new []
+        {
+            LoginParameter(credential.Login),
+            PasswordParameter(credential.Password),
+            IdParameter(id)
+        });
+        return command.ExecuteNonQuery() > 0;
     }
 
     public bool BuyAnimation(Credential credential, int id)
     {
-        throw new NotImplementedException();
+        using var command = CreateProcedure(UserBuyAnimationProc);
+        command.Parameters.AddRange(new[]
+        {
+            LoginParameter(credential.Login),
+            PasswordParameter(credential.Password),
+            IdParameter(id)
+        });
+        return command.ExecuteNonQuery() > 0;
     }
 
     public bool BuyLootBox(Credential credential, int id)
     {
-        throw new NotImplementedException();
+        using var command = CreateProcedure(UserBuyLootBoxProc);
+        command.Parameters.AddRange(new[]
+        {
+            LoginParameter(credential.Login),
+            PasswordParameter(credential.Password),
+            IdParameter(id)
+        });
+        return command.ExecuteNonQuery() > 0;
     }
 }

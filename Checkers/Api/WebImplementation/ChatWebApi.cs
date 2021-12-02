@@ -18,6 +18,13 @@ public sealed class ChatWebApi : WebApiBase, IAsyncChatApi
         return res != null ? (res.All(i => i.IsValid), res) : (false, Enumerable.Empty<Message>());
     }
 
+    public async Task<(bool, int)> TryGetCommonChatId(Credential credential)
+    {
+        var route = ChatRoute + "/public" + Query(credential);
+        var response = await Client.GetStringAsync(route);
+        return (true,Deserialize<int>(response));
+    }
+
     public async Task<bool> SendMessage(Credential credential, int chatId, string message)
     {
         var route = ChatRoute + $"/{chatId}" + Query(credential);

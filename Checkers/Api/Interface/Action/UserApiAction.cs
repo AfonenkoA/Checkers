@@ -8,7 +8,6 @@ public sealed class UserApiAction : ApiAction
     internal static readonly UserApiAction SelectCheckers = new(SelectCheckersValue);
     internal static readonly UserApiAction SelectAnimation = new(SelectAnimationValue);
     internal static readonly UserApiAction Authenticate = new(AuthenticateValue);
-    internal static readonly UserApiAction Buy = new(BuyValue);
     internal static readonly UserApiAction UpdateNick = new(UpdateNickValue);
     internal static readonly UserApiAction UpdateLogin = new(UpdateLoginValue);
     internal static readonly UserApiAction UpdatePassword = new(UpdatePasswordValue);
@@ -18,6 +17,9 @@ public sealed class UserApiAction : ApiAction
     internal static readonly UserApiAction AcceptFriend = new(AcceptFriendValue);
     internal static readonly UserApiAction GetUsersByNick = new(GetUsersByNickValue);
     internal static readonly UserApiAction UpdateUserPicture = new(UpdateUserPictureValue);
+    internal static readonly UserApiAction BuyAnimation = new(BuyAnimationValue);
+    internal static readonly UserApiAction BuyCheckersSkin = new(BuyCheckersSkinValue);
+    internal static readonly UserApiAction BuyLootBox = new(BuyLootBoxValue);
 
     //Values
     public const string SelectCheckersValue = "select-checkers";
@@ -33,4 +35,7 @@ public sealed class UserApiAction : ApiAction
     public const string AcceptFriendValue = "accept-friend";
     public const string GetUsersByNickValue = "get-by-nick";
     public const string UpdateUserPictureValue = "update-picture";
+    public const string BuyAnimationValue = "buy-animation";
+    public const string BuyCheckersSkinValue = "buy-checkers-skin";
+    public const string BuyLootBoxValue = "buy-loot-box";
 }
