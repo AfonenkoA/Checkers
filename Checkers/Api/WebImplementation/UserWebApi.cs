@@ -70,7 +70,7 @@ public sealed class UserWebApi : WebApiBase, IAsyncUserApi
     public async Task<bool> Authenticate(Credential user)
     {
         var route = UserRoute + Query(user, UserApiAction.Authenticate);
-        var response = await Client.GetAsync(route);
+        var response = await Client.PostAsJsonAsync(route,string.Empty);
         return response.IsSuccessStatusCode;
     }
 
