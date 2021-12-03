@@ -100,7 +100,7 @@ CREATE TABLE {UserAnimationTable}
 CREATE TABLE {UserCheckersSkinTable}
 (
 {Identity},
-{CheckersSkinId}   INT     NOT NULL    {Fk(UserCheckersSkinTable, AnimationTable)},
+{CheckersSkinId}   INT     NOT NULL    {Fk(UserCheckersSkinTable, CheckersSkinTable)},
 {UserId}        INT     NOT NULL    {Fk(UserCheckersSkinTable, UserTable)}
 );
 
@@ -483,7 +483,7 @@ BEGIN
     DECLARE {UserIdVar} INT;
     EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar}
     EXEC {UpdateUserActivityProc} {LoginVar},{PasswordVar};
-    IF {IdVar} IN (SELECT {Id} FROM {Schema}.{UserAnimationTable} WHERE {UserId}={UserIdVar})
+    IF {IdVar} IN (SELECT {AnimationId} FROM {Schema}.{UserAnimationTable} WHERE {UserId}={UserIdVar})
         UPDATE {Schema}.{UserTable} SET {AnimationId}={IdVar} WHERE {UserAuthCondition};
 END
 
@@ -494,7 +494,7 @@ BEGIN
     DECLARE {UserIdVar} INT;
     EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar}
     EXEC {UpdateUserActivityProc} {LoginVar},{PasswordVar};
-    IF {IdVar} IN (SELECT {Id} FROM {Schema}.{UserCheckersSkinTable} WHERE {UserId}={UserIdVar})
+    IF {IdVar} IN (SELECT {CheckersSkinId} FROM {Schema}.{UserCheckersSkinTable} WHERE {UserId}={UserIdVar})
         UPDATE {Schema}.{UserTable} SET {CheckersSkinId}={IdVar} WHERE {UserAuthCondition};
 END
 
@@ -891,7 +891,43 @@ GO
 CREATE PROCEDURE {UserBuyLootBoxProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
 AS
 BEGIN
-    SELECT 1
+    DECLARE {UserIdVar} INT, {PriceVar} INT, {CurrencyVar} INT
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar},{PasswordVar}
+    SET {PriceVar} = (SELECT {Price} FROM {Schema}.{LootBoxTable} WHERE {Id}={IdVar});
+    SET {CurrencyVar} = (SELECT {Currency} FROM {Schema}.{UserTable} WHERE {Id}={UserIdVar});
+    IF {CurrencyVar}>={PriceVar}
+        UPDATE {Schema}.{UserTable} SET {Currency} = ({CurrencyVar}-{PriceVar}) WHERE {Id}={UserIdVar};
+END
+
+GO
+CREATE PROCEDURE {UserGetAvailableAnimationProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
+AS
+BEGIN
+    DECLARE {UserIdVar} INT
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar},{PasswordVar}
+    SELECT {Id} FROM {Schema}.{AnimationTable} 
+    EXCEPT
+    SELECT {AnimationId} FROM {Schema}.{UserAnimationTable}
+END
+
+GO
+CREATE PROCEDURE {UserGetAvailableCheckersSkinProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
+AS
+BEGIN
+    DECLARE {UserIdVar} INT
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar},{PasswordVar}
+    SELECT {Id} FROM {Schema}.{CheckersSkinTable} 
+    EXCEPT
+    SELECT {CheckersSkinId} FROM {Schema}.{UserCheckersSkinTable}
+END
+
+GO
+CREATE PROCEDURE {UserGetAvailableLootBoxProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
+AS
+BEGIN
+    DECLARE {UserIdVar} INT
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar},{PasswordVar}
+    SELECT {Id} FROM {Schema}.{LootBoxTable} 
 END
 
 GO
@@ -901,6 +937,13 @@ BEGIN
     DECLARE {UserIdVar} INT
     EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar}
     UPDATE {Schema}.{UserTable} SET {PictureId} = {IdVar} WHERE {Id}={UserIdVar}
+END
+
+GO
+CREATE PROCEDURE {GetCommonChatIdProc}  {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
+AS
+BEGIN
+    RETURN (SELECT {Id} FROM {ChatTable} WHERE {ChatName}={SqlString(CommonChatName)});
 END
 
 GO
@@ -1117,9 +1160,9 @@ internal static class CsvTable
 
     public static string LoadCommonChat()
     {
-        string id = $"(SELECT {Id} FROM {ChatTable} WHERE {ChatName}={SqlString(CommonChatName)});\n";
-        string declaration =
-            $"DECLARE {IdVar} INT;\nSET {IdVar}="+id;
+        var declaration =
+            $"DECLARE {IdVar} INT" +
+            $"EXEC {IdVar} = {GetCommonChatIdProc}\n";
 
         static string SendMessage(MessageArgs m) =>
             $"EXEC {SendMessageProc} {m.Login}, {m.Password}, {IdVar}, {m.Content}";
