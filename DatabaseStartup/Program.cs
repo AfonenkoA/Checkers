@@ -1161,7 +1161,7 @@ internal static class CsvTable
     public static string LoadCommonChat()
     {
         var declaration =
-            $"DECLARE {IdVar} INT" +
+            $"DECLARE {IdVar} INT\n" +
             $"EXEC {IdVar} = {GetCommonChatIdProc}\n";
 
         static string SendMessage(MessageArgs m) =>
