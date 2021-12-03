@@ -2,6 +2,8 @@
 using Checkers.Data.Repository.Interface;
 using Checkers.Data.Repository.MSSqlImplementation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using WebService.Model;
 using static Checkers.Api.Interface.Action.UserApiAction;
 using static Checkers.Api.WebImplementation.WebApiBase;
 
@@ -46,7 +48,9 @@ public class UserController : ControllerBase
         Json(_repository.GetAvailableLootBoxes(credential));
 
     [HttpPut]
-    public IActionResult ActionHandler([FromQuery] Credential credential, [FromQuery] string action, [FromBody] string val) =>
+    public IActionResult ActionHandler([FromQuery] Credential credential,
+        [FromQuery] string action,
+        [FromBody] string val)=>
         action switch
         {
             SelectCheckersValue => SelectCheckers(credential, int.Parse(val)),
@@ -61,12 +65,13 @@ public class UserController : ControllerBase
             DeleteFriendValue => DeleteFriend(credential, int.Parse(val)),
             AcceptFriendValue => AcceptFriend(credential, int.Parse(val)),
             GetUsersByNickValue => GetUsersByNick(val),
-            UpdateUserPictureValue => UpdateUserPicture(credential,int.Parse(val)),
-            BuyAnimationValue => BuyAnimation(credential,int.Parse(val)),
-            BuyCheckersSkinValue => BuyCheckersSkin(credential,int.Parse(val)),
-            BuyLootBoxValue => BuyLootBox(credential,int.Parse(val)),
+            UpdateUserPictureValue => UpdateUserPicture(credential, int.Parse(val)),
+            BuyAnimationValue => BuyAnimation(credential, int.Parse(val)),
+            BuyCheckersSkinValue => BuyCheckersSkin(credential, int.Parse(val)),
+            BuyLootBoxValue => BuyLootBox(credential, int.Parse(val)),
             _ => BadRequestResult
         };
+
 
     private IActionResult UpdateUserPicture(Credential credential, int pictureId)
         => _repository.UpdateUserPicture(credential, pictureId) ? OkResult : BadRequestResult;
