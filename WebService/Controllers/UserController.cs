@@ -2,8 +2,6 @@
 using Checkers.Data.Repository.Interface;
 using Checkers.Data.Repository.MSSqlImplementation;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using WebService.Model;
 using static Checkers.Api.Interface.Action.UserApiAction;
 using static Checkers.Api.WebImplementation.WebApiBase;
 
