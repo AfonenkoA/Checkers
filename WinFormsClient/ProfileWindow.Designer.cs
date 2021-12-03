@@ -43,9 +43,9 @@
             // ReturnButton
             // 
             this.ReturnButton.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.ReturnButton.Location = new System.Drawing.Point(698, 12);
+            this.ReturnButton.Location = new System.Drawing.Point(698, 14);
             this.ReturnButton.Name = "ReturnButton";
-            this.ReturnButton.Size = new System.Drawing.Size(90, 37);
+            this.ReturnButton.Size = new System.Drawing.Size(90, 42);
             this.ReturnButton.TabIndex = 3;
             this.ReturnButton.Text = "Return";
             this.ReturnButton.UseVisualStyleBackColor = true;
@@ -53,9 +53,10 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(12, 12);
+            this.pictureBox1.Location = new System.Drawing.Point(12, 14);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(126, 120);
+            this.pictureBox1.Size = new System.Drawing.Size(126, 136);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 4;
             this.pictureBox1.TabStop = false;
             // 
@@ -63,7 +64,7 @@
             // 
             this.NickLabel.AutoSize = true;
             this.NickLabel.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.NickLabel.Location = new System.Drawing.Point(189, 18);
+            this.NickLabel.Location = new System.Drawing.Point(189, 20);
             this.NickLabel.Name = "NickLabel";
             this.NickLabel.Size = new System.Drawing.Size(96, 25);
             this.NickLabel.TabIndex = 5;
@@ -73,7 +74,7 @@
             // 
             this.RatingLabel.AutoSize = true;
             this.RatingLabel.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.RatingLabel.Location = new System.Drawing.Point(189, 43);
+            this.RatingLabel.Location = new System.Drawing.Point(189, 49);
             this.RatingLabel.Name = "RatingLabel";
             this.RatingLabel.Size = new System.Drawing.Size(113, 25);
             this.RatingLabel.TabIndex = 5;
@@ -83,7 +84,7 @@
             // 
             this.MatchesLabel.AutoSize = true;
             this.MatchesLabel.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.MatchesLabel.Location = new System.Drawing.Point(189, 68);
+            this.MatchesLabel.Location = new System.Drawing.Point(189, 77);
             this.MatchesLabel.Name = "MatchesLabel";
             this.MatchesLabel.Size = new System.Drawing.Size(83, 25);
             this.MatchesLabel.TabIndex = 5;
@@ -91,46 +92,44 @@
             // 
             // flowLayoutPanel1
             // 
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(12, 183);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(12, 207);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(776, 100);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(776, 113);
             this.flowLayoutPanel1.TabIndex = 7;
             // 
             // AchivementsLabel
             // 
             this.AchivementsLabel.AutoSize = true;
             this.AchivementsLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 24F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point);
-            this.AchivementsLabel.Location = new System.Drawing.Point(12, 135);
+            this.AchivementsLabel.Location = new System.Drawing.Point(12, 153);
             this.AchivementsLabel.Name = "AchivementsLabel";
             this.AchivementsLabel.Size = new System.Drawing.Size(201, 45);
             this.AchivementsLabel.TabIndex = 6;
             this.AchivementsLabel.Text = "Achivements";
-            
             // 
             // RecentMatchesLabel
             // 
             this.RecentMatchesLabel.AutoSize = true;
             this.RecentMatchesLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 24F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point);
-            this.RecentMatchesLabel.Location = new System.Drawing.Point(12, 286);
+            this.RecentMatchesLabel.Location = new System.Drawing.Point(12, 324);
             this.RecentMatchesLabel.Name = "RecentMatchesLabel";
             this.RecentMatchesLabel.Size = new System.Drawing.Size(243, 45);
             this.RecentMatchesLabel.TabIndex = 6;
             this.RecentMatchesLabel.Text = "Recent matches";
-            
             // 
             // flowLayoutPanel2
             // 
             this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(12, 334);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(12, 379);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(776, 100);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(776, 113);
             this.flowLayoutPanel2.TabIndex = 7;
             // 
             // ProfileWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 510);
             this.Controls.Add(this.flowLayoutPanel2);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.RecentMatchesLabel);

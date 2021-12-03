@@ -38,37 +38,39 @@
             // 
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(111, 100);
+            this.pictureBox1.Size = new System.Drawing.Size(111, 113);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
             // TitleLabel
             // 
             this.TitleLabel.AutoSize = true;
-            this.TitleLabel.Location = new System.Drawing.Point(118, 6);
+            this.TitleLabel.Location = new System.Drawing.Point(118, 7);
             this.TitleLabel.Name = "TitleLabel";
-            this.TitleLabel.Size = new System.Drawing.Size(29, 15);
+            this.TitleLabel.Size = new System.Drawing.Size(32, 17);
             this.TitleLabel.TabIndex = 1;
             this.TitleLabel.Text = "Title";
             // 
             // DescriptionLabel
             // 
             this.DescriptionLabel.AutoSize = true;
-            this.DescriptionLabel.Location = new System.Drawing.Point(117, 21);
+            this.DescriptionLabel.Location = new System.Drawing.Point(117, 24);
             this.DescriptionLabel.Name = "DescriptionLabel";
-            this.DescriptionLabel.Size = new System.Drawing.Size(67, 15);
+            this.DescriptionLabel.Size = new System.Drawing.Size(74, 17);
             this.DescriptionLabel.TabIndex = 1;
             this.DescriptionLabel.Text = "Description";
             // 
             // ItemShowPanel
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.DescriptionLabel);
             this.Controls.Add(this.TitleLabel);
             this.Controls.Add(this.pictureBox1);
             this.Name = "ItemShowPanel";
-            this.Size = new System.Drawing.Size(242, 100);
+            this.Size = new System.Drawing.Size(242, 113);
+            this.Load += new System.EventHandler(this.ItemShowPanel_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
