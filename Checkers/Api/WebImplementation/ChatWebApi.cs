@@ -28,7 +28,7 @@ public sealed class ChatWebApi : WebApiBase, IAsyncChatApi
     public async Task<bool> SendMessage(Credential credential, int chatId, string message)
     {
         var route = ChatRoute + $"/{chatId}" + Query(credential);
-        var response = await Client.PostAsJsonAsync(route, message);
+        using var response = await Client.PostAsJsonAsync(route, message);
         return response.IsSuccessStatusCode;
     }
 }

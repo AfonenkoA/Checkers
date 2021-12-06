@@ -13,35 +13,35 @@ public sealed class ForumWebApi : WebApiBase, IAsyncForumApi
     public async Task<bool> CreatePost(Credential credential, PostCreationData post)
     {
         var route = ForumRoute + Query(credential);
-        var response = await Client.PostAsJsonAsync(route, post);
+        using var response = await Client.PostAsJsonAsync(route, post);
         return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> UpdateTitle(Credential credential, int postId, string title)
     {
         var route = ForumRoute + $"/{postId}/" + Query(credential, UpdatePostTitle);
-        var response = await Client.PutAsJsonAsync(route, title);
+        using var response = await Client.PutAsJsonAsync(route, title);
         return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> UpdateContent(Credential credential, int postId, string content)
     {
         var route = ForumRoute + $"/{postId}" + Query(credential, UpdatePostContent);
-        var response = await Client.PutAsJsonAsync(route, content);
+        using var response = await Client.PutAsJsonAsync(route, content);
         return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> UpdatePicture(Credential credential, int postId, int imageId)
     {
         var route = ForumRoute + $"/{postId}" + Query(credential, UpdatePostPicture);
-        var response = await Client.PutAsJsonAsync(route, imageId.ToString());
+        using var response = await Client.PutAsJsonAsync(route, imageId.ToString());
         return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> DeletePost(Credential credential, int postId)
     {
         var route = ForumRoute + $"/{postId}";
-        var response = await Client.DeleteAsync(route);
+        using var response = await Client.DeleteAsync(route);
         return response.IsSuccessStatusCode;
     }
 

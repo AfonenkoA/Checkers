@@ -14,42 +14,42 @@ public sealed class NewsWebApi : WebApiBase, IAsyncNewsApi
     public async Task<bool> CreateArticle(Credential credential, ArticleCreationData article)
     {
         var route = NewsRoute + Query(credential);
-        var response = await Client.PostAsJsonAsync(route, article);
+        using var response = await Client.PostAsJsonAsync(route, article);
         return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> UpdateTitle(Credential credential, int id, string title)
     {
         var route = NewsRoute + $"/{id}/" + Query(credential, UpdateArticleTitle);
-        var response = await Client.PutAsJsonAsync(route, title);
+        using var response = await Client.PutAsJsonAsync(route, title);
         return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> UpdateAbstract(Credential credential, int id, string @abstract)
     {
         var route = NewsRoute + $"/{id}/" + Query(credential, UpdateArticleAbstract);
-        var response = await Client.PutAsJsonAsync(route, @abstract);
+        using var response = await Client.PutAsJsonAsync(route, @abstract);
         return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> UpdateContent(Credential credential, int id, string content)
     {
         var route = NewsRoute + $"/{id}/" + Query(credential, UpdateArticleContent);
-        var response = await Client.PutAsJsonAsync(route, content);
+        using var response = await Client.PutAsJsonAsync(route, content);
         return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> UpdatePicture(Credential credential, int id, int pictureId)
     {
         var route = NewsRoute + $"/{id}/" + Query(credential, UpdateArticlePictureId);
-        var response = await Client.PutAsJsonAsync(route, pictureId.ToString());
+        using var response = await Client.PutAsJsonAsync(route, pictureId.ToString());
         return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> DeleteArticle(Credential credential, int articleId)
     {
         var route = NewsRoute + $"/{articleId}" + Query(credential);
-        var response = await Client.DeleteAsync(route);
+        using var response = await Client.DeleteAsync(route);
         return response.IsSuccessStatusCode;
     }
 
