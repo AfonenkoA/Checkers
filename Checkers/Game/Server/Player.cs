@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Net.Sockets;
+using Checkers.Game.Server.Transmission;
 using static System.Text.Json.JsonSerializer;
+using Action = Checkers.Game.Server.Transmission.Action;
 
-namespace Checkers.Server;
+namespace Checkers.Game.Server;
 
 public sealed class Player : IDisposable
 {

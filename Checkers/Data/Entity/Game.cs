@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Checkers.Server;
+using Checkers.Game.Model;
+using static System.Linq.Enumerable;
 
 namespace Checkers.Data.Entity;
 
@@ -26,9 +27,6 @@ public class EmoteCreationData : ActionBase
     public int EmotionId { get; set; }
 }
 
-public class Emotion
-{}
-
 public class EmoteData : ActionBase
 {
     public Emotion Emotion { get; set; }
@@ -49,14 +47,14 @@ public class GameBase
     public TimeSpan Duration { get; set; }
     public Color Winner { get; set; }
     public WinReason WinReason { get; set; }
-    public IEnumerable<MoveData> Moves { get; set; }
+    public IEnumerable<MoveData> Moves { get; set; } = Empty<MoveData>();
 }
 
 public class GameCreationData : GameBase
 {
     public int BlackId;
     public int WhiteId;
-    public IEnumerable<EmoteCreationData> Emotions { get; set; }
+    public IEnumerable<EmoteCreationData> Emotions { get; set; } = Empty<EmoteCreationData>();
 }
 
 public class GameData : GameBase

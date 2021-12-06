@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text.Json;
 using Checkers.Data.Old;
-using Checkers.Transmission;
+using Checkers.Game.Old;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebService.Controllers.Old;

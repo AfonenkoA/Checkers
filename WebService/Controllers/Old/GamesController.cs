@@ -1,9 +1,9 @@
 ﻿using System;
-using Checkers.Transmission;
+using Checkers.Game.Old;
 using Microsoft.AspNetCore.Mvc;
 using static System.Text.Json.JsonSerializer;
 
-namespace WebService.Controllers;
+namespace WebService.Controllers.Old;
 
 [Route("api/[controller]")]
 [ApiController]

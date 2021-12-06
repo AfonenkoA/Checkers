@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Resources;
 using System.Windows.Forms;
-using Checkers.Client;
+using Checkers.Game.Old;
 
 namespace OldWinFormsClient;
 

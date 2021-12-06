@@ -3,11 +3,13 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using Checkers.Client;
 using Checkers.Data.Entity;
+using Checkers.Game.Model;
+using Checkers.Game.Server.Transmission;
 using static System.Text.Json.JsonSerializer;
+using Action = Checkers.Game.Server.Transmission.Action;
 
-namespace Checkers.Server;
+namespace Checkers.Game.Client;
 
 public sealed class Client : IDisposable
 {

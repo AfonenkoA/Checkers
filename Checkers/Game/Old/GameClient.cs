@@ -6,10 +6,8 @@ using System.Net.Http;
 using System.Net.Sockets;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Checkers.Transmission;
-using InGame;
 
-namespace Checkers.Client;
+namespace Checkers.Game.Old;
 
 public enum CellType
 {
@@ -199,7 +197,7 @@ public sealed class GameClient
                 string? message = await reader.ReadLineAsync();
                 if (message == null)
                     continue;
-                var type = JsonSerializer.Deserialize<InGame.EventArgs>(message)?.Type;
+                var type = JsonSerializer.Deserialize<EventArgs>(message)?.Type;
                 if (type == null)
                     continue;
                 switch (type)

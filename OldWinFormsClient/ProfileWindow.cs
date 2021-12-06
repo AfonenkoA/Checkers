@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Resources;
 using System.Windows.Forms;
-using Checkers.Transmission;
+using Checkers.Game.Old;
 using OldWinFormsClient.Properties;
 
 namespace OldWinFormsClient;

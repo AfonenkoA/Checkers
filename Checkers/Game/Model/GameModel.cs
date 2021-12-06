@@ -1,7 +1,7 @@
 ﻿using System;
-using Checkers.Client;
+using Checkers.Game.Server.Transmission;
 
-namespace Checkers.Server;
+namespace Checkers.Game.Model;
 
 public interface IGameController
 {
@@ -14,24 +14,6 @@ public enum Color
 {
     White,
     Black
-}
-
-public sealed class GameBoard
-{
-    public enum State
-    {
-        Empty,
-        WhiteChecker,
-        BlackChecker,
-        WhiteKing,
-        BlackKing
-    }
-
-    internal GameBoard() { }
-    public State[,] DetailedState => new State[8, 8];
-    public State[] ShortState => new State[32];
-    private void TryMove(int from, int to) { }
-    public int[] GetAvailableMove(int from) => new int[] { };
 }
 
 public abstract class GameModel
@@ -106,36 +88,4 @@ public abstract class GameModel
 
     private void TryMove(int from, int to) { }
     public int[] GetAvailableMove(int from) => new int[] { };
-}
-
-public sealed class ServerGameModel : GameModel
-{
-    internal IGameController BlackController { get; }
-    internal IGameController WhiteController { get; }
-
-    internal ServerGameModel()
-    {
-        BlackController = new GameController(this, Color.Black);
-        WhiteController = new GameController(this, Color.White);
-    }
-
-    public override void Run()
-    {
-        throw new NotImplementedException();
-    }
-}
-
-public class ClientGameModel : GameModel
-{
-    public IGameController Controller { get; }
-
-    public ClientGameModel(Color color)
-    {
-        Controller = new GameController(this,color);
-    }
-
-    public override void Run()
-    {
-        throw new NotImplementedException();
-    }
 }

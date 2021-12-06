@@ -1,5 +1,7 @@
-﻿using static System.Console;
-using Checkers.Server;
+﻿using Checkers.Game.Client;
+using Checkers.Game.Server;
+using Checkers.Game.Server.Transmission;
+using static System.Console;
 
 
 static void PlayerEvent(object? _,EventArgs eventArgs) =>

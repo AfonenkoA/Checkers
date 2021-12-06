@@ -1,6 +1,6 @@
-﻿namespace Checkers.Server;
+﻿namespace Checkers.Game.Server.Transmission;
 
-public class Event : ComMessage
+public class Event : Message
 {
     protected Event(string type) : base(type) { }
     public Event() { }

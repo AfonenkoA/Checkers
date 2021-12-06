@@ -5,14 +5,13 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Checkers.Data.Old;
-using InGame;
+using Checkers.Game.Old;
 using static System.Text.Json.JsonSerializer;
-using ActionArgs = Checkers.Transmission;
-using EventArgs = InGame.EventArgs;
+using EventArgs = Checkers.Game.Old.EventArgs;
 using Game = Checkers.Data.Old.Game;
 using User = Checkers.Data.Old.User;
 
-namespace GameServer;
+namespace OldGameServer;
 
 internal static class Server
 {
@@ -73,7 +72,7 @@ internal sealed class Player : IDisposable
         while (true)
         {
             string msg = await reader.ReadLineAsync();
-            switch (Deserialize<InGame.ActionArgs>(msg).Type)
+            switch (Deserialize<ActionArgs>(msg).Type)
             {
                 case ActionType.Connect:
                     ConnectAction connect = Deserialize<ConnectAction>(msg);
@@ -209,8 +208,8 @@ class TcpServer
             Player p = o as Player;
             Console.WriteLine(action);
             Task p1Turn, p2Turn, p1Move, p2Move;
-            p1Move = p1.SendEvent(new ActionArgs.MoveEventArgs(action));
-            p2Move = p2.SendEvent(new ActionArgs.MoveEventArgs(action));
+            p1Move = p1.SendEvent(new MoveEventArgs(action));
+            p2Move = p2.SendEvent(new MoveEventArgs(action));
             if (ReferenceEquals(p1, p))
             {
                 p1Turn = p1.SendEvent(EnemyTurnEventArgs.Instance);

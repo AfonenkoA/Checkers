@@ -1,8 +1,8 @@
 ﻿using Checkers.Data.Entity;
 
-namespace Checkers.Server;
+namespace Checkers.Game.Server.Transmission;
 
-public class Action : ComMessage
+public class Action : Message
 {
     protected Action(string type) : base(type) { }
     public Action() { }

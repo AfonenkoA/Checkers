@@ -1,7 +1,4 @@
-﻿using Checkers.Client;
-using InGame;
-
-namespace Checkers.Transmission;
+﻿namespace Checkers.Game.Old;
 
 public sealed class MoveEventArgs : EventArgs
 {

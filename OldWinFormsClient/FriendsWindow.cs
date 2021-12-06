@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Checkers.Transmission;
+using Checkers.Game.Old;
 using static System.Array;
 using static OldWinFormsClient.Common;
+using EventArgs = System.EventArgs;
 
 namespace OldWinFormsClient;
 

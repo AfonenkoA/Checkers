@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
-using Checkers.Transmission;
+using Checkers.Game.Old;
 using static OldWinFormsClient.Common;
+using EventArgs = System.EventArgs;
 
 namespace OldWinFormsClient;
 

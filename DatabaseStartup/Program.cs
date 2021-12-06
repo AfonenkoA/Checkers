@@ -9,7 +9,7 @@ using static Checkers.Data.Repository.MSSqlImplementation.ResourceRepository;
 using static Checkers.Data.Repository.MSSqlImplementation.ForumRepository;
 using static Checkers.Data.Repository.MSSqlImplementation.NewsRepository;
 using static Checkers.Data.Repository.MSSqlImplementation.StatisticsRepository;
-using static CsvTable;
+using static DatabaseStartup.CsvTable;
 
 Write(
     @$"GO
@@ -997,350 +997,353 @@ GO
 {LoadCommonChat()}
 ");
 
-internal static class CsvTable
+namespace DatabaseStartup
 {
-    private static string[] ReadLines(string filename) => File.ReadAllLines(filename);
-    private const string Declaration = $"DECLARE {IdVar} INT\n";
-    public const string PictureSource = "AvatarPicture.csv";
-    public const string CheckersSource = "CheckersSkins.csv";
-    public const string AnimationSource = "Animations.csv";
-    public const string AchievementsSource = "Achivements.csv";
-    public const string LootBoxSource = "LootBoxes.csv";
-    private const string UserSource = "Users.csv";
-    private const string UserPictureSource = "UserAvatars.csv";
-    private const string NewsSource = "News.csv";
-    private const string PostSource = "ForumPosts.csv";
-    private const string NewsChatSource = "NewsChat.csv";
-    private const string ForumChatSource = "ForumChat.csv";
-    private const string FriendChatSource = "FriendsChat.csv";
-    private const string FriendshipSource = "Friends.csv";
-    private const string CommonChatSource = "AllChat.csv";
-
-    private static readonly string Path = Directory.GetCurrentDirectory();
-    private static readonly Exception LineSplitException = new ArgumentNullException("line.Split(\";\")");
-
-    public static string SqlString(object o) => $"N'{o.ToString()?.Replace("\'",@"''")}'";
-    private static string DataFile(string filename) => $@"{Path}\Data\{filename}";
-    private static string ResourceFile(string filename) => SqlString($@"{Path}\Img\{filename}");
-
-    private static string Exec(string command, object args) =>
-        $"EXEC {command} {args}";
-
-    public static string LoadPictures()=>
-    string.Join('\n',ReadLines(DataFile(PictureSource))
-        .Select(s=>Exec(CreatePictureProc,new NamedItemArgs(s))));
-
-    public static string LoadAchievements() =>
-        string.Join('\n', ReadLines(DataFile(AchievementsSource))
-            .Select(s => Exec(CreateAchievementProc, new DetailedItemArgs(s))));
-
-    public static string LoadAnimations() =>
-        string.Join('\n', ReadLines(DataFile(AnimationSource))
-            .Select(s => Exec(CreateAnimationProc, new SoldItemArgs(s))));
-
-    public static string LoadLootBoxes() =>
-        string.Join('\n', ReadLines(DataFile(LootBoxSource))
-            .Select(s => Exec(CreateLootBoxProc, new SoldItemArgs(s))));
-
-    public static string LoadCheckersSkins() =>
-        string.Join('\n', ReadLines(DataFile(CheckersSource))
-            .Select(s => Exec(CreateCheckersSkinProc, new SoldItemArgs(s))));
-
-    public static string LoadUsers() =>
-        string.Join('\n', ReadLines(DataFile(UserSource))
-            .Select(s => new UserArgs(s))
-            .Select(i => Exec(CreateUserProc, i)));
-
-    public static string LoadUserPictures()
+    internal static class CsvTable
     {
-        static string PictureId(string name) =>
-            $"(SELECT {Id} FROM {PictureTable} WHERE {Name} = {name})";
+        private static string[] ReadLines(string filename) => File.ReadAllLines(filename);
+        private const string Declaration = $"DECLARE {IdVar} INT\n";
+        public const string PictureSource = "AvatarPicture.csv";
+        public const string CheckersSource = "CheckersSkins.csv";
+        public const string AnimationSource = "Animations.csv";
+        public const string AchievementsSource = "Achivements.csv";
+        public const string LootBoxSource = "LootBoxes.csv";
+        private const string UserSource = "Users.csv";
+        private const string UserPictureSource = "UserAvatars.csv";
+        private const string NewsSource = "News.csv";
+        private const string PostSource = "ForumPosts.csv";
+        private const string NewsChatSource = "NewsChat.csv";
+        private const string ForumChatSource = "ForumChat.csv";
+        private const string FriendChatSource = "FriendsChat.csv";
+        private const string FriendshipSource = "Friends.csv";
+        private const string CommonChatSource = "AllChat.csv";
 
-        static string Set(string name) => $"SET @id = {PictureId(name)}";
-        static string ExecUpdate(string log, string pass) => $"EXEC {UpdateUserPictureProc} {log}, {pass}, @id";
-        static string Update(UserPictureArgs u) => $"{Set(u.PicName)}\n{ExecUpdate(u.Login, u.Password)}";
+        private static readonly string Path = Directory.GetCurrentDirectory();
+        private static readonly Exception LineSplitException = new ArgumentNullException("line.Split(\";\")");
 
-        return Declaration +
-               string.Join('\n', ReadLines(DataFile(UserPictureSource))
-                   .Select(s => Update(new UserPictureArgs(s))));
-    }
+        public static string SqlString(object o) => $"N'{o.ToString()?.Replace("\'",@"''")}'";
+        private static string DataFile(string filename) => $@"{Path}\Data\{filename}";
+        private static string ResourceFile(string filename) => SqlString($@"{Path}\Img\{filename}");
 
-    public static string LoadNews()
-    {
-        static string SetPicture(string filename) =>
-            $"EXEC {IdVar} = {CreateResourceFromFileProc} {ResourceFile(filename)}\n";
-        static string CreateArticle(ArticleArgs a) =>
-            SetPicture(a.File) +
-            $"EXEC {CreateArticleProc} {a.Login}, {a.Password}, {a.Title}, {a.Abstract}, {a.Content}, {IdVar}";
+        private static string Exec(string command, object args) =>
+            $"EXEC {command} {args}";
 
-        return Declaration +
-               string.Join('\n', ReadLines(DataFile(NewsSource))
-                    .Select(s => CreateArticle(new ArticleArgs(s))));
-    }
+        public static string LoadPictures()=>
+            string.Join('\n',ReadLines(DataFile(PictureSource))
+                .Select(s=>Exec(CreatePictureProc,new NamedItemArgs(s))));
 
-    public static string LoadPosts()
-    {
-        static string SetPicture(string filename) =>
-            $"EXEC {IdVar} = {CreateResourceFromFileProc} {ResourceFile(filename)}\n";
+        public static string LoadAchievements() =>
+            string.Join('\n', ReadLines(DataFile(AchievementsSource))
+                .Select(s => Exec(CreateAchievementProc, new DetailedItemArgs(s))));
 
-        static string CreatePost(PostArgs p) =>
-            SetPicture(p.File) +
-            $"EXEC {CreatePostProc} {p.Login}, {p.Password}, {p.Title}, {p.Content}, {IdVar}";
+        public static string LoadAnimations() =>
+            string.Join('\n', ReadLines(DataFile(AnimationSource))
+                .Select(s => Exec(CreateAnimationProc, new SoldItemArgs(s))));
 
-        return Declaration +
-               string.Join('\n', ReadLines(DataFile(PostSource))
-                   .Select(s=>CreatePost(new PostArgs(s))));
-    }
+        public static string LoadLootBoxes() =>
+            string.Join('\n', ReadLines(DataFile(LootBoxSource))
+                .Select(s => Exec(CreateLootBoxProc, new SoldItemArgs(s))));
 
-    public static string LoadNewsMessages()
-    {
-        static string GetPostId(string title) =>
-            $"(SELECT {ArticlePostId} FROM {ArticleTable} WHERE {ArticleTitle}={title})";
+        public static string LoadCheckersSkins() =>
+            string.Join('\n', ReadLines(DataFile(CheckersSource))
+                .Select(s => Exec(CreateCheckersSkinProc, new SoldItemArgs(s))));
+
+        public static string LoadUsers() =>
+            string.Join('\n', ReadLines(DataFile(UserSource))
+                .Select(s => new UserArgs(s))
+                .Select(i => Exec(CreateUserProc, i)));
+
+        public static string LoadUserPictures()
+        {
+            static string PictureId(string name) =>
+                $"(SELECT {Id} FROM {PictureTable} WHERE {Name} = {name})";
+
+            static string Set(string name) => $"SET @id = {PictureId(name)}";
+            static string ExecUpdate(string log, string pass) => $"EXEC {UpdateUserPictureProc} {log}, {pass}, @id";
+            static string Update(UserPictureArgs u) => $"{Set(u.PicName)}\n{ExecUpdate(u.Login, u.Password)}";
+
+            return Declaration +
+                   string.Join('\n', ReadLines(DataFile(UserPictureSource))
+                       .Select(s => Update(new UserPictureArgs(s))));
+        }
+
+        public static string LoadNews()
+        {
+            static string SetPicture(string filename) =>
+                $"EXEC {IdVar} = {CreateResourceFromFileProc} {ResourceFile(filename)}\n";
+            static string CreateArticle(ArticleArgs a) =>
+                SetPicture(a.File) +
+                $"EXEC {CreateArticleProc} {a.Login}, {a.Password}, {a.Title}, {a.Abstract}, {a.Content}, {IdVar}";
+
+            return Declaration +
+                   string.Join('\n', ReadLines(DataFile(NewsSource))
+                       .Select(s => CreateArticle(new ArticleArgs(s))));
+        }
+
+        public static string LoadPosts()
+        {
+            static string SetPicture(string filename) =>
+                $"EXEC {IdVar} = {CreateResourceFromFileProc} {ResourceFile(filename)}\n";
+
+            static string CreatePost(PostArgs p) =>
+                SetPicture(p.File) +
+                $"EXEC {CreatePostProc} {p.Login}, {p.Password}, {p.Title}, {p.Content}, {IdVar}";
+
+            return Declaration +
+                   string.Join('\n', ReadLines(DataFile(PostSource))
+                       .Select(s=>CreatePost(new PostArgs(s))));
+        }
+
+        public static string LoadNewsMessages()
+        {
+            static string GetPostId(string title) =>
+                $"(SELECT {ArticlePostId} FROM {ArticleTable} WHERE {ArticleTitle}={title})";
         
-        static string SetId(string title)
-            => $"SET {IdVar} = (SELECT {ChatId} FROM {PostTable} WHERE {Id} = {GetPostId(title)});\n";
+            static string SetId(string title)
+                => $"SET {IdVar} = (SELECT {ChatId} FROM {PostTable} WHERE {Id} = {GetPostId(title)});\n";
 
-        static string CreateComment(DirectedMessageArgs m) =>
-            SetId(m.Direction) +
-            $"EXEC {SendMessageProc} {m.Login}, {m.Password}, {IdVar}, {m.Content}";
+            static string CreateComment(DirectedMessageArgs m) =>
+                SetId(m.Direction) +
+                $"EXEC {SendMessageProc} {m.Login}, {m.Password}, {IdVar}, {m.Content}";
 
-        return Declaration +
-               string.Join('\n', ReadLines(DataFile(NewsChatSource))
-                   .Select(s => CreateComment(new DirectedMessageArgs(s))));
-    }
+            return Declaration +
+                   string.Join('\n', ReadLines(DataFile(NewsChatSource))
+                       .Select(s => CreateComment(new DirectedMessageArgs(s))));
+        }
 
-    public static string LoadPostMessages()
-    {
-        static string GetChatId(string title) =>
-            $"(SELECT {ChatId} FROM {PostTable} WHERE {PostTitle}={title});\n";
+        public static string LoadPostMessages()
+        {
+            static string GetChatId(string title) =>
+                $"(SELECT {ChatId} FROM {PostTable} WHERE {PostTitle}={title});\n";
 
-        static string CreateComment(DirectedMessageArgs m) =>
-            $"SET {IdVar} = {GetChatId(m.Direction)}" +
-            $"EXEC {SendMessageProc} {m.Login}, {m.Password}, {IdVar}, {m.Content}";
+            static string CreateComment(DirectedMessageArgs m) =>
+                $"SET {IdVar} = {GetChatId(m.Direction)}" +
+                $"EXEC {SendMessageProc} {m.Login}, {m.Password}, {IdVar}, {m.Content}";
 
-        return Declaration +
-               string.Join('\n', ReadLines(DataFile(ForumChatSource))
-                   .Select(s => CreateComment(new DirectedMessageArgs(s))));
-    }
+            return Declaration +
+                   string.Join('\n', ReadLines(DataFile(ForumChatSource))
+                       .Select(s => CreateComment(new DirectedMessageArgs(s))));
+        }
 
-    public static string LoadFriends()
-    {
-        const string declaration = "DECLARE @id1 INT, @id2 INT\n";
+        public static string LoadFriends()
+        {
+            const string declaration = "DECLARE @id1 INT, @id2 INT\n";
 
-        static string GetUserId(string var,string login) =>
-            $"SET {var} = (SELECT {Id} FROM {UserTable} WHERE {Login} = {login});\n";
+            static string GetUserId(string var,string login) =>
+                $"SET {var} = (SELECT {Id} FROM {UserTable} WHERE {Login} = {login});\n";
 
-        static string CreateFriendship(FriendshipArgs f) =>
-            GetUserId("@id1",f.Friend)+
-            GetUserId("@id2",f.Login)+
-            $"EXEC {CreateFriendshipProc} @id1, @id2";
+            static string CreateFriendship(FriendshipArgs f) =>
+                GetUserId("@id1",f.Friend)+
+                GetUserId("@id2",f.Login)+
+                $"EXEC {CreateFriendshipProc} @id1, @id2";
 
-        return declaration +
-               string.Join('\n', ReadLines(DataFile(FriendshipSource))
-                   .Select(s => CreateFriendship(new FriendshipArgs(s))));
-    }
+            return declaration +
+                   string.Join('\n', ReadLines(DataFile(FriendshipSource))
+                       .Select(s => CreateFriendship(new FriendshipArgs(s))));
+        }
 
-    public static string LoadFriendMessages()
-    {
-        const string declaration = $"DECLARE {IdVar} INT, @id1 INT, @id2 INT\n";
+        public static string LoadFriendMessages()
+        {
+            const string declaration = $"DECLARE {IdVar} INT, @id1 INT, @id2 INT\n";
 
-        static string SetUserId(string var, string login) =>
-            $"SET {var} = (SELECT {Id} FROM {UserTable} WHERE {Login}={login});\n";
+            static string SetUserId(string var, string login) =>
+                $"SET {var} = (SELECT {Id} FROM {UserTable} WHERE {Login}={login});\n";
         
-        static string SendMessage(DirectedMessageArgs m) =>
-            SetUserId("@id1",m.Login) +
-            SetUserId("@id2",m.Direction) +
-            $"SET {IdVar} = (SELECT {ChatId} FROM {FriendshipTable} WHERE {User1Id}=@id1 AND {User2Id}=@id2)\n"+
-            $"EXEC {SendMessageProc} {m.Login}, {m.Password}, {IdVar}, {m.Content}";
+            static string SendMessage(DirectedMessageArgs m) =>
+                SetUserId("@id1",m.Login) +
+                SetUserId("@id2",m.Direction) +
+                $"SET {IdVar} = (SELECT {ChatId} FROM {FriendshipTable} WHERE {User1Id}=@id1 AND {User2Id}=@id2)\n"+
+                $"EXEC {SendMessageProc} {m.Login}, {m.Password}, {IdVar}, {m.Content}";
 
-        return declaration +
-               string.Join('\n', ReadLines(DataFile(FriendChatSource))
-                   .Select(s => SendMessage(new DirectedMessageArgs(s))));
-    }
-
-    public static string LoadCommonChat()
-    {
-        var declaration =
-            $"DECLARE {IdVar} INT\n" +
-            $"EXEC {IdVar} = {GetCommonChatIdProc}\n";
-
-        static string SendMessage(MessageArgs m) =>
-            $"EXEC {SendMessageProc} {m.Login}, {m.Password}, {IdVar}, {m.Content}";
-
-        return declaration +
-               string.Join('\n', ReadLines(DataFile(CommonChatSource))
-                   .Select(s => SendMessage(new MessageArgs(s))));
-    }
-
-
-    private class NamedItemArgs
-    {
-        private readonly string _name;
-        private readonly string _path;
-
-        internal NamedItemArgs(string line)
-        {
-            var strings = line.Split(";") ??
-                          throw LineSplitException;
-
-            _name = SqlString(strings[0]);
-            _path = ResourceFile(strings[1]);
+            return declaration +
+                   string.Join('\n', ReadLines(DataFile(FriendChatSource))
+                       .Select(s => SendMessage(new DirectedMessageArgs(s))));
         }
 
-        public override string ToString() => $"{_name}, {_path}";
-    }
-
-    private class DetailedItemArgs : NamedItemArgs
-    {
-        private readonly string _detail;
-        internal DetailedItemArgs(string line) : base(line)
+        public static string LoadCommonChat()
         {
-            var strings = line.Split(";") ??
-                          throw LineSplitException;
+            var declaration =
+                $"DECLARE {IdVar} INT\n" +
+                $"EXEC {IdVar} = {GetCommonChatIdProc}\n";
 
-            _detail = SqlString(strings[2]);
+            static string SendMessage(MessageArgs m) =>
+                $"EXEC {SendMessageProc} {m.Login}, {m.Password}, {IdVar}, {m.Content}";
+
+            return declaration +
+                   string.Join('\n', ReadLines(DataFile(CommonChatSource))
+                       .Select(s => SendMessage(new MessageArgs(s))));
         }
 
-        public override string ToString() => base.ToString() + $", {_detail}";
-    }
 
-    private sealed class SoldItemArgs : DetailedItemArgs
-    {
-        private readonly string _price;
-        internal SoldItemArgs(string line) : base(line)
+        private class NamedItemArgs
         {
-            var strings = line.Split(";") ??
-                          throw LineSplitException;
+            private readonly string _name;
+            private readonly string _path;
 
-            _price = strings[3];
+            internal NamedItemArgs(string line)
+            {
+                var strings = line.Split(";") ??
+                              throw LineSplitException;
+
+                _name = SqlString(strings[0]);
+                _path = ResourceFile(strings[1]);
+            }
+
+            public override string ToString() => $"{_name}, {_path}";
         }
 
-        public override string ToString() => base.ToString() + $", {_price}";
-    }
-
-    private sealed class UserArgs
-    {
-        private readonly string _nick;
-        private readonly string _login;
-        private readonly string _password;
-        private readonly string _email;
-        private readonly string _type;
-
-        internal UserArgs(string line)
+        private class DetailedItemArgs : NamedItemArgs
         {
-            var strings = line.Split(";") ??
-                          throw LineSplitException;
-            _nick = SqlString(strings[0]);
-            _login = SqlString(strings[1]);
-            _password = SqlString(strings[2]);
-            _email = SqlString(strings[3]);
-            _type = SqlString(strings[4]);
+            private readonly string _detail;
+            internal DetailedItemArgs(string line) : base(line)
+            {
+                var strings = line.Split(";") ??
+                              throw LineSplitException;
+
+                _detail = SqlString(strings[2]);
+            }
+
+            public override string ToString() => base.ToString() + $", {_detail}";
         }
 
-        public override string ToString() =>
-            $"{_nick}, {_login}, {_password}, {_email}, {_type}";
-    }
-
-    private sealed class UserPictureArgs
-    {
-        internal readonly string Login;
-        internal readonly string Password;
-        internal readonly string PicName;
-
-        internal UserPictureArgs(string line)
+        private sealed class SoldItemArgs : DetailedItemArgs
         {
-            var strings = line.Split(";") ??
-                          throw LineSplitException;
-            Login = SqlString(strings[0]);
-            Password = SqlString(strings[1]);
-            PicName = SqlString(strings[2]);
-        }
-    }
+            private readonly string _price;
+            internal SoldItemArgs(string line) : base(line)
+            {
+                var strings = line.Split(";") ??
+                              throw LineSplitException;
 
-    private sealed class ArticleArgs
-    {
-        internal readonly string Login;
-        internal readonly string Password;
-        internal readonly string Title;
-        internal readonly string Abstract;
-        internal readonly string Content;
-        internal readonly string File;
+                _price = strings[3];
+            }
 
-        internal ArticleArgs(string line)
-        {
-            var strings = line.Split(";") ??
-                          throw LineSplitException;
-            Login = SqlString(strings[0]);
-            Password = SqlString(strings[1]);
-            Title = SqlString(strings[2]);
-            Abstract = SqlString(strings[3]);
-            Content = SqlString(strings[4]);
-            File = strings[5];
-        }
-    }
-
-    private sealed class PostArgs
-    {
-        internal readonly string Login;
-        internal readonly string Password;
-        internal readonly string Title;
-        internal readonly string Content;
-        internal readonly string File;
-
-        internal PostArgs(string line)
-        {
-            var strings = line.Split(";") ??
-                          throw LineSplitException;
-            Login = SqlString(strings[0]);
-            Password = SqlString(strings[1]);
-            Title = SqlString(strings[2]);
-            Content = SqlString(strings[3]);
-            File = strings[4];
+            public override string ToString() => base.ToString() + $", {_price}";
         }
 
-    }
-
-    private class MessageArgs
-    {
-        internal readonly string Login;
-        internal readonly string Password;
-        internal readonly string Content;
-
-        internal MessageArgs(string line)
+        private sealed class UserArgs
         {
-            var strings = line.Split(";") ??
-                          throw LineSplitException;
-            Login = SqlString(strings[0]);
-            Password = SqlString(strings[1]);
-            Content = SqlString(strings[2]);
-        }
-    }
+            private readonly string _nick;
+            private readonly string _login;
+            private readonly string _password;
+            private readonly string _email;
+            private readonly string _type;
 
-    private class DirectedMessageArgs : MessageArgs
-    {
-        internal readonly string Direction;
-        internal DirectedMessageArgs(string line) : base(line)
-        {
-            var strings = line.Split(";") ??
-                          throw LineSplitException;
-            Direction = SqlString(strings[3]);
-        }
-    }
+            internal UserArgs(string line)
+            {
+                var strings = line.Split(";") ??
+                              throw LineSplitException;
+                _nick = SqlString(strings[0]);
+                _login = SqlString(strings[1]);
+                _password = SqlString(strings[2]);
+                _email = SqlString(strings[3]);
+                _type = SqlString(strings[4]);
+            }
 
-    private sealed class FriendshipArgs
-    {
-        internal readonly string Login;
-        internal readonly string Password;
-        internal readonly string Friend;
-
-        internal FriendshipArgs(string line)
-        {
-            var strings = line.Split(";") ??
-                          throw LineSplitException;
-            Login = SqlString(strings[0]);
-            Password = SqlString(strings[1]);
-            Friend = SqlString(strings[2]);
+            public override string ToString() =>
+                $"{_nick}, {_login}, {_password}, {_email}, {_type}";
         }
 
+        private sealed class UserPictureArgs
+        {
+            internal readonly string Login;
+            internal readonly string Password;
+            internal readonly string PicName;
+
+            internal UserPictureArgs(string line)
+            {
+                var strings = line.Split(";") ??
+                              throw LineSplitException;
+                Login = SqlString(strings[0]);
+                Password = SqlString(strings[1]);
+                PicName = SqlString(strings[2]);
+            }
+        }
+
+        private sealed class ArticleArgs
+        {
+            internal readonly string Login;
+            internal readonly string Password;
+            internal readonly string Title;
+            internal readonly string Abstract;
+            internal readonly string Content;
+            internal readonly string File;
+
+            internal ArticleArgs(string line)
+            {
+                var strings = line.Split(";") ??
+                              throw LineSplitException;
+                Login = SqlString(strings[0]);
+                Password = SqlString(strings[1]);
+                Title = SqlString(strings[2]);
+                Abstract = SqlString(strings[3]);
+                Content = SqlString(strings[4]);
+                File = strings[5];
+            }
+        }
+
+        private sealed class PostArgs
+        {
+            internal readonly string Login;
+            internal readonly string Password;
+            internal readonly string Title;
+            internal readonly string Content;
+            internal readonly string File;
+
+            internal PostArgs(string line)
+            {
+                var strings = line.Split(";") ??
+                              throw LineSplitException;
+                Login = SqlString(strings[0]);
+                Password = SqlString(strings[1]);
+                Title = SqlString(strings[2]);
+                Content = SqlString(strings[3]);
+                File = strings[4];
+            }
+
+        }
+
+        private class MessageArgs
+        {
+            internal readonly string Login;
+            internal readonly string Password;
+            internal readonly string Content;
+
+            internal MessageArgs(string line)
+            {
+                var strings = line.Split(";") ??
+                              throw LineSplitException;
+                Login = SqlString(strings[0]);
+                Password = SqlString(strings[1]);
+                Content = SqlString(strings[2]);
+            }
+        }
+
+        private class DirectedMessageArgs : MessageArgs
+        {
+            internal readonly string Direction;
+            internal DirectedMessageArgs(string line) : base(line)
+            {
+                var strings = line.Split(";") ??
+                              throw LineSplitException;
+                Direction = SqlString(strings[3]);
+            }
+        }
+
+        private sealed class FriendshipArgs
+        {
+            internal readonly string Login;
+            internal readonly string Password;
+            internal readonly string Friend;
+
+            internal FriendshipArgs(string line)
+            {
+                var strings = line.Split(";") ??
+                              throw LineSplitException;
+                Login = SqlString(strings[0]);
+                Password = SqlString(strings[1]);
+                Friend = SqlString(strings[2]);
+            }
+
+        }
     }
 }
