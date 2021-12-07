@@ -1,18 +1,17 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Checkers.Data.Entity;
 using Checkers.Game.Model;
 
 namespace Checkers.Game.Client;
 
 public sealed class ClientGameModel : GameModel
 {
-    public IGameController Controller { get; }
 
-    public ClientGameModel(Color color)
-    {
-        Controller = new GameController(this,color);
-    }
+    public ClientGameModel(Side color)
+    { }
 
-    public override void Run()
+    public override Task Run()
     {
         throw new NotImplementedException();
     }

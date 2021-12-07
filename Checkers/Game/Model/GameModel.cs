@@ -1,91 +1,66 @@
-﻿using System;
-using Checkers.Game.Server.Transmission;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Checkers.Data.Entity;
+using static Checkers.Data.Entity.Side;
 
 namespace Checkers.Game.Model;
 
-public interface IGameController
-{
-    void Move(MoveAction a);
-    void Emote(EmoteAction a);
-    void Surrender();
-}
-
-public enum Color
-{
-    White,
-    Black
-}
-
 public abstract class GameModel
 {
-    public sealed class GameController : IGameController
-    {
-        private readonly Color _color;
-        private readonly GameModel _model;
-
-        public GameController(GameModel model, Color color)
-        {
-            _color = color;
-            _model = model;
-        }
-
-        public void Move(MoveAction a)
-        {
-            _model.Move(_color, a);
-        }
-
-        public void Emote(EmoteAction a)
-        {
-            _model.Emote(_color, a);
-        }
-
-        public void Surrender()
-        {
-            _model.Surrender(_color);
-        }
-    }
+    private const string MoveExceptionMessage = "Move action out of turn";
 
     public delegate void EmoteEventHandler(EmoteEvent e);
     public delegate void GameStartEventHandler(GameStartEvent e);
     public delegate void GameEndEventHandler(GameEndEvent e);
     public delegate void MoveEventHandler(MoveEvent e);
+    public delegate void ExceptionEventHandler(ExceptionEvent e);
+    public delegate void TurnEventHandler(TurnEvent e);
 
     public event MoveEventHandler? OnMove;
     public event EmoteEventHandler? OnEmote;
-    public event EventHandler? OnExecption;
+    public event ExceptionEventHandler? OnException;
     public event GameStartEventHandler? OnGameStart;
     public event GameEndEventHandler? OnGameEnd;
+    public event TurnEventHandler? OnTurn;
 
-    protected Color Turn;
-    public readonly GameBoard Board = new GameBoard();
+    private static readonly TurnEvent WhiteTurnEvent = new() { Side = White };
+    private static readonly TurnEvent BlackTurnEvent = new() { Side = Black };
+    
+    private Side _turn = White;
+    public readonly GameBoard Board = new();
 
-    internal GameModel() { }
-
-    private static void ValidateMove() { }
-
-    protected void Move(Color color, MoveAction args)
+    protected void Move(Side side, int from, int to)
     {
-        ValidateMove();
-        OnMove?.Invoke(new MoveEvent());
-        if(true)
-            OnGameEnd?.Invoke(new GameEndEvent());
+        if (_turn != side)
+            Exception(MoveExceptionMessage);
+        OnMove?.Invoke(new MoveEvent
+        {
+            From = from,
+            To = to,
+            Side = side
+        });
+        if (!Board.GetAvailableMove(to).Any())
+            Invert(ref side);
+        SetTurn(side);
     }
 
-    protected void Emote(Color color, EmoteAction args)
+    private static void Invert(ref Side s) => s = s == White ? Black : White;
+
+    private void SetTurn(Side side)
     {
-        OnEmote?.Invoke(new EmoteEvent());
+        _turn = side;
+        OnTurn?.Invoke(side == White ? WhiteTurnEvent : BlackTurnEvent);
     }
 
-    protected void Surrender(Color color)
-    {}
+    protected void Emote(EmoteEvent e) => OnEmote?.Invoke(e);
 
-    protected void Start()
-    {
-        OnGameStart?.Invoke(new GameStartEvent());
-    }
+    protected void Exception(string m) =>
+        OnException?.Invoke(new ExceptionEvent { Message = m });
 
-    public abstract void Run();
+    protected void End(GameEndEvent e) => OnGameEnd?.Invoke(e);
 
-    private void TryMove(int from, int to) { }
-    public int[] GetAvailableMove(int from) => new int[] { };
+    protected void Start(GameStartEvent e) => OnGameStart?.Invoke(e);
+
+
+    public abstract Task Run();
 }

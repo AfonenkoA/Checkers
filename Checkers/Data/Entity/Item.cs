@@ -132,3 +132,14 @@ public sealed class LootBox : SoldItem
     [JsonConstructor]
     public LootBox() { }
 }
+
+public sealed class Emotion : NamedItem
+{
+    public new static Emotion Invalid = new();
+    public Emotion(NamedItem item) : base(item)
+    {
+        Name = item.Name;
+    }
+    [JsonConstructor]
+    public Emotion() { }
+}

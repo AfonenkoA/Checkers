@@ -1,38 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
-using Checkers.Game.Model;
 using static System.Linq.Enumerable;
 
 namespace Checkers.Data.Entity;
+
+public enum Side
+{
+    White,
+    Black
+}
 
 public enum WinReason
 {
     Surrender
 }
 
-public class ActionBase
+public class StoredEvent
 {
     public TimeSpan Time { get; set; }
-    public Color Actor { get; set; }
+    public Side Actor { get; set; }
 }
 
-public class MoveData : ActionBase
+public sealed class StoredMoveEvent : StoredEvent
 {
     public int From { get; set; }
     public int To { get; set; }
 }
 
-public class EmoteCreationData : ActionBase
+public class EmoteEventCreationData : StoredEvent
 {
     public int EmotionId { get; set; }
 }
 
-public class EmoteData : ActionBase
+public class StoredEmoteEvent : StoredEvent
 {
     public Emotion Emotion { get; set; }
 }
 
-public class PlayerInfo
+public sealed class PlayerInfo
 {
     public PublicUserData User { get; set;}
     public CheckersSkin CheckersSkin { get; set; }
@@ -45,21 +50,22 @@ public class GameBase
 {
     public DateTime Start { get; set; }
     public TimeSpan Duration { get; set; }
-    public Color Winner { get; set; }
+    public Side Winner { get; set; }
     public WinReason WinReason { get; set; }
-    public IEnumerable<MoveData> Moves { get; set; } = Empty<MoveData>();
+    public IEnumerable<StoredMoveEvent> Moves { get; set; } = Empty<StoredMoveEvent>();
 }
 
 public class GameCreationData : GameBase
 {
-    public int BlackId;
-    public int WhiteId;
-    public IEnumerable<EmoteCreationData> Emotions { get; set; } = Empty<EmoteCreationData>();
+    public int BlackPlayerId;
+    public int WhitePlayerId;
+    public IEnumerable<EmoteEventCreationData> Emotions { get; set; } = Empty<EmoteEventCreationData>();
 }
 
-public class GameData : GameBase
+public sealed class Game : GameBase
 {
-    public PlayerInfo Black;
-    public PlayerInfo White;
-    public IEnumerable<EmoteData> Emotions { get; set; }
+    public int Id { get; set; }
+    public PlayerInfo Black { get; set; }
+    public PlayerInfo White { get; set; }
+    public IEnumerable<StoredEmoteEvent> Emotions { get; set; }
 }

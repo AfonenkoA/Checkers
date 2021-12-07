@@ -1,4 +1,6 @@
-﻿namespace Checkers.Game.Model;
+﻿using static System.Array;
+
+namespace Checkers.Game.Model;
 
 public sealed class GameBoard
 {
@@ -14,6 +16,6 @@ public sealed class GameBoard
     internal GameBoard() { }
     public State[,] DetailedState => new State[8, 8];
     public State[] ShortState => new State[32];
-    private void TryMove(int from, int to) { }
-    public int[] GetAvailableMove(int from) => new int[] { };
+    internal bool TryMove(int from, int to) => true;
+    public int[] GetAvailableMove(int from) => Empty<int>();
 }
