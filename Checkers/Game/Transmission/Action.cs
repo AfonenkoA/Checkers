@@ -1,6 +1,6 @@
 ﻿using Checkers.Data.Entity;
 
-namespace Checkers.Game.Server.Transmission;
+namespace Checkers.Game.Transmission;
 
 public class Action : Message
 {

@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Checkers.Game.Model;
-using EmoteEvent = Checkers.Game.Server.Transmission.EmoteEvent;
-using GameEndEvent = Checkers.Game.Server.Transmission.GameEndEvent;
-using GameStartEvent = Checkers.Game.Server.Transmission.GameStartEvent;
-using MoveEvent = Checkers.Game.Server.Transmission.MoveEvent;
+using EmoteEvent = Checkers.Game.Transmission.EmoteEvent;
+using GameEndEvent = Checkers.Game.Transmission.GameEndEvent;
+using GameStartEvent = Checkers.Game.Transmission.GameStartEvent;
+using MoveEvent = Checkers.Game.Transmission.MoveEvent;
 
 namespace Checkers.Game.Server;
 

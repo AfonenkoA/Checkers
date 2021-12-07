@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
-using Checkers.Game.Server.Transmission;
+using Checkers.Game.Transmission;
 using static System.Net.Sockets.TcpListener;
 
 namespace Checkers.Game.Server;

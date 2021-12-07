@@ -1,4 +1,4 @@
-﻿namespace Checkers.Game.Server.Transmission;
+﻿namespace Checkers.Game.Transmission;
 
 public class Message
 {

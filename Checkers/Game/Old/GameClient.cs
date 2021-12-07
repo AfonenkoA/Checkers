@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Sockets;
 using System.Text.Json;
 using System.Threading.Tasks;
+using static Checkers.CommunicationProtocol;
 
 namespace Checkers.Game.Old;
 
@@ -132,22 +133,22 @@ public sealed class GameClient
 
             public void Request()
             {
-                Send(JsonSerializer.Serialize(RequestForGameActionArgs.Instance));
+                Send(Serialize(RequestForGameActionArgs.Instance));
             }
 
             public void Move(Position from, Position to)
             {
-                Send(JsonSerializer.Serialize(new MoveActionArgs { From = from, To = to }));
+                Send(Serialize(new MoveActionArgs { From = from, To = to }));
             }
 
             public void Emote(int emotionId)
             {
-                Send(JsonSerializer.Serialize(new EmoteActionArgs { EmotionId = emotionId }));
+                Send(Serialize(new EmoteActionArgs { EmotionId = emotionId }));
             }
 
             public void Surrender()
             {
-                Send(JsonSerializer.Serialize(SurrenderActionArgs.Instance));
+                Send(Serialize(SurrenderActionArgs.Instance));
             }
         }
 
@@ -178,13 +179,13 @@ public sealed class GameClient
             tcp.Connect(IPAddress.Loopback, 5000);
             _writer = new(tcp.GetStream()) { AutoFlush = true };
             Controller = new GameController(_writer);
-            _writer.WriteLine(JsonSerializer.Serialize(new ConnectAction { Login = _client.Login, Password = _client.Password }));
+            _writer.WriteLine(Serialize(new ConnectAction { Login = _client.Login, Password = _client.Password }));
             Task.Run(Listen);
         }
 
         public void Disconnect()
         {
-            _writer?.WriteLine(JsonSerializer.Serialize(DisconnectActionArgs.Instance));
+            _writer?.WriteLine(Serialize(DisconnectActionArgs.Instance));
         }
 
         public GameController? Controller { get; private set; }
@@ -197,37 +198,37 @@ public sealed class GameClient
                 string? message = await reader.ReadLineAsync();
                 if (message == null)
                     continue;
-                var type = JsonSerializer.Deserialize<EventArgs>(message)?.Type;
+                var type = Deserialize<EventArgs>(message)?.Type;
                 if (type == null)
                     continue;
                 switch (type)
                 {
                     case EventType.GameStart:
-                        OnGameStart(this, JsonSerializer.Deserialize<GameStartEventArgs>(message) ?? new GameStartEventArgs());
+                        OnGameStart(this, Deserialize<GameStartEventArgs>(message) ?? new GameStartEventArgs());
                         break;
                     case EventType.GameEnd:
-                        OnGameEnd(this, JsonSerializer.Deserialize<GameEndEventArgs>(message) ?? new GameEndEventArgs());
+                        OnGameEnd(this, Deserialize<GameEndEventArgs>(message) ?? new GameEndEventArgs());
                         break;
                     case EventType.YourTurn:
-                        OnYourTurn(this, JsonSerializer.Deserialize<YourTurnEventArgs>(message) ?? YourTurnEventArgs.Instance);
+                        OnYourTurn(this, Deserialize<YourTurnEventArgs>(message) ?? YourTurnEventArgs.Instance);
                         break;
                     case EventType.EnemyTurn:
-                        OnEnemyTurn(this, JsonSerializer.Deserialize<EnemyTurnEventArgs>(message) ?? EnemyTurnEventArgs.Instance);
+                        OnEnemyTurn(this, Deserialize<EnemyTurnEventArgs>(message) ?? EnemyTurnEventArgs.Instance);
                         break;
                     case EventType.Emote:
-                        OnEmote(this, JsonSerializer.Deserialize<EmoteEventArgs>(message) ?? new EmoteEventArgs());
+                        OnEmote(this, Deserialize<EmoteEventArgs>(message) ?? new EmoteEventArgs());
                         break;
                     case EventType.Move:
-                        OnMove(this, JsonSerializer.Deserialize<MoveEventArgs>(message) ?? new MoveEventArgs());
+                        OnMove(this, Deserialize<MoveEventArgs>(message) ?? new MoveEventArgs());
                         break;
                     case EventType.Remove:
-                        OnRemove(this, JsonSerializer.Deserialize<RemoveEventArgs>(message) ?? new RemoveEventArgs());
+                        OnRemove(this, Deserialize<RemoveEventArgs>(message) ?? new RemoveEventArgs());
                         break;
                     case EventType.ConnectionAccept:
-                        OnConnectionAccept(this, JsonSerializer.Deserialize<ConnectionAcceptEventArgs>(message) ?? ConnectionAcceptEventArgs.Instance);
+                        OnConnectionAccept(this, Deserialize<ConnectionAcceptEventArgs>(message) ?? ConnectionAcceptEventArgs.Instance);
                         break;
                     case EventType.Disconnect:
-                        OnDisconnect(this, JsonSerializer.Deserialize<DisconnectEventArgs>(message) ?? DisconnectEventArgs.Instance);
+                        OnDisconnect(this, Deserialize<DisconnectEventArgs>(message) ?? DisconnectEventArgs.Instance);
                         return;
                     case null:
                         break;
@@ -245,43 +246,43 @@ public sealed class GameClient
     }
 
     public async Task<UserAuthorizationResponse> AuthorizeAsync() =>
-        JsonSerializer.Deserialize<UserAuthorizationResponse>(
+        Deserialize<UserAuthorizationResponse>(
             await _httpClient.GetStringAsync(UserUri + _query + "action=authorize")) ??
         UserAuthorizationResponse.Failed;
 
     public async Task<UserInfoResponse> GetUserInfoAsync() => 
-        JsonSerializer.Deserialize<UserInfoResponse>(
+        Deserialize<UserInfoResponse>(
             await _httpClient.GetStringAsync(UserUri + _query + "action=info")) ??
         UserInfoResponse.Failed;
 
 
     public async Task<UserAchievementsGetResponse> GetAchievementsAsync() =>
-        JsonSerializer.Deserialize<UserAchievementsGetResponse>(
+        Deserialize<UserAchievementsGetResponse>(
             await _httpClient.GetStringAsync(AchievementsUri)) ??
         UserAchievementsGetResponse.Failed;
 
     public async Task<UserFriendsResponse> GetFriendsAsync() =>
-        JsonSerializer.Deserialize<UserFriendsResponse>(
+        Deserialize<UserFriendsResponse>(
             await _httpClient.GetStringAsync(FriendsUri + _query)) ??
         UserFriendsResponse.Failed;
 
     public async Task<UserGamesGetResponse> GetGamesAsync() =>
-        JsonSerializer.Deserialize<UserGamesGetResponse>(
+        Deserialize<UserGamesGetResponse>(
             await _httpClient.GetStringAsync(UserGamesUri)) ??
         UserGamesGetResponse.Failed;
 
     public async Task<GameGetRespose> GetGameAsync(int id) =>
-        JsonSerializer.Deserialize<GameGetRespose>(
+        Deserialize<GameGetRespose>(
             await _httpClient.GetStringAsync(GameUri + id)) ??
         GameGetRespose.Failed;
 
     public async Task<UserItemsResponse> GetItemsAsync() =>
-        JsonSerializer.Deserialize<UserItemsResponse>(
+        Deserialize<UserItemsResponse>(
             await _httpClient.GetStringAsync(ItemsUri + _query)) ??
         UserItemsResponse.Failed;
 
     public async Task<UserGetResponse> GetUserAsync(string login) =>
-        JsonSerializer.Deserialize<UserGetResponse>(
+        Deserialize<UserGetResponse>(
             await _httpClient.GetStringAsync(UserUri + login)) ??
         UserGetResponse.Failed;
 }

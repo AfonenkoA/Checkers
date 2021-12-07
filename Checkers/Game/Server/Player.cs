@@ -1,8 +1,8 @@
-﻿using System;
-using Checkers.Data.Entity;
-using Checkers.Game.Server.Transmission;
-using static System.Text.Json.JsonSerializer;
-using Action = Checkers.Game.Server.Transmission.Action;
+﻿using Checkers.Data.Entity;
+using Checkers.Game.Transmission;
+using System;
+using static Checkers.CommunicationProtocol;
+using Action = Checkers.Game.Transmission.Action;
 
 namespace Checkers.Game.Server;
 
@@ -18,11 +18,11 @@ public sealed class Player : IDisposable
     public delegate void GameRequestHandler(Player sender);
     public delegate void DisconnectActionHandler(Player sender);
 
-    public event MoveActionHandler OnMove;
-    public event EmoteActionHandler OnEmote;
-    public event SurrenderHandler OnSurrender;
-    public event GameRequestHandler OnGameRequest;
-    public event DisconnectActionHandler OnDisconnect;
+    public event MoveActionHandler? OnMove;
+    public event EmoteActionHandler? OnEmote;
+    public event SurrenderHandler? OnSurrender;
+    public event GameRequestHandler? OnGameRequest;
+    public event DisconnectActionHandler? OnDisconnect;
 
     public Player(Connection connection, Credential credential)
     {
@@ -37,8 +37,13 @@ public sealed class Player : IDisposable
             var json = await _connection.ReceiveString();
             if (json == null) continue;
             var action = Deserialize<Action>(json);
-            if (action==null) continue;
-            //switch (action.Type)
+            if (action == null) continue;
+            switch (action.Type)
+            {
+                case nameof(GameRequestAction):
+                    Deserialize<GameRequestAction>(json);
+                    break;
+            }
         }
     }
 
@@ -55,8 +60,8 @@ public sealed class Player : IDisposable
     { }
 
     public void SendEvent(ConnectAcknowledgeEvent e)
-    {}
-    
+    { }
+
 
     public void Dispose()
     {

@@ -1,4 +1,4 @@
-﻿using Checkers.Game.Server.Transmission;
+﻿using Checkers.Game.Transmission;
 
 namespace Checkers.Game.Model;
 

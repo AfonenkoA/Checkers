@@ -1,7 +1,7 @@
 ﻿using System;
 using Checkers.Game.Old;
 using Microsoft.AspNetCore.Mvc;
-using static System.Text.Json.JsonSerializer;
+using static Checkers.CommunicationProtocol;
 
 namespace WebService.Controllers.Old;
 

@@ -6,7 +6,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using Checkers.Data.Old;
 using Checkers.Game.Old;
-using static System.Text.Json.JsonSerializer;
+using static Checkers.CommunicationProtocol;
 using EventArgs = Checkers.Game.Old.EventArgs;
 using Game = Checkers.Data.Old.Game;
 using User = Checkers.Data.Old.User;

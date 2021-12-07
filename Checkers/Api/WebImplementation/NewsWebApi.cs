@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Checkers.Api.Interface;
 using Checkers.Data.Entity;
 using static Checkers.Api.Interface.Action.NewsApiAction;
+using static Checkers.CommunicationProtocol;
 
 
 namespace Checkers.Api.WebImplementation;

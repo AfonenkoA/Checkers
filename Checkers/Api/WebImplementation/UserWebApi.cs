@@ -6,6 +6,7 @@ using Checkers.Api.Interface;
 using Checkers.Api.Interface.Action;
 using Checkers.Data.Entity;
 using static Checkers.Api.Interface.Action.UserApiAction;
+using static Checkers.CommunicationProtocol;
 
 namespace Checkers.Api.WebImplementation;
 

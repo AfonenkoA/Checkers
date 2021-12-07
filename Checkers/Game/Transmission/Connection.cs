@@ -3,9 +3,9 @@ using System.IO;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using static System.String;
-using static System.Text.Json.JsonSerializer;
+using static Checkers.CommunicationProtocol;
 
-namespace Checkers.Game.Server.Transmission;
+namespace Checkers.Game.Transmission;
 
 
 public sealed class Connection : IDisposable
