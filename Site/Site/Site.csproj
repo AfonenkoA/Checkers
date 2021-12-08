@@ -11,4 +11,18 @@
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+    <Folder Include="Views\Chat\" />
+    <Folder Include="Views\Resource\" />
+    <Folder Include="Views\Item\" />
+    <Folder Include="Views\News\" />
+    <Folder Include="Views\Forum\" />
+    <Folder Include="Views\Staristics\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Checkers\Checkers.csproj" />
+  </ItemGroup>
+
 </Project>
