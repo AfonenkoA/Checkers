@@ -4,15 +4,7 @@ using System.Threading;
 using Checkers.Game.Transmission;
 using static System.Net.Sockets.TcpListener;
 
-namespace Checkers.Game.Server;
-
-public interface IPlayers : IAsyncEnumerable<Player>
-{}
-
-public interface IConnection { }
-public interface IConnectionProvider { }
-public interface IPlayer { }
-public interface IAuthorisedPlayer : IPlayer {} 
+namespace Checkers.Game.Server.TCP;
 
 public sealed class TcpPlayerProvider : IPlayers
 {
@@ -23,7 +15,7 @@ public sealed class TcpPlayerProvider : IPlayers
         _listener.Start();
     }
 
-    public async IAsyncEnumerator<Player> GetAsyncEnumerator(CancellationToken cancellationToken = new())
+    public async IAsyncEnumerator<IPlayer> GetAsyncEnumerator(CancellationToken cancellationToken = new())
     {
         while (true)
         {

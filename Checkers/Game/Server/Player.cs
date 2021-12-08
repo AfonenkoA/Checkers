@@ -1,30 +1,19 @@
 ﻿using Checkers.Data.Entity;
 using Checkers.Game.Transmission;
 using System;
+using Checkers.Game.Model;
 using static Checkers.CommunicationProtocol;
+using static Checkers.Game.Server.IPlayer;
 using Action = Checkers.Game.Transmission.Action;
-
 namespace Checkers.Game.Server;
 
-public sealed class Player : IDisposable
+public sealed class Player : IPlayer, IDisposable
 {
     private readonly Connection _connection;
-    internal Credential Credential { get; }
+    private Credential Credential { get; }
 
-    public delegate void MoveActionHandler(int from, int to);
-    public delegate void EmoteActionHandler(int emotionId);
-    public delegate void SurrenderHandler();
 
-    public delegate void GameRequestHandler(Player sender);
-    public delegate void DisconnectActionHandler(Player sender);
-
-    public event MoveActionHandler? OnMove;
-    public event EmoteActionHandler? OnEmote;
-    public event SurrenderHandler? OnSurrender;
-    public event GameRequestHandler? OnGameRequest;
-    public event DisconnectActionHandler? OnDisconnect;
-
-    public Player(Connection connection, Credential credential)
+    internal Player(Connection connection, Credential credential)
     {
         _connection = connection;
         Credential = credential;
@@ -47,24 +36,17 @@ public sealed class Player : IDisposable
         }
     }
 
-    public void SendEvent(EmoteEvent e)
-    { }
+    public void Dispose() => _connection.Dispose();
 
-    public void SendEvent(MoveEvent e)
-    { }
+    public PlayerInfo PlayerData { get; }
+    public event MoveActionHandler? OnMove;
+    public event EmoteActionHandler? OnEmote;
+    public event SurrenderHandler? OnSurrender;
+    public event GameRequestHandler? OnGameRequest;
+    public event DisconnectActionHandler? OnDisconnect;
 
-    public void SendEvent(GameStartEvent e)
-    { }
-
-    public void SendEvent(GameEndEvent e)
-    { }
-
-    public void SendEvent(ConnectAcknowledgeEvent e)
-    { }
-
-
-    public void Dispose()
+    public void Send<T>(T obj) where T : IGameEvent
     {
-        _connection.Dispose();
+        throw new NotImplementedException();
     }
 }

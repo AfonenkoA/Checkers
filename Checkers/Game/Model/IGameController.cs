@@ -1,6 +1,4 @@
-﻿using Checkers.Game.Transmission;
-
-namespace Checkers.Game.Model;
+﻿namespace Checkers.Game.Model;
 
 public interface IGameController
 {
