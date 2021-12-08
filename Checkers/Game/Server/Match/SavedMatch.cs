@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Checkers.Game.Model;
+using Checkers.Game.Server.Repository;
 
-namespace Checkers.Game.Server;
+namespace Checkers.Game.Server.Match;
 
 internal sealed class SavedMatch : Match
 {
@@ -13,7 +14,7 @@ internal sealed class SavedMatch : Match
     private GameStartEvent? _gameStartEvent;
 
     private void Save(GameStartEvent e) => _gameStartEvent = e;
-    
+
     private void Save(GameEndEvent e)
     {
         if (_gameStartEvent == null) throw new Exception("Game save exception");
@@ -31,7 +32,6 @@ internal sealed class SavedMatch : Match
         });
         Dispose();
         Unsubscribe();
-        Subscribe();
     }
 
     private void Save(TurnEvent e) => _turns.Add(e);
@@ -59,8 +59,9 @@ internal sealed class SavedMatch : Match
     }
 
     internal SavedMatch(IGameRepository repository, IPlayer black, IPlayer white) :
-        base(repository,black,white)
+        base(repository, black, white)
     {
         _repository = repository;
+        Subscribe();
     }
 }

@@ -4,14 +4,16 @@ using System.Threading;
 using Checkers.Game.Transmission;
 using static System.Net.Sockets.TcpListener;
 
-namespace Checkers.Game.Server.TCP;
+namespace Checkers.Game.Server.Tcp;
 
-public sealed class TcpPlayerProvider : IPlayers
+public sealed class PlayerProvider : IPlayers
 {
     private readonly TcpListener _listener;
-    public TcpPlayerProvider(int port)
+    private readonly PlayerFactory _factory;
+    public PlayerProvider(PlayerFactory factory, int port)
     {
         _listener = Create(port);
+        _factory = factory;
         _listener.Start();
     }
 
@@ -26,8 +28,8 @@ public sealed class TcpPlayerProvider : IPlayers
                 connection.Dispose();
                 continue;
             }
-            Player player = new(connection,action.Credential);
-            yield return player;
+            await connection.Transmit(new ConnectAcknowledgeEvent());
+            yield return _factory.CreatePlayer(connection, action.Credential);
         }
     }
 }

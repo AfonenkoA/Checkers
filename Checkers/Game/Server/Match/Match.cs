@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq;
 using Checkers.Game.Model;
+using Checkers.Game.Server.Repository;
 using static System.DateTime;
 using static Checkers.Game.Model.Side;
 
-namespace Checkers.Game.Server;
+namespace Checkers.Game.Server.Match;
 
 internal class Match : InteroperableModel,IDisposable
 {

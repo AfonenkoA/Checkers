@@ -1,16 +1,20 @@
-﻿namespace Checkers.Game.Server;
+﻿using System.Threading.Tasks;
+using Checkers.Game.Server.Match;
+
+namespace Checkers.Game.Server;
 
 public sealed class Server
 {
     private readonly IPlayers _players;
     private readonly IMatchMaker _matchMaker;
-    public Server(IPlayers players, IMatchMaker matchMaker)
+
+    internal Server(IPlayers players, IMatchMaker matchMaker)
     {
         _players = players;
         _matchMaker = matchMaker;
     }
 
-    public async void Run()
+    public async Task Run()
     {
         await foreach (var player in _players)
         {
