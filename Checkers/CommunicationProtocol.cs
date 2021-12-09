@@ -6,7 +6,7 @@ namespace Checkers;
 
 public static class CommunicationProtocol
 {
-    public static readonly JsonSerializerOptions Options = new()
+    private static readonly JsonSerializerOptions Options = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)

@@ -1,10 +1,9 @@
-using Checkers.Data.Old;
-using Checkers.Data.Repository.MSSqlImplementation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using static Checkers.Data.GameDatabase;
 
 namespace WebService;
 
@@ -21,8 +20,7 @@ public sealed class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         var config = Configuration.GetSection("DatabaseConfig").Get<DatabaseConfig>();
-        services.AddSingleton(new RepositoryFactory(config.Current));
-        services.AddSingleton(new GameDatabase.Factory(config.Old));
+        services.AddSingleton(new Factory(config.Old));
         services.AddControllers();
     }
 

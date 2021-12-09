@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using Checkers.Game.Old;
+using Checkers.Game;
 using static OldWinFormsClient.Common;
 using EventArgs = System.EventArgs;
 

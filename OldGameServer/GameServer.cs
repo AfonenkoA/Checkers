@@ -4,12 +4,12 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using Checkers.Data.Old;
-using Checkers.Game.Old;
+using Checkers.Data;
+using Checkers.Game;
 using static Checkers.CommunicationProtocol;
-using EventArgs = Checkers.Game.Old.EventArgs;
-using Game = Checkers.Data.Old.Game;
-using User = Checkers.Data.Old.User;
+using EventArgs = Checkers.Game.EventArgs;
+using Game = Checkers.Data.Game;
+using User = Checkers.Data.User;
 
 namespace OldGameServer;
 
