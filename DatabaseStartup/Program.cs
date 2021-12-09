@@ -1,14 +1,14 @@
-﻿using Checkers.Data.Entity;
-using static System.Console;
-using static Checkers.Data.Repository.MSSqlImplementation.ItemRepository;
-using static Checkers.Data.Repository.MSSqlImplementation.Repository;
-using static Checkers.Data.Repository.MSSqlImplementation.UserRepository;
-using static Checkers.Data.Repository.MSSqlImplementation.ChatRepository;
-using static Checkers.Data.Repository.MSSqlImplementation.MessageRepository;
-using static Checkers.Data.Repository.MSSqlImplementation.ResourceRepository;
-using static Checkers.Data.Repository.MSSqlImplementation.ForumRepository;
-using static Checkers.Data.Repository.MSSqlImplementation.NewsRepository;
-using static Checkers.Data.Repository.MSSqlImplementation.StatisticsRepository;
+﻿using static System.Console;
+using Common.Entity;
+using static WebService.Repository.MSSqlImplementation.ChatRepository;
+using static WebService.Repository.MSSqlImplementation.ForumRepository;
+using static WebService.Repository.MSSqlImplementation.ItemRepository;
+using static WebService.Repository.MSSqlImplementation.MessageRepository;
+using static WebService.Repository.MSSqlImplementation.NewsRepository;
+using static WebService.Repository.MSSqlImplementation.Repository;
+using static WebService.Repository.MSSqlImplementation.ResourceRepository;
+using static WebService.Repository.MSSqlImplementation.StatisticsRepository;
+using static WebService.Repository.MSSqlImplementation.UserRepository;
 using static DatabaseStartup.CsvTable;
 
 Write(

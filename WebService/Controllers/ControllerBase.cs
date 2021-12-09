@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using static Checkers.CommunicationProtocol;
+using static Common.CommunicationProtocol;
 
 namespace WebService.Controllers;
 

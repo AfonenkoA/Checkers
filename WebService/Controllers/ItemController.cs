@@ -1,7 +1,7 @@
-﻿using Checkers.Data.Repository.Interface;
-using Checkers.Data.Repository.MSSqlImplementation;
-using Microsoft.AspNetCore.Mvc;
-using static Checkers.Api.WebImplementation.WebApiBase;
+﻿using Microsoft.AspNetCore.Mvc;
+using WebService.Repository.Interface;
+using WebService.Repository.MSSqlImplementation;
+using static ApiContract.Route;
 
 namespace WebService.Controllers;
 

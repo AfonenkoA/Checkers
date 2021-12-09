@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Checkers.Api.Interface;
-using Checkers.Api.WebImplementation;
-using Checkers.Data.Entity;
+using Api.Interface;
+using Api.WebImplementation;
+using Common.Entity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ApiTest;

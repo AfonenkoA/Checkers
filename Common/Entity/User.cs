@@ -1,0 +1,116 @@
+﻿using System.Text.Json.Serialization;
+using static Common.Entity.EntityValues;
+
+namespace Common.Entity;
+
+
+public sealed class UserCreationData
+{
+    public string Nick { get; init; } = InvalidString;
+    public string Login { get; init; } = InvalidString;
+    public string Password { get; init; } = InvalidString;
+    public string Email { get; init; } = InvalidString;
+}
+
+public enum UserType
+{
+    Player=1,
+    Editor,
+    Moderator,
+    Support,
+    Admin,
+    Invalid
+}
+
+public class BasicUserData
+{
+    public static readonly BasicUserData Invalid = new();
+
+    public int Id { get; init; } = InvalidId;
+    public string Nick { get; init; } = InvalidString;
+    public int SocialCredit { get; init; } = InvalidId;
+    public int PictureId { get; init; } = InvalidId;
+    public DateTime LastActivity { get; init; } = InvalidDate;
+    public int SelectedCheckersId { get; init; } = InvalidId;
+    public int SelectedAnimationId { get; init; } = InvalidId;
+    public UserType Type { get; init; } = UserType.Invalid;
+
+    [JsonIgnore]
+    public virtual bool IsValid => !(Id == InvalidId ||
+                             Nick == InvalidString ||
+                             SocialCredit == InvalidId ||
+                             PictureId == InvalidId ||
+                             LastActivity == InvalidDate ||
+                             SelectedCheckersId == InvalidId ||
+                             SelectedAnimationId == InvalidId ||
+                             Type == UserType.Invalid);
+}
+
+public class PublicUserData : BasicUserData
+{
+    public new static readonly PublicUserData Invalid = new(BasicUserData.Invalid);
+    public PublicUserData(BasicUserData data)
+    {
+        Id = data.Id;
+        Nick = data.Nick;
+        SocialCredit = data.SocialCredit;
+        PictureId = data.PictureId;
+        LastActivity = data.LastActivity;
+        SelectedAnimationId = data.SelectedAnimationId;
+        SelectedCheckersId = data.SelectedCheckersId;
+        Type = data.Type;
+    }
+    [JsonConstructor]
+    public PublicUserData(){}
+    public IEnumerable<int> Achievements { get; set; } = InvalidEnumerable;
+
+    [JsonIgnore] public override bool IsValid => base.IsValid;
+}
+
+
+public sealed class FriendUserData : PublicUserData
+{
+    public FriendUserData(PublicUserData data) : base(data)
+    {
+        Achievements = data.Achievements;
+    }
+    [JsonConstructor]
+    public FriendUserData() { }
+    public new static readonly FriendUserData Invalid = new(PublicUserData.Invalid);
+
+    public int ChatId { get; set; } = InvalidId;
+
+    [JsonIgnore] public override bool IsValid => base.IsValid && ChatId != InvalidId;
+}
+
+
+public sealed class User : BasicUserData
+{
+
+    public new static readonly User Invalid = new(BasicUserData.Invalid);
+
+    public User(BasicUserData data)
+    {
+        Id = data.Id;
+        Nick = data.Nick;
+        SocialCredit = data.SocialCredit;
+        PictureId = data.PictureId;
+        LastActivity = data.LastActivity;
+        SelectedAnimationId = data.SelectedAnimationId;
+        SelectedCheckersId = data.SelectedCheckersId;
+        Type = data.Type;
+    }
+
+    [JsonConstructor]
+    public User() { }
+
+    public IEnumerable<int> CheckerSkins { get; set; } = InvalidEnumerable;
+    public IEnumerable<int> Animations { get; set; } = InvalidEnumerable;
+ 
+    public IEnumerable<Friendship> Friends { get; set; } = Enumerable.Empty<Friendship>();
+
+    [JsonIgnore]
+    public override bool IsValid => base.IsValid &&
+                                    CheckerSkins.Any() &&
+                                    Animations.Any();
+}

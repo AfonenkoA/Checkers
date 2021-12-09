@@ -1,9 +1,9 @@
 ﻿using System;
-using Checkers.Data.Entity;
-using Checkers.Data.Repository.Interface;
-using Checkers.Data.Repository.MSSqlImplementation;
+using Common.Entity;
 using Microsoft.AspNetCore.Mvc;
-using static Checkers.Api.WebImplementation.WebApiBase;
+using WebService.Repository.Interface;
+using WebService.Repository.MSSqlImplementation;
+using static ApiContract.Route;
 
 namespace WebService.Controllers;
 
