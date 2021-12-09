@@ -1,4 +1,3 @@
-using Checkers.Data.Old;
 using Checkers.Data.Repository.MSSqlImplementation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,7 +21,6 @@ public sealed class Startup
     {
         var config = Configuration.GetSection("DatabaseConfig").Get<DatabaseConfig>();
         services.AddSingleton(new RepositoryFactory(config.Current));
-        services.AddSingleton(new GameDatabase.Factory(config.Old));
         services.AddControllers();
     }
 

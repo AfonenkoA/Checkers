@@ -5,17 +5,10 @@ VisualStudioVersion = 17.0.31521.260
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Checkers", "Checkers\Checkers.csproj", "{EB2E2264-F918-4D58-8172-1D7CFF36A024}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OldGameServer", "OldGameServer\OldGameServer.csproj", "{CAC5DA46-B5BE-42EA-A6BA-3DB6F58925C9}"
-	ProjectSection(ProjectDependencies) = postProject
-		{EB2E2264-F918-4D58-8172-1D7CFF36A024} = {EB2E2264-F918-4D58-8172-1D7CFF36A024}
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService", "WebService\WebService.csproj", "{3B5E0B81-1CF0-4558-BB31-A12512F78A9F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{EB2E2264-F918-4D58-8172-1D7CFF36A024} = {EB2E2264-F918-4D58-8172-1D7CFF36A024}
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OldWinFormsClient", "OldWinFormsClient\OldWinFormsClient.csproj", "{AE2C67C2-ACB6-47B5-8A28-7FE305BC5D37}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatabaseStartup", "DatabaseStartup\DatabaseStartup.csproj", "{CED91C5A-DA28-427F-991A-18A0C2694C26}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -32,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleTest", "ConsoleTest\
 		{EB2E2264-F918-4D58-8172-1D7CFF36A024} = {EB2E2264-F918-4D58-8172-1D7CFF36A024}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{7454CCAF-0303-471A-893A-07A4E7A5F87A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Server\Server.csproj", "{7454CCAF-0303-471A-893A-07A4E7A5F87A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{EB2E2264-F918-4D58-8172-1D7CFF36A024} = {EB2E2264-F918-4D58-8172-1D7CFF36A024}
 	EndProjectSection
@@ -47,18 +40,10 @@ Global
 		{EB2E2264-F918-4D58-8172-1D7CFF36A024}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB2E2264-F918-4D58-8172-1D7CFF36A024}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB2E2264-F918-4D58-8172-1D7CFF36A024}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CAC5DA46-B5BE-42EA-A6BA-3DB6F58925C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CAC5DA46-B5BE-42EA-A6BA-3DB6F58925C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CAC5DA46-B5BE-42EA-A6BA-3DB6F58925C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CAC5DA46-B5BE-42EA-A6BA-3DB6F58925C9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3B5E0B81-1CF0-4558-BB31-A12512F78A9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3B5E0B81-1CF0-4558-BB31-A12512F78A9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B5E0B81-1CF0-4558-BB31-A12512F78A9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B5E0B81-1CF0-4558-BB31-A12512F78A9F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AE2C67C2-ACB6-47B5-8A28-7FE305BC5D37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AE2C67C2-ACB6-47B5-8A28-7FE305BC5D37}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AE2C67C2-ACB6-47B5-8A28-7FE305BC5D37}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AE2C67C2-ACB6-47B5-8A28-7FE305BC5D37}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CED91C5A-DA28-427F-991A-18A0C2694C26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CED91C5A-DA28-427F-991A-18A0C2694C26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CED91C5A-DA28-427F-991A-18A0C2694C26}.Release|Any CPU.ActiveCfg = Release|Any CPU
