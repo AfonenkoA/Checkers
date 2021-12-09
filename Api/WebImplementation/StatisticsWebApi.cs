@@ -7,16 +7,16 @@ public sealed class StatisticsWebApi : WebApiBase, IAsyncStatisticsApi
 {
     public Task<(bool, IDictionary<int, PublicUserData>)> TryGetTopPlayers()
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public Task<(bool, IDictionary<int, PublicUserData>)> TryGetTopPlayers(Credential credential)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public string GetOnlineImageUrl()
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 }

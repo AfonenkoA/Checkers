@@ -17,10 +17,8 @@ public class ForumTest
     private static readonly List<PostInfo> Posts = new();
     private static readonly Credential Credential = new() { Login = "redactor", Password = "redactor" };
     private const string Title = "Grape Title";
-    private const string Abstract = "Grape Abstract";
     private const string Content = "Grape Content";
     private const string NewTitle = "New Grape Title";
-    private const string NewAbstract = "New Grape Abstract";
     private const string NewContent = "New Grape Content";
     private const string Ext = "jpg";
     private const string Image1 = @"Resource\Apple.jpg";

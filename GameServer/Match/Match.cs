@@ -1,7 +1,6 @@
 ﻿using GameModel;
 using GameServer.Repository;
 using static System.DateTime;
-using static GameModel.Side;
 
 namespace GameServer.Match;
 
@@ -9,9 +8,9 @@ internal class Match : InteroperableModel,IDisposable
 {
     private const string MoveExceptionMessage = "Move action out of turn";
 
-    protected readonly IPlayer _black;
-    protected readonly IPlayer _white;
-    private Side _turn = White;
+    protected readonly IPlayer Black;
+    protected readonly IPlayer White;
+    private Side _turn = Side.White;
     private readonly DateTime _startTime = Now;
     private readonly IEmotionRepository _repository;
 
@@ -45,8 +44,8 @@ internal class Match : InteroperableModel,IDisposable
 
     internal Match(IEmotionRepository repository, IPlayer black, IPlayer white)
     {
-        _black = black;
-        _white = white;
+        Black = black;
+        White = white;
         _repository = repository;
         Subscribe(black);
         Subscribe(white);
@@ -55,17 +54,17 @@ internal class Match : InteroperableModel,IDisposable
 
     internal void Run()
     {
-        var blackPlayer = _black.PlayerData;
-        var whitePlayer = _white.PlayerData;
+        var blackPlayer = Black.PlayerData;
+        var whitePlayer = White.PlayerData;
         var start = new GameStartEvent
         {
             Start = _startTime,
             Black = blackPlayer,
             White = whitePlayer
         };
-        _black.Send(new YourSideEvent {Side = Black,Time = Time});
-        _white.Send(new YourSideEvent {Side = White,Time = Time});
-        SetTurn(White);
+        Black.Send(new YourSideEvent {Side = Side.Black,Time = Time});
+        White.Send(new YourSideEvent {Side = Side.White,Time = Time});
+        SetTurn(Side.White);
         Start(start);
     }
 
@@ -112,16 +111,16 @@ internal class Match : InteroperableModel,IDisposable
     {
         _turn = side;
         TurnEvent e;
-        if (side == White)
+        if (side == Side.White)
             e = new TurnEvent
             {
-                Side = White,
+                Side = Side.White,
                 Time = Time
             };
         else
             e = new TurnEvent
             {
-                Side = Black,
+                Side = Side.Black,
                 Time = Time
             };
         Turn(e);
@@ -129,7 +128,7 @@ internal class Match : InteroperableModel,IDisposable
 
     public void Dispose()
     {
-        Unsubscribe(_black);
-        Unsubscribe(_white);
+        Unsubscribe(Black);
+        Unsubscribe(White);
     }
 }

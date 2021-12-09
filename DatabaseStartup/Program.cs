@@ -1318,7 +1318,7 @@ namespace DatabaseStartup
             }
         }
 
-        private class DirectedMessageArgs : MessageArgs
+        private sealed class DirectedMessageArgs : MessageArgs
         {
             internal readonly string Direction;
             internal DirectedMessageArgs(string line) : base(line)
@@ -1332,7 +1332,6 @@ namespace DatabaseStartup
         private sealed class FriendshipArgs
         {
             internal readonly string Login;
-            internal readonly string Password;
             internal readonly string Friend;
 
             internal FriendshipArgs(string line)
@@ -1340,8 +1339,7 @@ namespace DatabaseStartup
                 var strings = line.Split(";") ??
                               throw LineSplitException;
                 Login = SqlString(strings[0]);
-                Password = SqlString(strings[1]);
-                Friend = SqlString(strings[2]);
+                Friend = SqlString(strings[1]);
             }
 
         }
