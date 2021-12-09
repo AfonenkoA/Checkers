@@ -5,6 +5,7 @@ namespace Common.Entity;
 
 public sealed class Credential
 {
+    public static readonly Credential Invalid = new();
     public string Login { get; set; } = InvalidString;
     public string Password { get; set; } = InvalidString;
 

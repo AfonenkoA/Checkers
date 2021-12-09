@@ -94,6 +94,8 @@ internal static class SqlExtensions
 
     public static LootBox GetLootBox(this SqlDataReader reader) => new(reader.GetSoldItem());
 
+    public static Emotion GetEmotion(this SqlDataReader reader) => new(reader.GetNamedItem());
+
     internal static int GetReturn(this SqlCommand command) => (int)command.Parameters[ReturnValue].Value;
 
     internal static SqlParameter LoginParameter(string login) =>

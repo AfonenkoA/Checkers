@@ -26,7 +26,6 @@ public sealed class ItemRepository : Repository, IItemRepository
 
     public const string DetailVar = "@detail";
     public const string PriceVar = "@price";
-    public const string PathVar = "@path";
     public const string NameVar = "@name";
 
 

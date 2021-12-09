@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ApiContract\ApiContract.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\GameModel\GameModel.csproj" />
   </ItemGroup>
 
 </Project>

@@ -89,11 +89,12 @@ public sealed class UserRepository : Repository, IUserRepository
     public const string SelectUserAchievementProc = "[SP_SelectUserAchievement]";
     public const string SelectUserCheckersSkinProc = "[SP_SelectUserCheckersSkin]";
     public const string SelectUserAnimationProc = "[SP_SelectUserAnimation]";
+    public const string SelectUserEmotionProc = "[SP_SelectUserEmotion]";
 
     public const string UserGetAvailableAnimationProc = "[SP_GetAvailableAnimation]";
     public const string UserGetAvailableCheckersSkinProc = "[SP_GetAvailableCheckersSkin]";
     public const string UserGetAvailableLootBoxProc = "[SP_GetAvailableLootBox]";
-
+    
     public const int ValidAccess = 1;
     public const int InvalidAccess = -1;
 
@@ -102,25 +103,51 @@ public sealed class UserRepository : Repository, IUserRepository
 
     internal UserRepository(SqlConnection connection) : base(connection) { }
 
-    private IEnumerable<int> GetUserI(int id, string name)
+
+
+    private IEnumerable<Achievement> GetUserAchievements(int id)
     {
-        using var command = CreateProcedure(name);
+        using var command = CreateProcedure(SelectUserAchievementProc);
         command.Parameters.Add(IdParameter(id));
-        List<int> list = new();
+        List<Achievement> list = new();
         using var reader = command.ExecuteReader();
         while (reader.Read())
-            list.Add(reader.GetFieldValue<int>(Id));
+            list.Add(reader.GetAchievement());
         return list;
     }
 
-    private IEnumerable<int> GetUserAchievements(int id) =>
-        GetUserI(id, SelectUserAchievementProc);
+    private IEnumerable<Animation> GetUserAnimations(int id)
+    {
+        using var command = CreateProcedure(SelectUserAnimationProc);
+        command.Parameters.Add(IdParameter(id));
+        List<Animation> list = new();
+        using var reader = command.ExecuteReader();
+        while (reader.Read())
+            list.Add(reader.GetAnimation());
+        return list;
+    }
 
-    private IEnumerable<int> GetUserAnimations(int id) =>
-        GetUserI(id, SelectUserAnimationProc);
+    private IEnumerable<CheckersSkin> GetUserCheckerSkins(int id)
+    {
+        using var command = CreateProcedure(SelectUserAnimationProc);
+        command.Parameters.Add(IdParameter(id));
+        List<CheckersSkin> list = new();
+        using var reader = command.ExecuteReader();
+        while (reader.Read())
+            list.Add(reader.GetCheckersSkin());
+        return list;
+    }
 
-    private IEnumerable<int> GetUserCheckerSkins(int id) =>
-        GetUserI(id, SelectUserCheckersSkinProc);
+    private IEnumerable<Emotion> GetUserEmotions(int id)
+    {
+        using var command = CreateProcedure(SelectUserAnimationProc);
+        command.Parameters.Add(IdParameter(id));
+        List<Emotion> list = new();
+        using var reader = command.ExecuteReader();
+        while (reader.Read())
+            list.Add(reader.GetEmotion());
+        return list;
+    }
 
 
     public bool CreateUser(UserCreationData user)

@@ -4,9 +4,7 @@ using GameServer.Repository;
 using GameTransmission;
 using static Common.CommunicationProtocol;
 using static GameServer.IPlayer;
-using Action = GameTransmission.Action;
-using EmoteAction = GameTransmission.EmoteAction;
-using MoveAction = GameTransmission.MoveAction;
+using static GameTransmission.Message;
 using SurrenderAction = GameModel.SurrenderAction;
 
 namespace GameServer.Tcp;
@@ -31,9 +29,9 @@ public sealed class Player : IPlayer, IDisposable
         {
             var json = await _connection.ReceiveString();
             if (json == null) continue;
-            var action = Deserialize<Action>(json);
-            if (action == null) continue;
-            switch (action.Type)
+            var message = FromString(json);
+            if (message == null) continue;
+            switch (message.Type)
             {
                 case nameof(GameRequestAction):
                     OnGameRequest?.Invoke(this);
@@ -43,9 +41,8 @@ public sealed class Player : IPlayer, IDisposable
                     break;
                 case nameof(MoveAction):
                     {
-                        var move = Deserialize<MoveAction>(json);
-                        if (move == null) break;
-                        OnMove?.Invoke(move.Move);
+                        var move = message.GetAs<MoveAction>();
+                        OnMove?.Invoke(move);
                         break;
                     }
                 case nameof(SurrenderAction):
@@ -57,9 +54,8 @@ public sealed class Player : IPlayer, IDisposable
                     }
                 case nameof(EmoteAction):
                     {
-                        var emote = Deserialize<EmoteAction>(json);
-                        if (emote == null) break;
-                        OnEmote?.Invoke(emote.Emote);
+                        var emote = message.GetAs<EmoteAction>();
+                        OnEmote?.Invoke(emote);
                         break;
                     }
             }

@@ -19,6 +19,7 @@ public sealed class ResourceRepository : Repository, IResourceRepository
     public const string ResourceExtensionVar = "@resource_extension";
     public const string ResourceBytesVar = "@resource_bytes";
     public const string ResourceIdVar = "@resource_id";
+    public const string PathVar = "@path";
 
     public const string CreateResourceProc= "[SP_CreateResource]";
     public const string SelectResourceProc = "[SP_SelectResource]";

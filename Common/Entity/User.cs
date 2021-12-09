@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using static System.Linq.Enumerable;
 using static Common.Entity.EntityValues;
 
 namespace Common.Entity;
@@ -26,23 +27,23 @@ public class BasicUserData
 {
     public static readonly BasicUserData Invalid = new();
 
-    public int Id { get; init; } = InvalidId;
+    public int Id { get; init; } = InvalidInt;
     public string Nick { get; init; } = InvalidString;
-    public int SocialCredit { get; init; } = InvalidId;
-    public int PictureId { get; init; } = InvalidId;
+    public int SocialCredit { get; init; } = InvalidInt;
+    public int PictureId { get; init; } = InvalidInt;
     public DateTime LastActivity { get; init; } = InvalidDate;
-    public int SelectedCheckersId { get; init; } = InvalidId;
-    public int SelectedAnimationId { get; init; } = InvalidId;
+    public int SelectedCheckersId { get; init; } = InvalidInt;
+    public int SelectedAnimationId { get; init; } = InvalidInt;
     public UserType Type { get; init; } = UserType.Invalid;
 
     [JsonIgnore]
-    public virtual bool IsValid => !(Id == InvalidId ||
+    public virtual bool IsValid => !(Id == InvalidInt ||
                              Nick == InvalidString ||
-                             SocialCredit == InvalidId ||
-                             PictureId == InvalidId ||
+                             SocialCredit == InvalidInt ||
+                             PictureId == InvalidInt ||
                              LastActivity == InvalidDate ||
-                             SelectedCheckersId == InvalidId ||
-                             SelectedAnimationId == InvalidId ||
+                             SelectedCheckersId == InvalidInt ||
+                             SelectedAnimationId == InvalidInt ||
                              Type == UserType.Invalid);
 }
 
@@ -62,7 +63,7 @@ public class PublicUserData : BasicUserData
     }
     [JsonConstructor]
     public PublicUserData(){}
-    public IEnumerable<int> Achievements { get; set; } = InvalidEnumerable;
+    public IEnumerable<Achievement> Achievements { get; set; } = Empty<Achievement>();
 
     [JsonIgnore] public override bool IsValid => base.IsValid;
 }
@@ -78,9 +79,9 @@ public sealed class FriendUserData : PublicUserData
     public FriendUserData() { }
     public new static readonly FriendUserData Invalid = new(PublicUserData.Invalid);
 
-    public int ChatId { get; set; } = InvalidId;
+    public int ChatId { get; set; } = InvalidInt;
 
-    [JsonIgnore] public override bool IsValid => base.IsValid && ChatId != InvalidId;
+    [JsonIgnore] public override bool IsValid => base.IsValid && ChatId != InvalidInt;
 }
 
 
@@ -104,10 +105,10 @@ public sealed class User : BasicUserData
     [JsonConstructor]
     public User() { }
 
-    public IEnumerable<int> CheckerSkins { get; set; } = InvalidEnumerable;
-    public IEnumerable<int> Animations { get; set; } = InvalidEnumerable;
- 
-    public IEnumerable<Friendship> Friends { get; set; } = Enumerable.Empty<Friendship>();
+    public IEnumerable<CheckersSkin> CheckerSkins { get; set; } = Empty<CheckersSkin>();
+    public IEnumerable<Animation> Animations { get; set; } = Empty<Animation>();
+    public IEnumerable<Emotion> Emotions { get; set; } = Empty<Emotion>();
+    public IEnumerable<Friendship> Friends { get; set; } = Empty<Friendship>();
 
     [JsonIgnore]
     public override bool IsValid => base.IsValid &&

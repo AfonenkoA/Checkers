@@ -6,27 +6,27 @@ namespace Common.Entity;
 public sealed class ArticleCreationData
 {
     public string Content { get; set; } = InvalidString;
-    public int PictureId { get; set; } = InvalidId;
+    public int PictureId { get; set; } = InvalidInt;
     public string Title { get; set; } = InvalidString;
     public string Abstract { get; set; } = InvalidString;
 
     [JsonIgnore]
     public bool IsValid => !(Content == InvalidString ||
-                             PictureId == InvalidId ||
+                             PictureId == InvalidInt ||
                              Title == InvalidString ||
                              Abstract == InvalidString);
 }
 
 public class ArticleInfo
 {
-    public int Id { get; init; } = InvalidId;
-    public int PictureId { get; init; } = InvalidId;
+    public int Id { get; init; } = InvalidInt;
+    public int PictureId { get; init; } = InvalidInt;
     public string Title { get; init; } = InvalidString;
     public string Abstract { get; init; } = InvalidString;
 
     [JsonIgnore]
-    public virtual bool IsValid => !(Id == InvalidId ||
-                             PictureId == InvalidId ||
+    public virtual bool IsValid => !(Id == InvalidInt ||
+                             PictureId == InvalidInt ||
                              Title == InvalidString ||
                              Abstract == InvalidString);
 
@@ -46,13 +46,13 @@ public sealed class Article : ArticleInfo
     [JsonConstructor]
     public Article(){}
     public string Content { get; init; } = InvalidString;
-    public int PostId { get; init; } = InvalidId;
+    public int PostId { get; init; } = InvalidInt;
     public DateTime Created { get; init; } = InvalidDate;
     public new static readonly Article Invalid = new(ArticleInfo.Invalid);
 
     [JsonIgnore]
     public override bool IsValid => base.IsValid &&
                                     !(Content == InvalidString ||
-                                      PostId == InvalidId ||
+                                      PostId == InvalidInt ||
                                       Created == InvalidDate);
 }

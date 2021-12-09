@@ -6,12 +6,12 @@ namespace Common.Entity;
 public class PostCreationData
 {
     public string Content { get; init; } = InvalidString;
-    public int PictureId { get; init; } = InvalidId;
+    public int PictureId { get; init; } = InvalidInt;
     public string Title { get; init; } = InvalidString;
 
     [JsonIgnore]
     public virtual bool IsValid => !(Content == InvalidString ||
-                                     PictureId == InvalidId ||
+                                     PictureId == InvalidInt ||
                                      Title == InvalidString);
 }
 
@@ -19,8 +19,8 @@ public class PostInfo : PostCreationData
 {
     public static readonly PostInfo Invalid = new();
 
-    public int Id { get; init; } = InvalidId;
-    [JsonIgnore] public override bool IsValid => base.IsValid && Id != InvalidId;
+    public int Id { get; init; } = InvalidInt;
+    [JsonIgnore] public override bool IsValid => base.IsValid && Id != InvalidInt;
 }
 
 public sealed class Post : PostInfo
@@ -35,12 +35,12 @@ public sealed class Post : PostInfo
     }
     [JsonConstructor]
     public Post(){}
-    public int AuthorId { get; init; } = InvalidId;
-    public int ChatId { get; init; } = InvalidId;
+    public int AuthorId { get; init; } = InvalidInt;
+    public int ChatId { get; init; } = InvalidInt;
     public DateTime Created { get; init; } = InvalidDate;
 
     [JsonIgnore]
-    public override bool IsValid => base.IsValid && !(AuthorId == InvalidId ||
-                                                      ChatId == InvalidId ||
+    public override bool IsValid => base.IsValid && !(AuthorId == InvalidInt ||
+                                                      ChatId == InvalidInt ||
                                                       Created == InvalidDate);
 }

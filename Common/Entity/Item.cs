@@ -7,21 +7,21 @@ public sealed class ResourceInfo
 {
     public static readonly ResourceInfo Invalid = new();
 
-    public int Id { get; init; } = InvalidId;
+    public int Id { get; init; } = InvalidInt;
     public string Extension { get; init; } = InvalidString;
 
     [JsonIgnore]
-    public bool IsValid => !(Id == InvalidId ||
+    public bool IsValid => !(Id == InvalidInt ||
                              Extension == InvalidString);
 }
 
 public class Item
 {
     public static readonly Item Invalid = new();
-    public int Id { get; init; } = InvalidId;
+    public int Id { get; init; } = InvalidInt;
     public ResourceInfo Resource { get; init; } = ResourceInfo.Invalid;
 
-    [JsonIgnore] public virtual bool IsValid => Id != InvalidId && Resource.IsValid;
+    [JsonIgnore] public virtual bool IsValid => Id != InvalidInt && Resource.IsValid;
 
 }
 
@@ -61,7 +61,7 @@ public class DetailedItem : NamedItem
 public class SoldItem : DetailedItem
 {
     public new static readonly SoldItem Invalid = new();
-    public int Price { get; init; } = InvalidId;
+    public int Price { get; init; } = InvalidInt;
 
     public SoldItem(DetailedItem item) : base(item)
     {
@@ -73,12 +73,12 @@ public class SoldItem : DetailedItem
     public SoldItem(){}
 
     [JsonIgnore] 
-    public override bool IsValid => base.IsValid && Price!=InvalidId;
+    public override bool IsValid => base.IsValid && Price!=InvalidInt;
 }
 
 public sealed class Achievement : DetailedItem
 {
-    public new static Achievement Invalid = new();
+    public new static readonly Achievement Invalid = new();
     public Achievement(DetailedItem item) : base(item)
     {
         Name = item.Name;
@@ -91,7 +91,7 @@ public sealed class Achievement : DetailedItem
 
 public sealed class Picture : NamedItem
 {
-    public new static Picture Invalid = new();
+    public new static readonly Picture Invalid = new();
     public Picture(NamedItem item) : base(item)
     {
         Name = item.Name;
@@ -102,7 +102,7 @@ public sealed class Picture : NamedItem
 
 public sealed class Animation : SoldItem
 {
-    public new static Animation Invalid = new();
+    public new static readonly Animation Invalid = new();
     public Animation(SoldItem item) : base(item)
     {
         Price = item.Price;
@@ -113,7 +113,7 @@ public sealed class Animation : SoldItem
 
 public sealed class CheckersSkin : SoldItem
 {
-    public new static CheckersSkin Invalid = new();
+    public new static readonly CheckersSkin Invalid = new();
     public CheckersSkin(SoldItem item) : base(item)
     {
         Price = item.Price;
@@ -124,7 +124,7 @@ public sealed class CheckersSkin : SoldItem
 
 public sealed class LootBox : SoldItem
 {
-    public new static LootBox Invalid = new();
+    public new static readonly LootBox Invalid = new();
     public LootBox(SoldItem item) : base(item)
     {
         Price = item.Price;
@@ -135,7 +135,7 @@ public sealed class LootBox : SoldItem
 
 public sealed class Emotion : NamedItem
 {
-    public new static Emotion Invalid = new();
+    public new static readonly Emotion Invalid = new();
     public Emotion(NamedItem item) : base(item)
     {
         Name = item.Name;
