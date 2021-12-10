@@ -35,4 +35,17 @@ BEGIN
     FROM {Schema}.{PictureTable} AS P
     JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=P.{ResourceId}
 END";
+
+    internal static readonly string Create = $@"
+GO
+CREATE PROCEDURE {CreatePictureProc}
+{NameVar} {UniqueStringType},
+{PathVar} {StringType}
+AS
+BEGIN
+    DECLARE {IdVar} INT
+    EXEC {IdVar} = {CreateResourceFromFileProc} {PathVar}
+    INSERT INTO {Schema}.{PictureTable}({ResourceId},{Name}) 
+    VALUES ({IdVar},{NameVar});
+END";
 }

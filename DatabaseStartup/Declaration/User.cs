@@ -1,8 +1,9 @@
 ﻿using static Common.Entity.UserType;
-using static DatabaseStartup.CsvTable;
+using static DatabaseStartup.Declaration.Markup;
 using static WebService.Repository.MSSqlImplementation.Repository;
 using static WebService.Repository.MSSqlImplementation.UserRepository;
 using static WebService.Repository.MSSqlImplementation.ItemRepository;
+using static WebService.Repository.MSSqlImplementation.StatisticsRepository;
 
 namespace DatabaseStartup.Declaration;
 
@@ -105,5 +106,95 @@ BEGIN
         RETURN {IdVar};
     ELSE
         RETURN {InvalidId};
+END";
+
+    internal static readonly string Select = $@"
+GO
+CREATE PROCEDURE {SelectUserProc} {IdVar} INT
+AS
+BEGIN
+    SELECT * FROM {Schema}.{UserTable} WHERE {Id}={IdVar}
+END";
+
+    internal static readonly string UpdateNick = $@"
+GO  
+CREATE PROCEDURE {UpdateUserNickProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {NickVar} {StringType}
+AS
+BEGIN
+    EXEC {UpdateUserActivityProc} {LoginVar},{PasswordVar};
+    UPDATE {Schema}.{UserTable} SET {Nick}={NickVar} WHERE {UserAuthCondition};
+END";
+
+    internal static readonly string UpdateLogin = $@"
+GO  
+CREATE PROCEDURE {UpdateUserLoginProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {NewLoginVar} {UniqueStringType}
+AS
+BEGIN
+    EXEC {UpdateUserActivityProc} {LoginVar},{PasswordVar};
+    UPDATE {Schema}.{UserTable} SET {Login}={NewLoginVar} WHERE {UserAuthCondition};
+END";
+
+    internal static readonly string UpdatePassword = $@"
+GO  
+CREATE PROCEDURE {UpdateUserPasswordProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {NewPasswordVar} {StringType}
+AS
+BEGIN
+    EXEC {UpdateUserActivityProc} {LoginVar},{PasswordVar};
+    UPDATE {Schema}.{UserTable} SET {Password}={NewPasswordVar} WHERE {UserAuthCondition};
+END";
+
+    internal static readonly string UpdateEmail = $@"
+GO  
+CREATE PROCEDURE {UpdateUserEmailProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {EmailVar} {StringType}
+AS
+BEGIN
+    EXEC {UpdateUserActivityProc} {LoginVar},{PasswordVar};
+    UPDATE {Schema}.{UserTable} SET {Email}={EmailVar} WHERE {UserAuthCondition};
+END";
+
+    internal static readonly string UpdatePicture = $@"
+GO
+CREATE PROCEDURE {UpdateUserPictureProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
+AS
+BEGIN
+    DECLARE {UserIdVar} INT
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar}
+    UPDATE {Schema}.{UserTable} SET {PictureId} = {IdVar} WHERE {Id}={UserIdVar}
+END";
+
+    public static readonly string SelectByNick = $@"
+GO
+CREATE PROCEDURE {SelectUserByNickProc} {NickVar} {StringType}
+AS
+BEGIN
+    SELECT * FROM {Schema}.{UserTable} WHERE {Nick} LIKE {NickVar}
+END";
+
+    internal static readonly string SelectTop = $@"
+GO 
+CREATE PROCEDURE {SelectTopPlayersProc}
+AS
+BEGIN
+    WITH {OrderedPlayers} AS
+    (SELECT ROW_NUMBER() OVER(ORDER BY {SocialCredit} DESC) AS {StatisticPosition}, U.*
+    FROM {Schema}.{UserTable} AS U) 
+    SELECT * FROM {OrderedPlayers}
+    WHERE {StatisticPosition} < 2
+    ORDER BY {SocialCredit} DESC;
+END";
+
+    internal static readonly string SelectTopAuth = $@"
+GO
+CREATE PROCEDURE {SelectTopPlayersAuthProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
+AS
+BEGIN
+    DECLARE {IdVar} INT
+    EXEC {IdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar};
+    WITH {OrderedPlayers} AS
+    (SELECT ROW_NUMBER() OVER(ORDER BY {SocialCredit} DESC) AS {StatisticPosition}, U.*
+    FROM {Schema}.{UserTable} AS U)
+    SELECT * FROM {OrderedPlayers}
+    WHERE {StatisticPosition} < 2 OR {Id}={IdVar}
+    ORDER BY {SocialCredit} DESC;
 END";
 }

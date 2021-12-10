@@ -35,4 +35,40 @@ BEGIN
     IF {IdVar} IN (SELECT {CheckersSkinId} FROM {Schema}.{UserCheckersSkinTable} WHERE {UserId}={UserIdVar})
         UPDATE {Schema}.{UserTable} SET {CheckersSkinId}={IdVar} WHERE {UserAuthCondition};
 END";
+
+    public static readonly string Add = $@"
+GO
+CREATE PROCEDURE {UserAddCheckersSkinProc} {UserIdVar} INT, {IdVar} INT
+AS
+BEGIN
+    INSERT INTO {UserCheckersSkinTable}({UserId},{CheckersSkinId}) VALUES({UserIdVar},{IdVar}) 
+END";
+
+    public static readonly string Buy = $@"
+GO
+CREATE PROCEDURE {UserBuyCheckersSkinProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
+AS
+BEGIN
+    DECLARE {UserIdVar} INT, {PriceVar} INT, {CurrencyVar} INT
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar},{PasswordVar}
+    SET {PriceVar} = (SELECT {Price} FROM {Schema}.{CheckersSkinTable} WHERE {Id}={IdVar});
+    SET {CurrencyVar} = (SELECT {Currency} FROM {Schema}.{UserTable} WHERE {Id}={UserIdVar});
+    IF {CurrencyVar}>={PriceVar}
+        BEGIN
+        EXEC {UserAddCheckersSkinProc} {UserIdVar}, {IdVar}
+        UPDATE {Schema}.{UserTable} SET {Currency} = ({CurrencyVar}-{PriceVar}) WHERE {Id}={UserIdVar};
+        END
+END";
+
+    public static readonly string GetAvailable = $@"
+GO
+CREATE PROCEDURE {UserGetAvailableCheckersSkinProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
+AS
+BEGIN
+    DECLARE {UserIdVar} INT
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar},{PasswordVar}
+    SELECT {Id} FROM {Schema}.{CheckersSkinTable} 
+    EXCEPT
+    SELECT {CheckersSkinId} FROM {Schema}.{UserCheckersSkinTable}
+END";
 }

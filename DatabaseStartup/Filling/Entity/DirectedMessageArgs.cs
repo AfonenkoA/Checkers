@@ -1,4 +1,6 @@
-﻿namespace DatabaseStartup.Entity;
+﻿using static DatabaseStartup.Declaration.Markup;
+
+namespace DatabaseStartup.Filling.Entity;
 
 public sealed class DirectedMessageArgs : MessageArgs
 {
@@ -7,6 +9,6 @@ public sealed class DirectedMessageArgs : MessageArgs
     {
         var strings = line.Split(";") ??
                       throw CsvTable.LineSplitException;
-        Direction = CsvTable.SqlString(strings[3]);
+        Direction = SqlString(strings[3]);
     }
 }

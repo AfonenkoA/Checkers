@@ -35,4 +35,42 @@ BEGIN
     IF {IdVar} IN (SELECT {AnimationId} FROM {Schema}.{UserAnimationTable} WHERE {UserId}={UserIdVar})
         UPDATE {Schema}.{UserTable} SET {AnimationId}={IdVar} WHERE {UserAuthCondition};
 END";
+
+    public static readonly string Add = $@"
+GO
+USE Checkers;
+GO
+CREATE PROCEDURE {UserAddAnimationProc} {UserIdVar} INT, {IdVar} INT
+AS
+BEGIN
+    INSERT INTO {UserAnimationTable}({UserId},{AnimationId}) VALUES({UserIdVar},{IdVar}) 
+END";
+
+    internal static readonly string Buy = $@"
+GO
+CREATE PROCEDURE {UserBuyAnimationProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
+AS
+BEGIN
+    DECLARE {UserIdVar} INT, {PriceVar} INT, {CurrencyVar} INT
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar},{PasswordVar}
+    SET {PriceVar} = (SELECT {Price} FROM {Schema}.{AnimationTable} WHERE {Id}={IdVar});
+    SET {CurrencyVar} = (SELECT {Currency} FROM {Schema}.{UserTable} WHERE {Id}={UserIdVar});
+    IF {CurrencyVar}>={PriceVar}
+        BEGIN
+        EXEC {UserAddAnimationProc} {UserIdVar}, {IdVar}
+        UPDATE {Schema}.{UserTable} SET {Currency} = ({CurrencyVar}-{PriceVar}) WHERE {Id}={UserIdVar};
+        END
+END";
+
+    internal static readonly string GetAvailable = $@"
+GO
+CREATE PROCEDURE {UserGetAvailableAnimationProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
+AS
+BEGIN
+    DECLARE {UserIdVar} INT
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar},{PasswordVar}
+    SELECT {Id} FROM {Schema}.{AnimationTable} 
+    EXCEPT
+    SELECT {AnimationId} FROM {Schema}.{UserAnimationTable}
+END";
 }

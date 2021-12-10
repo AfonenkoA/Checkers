@@ -24,5 +24,6 @@ BEGIN
     WHERE {Id}={IdVar}
 END";
 
-
+    public static readonly string Add = @$"
+";
 }

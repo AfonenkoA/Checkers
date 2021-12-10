@@ -1,9 +1,9 @@
 ﻿using static Common.Entity.ChatType;
 using static Common.Entity.FriendshipState;
-using static DatabaseStartup.CsvTable;
 using static WebService.Repository.MSSqlImplementation.Repository;
 using static WebService.Repository.MSSqlImplementation.UserRepository;
 using static WebService.Repository.MSSqlImplementation.ChatRepository;
+using static DatabaseStartup.Declaration.Markup;
 
 namespace DatabaseStartup.Declaration;
 
@@ -50,5 +50,21 @@ BEGIN
     INSERT INTO {Schema}.{FriendshipTable}({User1Id},{User2Id},{ChatId},{FriendshipStateId})
     VALUES ({User1IdVar},{User2IdVar},{ChatIdVar},{IdVar}),({User2IdVar},{User1IdVar},{ChatIdVar},{IdVar});
     COMMIT;
+END";
+
+    internal static readonly string SelectChat = $@"
+GO
+CREATE PROCEDURE {SelectFriendChatIdProc} {User1IdVar} INT, {User2IdVar} INT
+AS
+BEGIN
+    RETURN (SELECT {ChatId} FROM {Schema}.{FriendshipTable} WHERE {User1Id} = {User1IdVar} AND {User2Id} = {User2IdVar})
+END";
+
+    internal static readonly string Select = $@"
+GO
+CREATE PROCEDURE {SelectUserFriendshipProc} {IdVar} INT
+AS
+BEGIN
+    SELECT * FROM {Schema}.{FriendshipTable} WHERE {User1Id} = {IdVar}
 END";
 }

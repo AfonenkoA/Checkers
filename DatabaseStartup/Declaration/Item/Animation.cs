@@ -37,4 +37,19 @@ BEGIN
     FROM {Schema}.{AnimationTable} AS A
     JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=A.{ResourceId}
 END";
+
+    public static readonly string Create = $@"
+GO
+CREATE PROCEDURE {CreateAnimationProc}
+{NameVar} {UniqueStringType},
+{PathVar} {StringType},
+{DetailVar} {StringType},
+{PriceVar} INT
+AS
+BEGIN
+    DECLARE {IdVar} INT
+    EXEC {IdVar} = {CreateResourceFromFileProc} {PathVar}
+    INSERT INTO {Schema}.{AnimationTable}({ResourceId},{Name},{Detail},{Price}) 
+    VALUES({IdVar},{NameVar},{DetailVar},{PriceVar});
+END";
 }

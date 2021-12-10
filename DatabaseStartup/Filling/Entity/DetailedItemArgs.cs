@@ -1,4 +1,6 @@
-﻿namespace DatabaseStartup.Entity;
+﻿using static DatabaseStartup.Declaration.Markup;
+
+namespace DatabaseStartup.Filling.Entity;
 
 public class DetailedItemArgs : NamedItemArgs
 {
@@ -8,7 +10,7 @@ public class DetailedItemArgs : NamedItemArgs
         var strings = line.Split(";") ??
                       throw CsvTable.LineSplitException;
 
-        _detail = CsvTable.SqlString(strings[2]);
+        _detail = SqlString(strings[2]);
     }
 
     public override string ToString() => base.ToString() + $", {_detail}";

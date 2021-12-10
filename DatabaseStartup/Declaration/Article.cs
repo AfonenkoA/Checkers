@@ -1,10 +1,13 @@
-﻿using static Common.Entity.UserType;
-using static DatabaseStartup.CsvTable;
+﻿using Common.Entity;
+using DatabaseStartup.Filling;
+using static Common.Entity.UserType;
 using static WebService.Repository.MSSqlImplementation.NewsRepository;
 using static WebService.Repository.MSSqlImplementation.Repository;
 using static WebService.Repository.MSSqlImplementation.UserRepository;
 using static WebService.Repository.MSSqlImplementation.ForumRepository;
 using static WebService.Repository.MSSqlImplementation.ResourceRepository;
+using static DatabaseStartup.Declaration.Markup;
+using static DatabaseStartup.Declaration.Markup;
 
 namespace DatabaseStartup.Declaration;
 
@@ -56,5 +59,87 @@ BEGIN
         RETURN {InvalidId};
         END
     
+END";
+
+    public static readonly string Select = $@"
+GO
+CREATE PROCEDURE {SelectArticleProc} {IdVar} INT
+AS
+BEGIN
+    SELECT * FROM {Schema}.{ArticleTable} WHERE {Id}={IdVar};
+END";
+
+    public static readonly string SelectNews = $@"
+GO
+CREATE PROCEDURE {SelectNewsProc}
+AS
+BEGIN
+    SELECT * FROM {Schema}.{ArticleTable};
+END";
+
+    internal static readonly string UpdateTitle = $@"
+GO
+CREATE PROCEDURE {UpdateArticleTitleProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
+{IdVar} INT, {ArticleTitleVar} {UniqueStringType}
+AS
+BEGIN
+    DECLARE {AccessVar} INT, {UserIdVar} INT
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar};
+    EXEC {AccessVar} = {CheckAccessProc} {UserIdVar}, {SqlString(Editor)}
+    IF {AccessVar}={ValidAccess}
+        UPDATE {Schema}.{ArticleTable} SET {ArticleTitle} = {ArticleTitleVar} WHERE {Id}={IdVar}
+END";
+
+    internal static readonly string UpdateArticle = $@"
+GO
+CREATE PROCEDURE {UpdateArticleAbstractProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
+{IdVar} INT, {ArticleAbstractVar} {StringType}
+AS
+BEGIN
+    DECLARE {AccessVar} INT, {UserIdVar} INT
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar};
+    EXEC {AccessVar} = {CheckAccessProc} {UserIdVar}, {SqlString(Editor)}
+    IF {AccessVar}={ValidAccess}
+        UPDATE {Schema}.{ArticleTable} SET {ArticleAbstract} = {ArticleAbstractVar} WHERE {Id}={IdVar}
+END";
+
+    internal static readonly string UpdateContent = $@"
+GO
+CREATE PROCEDURE {UpdateArticleContentProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
+{IdVar} INT, {ArticleContentVar} {StringType}
+AS
+BEGIN
+    DECLARE {AccessVar} INT, {UserIdVar} INT
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar};
+    EXEC {AccessVar} = {CheckAccessProc} {UserIdVar}, {SqlString(Editor)}
+    IF {AccessVar}={ValidAccess}
+        UPDATE {Schema}.{ArticleTable} SET {ArticleContent} = {ArticleContentVar} WHERE {Id}={IdVar}
+END";
+
+    internal static readonly string UpdatePicture = $@"
+GO
+CREATE PROCEDURE {UpdateArticlePictureIdProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
+{IdVar} INT, {ArticlePictureIdVar} INT
+AS
+BEGIN
+    DECLARE {AccessVar} INT, {UserIdVar} INT
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar};
+    EXEC {AccessVar} = {CheckAccessProc} {UserIdVar}, {SqlString(Editor)}
+    IF {AccessVar}={ValidAccess}
+        UPDATE {Schema}.{ArticleTable} SET {ArticlePictureId} = {ArticlePictureIdVar} WHERE {Id}={IdVar}
+END";
+
+    internal static readonly string UpdatePost = $@"
+GO
+CREATE PROCEDURE {UpdateArticlePostIdProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
+{IdVar} INT, {ArticlePostIdVar} INT
+AS
+BEGIN
+    DECLARE {AccessVar} INT, {UserIdVar} INT, {PostAuthorIdVar} INT
+    SET {PostAuthorIdVar} = (SELECT {PostAuthorId} FROM {Schema}.{PostTable} WHERE {Id}={IdVar});
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar}
+    EXEC {AccessVar} = {CheckAccessProc} {UserIdVar}, {SqlString(Moderator)}
+    IF {AccessVar}={ValidAccess}
+        UPDATE {Schema}.{ArticleTable} SET {ArticlePostId} = {ArticlePostIdVar} WHERE {Id}={IdVar}
 END";
 }

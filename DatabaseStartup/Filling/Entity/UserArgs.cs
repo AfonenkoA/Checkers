@@ -1,4 +1,6 @@
-﻿namespace DatabaseStartup.Entity;
+﻿using static DatabaseStartup.Declaration.Markup;
+
+namespace DatabaseStartup.Filling.Entity;
 
 public sealed class UserArgs
 {
@@ -11,12 +13,12 @@ public sealed class UserArgs
     internal UserArgs(string line)
     {
         var strings = line.Split(";") ??
-                      throw CsvTable.LineSplitException;
-        _nick = CsvTable.SqlString(strings[0]);
-        _login = CsvTable.SqlString(strings[1]);
-        _password = CsvTable.SqlString(strings[2]);
-        _email = CsvTable.SqlString(strings[3]);
-        _type = CsvTable.SqlString(strings[4]);
+                      throw LineSplitException;
+        _nick = SqlString(strings[0]);
+        _login = SqlString(strings[1]);
+        _password = SqlString(strings[2]);
+        _email = SqlString(strings[3]);
+        _type = SqlString(strings[4]);
     }
 
     public override string ToString() =>

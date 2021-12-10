@@ -1,5 +1,5 @@
 ﻿using static Common.Entity.ChatType;
-using static DatabaseStartup.CsvTable;
+using static DatabaseStartup.Declaration.Markup;
 using static WebService.Repository.MSSqlImplementation.MessageRepository;
 using static WebService.Repository.MSSqlImplementation.Repository;
 using static WebService.Repository.MSSqlImplementation.ChatRepository;
@@ -36,5 +36,16 @@ BEGIN
             INSERT INTO {Schema}.{MessageTable}({ChatId},{UserId},{MessageContent})
             VALUES ({ChatIdVar},{UserIdVar},{MessageContentVar}); 
         END
+END";
+
+    internal static readonly string Select = $@"
+GO
+CREATE PROCEDURE {SelectMessageProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {ChatIdVar} INT
+AS
+BEGIN
+    DECLARE {UserIdVar} INT
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar},{PasswordVar};
+    IF {UserIdVar}!={InvalidId}
+            SELECT * FROM {Schema}.{MessageTable} WHERE {ChatId}={ChatIdVar};
 END";
 }

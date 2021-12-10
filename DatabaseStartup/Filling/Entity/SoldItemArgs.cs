@@ -1,4 +1,4 @@
-﻿namespace DatabaseStartup.Entity;
+﻿namespace DatabaseStartup.Filling.Entity;
 
 public sealed class SoldItemArgs : DetailedItemArgs
 {

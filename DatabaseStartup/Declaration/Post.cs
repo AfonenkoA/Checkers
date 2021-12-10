@@ -1,5 +1,6 @@
 ﻿using static Common.Entity.ChatType;
-using static DatabaseStartup.CsvTable;
+using static Common.Entity.UserType;
+using static DatabaseStartup.Declaration.Markup;
 using static WebService.Repository.MSSqlImplementation.ForumRepository;
 using static WebService.Repository.MSSqlImplementation.Repository;
 using static WebService.Repository.MSSqlImplementation.ChatRepository;
@@ -49,5 +50,71 @@ BEGIN
         ROLLBACK;
         RETURN {InvalidId};
         END
+END";
+
+    internal static readonly string SelectInfo = $@"
+GO
+CREATE PROCEDURE {SelectPostInfoProc} {IdVar} INT
+AS
+BEGIN
+    SELECT {Id},{PostTitle},{PostPictureId} FROM {Schema}.{PostTable} WHERE {Id}={IdVar};
+END";
+
+    internal static readonly string Select = $@"
+GO
+CREATE PROCEDURE {SelectPostProc} {IdVar} INT
+AS
+BEGIN
+    SELECT * FROM {Schema}.{PostTable} WHERE {Id}={IdVar};
+END";
+
+    internal static readonly string SelectAll = $@"
+GO
+CREATE PROCEDURE {SelectPostsProc}
+AS
+BEGIN
+    SELECT {Id},{PostTitle},{PostPictureId},{PostContent} FROM {Schema}.{PostTable};
+END";
+
+    internal static readonly string UpdateTitle = $@"
+GO
+CREATE PROCEDURE {UpdatePostTitleProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
+{IdVar} INT, {PostTitleVar} {UniqueStringType}
+AS
+BEGIN
+    DECLARE {AccessVar} INT, {UserIdVar} INT, {PostAuthorIdVar} INT
+    SET {PostAuthorIdVar} = (SELECT {PostAuthorId} FROM {Schema}.{PostTable} WHERE {Id}={IdVar});
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar}
+    EXEC {AccessVar} = {CheckAccessProc} {UserIdVar}, {SqlString(Moderator)}
+    IF {PostAuthorIdVar}={UserIdVar} OR {AccessVar}={ValidAccess}
+        UPDATE {Schema}.{PostTable} SET {PostTitle}={PostTitleVar} WHERE {Id}={IdVar}
+END";
+
+    internal static readonly string UpdateContent = $@"
+GO
+CREATE PROCEDURE {UpdatePostContentProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
+{IdVar} INT, {PostContentVar} {StringType}
+AS
+BEGIN
+    DECLARE {AccessVar} INT, {UserIdVar} INT, {PostAuthorIdVar} INT
+    SET {PostAuthorIdVar} = (SELECT {PostAuthorId} FROM {Schema}.{PostTable} WHERE {Id}={IdVar});
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar}
+    EXEC {AccessVar} = {CheckAccessProc} {UserIdVar}, {SqlString(Moderator)}
+    IF {PostAuthorIdVar}={UserIdVar} OR {AccessVar}={ValidAccess}
+        UPDATE {Schema}.{PostTable} SET {PostContent}={PostContentVar} WHERE {Id}={IdVar}
+END";
+
+    internal static readonly string UpdatePicture = $@"
+GO
+CREATE PROCEDURE {UpdatePostPictureIdProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, 
+{IdVar} INT, {PostPictureIdVar} INT
+AS
+BEGIN
+    DECLARE {AccessVar} INT, {UserIdVar} INT, {PostAuthorIdVar} INT
+    SET {PostAuthorIdVar} = (SELECT {PostAuthorId} FROM {Schema}.{PostTable} WHERE {Id}={IdVar});
+    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar}, {PasswordVar}
+    EXEC {AccessVar} = {CheckAccessProc} {UserIdVar}, {SqlString(Moderator)}
+    IF {PostAuthorIdVar}={UserIdVar} OR {AccessVar}={ValidAccess}
+        UPDATE {Schema}.{PostTable} SET {PostPictureId}={PostPictureIdVar} WHERE {Id}={IdVar}
 END";
 }

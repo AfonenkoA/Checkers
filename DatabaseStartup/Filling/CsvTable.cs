@@ -1,4 +1,4 @@
-﻿using DatabaseStartup.Entity;
+﻿using DatabaseStartup.Filling.Entity;
 using static System.IO.File;
 using static WebService.Repository.MSSqlImplementation.ChatRepository;
 using static WebService.Repository.MSSqlImplementation.ForumRepository;
@@ -9,19 +9,19 @@ using static WebService.Repository.MSSqlImplementation.Repository;
 using static WebService.Repository.MSSqlImplementation.ResourceRepository;
 using static WebService.Repository.MSSqlImplementation.UserRepository;
 
-namespace DatabaseStartup;
+namespace DatabaseStartup.Filling;
 
 internal static class CsvTable
 {
-    public static IEnumerable<string> ReadLines(string filename) => ReadAllLines(filename);
-    public const string Declaration = $"DECLARE {IdVar} INT\n";
+
+
     public const string PictureSource = "AvatarPicture.csv";
     public const string CheckersSource = "CheckersSkins.csv";
     public const string AnimationSource = "Animations.csv";
     public const string AchievementsSource = "Achivements.csv";
     public const string LootBoxSource = "LootBoxes.csv";
     public const string UserSource = "Users.csv";
-    public const string UserPictureSource = "UserAvatars.csv";
+
     public const string NewsSource = "News.csv";
     public const string PostSource = "ForumPosts.csv";
     public const string NewsChatSource = "NewsChat.csv";
@@ -30,15 +30,7 @@ internal static class CsvTable
     public const string FriendshipSource = "Friends.csv";
     public const string CommonChatSource = "AllChat.csv";
 
-    public static readonly string Path = Directory.GetCurrentDirectory();
-    public static readonly Exception LineSplitException = new ArgumentNullException {Source = "Can't split line by ';'"};
 
-    public static string SqlString(object o) => $"N'{o.ToString()?.Replace("\'",@"''")}'";
-    public static string DataFile(string filename) => $@"{Path}\Data\{filename}";
-    public static string ResourceFile(string filename) => SqlString($@"{Path}\Img\{filename}");
-
-    public static string Exec(string command, object args) =>
-        $"EXEC {command} {args}";
 
     public static string LoadPictures()=>
         string.Join('\n',ReadLines(DataFile(PictureSource))
@@ -65,19 +57,7 @@ internal static class CsvTable
             .Select(s => new UserArgs(s))
             .Select(i => Exec(CreateUserProc, i)));
 
-    public static string LoadUserPictures()
-    {
-        static string PictureId(string name) =>
-            $"(SELECT {Id} FROM {PictureTable} WHERE {Name} = {name})";
 
-        static string Set(string name) => $"SET @id = {PictureId(name)}";
-        static string ExecUpdate(string log, string pass) => $"EXEC {UpdateUserPictureProc} {log}, {pass}, @id";
-        static string Update(UserPictureArgs u) => $"{Set(u.PicName)}\n{ExecUpdate(u.Login, u.Password)}";
-
-        return Declaration +
-               string.Join('\n', ReadLines(DataFile(UserPictureSource))
-                   .Select(s => Update(new UserPictureArgs(s))));
-    }
 
     public static string LoadNews()
     {

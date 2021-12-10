@@ -1,4 +1,6 @@
-﻿namespace DatabaseStartup.Entity;
+﻿using static DatabaseStartup.Declaration.Markup;
+
+namespace DatabaseStartup.Filling.Entity;
 
 public sealed class FriendshipArgs
 {
@@ -9,8 +11,8 @@ public sealed class FriendshipArgs
     {
         var strings = line.Split(";") ??
                       throw CsvTable.LineSplitException;
-        Login = CsvTable.SqlString(strings[0]);
-        Friend = CsvTable.SqlString(strings[1]);
+        Login = SqlString(strings[0]);
+        Friend = SqlString(strings[1]);
     }
 
 }

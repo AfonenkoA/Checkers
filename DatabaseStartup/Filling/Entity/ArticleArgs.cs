@@ -1,4 +1,6 @@
-﻿namespace DatabaseStartup.Entity;
+﻿using static DatabaseStartup.Declaration.Markup;
+
+namespace DatabaseStartup.Filling.Entity;
 
 public sealed class ArticleArgs
 {
@@ -13,11 +15,11 @@ public sealed class ArticleArgs
     {
         var strings = line.Split(";") ??
                       throw CsvTable.LineSplitException;
-        Login = CsvTable.SqlString(strings[0]);
-        Password = CsvTable.SqlString(strings[1]);
-        Title = CsvTable.SqlString(strings[2]);
-        Abstract = CsvTable.SqlString(strings[3]);
-        Content = CsvTable.SqlString(strings[4]);
+        Login = SqlString(strings[0]);
+        Password = SqlString(strings[1]);
+        Title = SqlString(strings[2]);
+        Abstract = SqlString(strings[3]);
+        Content = SqlString(strings[4]);
         File = strings[5];
     }
 }

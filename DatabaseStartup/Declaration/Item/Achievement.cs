@@ -35,4 +35,18 @@ BEGIN
     FROM {Schema}.{AchievementTable} AS A
     JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=A.{ResourceId}
 END";
+
+    public static readonly string Create = $@"
+GO
+CREATE PROCEDURE {CreateAchievementProc}
+{NameVar} {UniqueStringType},
+{PathVar} {StringType},
+{DetailVar} {StringType}
+AS
+BEGIN
+    DECLARE {IdVar} INT
+    EXEC {IdVar} = {CreateResourceFromFileProc} {PathVar}
+    INSERT INTO {Schema}.{AchievementTable}({ResourceId},{Name},{Detail}) 
+    VALUES({IdVar},{NameVar},{DetailVar});
+END";
 }
