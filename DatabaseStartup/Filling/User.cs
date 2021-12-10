@@ -12,6 +12,7 @@ internal static class User
 
     private static readonly string Type = $@"
 GO
+USE Checkers;
 INSERT INTO {UserTypeTable}({UserTypeName}) VALUES 
 ({SqlString((UserType)1)}),
 ({SqlString((UserType)2)}),

@@ -31,8 +31,8 @@ internal static class Total
     public static readonly string Function = $@"
 --Functions
 {Resource.Function}
-{Friendship.Function}
 {Chat.Function}
+{Friendship.Function}
 {User.Function}
 {Message.Function}
 {Achievement.Function}
@@ -43,5 +43,7 @@ internal static class Total
 {UserAchievement.Function}
 {UserAnimation.Function}
 {UserCheckersSkin.Function}
-{UserLootBox.Function}";
+{UserLootBox.Function}
+{Post.Function}
+{Article.Function}";
 }

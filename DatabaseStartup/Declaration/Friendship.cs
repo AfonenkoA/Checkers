@@ -71,7 +71,7 @@ END";
     public static readonly string Function = $@"
 --UserFriendship
 {Select}
-{Create}
 {StateByName}
+{Create}
 {SelectChat}";
 }

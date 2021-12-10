@@ -6,14 +6,13 @@ using static WebService.Repository.MSSqlImplementation.Repository;
 using static DatabaseStartup.Filling.Common;
 using static WebService.Repository.MSSqlImplementation.MessageRepository;
 
-
 namespace DatabaseStartup.Filling;
 
 internal static class Chat
 {
-    private const string CommonChatSource = "AllChat.csv";
-
     private static readonly string Type = $@"
+GO
+USE Checkers;
 INSERT INTO {ChatTypeTable}({ChatTypeName}) VALUES
 ({SqlString((ChatType)1)}),
 ({SqlString((ChatType)2)});";
@@ -23,10 +22,11 @@ GO
 Use Checkers
 EXEC {CreateChatProc} {SqlString(CommonChatName)},{SqlString(ChatType.Public)}";
 
+    private const string CommonChatSource = "AllChat.csv";
 
     private static string LoadCommonChat()
     {
-        const string declaration = $"DECLARE {IdVar} INT\n" +
+        const string declaration = $"GO\nDECLARE {IdVar} INT\n" +
                                    $"EXEC {IdVar} = {GetCommonChatIdProc}\n";
 
         static string SendMessage(MessageArgs m) =>
@@ -37,8 +37,10 @@ EXEC {CreateChatProc} {SqlString(CommonChatName)},{SqlString(ChatType.Public)}";
                    .Select(s => SendMessage(new MessageArgs(s))));
     }
 
+    public static readonly string CommonChat = $@"
+{LoadCommonChat()}";
+
     public static readonly string Total = $@"
 {Type}
-{Public}
-{LoadCommonChat()}";
+{Public}";
 }

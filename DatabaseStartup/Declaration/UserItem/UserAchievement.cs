@@ -10,7 +10,7 @@ internal static class UserAchievement
 CREATE TABLE {UserAchievementTable}
 (
 {Identity},
-{AchievementId}   INT     NOT NULL    {Fk(UserAchievementTable, AnimationTable)},
+{AchievementId}   INT     NOT NULL    {Fk(UserAchievementTable, AchievementTable)},
 {UserId}        INT     NOT NULL    {Fk(UserAchievementTable, UserTable)}
 );";
 
@@ -21,7 +21,7 @@ AS
 BEGIN
     SELECT A.* FROM {Schema}.{UserAchievementTable} AS UA
     JOIN {AchievementTable} AS A ON UA.{AchievementId}=A.{Id}
-    WHERE {Id}={IdVar}
+    WHERE {UserId}={IdVar}
 END";
 
     private const string Add = @$"";

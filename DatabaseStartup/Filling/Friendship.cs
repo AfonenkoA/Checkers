@@ -15,7 +15,9 @@ internal static class Friendship
     private const string FriendChatSource = "FriendsChat.csv";
     private const string FriendshipSource = "Friends.csv";
 
-    private static readonly string State = $@"
+    public static readonly string State = $@"
+GO
+USE Checkers;
 INSERT INTO {FriendshipStateTable}({FriendshipStateName}) VALUES
 ({SqlString((FriendshipState)1)}),
 ({SqlString((FriendshipState)2)}),
@@ -57,7 +59,6 @@ INSERT INTO {FriendshipStateTable}({FriendshipStateName}) VALUES
     }
 
     public static readonly string Total = $@"
-{State}
 {LoadFriends()}
 {LoadFriendMessages()}";
 }

@@ -21,7 +21,7 @@ AS
 BEGIN
     SELECT A.* FROM {Schema}.{UserAnimationTable} AS UA
     JOIN {AnimationTable} AS A ON UA.{AnimationId}=A.{Id} 
-    WHERE {Id}={IdVar}
+    WHERE {UserId}={IdVar}
 END";
 
     private const string Update = $@"
@@ -36,9 +36,7 @@ BEGIN
         UPDATE {Schema}.{UserTable} SET {AnimationId}={IdVar} WHERE {UserAuthCondition};
 END";
 
-    private const string Add = $@"
-GO
-USE Checkers;
+    internal const string Add = $@"
 GO
 CREATE PROCEDURE {UserAddAnimationProc} {UserIdVar} INT, {IdVar} INT
 AS
@@ -76,7 +74,6 @@ END";
 
     public static readonly string Function = $@"
 --UserAnimation
-{Add}
 {Select}
 {Update}
 {GetAvailable}

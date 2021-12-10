@@ -66,7 +66,7 @@ BEGIN
     SELECT * FROM {Schema}.{ArticleTable} WHERE {Id}={IdVar};
 END";
 
-    public static readonly string SelectNews = $@"
+    private static readonly string SelectNews = $@"
 GO
 CREATE PROCEDURE {SelectNewsProc}
 AS
@@ -140,7 +140,7 @@ BEGIN
         UPDATE {Schema}.{ArticleTable} SET {ArticlePostId} = {ArticlePostIdVar} WHERE {Id}={IdVar}
 END";
 
-    public static readonly string Total = $@"
+    public static readonly string Function = $@"
 {Create}
 {Select}
 {SelectNews}

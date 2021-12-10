@@ -21,7 +21,7 @@ AS
 BEGIN
     SELECT C.* FROM {Schema}.{UserCheckersSkinTable} AS UC
     JOIN {CheckersSkinTable} AS C ON UC.{CheckersSkinId}=C.{Id}
-    WHERE {Id}={IdVar}
+    WHERE {UserId}={IdVar}
 END";
 
     private const string Update = $@"
@@ -36,7 +36,7 @@ BEGIN
         UPDATE {Schema}.{UserTable} SET {CheckersSkinId}={IdVar} WHERE {UserAuthCondition};
 END";
 
-    private const string Add = $@"
+    internal const string Add = $@"
 GO
 CREATE PROCEDURE {UserAddCheckersSkinProc} {UserIdVar} INT, {IdVar} INT
 AS
@@ -74,7 +74,6 @@ END";
 
     public static readonly string Function = $@"
 --UserCheckersSkin
-{Add}
 {Select}
 {Update}
 {GetAvailable}
