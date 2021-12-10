@@ -4,7 +4,7 @@ using static WebService.Repository.MSSqlImplementation.ItemRepository;
 
 namespace DatabaseStartup.Filling;
 
-internal class Item
+internal static class Item
 {
     private const string PictureSource = "AvatarPicture.csv";
     private const string CheckersSource = "CheckersSkins.csv";

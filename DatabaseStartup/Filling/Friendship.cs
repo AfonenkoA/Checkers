@@ -10,7 +10,7 @@ using static WebService.Repository.MSSqlImplementation.MessageRepository;
 namespace DatabaseStartup.Filling;
 
 
-internal class Friendship
+internal static class Friendship
 {
     private const string FriendChatSource = "FriendsChat.csv";
     private const string FriendshipSource = "Friends.csv";
@@ -23,7 +23,7 @@ INSERT INTO {FriendshipStateTable}({FriendshipStateName}) VALUES
 
     private static string LoadFriends()
     {
-        const string declaration = "DECLARE @id1 INT, @id2 INT\n";
+        const string declaration = "GO\nDECLARE @id1 INT, @id2 INT\n";
 
         static string GetUserId(string var, string login) =>
             $"SET {var} = (SELECT {Id} FROM {UserTable} WHERE {Login} = {login});\n";
@@ -40,7 +40,7 @@ INSERT INTO {FriendshipStateTable}({FriendshipStateName}) VALUES
 
     private static string LoadFriendMessages()
     {
-        const string declaration = $"DECLARE {IdVar} INT, @id1 INT, @id2 INT\n";
+        const string declaration = $"GO\nDECLARE {IdVar} INT, @id1 INT, @id2 INT\n";
 
         static string SetUserId(string var, string login) =>
             $"SET {var} = (SELECT {Id} FROM {UserTable} WHERE {Login}={login});\n";

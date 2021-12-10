@@ -17,7 +17,7 @@ CREATE TABLE {LootBoxTable}
 {Price}         INT                     NOT NULL    DEFAULT 100
 );";
 
-    private static readonly string Select = $@"
+    private const string Select = $@"
 GO
 CREATE PROCEDURE {SelectLootBoxProc} {IdVar} INT
 AS
@@ -28,7 +28,7 @@ BEGIN
     WHERE L.{Id}={IdVar}
 END";
 
-    private static readonly string SelectAll = $@"
+    private const string SelectAll = $@"
 GO
 CREATE PROCEDURE {SelectAllLootBoxProc}
 AS
@@ -38,7 +38,7 @@ BEGIN
     JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=L.{ResourceId}
 END";
 
-    private static readonly string Create = $@"
+    private const string Create = $@"
 GO
 CREATE PROCEDURE {CreateLootBoxProc}
 {NameVar} {UniqueStringType},

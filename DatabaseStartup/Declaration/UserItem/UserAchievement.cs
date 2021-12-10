@@ -14,7 +14,7 @@ CREATE TABLE {UserAchievementTable}
 {UserId}        INT     NOT NULL    {Fk(UserAchievementTable, UserTable)}
 );";
 
-    private static readonly string Select = @$"
+    private const string Select = @$"
 GO
 CREATE PROCEDURE {SelectUserAchievementProc} {IdVar} INT
 AS
@@ -24,9 +24,9 @@ BEGIN
     WHERE {Id}={IdVar}
 END";
 
-    private static readonly string Add = @$"";
+    private const string Add = @$"";
 
-    public static readonly string Function = $@"
+    public const string Function = $@"
 --UserAchievement
 {Add}
 {Select}";

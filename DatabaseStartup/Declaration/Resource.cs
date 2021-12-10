@@ -5,7 +5,7 @@ namespace DatabaseStartup.Declaration;
 
 internal static class Resource
 {
-    public static readonly string Table = $@"
+    public const string Table = $@"
 CREATE TABLE {ResourceTable}
 (
 {Identity},
@@ -13,7 +13,7 @@ CREATE TABLE {ResourceTable}
 {ResourceBytes}         {BinaryType}	NOT NULL,
 );";
 
-    private static readonly string Select = $@"
+    private const string Select = $@"
 GO
 CREATE PROCEDURE {SelectResourceProc} {IdVar} INT
 AS
@@ -34,7 +34,7 @@ BEGIN
     RETURN {IdVar}
 END";
 
-    private static readonly string Create = $@"
+    private const string Create = $@"
 GO
 CREATE PROCEDURE {CreateResourceProc} {ResourceExtensionVar} {StringType}, {ResourceBytesVar} {BinaryType}
 AS

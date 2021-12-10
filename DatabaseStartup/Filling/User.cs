@@ -6,7 +6,7 @@ using static DatabaseStartup.Filling.Common;
 
 namespace DatabaseStartup.Filling;
 
-internal class User
+internal static class User
 {
     private const string UserSource = "Users.csv";
 

@@ -8,7 +8,7 @@ using static DatabaseStartup.Filling.Common;
 
 namespace DatabaseStartup.Filling;
 
-internal class Forum
+internal static class Forum
 {
     private const string PostSource = "ForumPosts.csv";
     private const string ForumChatSource = "ForumChat.csv";

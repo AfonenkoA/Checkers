@@ -14,7 +14,7 @@ CREATE TABLE {UserAnimationTable}
 {UserId}        INT     NOT NULL    {Fk(UserAnimationTable, UserTable)}
 );";
 
-    private static readonly string Select = $@"
+    private const string Select = $@"
 GO
 CREATE PROCEDURE {SelectUserAnimationProc} {IdVar} INT
 AS
@@ -24,7 +24,7 @@ BEGIN
     WHERE {Id}={IdVar}
 END";
 
-    private static readonly string Update = $@"
+    private const string Update = $@"
 GO
 CREATE PROCEDURE {UpdateUserAnimationProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
 AS
@@ -36,7 +36,7 @@ BEGIN
         UPDATE {Schema}.{UserTable} SET {AnimationId}={IdVar} WHERE {UserAuthCondition};
 END";
 
-    private static readonly string Add = $@"
+    private const string Add = $@"
 GO
 USE Checkers;
 GO
@@ -46,7 +46,7 @@ BEGIN
     INSERT INTO {UserAnimationTable}({UserId},{AnimationId}) VALUES({UserIdVar},{IdVar}) 
 END";
 
-    private static readonly string Buy = $@"
+    private const string Buy = $@"
 GO
 CREATE PROCEDURE {UserBuyAnimationProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
 AS
@@ -62,7 +62,7 @@ BEGIN
         END
 END";
 
-    private static readonly string GetAvailable = $@"
+    private const string GetAvailable = $@"
 GO
 CREATE PROCEDURE {UserGetAvailableAnimationProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
 AS

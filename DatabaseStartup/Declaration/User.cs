@@ -27,14 +27,14 @@ CREATE TABLE {UserTable}
 {AnimationId}       INT             NOT NULL    {Fk(UserTable, AnimationTable)}      DEFAULT 1
 );";
 
-    internal static readonly string Type = $@"
+    internal const string Type = $@"
 CREATE TABLE {UserTypeTable}
 (
 {Identity},
 {UserTypeName}  {UniqueStringType}    NOT NULL UNIQUE
 );";
 
-    private static readonly string TypeByName = $@"
+    private const string TypeByName = $@"
 GO
 CREATE PROCEDURE {GetUserTypeByTypeNameProc} {UserTypeNameVar} {UniqueStringType}
 AS
@@ -57,7 +57,7 @@ BEGIN
         RETURN {InvalidAccess}
 END";
 
-    private static readonly string UpdateActivity = $@"
+    private const string UpdateActivity = $@"
 GO
 CREATE PROCEDURE {UpdateUserActivityProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
 AS
@@ -108,7 +108,7 @@ BEGIN
         RETURN {InvalidId};
 END";
 
-    private static readonly string Select = $@"
+    private const string Select = $@"
 GO
 CREATE PROCEDURE {SelectUserProc} {IdVar} INT
 AS
@@ -116,7 +116,7 @@ BEGIN
     SELECT * FROM {Schema}.{UserTable} WHERE {Id}={IdVar}
 END";
 
-    private static readonly string UpdateNick = $@"
+    private const string UpdateNick = $@"
 GO  
 CREATE PROCEDURE {UpdateUserNickProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {NickVar} {StringType}
 AS
@@ -125,7 +125,7 @@ BEGIN
     UPDATE {Schema}.{UserTable} SET {Nick}={NickVar} WHERE {UserAuthCondition};
 END";
 
-    private static readonly string UpdateLogin = $@"
+    private const string UpdateLogin = $@"
 GO  
 CREATE PROCEDURE {UpdateUserLoginProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {NewLoginVar} {UniqueStringType}
 AS
@@ -134,7 +134,7 @@ BEGIN
     UPDATE {Schema}.{UserTable} SET {Login}={NewLoginVar} WHERE {UserAuthCondition};
 END";
 
-    private static readonly string UpdatePassword = $@"
+    private const string UpdatePassword = $@"
 GO  
 CREATE PROCEDURE {UpdateUserPasswordProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {NewPasswordVar} {StringType}
 AS
@@ -143,7 +143,7 @@ BEGIN
     UPDATE {Schema}.{UserTable} SET {Password}={NewPasswordVar} WHERE {UserAuthCondition};
 END";
 
-    private static readonly string UpdateEmail = $@"
+    private const string UpdateEmail = $@"
 GO  
 CREATE PROCEDURE {UpdateUserEmailProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {EmailVar} {StringType}
 AS
@@ -152,7 +152,7 @@ BEGIN
     UPDATE {Schema}.{UserTable} SET {Email}={EmailVar} WHERE {UserAuthCondition};
 END";
 
-    private static readonly string UpdatePicture = $@"
+    private const string UpdatePicture = $@"
 GO
 CREATE PROCEDURE {UpdateUserPictureProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
 AS
@@ -162,7 +162,7 @@ BEGIN
     UPDATE {Schema}.{UserTable} SET {PictureId} = {IdVar} WHERE {Id}={UserIdVar}
 END";
 
-    private static readonly string SelectByNick = $@"
+    private const string SelectByNick = $@"
 GO
 CREATE PROCEDURE {SelectUserByNickProc} {NickVar} {StringType}
 AS
@@ -170,7 +170,7 @@ BEGIN
     SELECT * FROM {Schema}.{UserTable} WHERE {Nick} LIKE {NickVar}
 END";
 
-    private static readonly string SelectTop = $@"
+    private const string SelectTop = $@"
 GO 
 CREATE PROCEDURE {SelectTopPlayersProc}
 AS
@@ -183,7 +183,7 @@ BEGIN
     ORDER BY {SocialCredit} DESC;
 END";
 
-    private static readonly string SelectTopAuth = $@"
+    private const string SelectTopAuth = $@"
 GO
 CREATE PROCEDURE {SelectTopPlayersAuthProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
 AS
@@ -202,9 +202,10 @@ END";
     internal static readonly string Function = $@"
 --User
 {UpdateActivity}
+{Authenticate}
+{Select}
 {TypeByName}
 {Create}
-{Authenticate}
 {CheckAccess}
 {UpdateEmail}
 {UpdateLogin}

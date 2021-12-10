@@ -7,7 +7,7 @@ namespace DatabaseStartup.Declaration;
 
 internal static class Chat
 {
-    public static readonly string Type = $@"
+    public const string Type = $@"
 CREATE TABLE {ChatTypeTable}
 (
 {Identity},
@@ -22,7 +22,7 @@ CREATE TABLE {ChatTable}
 {ChatTypeId}    INT                 NOT NULL {Fk(ChatTable, ChatTypeTable)}
 );";
 
-    private static readonly string TypeByName = $@"
+    private const string TypeByName = $@"
 GO
 CREATE PROCEDURE {GetChatTypeByNameProc} {ChatTypeNameVar} {UniqueStringType}
 AS
@@ -30,7 +30,7 @@ BEGIN
     RETURN (SELECT {Id} FROM {Schema}.{ChatTypeTable} WHERE {ChatTypeName}={ChatTypeNameVar})
 END";
 
-    private static readonly string Create = $@"
+    private const string Create = $@"
 GO
 CREATE PROCEDURE {CreateChatProc} {ChatNameVar} {UniqueStringType}, {ChatTypeNameVar} {UniqueStringType}
 AS

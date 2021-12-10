@@ -14,7 +14,7 @@ CREATE TABLE {UserCheckersSkinTable}
 {UserId}        INT     NOT NULL    {Fk(UserCheckersSkinTable, UserTable)}
 );";
 
-    private static readonly string Select = $@"
+    private const string Select = $@"
 GO
 CREATE PROCEDURE {SelectUserCheckersSkinProc} {IdVar} INT
 AS
@@ -24,7 +24,7 @@ BEGIN
     WHERE {Id}={IdVar}
 END";
 
-    private static readonly string Update = $@"
+    private const string Update = $@"
 GO
 CREATE PROCEDURE {UpdateUserCheckersProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
 AS
@@ -36,7 +36,7 @@ BEGIN
         UPDATE {Schema}.{UserTable} SET {CheckersSkinId}={IdVar} WHERE {UserAuthCondition};
 END";
 
-    private static readonly string Add = $@"
+    private const string Add = $@"
 GO
 CREATE PROCEDURE {UserAddCheckersSkinProc} {UserIdVar} INT, {IdVar} INT
 AS
@@ -44,7 +44,7 @@ BEGIN
     INSERT INTO {UserCheckersSkinTable}({UserId},{CheckersSkinId}) VALUES({UserIdVar},{IdVar}) 
 END";
 
-    private static readonly string Buy = $@"
+    private const string Buy = $@"
 GO
 CREATE PROCEDURE {UserBuyCheckersSkinProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
 AS
@@ -60,7 +60,7 @@ BEGIN
         END
 END";
 
-    private static readonly string GetAvailable = $@"
+    private const string GetAvailable = $@"
 GO
 CREATE PROCEDURE {UserGetAvailableCheckersSkinProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
 AS

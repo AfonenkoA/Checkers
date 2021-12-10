@@ -15,7 +15,7 @@ CREATE TABLE {PictureTable}
 {ResourceId}    INT                     NOT NULL    {Fk(PictureTable, ResourceTable)}
 );";
 
-    private static readonly string Select = $@"
+    private const string Select = $@"
 GO
 CREATE PROCEDURE {SelectPictureProc} {IdVar} INT
 AS
@@ -26,7 +26,7 @@ BEGIN
     WHERE P.{Id}={IdVar}
 END";
 
-    private static readonly string SelectAll = $@"
+    private const string SelectAll = $@"
 GO
 CREATE PROCEDURE {SelectAllPictureProc}
 AS
@@ -36,7 +36,7 @@ BEGIN
     JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=P.{ResourceId}
 END";
 
-    private static readonly string Create = $@"
+    private const string Create = $@"
 GO
 CREATE PROCEDURE {CreatePictureProc}
 {NameVar} {UniqueStringType},
@@ -49,7 +49,7 @@ BEGIN
     VALUES ({IdVar},{NameVar});
 END";
 
-    public static readonly string Function = $@"
+    public const string Function = $@"
 --Picture
 {Create}
 {Select}

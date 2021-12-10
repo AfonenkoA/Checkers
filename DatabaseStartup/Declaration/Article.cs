@@ -8,7 +8,7 @@ using static DatabaseStartup.Declaration.Markup;
 
 namespace DatabaseStartup.Declaration;
 
-internal class Article
+internal static class Article
 {
     internal static readonly string Table = $@"
 CREATE TABLE {ArticleTable}
@@ -23,7 +23,7 @@ CREATE TABLE {ArticleTable}
 {ArticlePostId}     INT                 NOT NULL    {Fk(ArticleTable, PostTable)},
 );";
 
-    internal static readonly string Create = $@"
+    private static readonly string Create = $@"
 GO
 CREATE PROCEDURE {CreateArticleProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
 {ArticleTitleVar} {UniqueStringType}, {ArticleAbstractVar} {StringType}, 
@@ -58,7 +58,7 @@ BEGIN
     
 END";
 
-    public static readonly string Select = $@"
+    private const string Select = $@"
 GO
 CREATE PROCEDURE {SelectArticleProc} {IdVar} INT
 AS
@@ -74,7 +74,7 @@ BEGIN
     SELECT * FROM {Schema}.{ArticleTable};
 END";
 
-    internal static readonly string UpdateTitle = $@"
+    private static readonly string UpdateTitle = $@"
 GO
 CREATE PROCEDURE {UpdateArticleTitleProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
 {IdVar} INT, {ArticleTitleVar} {UniqueStringType}
@@ -87,7 +87,7 @@ BEGIN
         UPDATE {Schema}.{ArticleTable} SET {ArticleTitle} = {ArticleTitleVar} WHERE {Id}={IdVar}
 END";
 
-    internal static readonly string UpdateArticle = $@"
+    private static readonly string UpdateArticle = $@"
 GO
 CREATE PROCEDURE {UpdateArticleAbstractProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
 {IdVar} INT, {ArticleAbstractVar} {StringType}
@@ -100,7 +100,7 @@ BEGIN
         UPDATE {Schema}.{ArticleTable} SET {ArticleAbstract} = {ArticleAbstractVar} WHERE {Id}={IdVar}
 END";
 
-    internal static readonly string UpdateContent = $@"
+    private static readonly string UpdateContent = $@"
 GO
 CREATE PROCEDURE {UpdateArticleContentProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
 {IdVar} INT, {ArticleContentVar} {StringType}
@@ -113,7 +113,7 @@ BEGIN
         UPDATE {Schema}.{ArticleTable} SET {ArticleContent} = {ArticleContentVar} WHERE {Id}={IdVar}
 END";
 
-    internal static readonly string UpdatePicture = $@"
+    private static readonly string UpdatePicture = $@"
 GO
 CREATE PROCEDURE {UpdateArticlePictureIdProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
 {IdVar} INT, {ArticlePictureIdVar} INT
@@ -126,7 +126,7 @@ BEGIN
         UPDATE {Schema}.{ArticleTable} SET {ArticlePictureId} = {ArticlePictureIdVar} WHERE {Id}={IdVar}
 END";
 
-    internal static readonly string UpdatePost = $@"
+    private static readonly string UpdatePost = $@"
 GO
 CREATE PROCEDURE {UpdateArticlePostIdProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
 {IdVar} INT, {ArticlePostIdVar} INT
@@ -139,4 +139,14 @@ BEGIN
     IF {AccessVar}={ValidAccess}
         UPDATE {Schema}.{ArticleTable} SET {ArticlePostId} = {ArticlePostIdVar} WHERE {Id}={IdVar}
 END";
+
+    public static readonly string Total = $@"
+{Create}
+{Select}
+{SelectNews}
+{UpdatePicture}
+{UpdateArticle}
+{UpdateContent}
+{UpdatePost}
+{UpdateTitle}";
 }

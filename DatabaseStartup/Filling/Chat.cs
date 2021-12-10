@@ -9,7 +9,7 @@ using static WebService.Repository.MSSqlImplementation.MessageRepository;
 
 namespace DatabaseStartup.Filling;
 
-internal class Chat
+internal static class Chat
 {
     private const string CommonChatSource = "AllChat.csv";
 

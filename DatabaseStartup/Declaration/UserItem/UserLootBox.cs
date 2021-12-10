@@ -6,7 +6,7 @@ namespace DatabaseStartup.Declaration.UserItem;
 
 internal static class UserLootBox
 {
-    private static readonly string Buy = $@"
+    private const string Buy = $@"
 GO
 CREATE PROCEDURE {UserBuyLootBoxProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
 AS
@@ -19,7 +19,7 @@ BEGIN
         UPDATE {Schema}.{UserTable} SET {Currency} = ({CurrencyVar}-{PriceVar}) WHERE {Id}={UserIdVar};
 END";
 
-    private static readonly string GetAvailable = $@"
+    private const string GetAvailable = $@"
 GO
 CREATE PROCEDURE {UserGetAvailableLootBoxProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
 AS

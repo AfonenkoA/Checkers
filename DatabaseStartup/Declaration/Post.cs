@@ -52,7 +52,7 @@ BEGIN
         END
 END";
 
-    private static readonly string SelectInfo = $@"
+    private const string SelectInfo = $@"
 GO
 CREATE PROCEDURE {SelectPostInfoProc} {IdVar} INT
 AS
@@ -60,7 +60,7 @@ BEGIN
     SELECT {Id},{PostTitle},{PostPictureId} FROM {Schema}.{PostTable} WHERE {Id}={IdVar};
 END";
 
-    private static readonly string Select = $@"
+    private const string Select = $@"
 GO
 CREATE PROCEDURE {SelectPostProc} {IdVar} INT
 AS
@@ -68,7 +68,7 @@ BEGIN
     SELECT * FROM {Schema}.{PostTable} WHERE {Id}={IdVar};
 END";
 
-    private static readonly string SelectAll = $@"
+    private const string SelectAll = $@"
 GO
 CREATE PROCEDURE {SelectPostsProc}
 AS

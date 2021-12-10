@@ -34,6 +34,7 @@ internal static class Total
 {Friendship.Function}
 {Chat.Function}
 {User.Function}
+{Message.Function}
 {Achievement.Function}
 {Animation.Function}
 {Picture.Function}

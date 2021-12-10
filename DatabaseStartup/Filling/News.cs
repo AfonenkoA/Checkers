@@ -10,13 +10,13 @@ using static DatabaseStartup.Filling.Common;
 
 namespace DatabaseStartup.Filling;
 
-internal class News
+internal static class News
 {
 
-    public const string NewsSource = "News.csv";
-    public const string NewsChatSource = "NewsChat.csv";
+    private const string NewsSource = "News.csv";
+    private const string NewsChatSource = "NewsChat.csv";
 
-    public static string LoadNews()
+    private static string LoadNews()
     {
         static string SetPicture(string filename) =>
             $"EXEC {IdVar} = {CreateResourceFromFileProc} {ResourceFile(filename)}\n";
@@ -30,7 +30,7 @@ internal class News
     }
 
 
-    public static string LoadNewsMessages()
+    private static string LoadNewsMessages()
     {
         static string GetPostId(string title) =>
             $"(SELECT {ArticlePostId} FROM {ArticleTable} WHERE {ArticleTitle}={title})";

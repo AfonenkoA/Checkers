@@ -15,7 +15,7 @@ CREATE TABLE {AchievementTable}
 {ResourceId}    INT                     NOT NULL    {Fk(AchievementTable, ResourceTable)}
 );";
 
-    private static readonly string Select = $@"
+    private const string Select = $@"
 GO
 CREATE PROCEDURE {SelectAchievementProc} {IdVar} INT
 AS
@@ -26,7 +26,7 @@ BEGIN
     WHERE A.{Id}={IdVar}
 END";
 
-    private static readonly string SelectAll = $@"
+    private const string SelectAll = $@"
 GO
 CREATE PROCEDURE {SelectAllAchievementProc}
 AS
@@ -36,7 +36,7 @@ BEGIN
     JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=A.{ResourceId}
 END";
 
-    private static readonly string Create = $@"
+    private const string Create = $@"
 GO
 CREATE PROCEDURE {CreateAchievementProc}
 {NameVar} {UniqueStringType},
@@ -50,7 +50,7 @@ BEGIN
     VALUES({IdVar},{NameVar},{DetailVar});
 END";
 
-    public static readonly string Function = $@"
+    public const string Function = $@"
 --Achievement
 {Create}
 {Select}

@@ -7,7 +7,7 @@ using static WebService.Repository.MSSqlImplementation.UserRepository;
 
 namespace DatabaseStartup.Declaration;
 
-internal class Message
+internal static class Message
 {
     internal static readonly string Table = $@"
 CREATE TABLE {MessageTable}
@@ -19,7 +19,7 @@ CREATE TABLE {MessageTable}
 {SendTime}          DATETIME        NOT NULL    DEFAULT GETDATE()
 );";
 
-    internal static readonly string Send = $@"
+    private static readonly string Send = $@"
 GO
 CREATE PROCEDURE {SendMessageProc} {LoginVar} {UniqueStringType},{PasswordVar} {StringType},
 {ChatIdVar} INT,{MessageContentVar} {StringType}
@@ -38,7 +38,7 @@ BEGIN
         END
 END";
 
-    internal static readonly string Select = $@"
+    private static readonly string Select = $@"
 GO
 CREATE PROCEDURE {SelectMessageProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {ChatIdVar} INT
 AS
@@ -48,4 +48,8 @@ BEGIN
     IF {UserIdVar}!={InvalidId}
             SELECT * FROM {Schema}.{MessageTable} WHERE {ChatId}={ChatIdVar};
 END";
+
+    public static readonly string Function = $@"
+{Select}
+{Send}";
 }

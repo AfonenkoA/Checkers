@@ -9,7 +9,7 @@ namespace DatabaseStartup.Declaration;
 
 internal static class Friendship
 {
-    internal static readonly string State = $@"
+    internal const string State = $@"
 CREATE TABLE {FriendshipStateTable}
 (
 {Identity},
@@ -26,7 +26,7 @@ CREATE TABLE {FriendshipTable}
 {FriendshipStateId} INT   NOT NULL	{Fk(FriendshipTable, FriendshipStateTable)}
 );";
 
-    private static readonly string StateByName = $@"
+    private const string StateByName = $@"
 GO
 CREATE PROCEDURE {GetFriendshipStateByNameProc} {FriendshipStateNameVar} {UniqueStringType}
 AS
@@ -52,7 +52,7 @@ BEGIN
     COMMIT;
 END";
 
-    private static readonly string SelectChat = $@"
+    private const string SelectChat = $@"
 GO
 CREATE PROCEDURE {SelectFriendChatIdProc} {User1IdVar} INT, {User2IdVar} INT
 AS
@@ -60,7 +60,7 @@ BEGIN
     RETURN (SELECT {ChatId} FROM {Schema}.{FriendshipTable} WHERE {User1Id} = {User1IdVar} AND {User2Id} = {User2IdVar})
 END";
 
-    private static readonly string Select = $@"
+    private const string Select = $@"
 GO
 CREATE PROCEDURE {SelectUserFriendshipProc} {IdVar} INT
 AS
