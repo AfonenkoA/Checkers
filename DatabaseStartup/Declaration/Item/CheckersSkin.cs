@@ -17,7 +17,7 @@ CREATE TABLE {CheckersSkinTable}
 {Price}         INT                     NOT NULL    DEFAULT 100
 );";
 
-    public static readonly string Select = $@"
+    private static readonly string Select = $@"
 GO
 CREATE PROCEDURE {SelectCheckersSkinProc} {IdVar} INT
 AS
@@ -28,7 +28,7 @@ BEGIN
     WHERE CH.{Id}={IdVar}
 END";
 
-    public static readonly string SelectAll = $@"
+    private static readonly string SelectAll = $@"
 GO
 CREATE PROCEDURE {SelectAllCheckersSkinProc}
 AS
@@ -38,7 +38,7 @@ BEGIN
     JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=CH.{ResourceId}
 END";
 
-    public static readonly string Create = $@"
+    private static readonly string Create = $@"
 GO
 CREATE PROCEDURE {CreateCheckersSkinProc}
 {NameVar} {UniqueStringType},
@@ -52,4 +52,10 @@ BEGIN
     INSERT INTO {Schema}.{CheckersSkinTable}({ResourceId},{Name},{Detail},{Price}) 
     VALUES({IdVar},{NameVar},{DetailVar},{PriceVar});
 END";
+
+    public static readonly string Function = $@"
+--CheckersSkin
+{Create}
+{Select}
+{SelectAll}";
 }

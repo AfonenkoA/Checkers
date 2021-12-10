@@ -9,7 +9,7 @@ using static WebService.Repository.MSSqlImplementation.ResourceRepository;
 
 namespace DatabaseStartup.Declaration;
 
-internal class Post
+internal static class Post
 {
     internal static readonly string Table = $@"
 CREATE TABLE {PostTable}
@@ -23,7 +23,7 @@ CREATE TABLE {PostTable}
 {PostPictureId}     INT                 NOT NULL    {Fk(PostTable, ResourceTable)}
 );";
 
-    internal static readonly string Create = $@"
+    private static readonly string Create = $@"
 GO
 CREATE PROCEDURE {CreatePostProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
 {PostTitleVar} {UniqueStringType}, {PostContentVar} {StringType},{PostPictureIdVar} INT
@@ -52,7 +52,7 @@ BEGIN
         END
 END";
 
-    internal static readonly string SelectInfo = $@"
+    private static readonly string SelectInfo = $@"
 GO
 CREATE PROCEDURE {SelectPostInfoProc} {IdVar} INT
 AS
@@ -60,7 +60,7 @@ BEGIN
     SELECT {Id},{PostTitle},{PostPictureId} FROM {Schema}.{PostTable} WHERE {Id}={IdVar};
 END";
 
-    internal static readonly string Select = $@"
+    private static readonly string Select = $@"
 GO
 CREATE PROCEDURE {SelectPostProc} {IdVar} INT
 AS
@@ -68,7 +68,7 @@ BEGIN
     SELECT * FROM {Schema}.{PostTable} WHERE {Id}={IdVar};
 END";
 
-    internal static readonly string SelectAll = $@"
+    private static readonly string SelectAll = $@"
 GO
 CREATE PROCEDURE {SelectPostsProc}
 AS
@@ -76,7 +76,7 @@ BEGIN
     SELECT {Id},{PostTitle},{PostPictureId},{PostContent} FROM {Schema}.{PostTable};
 END";
 
-    internal static readonly string UpdateTitle = $@"
+    private static readonly string UpdateTitle = $@"
 GO
 CREATE PROCEDURE {UpdatePostTitleProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
 {IdVar} INT, {PostTitleVar} {UniqueStringType}
@@ -90,7 +90,7 @@ BEGIN
         UPDATE {Schema}.{PostTable} SET {PostTitle}={PostTitleVar} WHERE {Id}={IdVar}
 END";
 
-    internal static readonly string UpdateContent = $@"
+    private static readonly string UpdateContent = $@"
 GO
 CREATE PROCEDURE {UpdatePostContentProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType},
 {IdVar} INT, {PostContentVar} {StringType}
@@ -104,7 +104,7 @@ BEGIN
         UPDATE {Schema}.{PostTable} SET {PostContent}={PostContentVar} WHERE {Id}={IdVar}
 END";
 
-    internal static readonly string UpdatePicture = $@"
+    private static readonly string UpdatePicture = $@"
 GO
 CREATE PROCEDURE {UpdatePostPictureIdProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, 
 {IdVar} INT, {PostPictureIdVar} INT
@@ -117,4 +117,14 @@ BEGIN
     IF {PostAuthorIdVar}={UserIdVar} OR {AccessVar}={ValidAccess}
         UPDATE {Schema}.{PostTable} SET {PostPictureId}={PostPictureIdVar} WHERE {Id}={IdVar}
 END";
+
+    public static readonly string Function = $@"
+--Chat
+{Create}
+{Select}
+{SelectInfo}
+{SelectAll}
+{UpdatePicture}
+{UpdateContent}
+{UpdateTitle}";
 }

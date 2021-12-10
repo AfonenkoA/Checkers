@@ -1,4 +1,6 @@
-﻿namespace DatabaseStartup.Filling.Entity;
+﻿using static DatabaseStartup.Filling.Common;
+
+namespace DatabaseStartup.Filling.Entity;
 
 public sealed class SoldItemArgs : DetailedItemArgs
 {
@@ -6,7 +8,7 @@ public sealed class SoldItemArgs : DetailedItemArgs
     internal SoldItemArgs(string line) : base(line)
     {
         var strings = line.Split(";") ??
-                      throw CsvTable.LineSplitException;
+                      throw LineSplitException;
 
         _price = strings[3];
     }

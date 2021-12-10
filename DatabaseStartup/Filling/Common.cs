@@ -7,13 +7,13 @@ namespace DatabaseStartup.Filling;
 
 internal static class Common
 {
-    public const string Declaration = $"DECLARE {IdVar} INT\n";
+    public const string DeclareId = $"GO\nDECLARE {IdVar} INT\n";
 
     public static string ResourceFile(string filename) => SqlString($@"{Path}\Filling\Img\{filename}");
 
     public static IEnumerable<string> ReadLines(string filename) => ReadAllLines(filename);
 
-    public static readonly string Path = GetCurrentDirectory();
+    private static readonly string Path = GetCurrentDirectory();
 
     public static readonly Exception LineSplitException = new ArgumentNullException { Source = "Can't split line by ';'" };
 

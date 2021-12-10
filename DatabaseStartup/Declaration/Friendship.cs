@@ -7,7 +7,7 @@ using static DatabaseStartup.Declaration.Markup;
 
 namespace DatabaseStartup.Declaration;
 
-internal class Friendship
+internal static class Friendship
 {
     internal static readonly string State = $@"
 CREATE TABLE {FriendshipStateTable}
@@ -26,7 +26,7 @@ CREATE TABLE {FriendshipTable}
 {FriendshipStateId} INT   NOT NULL	{Fk(FriendshipTable, FriendshipStateTable)}
 );";
 
-    internal static readonly string StateByName = $@"
+    private static readonly string StateByName = $@"
 GO
 CREATE PROCEDURE {GetFriendshipStateByNameProc} {FriendshipStateNameVar} {UniqueStringType}
 AS
@@ -34,7 +34,7 @@ BEGIN
     RETURN (SELECT {Id} FROM {Schema}.{FriendshipStateTable} WHERE {FriendshipStateName}={FriendshipStateNameVar})
 END";
 
-    internal static readonly string Create = $@"
+    private static readonly string Create = $@"
 GO
 CREATE PROCEDURE {CreateFriendshipProc} {User1IdVar} INT,{User2IdVar} INT
 AS
@@ -52,7 +52,7 @@ BEGIN
     COMMIT;
 END";
 
-    internal static readonly string SelectChat = $@"
+    private static readonly string SelectChat = $@"
 GO
 CREATE PROCEDURE {SelectFriendChatIdProc} {User1IdVar} INT, {User2IdVar} INT
 AS
@@ -60,11 +60,18 @@ BEGIN
     RETURN (SELECT {ChatId} FROM {Schema}.{FriendshipTable} WHERE {User1Id} = {User1IdVar} AND {User2Id} = {User2IdVar})
 END";
 
-    internal static readonly string Select = $@"
+    private static readonly string Select = $@"
 GO
 CREATE PROCEDURE {SelectUserFriendshipProc} {IdVar} INT
 AS
 BEGIN
     SELECT * FROM {Schema}.{FriendshipTable} WHERE {User1Id} = {IdVar}
 END";
+
+    public static readonly string Function = $@"
+--UserFriendship
+{Select}
+{Create}
+{StateByName}
+{SelectChat}";
 }

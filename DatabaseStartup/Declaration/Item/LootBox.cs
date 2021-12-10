@@ -17,7 +17,7 @@ CREATE TABLE {LootBoxTable}
 {Price}         INT                     NOT NULL    DEFAULT 100
 );";
 
-    public static readonly string Select = $@"
+    private static readonly string Select = $@"
 GO
 CREATE PROCEDURE {SelectLootBoxProc} {IdVar} INT
 AS
@@ -28,7 +28,7 @@ BEGIN
     WHERE L.{Id}={IdVar}
 END";
 
-    public static readonly string SelectAll = $@"
+    private static readonly string SelectAll = $@"
 GO
 CREATE PROCEDURE {SelectAllLootBoxProc}
 AS
@@ -38,7 +38,7 @@ BEGIN
     JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=L.{ResourceId}
 END";
 
-    public static readonly string Create = $@"
+    private static readonly string Create = $@"
 GO
 CREATE PROCEDURE {CreateLootBoxProc}
 {NameVar} {UniqueStringType},
@@ -52,4 +52,10 @@ BEGIN
     INSERT INTO {Schema}.{LootBoxTable}({ResourceId},{Name},{Detail},{Price}) 
     VALUES({IdVar},{NameVar},{DetailVar},{PriceVar});
 END";
+
+    public static readonly string Function = $@"
+--LootBox
+{Create}
+{Select}
+{SelectAll}";
 }

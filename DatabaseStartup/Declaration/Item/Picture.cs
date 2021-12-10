@@ -5,7 +5,7 @@ using static WebService.Repository.MSSqlImplementation.ResourceRepository;
 
 namespace DatabaseStartup.Declaration.Item;
 
-internal class Picture
+internal static class Picture
 {
     public static readonly string Table = $@"
 CREATE TABLE {PictureTable}
@@ -15,7 +15,7 @@ CREATE TABLE {PictureTable}
 {ResourceId}    INT                     NOT NULL    {Fk(PictureTable, ResourceTable)}
 );";
 
-    public static readonly string Select = $@"
+    private static readonly string Select = $@"
 GO
 CREATE PROCEDURE {SelectPictureProc} {IdVar} INT
 AS
@@ -26,7 +26,7 @@ BEGIN
     WHERE P.{Id}={IdVar}
 END";
 
-    public static readonly string SelectAll = $@"
+    private static readonly string SelectAll = $@"
 GO
 CREATE PROCEDURE {SelectAllPictureProc}
 AS
@@ -36,7 +36,7 @@ BEGIN
     JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=P.{ResourceId}
 END";
 
-    internal static readonly string Create = $@"
+    private static readonly string Create = $@"
 GO
 CREATE PROCEDURE {CreatePictureProc}
 {NameVar} {UniqueStringType},
@@ -48,4 +48,10 @@ BEGIN
     INSERT INTO {Schema}.{PictureTable}({ResourceId},{Name}) 
     VALUES ({IdVar},{NameVar});
 END";
+
+    public static readonly string Function = $@"
+--Picture
+{Create}
+{Select}
+{SelectAll}";
 }

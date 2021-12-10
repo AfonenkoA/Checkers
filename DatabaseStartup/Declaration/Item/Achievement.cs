@@ -4,7 +4,7 @@ using static WebService.Repository.MSSqlImplementation.ResourceRepository;
 
 namespace DatabaseStartup.Declaration.Item;
 
-internal class Achievement
+internal static class Achievement
 {
     public static readonly string Table = $@"
 CREATE TABLE {AchievementTable}
@@ -15,7 +15,7 @@ CREATE TABLE {AchievementTable}
 {ResourceId}    INT                     NOT NULL    {Fk(AchievementTable, ResourceTable)}
 );";
 
-    public static readonly string Select = $@"
+    private static readonly string Select = $@"
 GO
 CREATE PROCEDURE {SelectAchievementProc} {IdVar} INT
 AS
@@ -26,7 +26,7 @@ BEGIN
     WHERE A.{Id}={IdVar}
 END";
 
-    public static readonly string SelectAll = $@"
+    private static readonly string SelectAll = $@"
 GO
 CREATE PROCEDURE {SelectAllAchievementProc}
 AS
@@ -36,7 +36,7 @@ BEGIN
     JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=A.{ResourceId}
 END";
 
-    public static readonly string Create = $@"
+    private static readonly string Create = $@"
 GO
 CREATE PROCEDURE {CreateAchievementProc}
 {NameVar} {UniqueStringType},
@@ -49,4 +49,10 @@ BEGIN
     INSERT INTO {Schema}.{AchievementTable}({ResourceId},{Name},{Detail}) 
     VALUES({IdVar},{NameVar},{DetailVar});
 END";
+
+    public static readonly string Function = $@"
+--Achievement
+{Create}
+{Select}
+{SelectAll}";
 }

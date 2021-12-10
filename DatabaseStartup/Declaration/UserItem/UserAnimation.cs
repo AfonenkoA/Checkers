@@ -4,7 +4,7 @@ using static WebService.Repository.MSSqlImplementation.ItemRepository;
 
 namespace DatabaseStartup.Declaration.UserItem;
 
-internal class UserAnimation
+internal static class UserAnimation
 {
     public static readonly string Table = $@"
 CREATE TABLE {UserAnimationTable}
@@ -14,7 +14,7 @@ CREATE TABLE {UserAnimationTable}
 {UserId}        INT     NOT NULL    {Fk(UserAnimationTable, UserTable)}
 );";
 
-    public static readonly string Select = $@"
+    private static readonly string Select = $@"
 GO
 CREATE PROCEDURE {SelectUserAnimationProc} {IdVar} INT
 AS
@@ -24,7 +24,7 @@ BEGIN
     WHERE {Id}={IdVar}
 END";
 
-    public static readonly string Update = $@"
+    private static readonly string Update = $@"
 GO
 CREATE PROCEDURE {UpdateUserAnimationProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
 AS
@@ -36,7 +36,7 @@ BEGIN
         UPDATE {Schema}.{UserTable} SET {AnimationId}={IdVar} WHERE {UserAuthCondition};
 END";
 
-    public static readonly string Add = $@"
+    private static readonly string Add = $@"
 GO
 USE Checkers;
 GO
@@ -46,7 +46,7 @@ BEGIN
     INSERT INTO {UserAnimationTable}({UserId},{AnimationId}) VALUES({UserIdVar},{IdVar}) 
 END";
 
-    internal static readonly string Buy = $@"
+    private static readonly string Buy = $@"
 GO
 CREATE PROCEDURE {UserBuyAnimationProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
 AS
@@ -62,7 +62,7 @@ BEGIN
         END
 END";
 
-    internal static readonly string GetAvailable = $@"
+    private static readonly string GetAvailable = $@"
 GO
 CREATE PROCEDURE {UserGetAvailableAnimationProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
 AS
@@ -73,4 +73,12 @@ BEGIN
     EXCEPT
     SELECT {AnimationId} FROM {Schema}.{UserAnimationTable}
 END";
+
+    public static readonly string Function = $@"
+--UserAnimation
+{Add}
+{Select}
+{Update}
+{GetAvailable}
+{Buy}";
 }

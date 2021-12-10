@@ -4,9 +4,9 @@ using static WebService.Repository.MSSqlImplementation.ItemRepository;
 
 namespace DatabaseStartup.Declaration.UserItem;
 
-internal class UserLootBox
+internal static class UserLootBox
 {
-    internal static readonly string Buy = $@"
+    private static readonly string Buy = $@"
 GO
 CREATE PROCEDURE {UserBuyLootBoxProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
 AS
@@ -19,7 +19,7 @@ BEGIN
         UPDATE {Schema}.{UserTable} SET {Currency} = ({CurrencyVar}-{PriceVar}) WHERE {Id}={UserIdVar};
 END";
 
-    internal static readonly string GetAvailable = $@"
+    private static readonly string GetAvailable = $@"
 GO
 CREATE PROCEDURE {UserGetAvailableLootBoxProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
 AS
@@ -28,4 +28,9 @@ BEGIN
     EXEC {UserIdVar} = {AuthenticateProc} {LoginVar},{PasswordVar}
     SELECT {Id} FROM {Schema}.{LootBoxTable} 
 END";
+
+    public static readonly string Function = $@"
+--UserLootBox
+{GetAvailable}
+{Buy}";
 }

@@ -17,7 +17,7 @@ CREATE TABLE {AnimationTable}
 {Price}         INT                     NOT NULL    DEFAULT 100
 );";
 
-    public static readonly string Select = $@"
+    private static readonly string Select = $@"
 GO
 CREATE PROCEDURE {SelectAnimationProc} {IdVar} INT
 AS
@@ -28,7 +28,7 @@ BEGIN
     WHERE A.{Id}={IdVar}
 END";
 
-    public static readonly string SelectAll = $@"
+    private static readonly string SelectAll = $@"
 GO
 CREATE PROCEDURE {SelectAllAnimationProc}
 AS
@@ -38,7 +38,7 @@ BEGIN
     JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=A.{ResourceId}
 END";
 
-    public static readonly string Create = $@"
+    private static readonly string Create = $@"
 GO
 CREATE PROCEDURE {CreateAnimationProc}
 {NameVar} {UniqueStringType},
@@ -52,4 +52,10 @@ BEGIN
     INSERT INTO {Schema}.{AnimationTable}({ResourceId},{Name},{Detail},{Price}) 
     VALUES({IdVar},{NameVar},{DetailVar},{PriceVar});
 END";
+
+    public static readonly string Function = $@"
+--Animation
+{Create}
+{Select}
+{SelectAll}";
 }

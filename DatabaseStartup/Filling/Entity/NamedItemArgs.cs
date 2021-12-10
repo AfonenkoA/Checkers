@@ -11,7 +11,7 @@ public class NamedItemArgs
     internal NamedItemArgs(string line)
     {
         var strings = line.Split(";") ??
-                      throw CsvTable.LineSplitException;
+                      throw LineSplitException;
 
         _name = SqlString(strings[0]);
         _path = ResourceFile(strings[1]);

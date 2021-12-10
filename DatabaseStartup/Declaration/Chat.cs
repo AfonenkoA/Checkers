@@ -1,6 +1,5 @@
 ﻿using static WebService.Repository.MSSqlImplementation.ChatRepository;
 using static WebService.Repository.MSSqlImplementation.Repository;
-using static WebService.Repository.MSSqlImplementation.UserRepository;
 using static DatabaseStartup.Declaration.Markup;
 
 
@@ -23,7 +22,7 @@ CREATE TABLE {ChatTable}
 {ChatTypeId}    INT                 NOT NULL {Fk(ChatTable, ChatTypeTable)}
 );";
 
-    public static readonly string TypeByName = $@"
+    private static readonly string TypeByName = $@"
 GO
 CREATE PROCEDURE {GetChatTypeByNameProc} {ChatTypeNameVar} {UniqueStringType}
 AS
@@ -31,7 +30,7 @@ BEGIN
     RETURN (SELECT {Id} FROM {Schema}.{ChatTypeTable} WHERE {ChatTypeName}={ChatTypeNameVar})
 END";
 
-    public static readonly string Create = $@"
+    private static readonly string Create = $@"
 GO
 CREATE PROCEDURE {CreateChatProc} {ChatNameVar} {UniqueStringType}, {ChatTypeNameVar} {UniqueStringType}
 AS
@@ -45,11 +44,16 @@ BEGIN
     RETURN @@IDENTITY
 END";
 
-    public static readonly string GetCommon = $@"
+    private static readonly string GetCommon = $@"
 GO
-CREATE PROCEDURE {GetCommonChatIdProc}  {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
+CREATE PROCEDURE {GetCommonChatIdProc}
 AS
 BEGIN
     RETURN (SELECT {Id} FROM {ChatTable} WHERE {ChatName}={SqlString(CommonChatName)});
 END";
+
+    public static readonly string Function = $@"
+{TypeByName}
+{GetCommon}
+{Create}";
 }

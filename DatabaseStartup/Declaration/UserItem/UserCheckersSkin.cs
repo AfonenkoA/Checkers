@@ -4,7 +4,7 @@ using static WebService.Repository.MSSqlImplementation.ItemRepository;
 
 namespace DatabaseStartup.Declaration.UserItem;
 
-internal class UserCheckersSkin
+internal static class UserCheckersSkin
 {
     public static readonly string Table = $@"
 CREATE TABLE {UserCheckersSkinTable}
@@ -14,7 +14,7 @@ CREATE TABLE {UserCheckersSkinTable}
 {UserId}        INT     NOT NULL    {Fk(UserCheckersSkinTable, UserTable)}
 );";
 
-    public static readonly string Select = $@"
+    private static readonly string Select = $@"
 GO
 CREATE PROCEDURE {SelectUserCheckersSkinProc} {IdVar} INT
 AS
@@ -24,7 +24,7 @@ BEGIN
     WHERE {Id}={IdVar}
 END";
 
-    public static readonly string Update = $@"
+    private static readonly string Update = $@"
 GO
 CREATE PROCEDURE {UpdateUserCheckersProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
 AS
@@ -36,7 +36,7 @@ BEGIN
         UPDATE {Schema}.{UserTable} SET {CheckersSkinId}={IdVar} WHERE {UserAuthCondition};
 END";
 
-    public static readonly string Add = $@"
+    private static readonly string Add = $@"
 GO
 CREATE PROCEDURE {UserAddCheckersSkinProc} {UserIdVar} INT, {IdVar} INT
 AS
@@ -44,7 +44,7 @@ BEGIN
     INSERT INTO {UserCheckersSkinTable}({UserId},{CheckersSkinId}) VALUES({UserIdVar},{IdVar}) 
 END";
 
-    public static readonly string Buy = $@"
+    private static readonly string Buy = $@"
 GO
 CREATE PROCEDURE {UserBuyCheckersSkinProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
 AS
@@ -60,7 +60,7 @@ BEGIN
         END
 END";
 
-    public static readonly string GetAvailable = $@"
+    private static readonly string GetAvailable = $@"
 GO
 CREATE PROCEDURE {UserGetAvailableCheckersSkinProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
 AS
@@ -71,4 +71,12 @@ BEGIN
     EXCEPT
     SELECT {CheckersSkinId} FROM {Schema}.{UserCheckersSkinTable}
 END";
+
+    public static readonly string Function = $@"
+--UserCheckersSkin
+{Add}
+{Select}
+{Update}
+{GetAvailable}
+{Buy}";
 }

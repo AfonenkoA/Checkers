@@ -13,7 +13,7 @@ CREATE TABLE {ResourceTable}
 {ResourceBytes}         {BinaryType}	NOT NULL,
 );";
 
-    public static readonly string Select = $@"
+    private static readonly string Select = $@"
 GO
 CREATE PROCEDURE {SelectResourceProc} {IdVar} INT
 AS
@@ -21,7 +21,7 @@ BEGIN
     SELECT * FROM {Schema}.{ResourceTable} WHERE {Id}={IdVar}
 END";
 
-    public static readonly string CreateFromFile = $@"
+    private static readonly string CreateFromFile = $@"
 GO
 CREATE PROCEDURE {CreateResourceFromFileProc} {PathVar} {StringType}
 AS
@@ -34,7 +34,7 @@ BEGIN
     RETURN {IdVar}
 END";
 
-    public static readonly string Create = $@"
+    private static readonly string Create = $@"
 GO
 CREATE PROCEDURE {CreateResourceProc} {ResourceExtensionVar} {StringType}, {ResourceBytesVar} {BinaryType}
 AS
@@ -43,4 +43,10 @@ BEGIN
     VALUES ({ResourceExtensionVar},{ResourceBytesVar});
     RETURN @@IDENTITY;
 END";
+
+    public static readonly string Function = $@"
+--Resource
+{Create}
+{Select}
+{CreateFromFile}";
 }

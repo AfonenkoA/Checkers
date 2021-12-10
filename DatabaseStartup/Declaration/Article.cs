@@ -1,12 +1,9 @@
-﻿using Common.Entity;
-using DatabaseStartup.Filling;
-using static Common.Entity.UserType;
+﻿using static Common.Entity.UserType;
 using static WebService.Repository.MSSqlImplementation.NewsRepository;
 using static WebService.Repository.MSSqlImplementation.Repository;
 using static WebService.Repository.MSSqlImplementation.UserRepository;
 using static WebService.Repository.MSSqlImplementation.ForumRepository;
 using static WebService.Repository.MSSqlImplementation.ResourceRepository;
-using static DatabaseStartup.Declaration.Markup;
 using static DatabaseStartup.Declaration.Markup;
 
 namespace DatabaseStartup.Declaration;

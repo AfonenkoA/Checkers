@@ -34,7 +34,7 @@ CREATE TABLE {UserTypeTable}
 {UserTypeName}  {UniqueStringType}    NOT NULL UNIQUE
 );";
 
-    internal static readonly string TypeByName = $@"
+    private static readonly string TypeByName = $@"
 GO
 CREATE PROCEDURE {GetUserTypeByTypeNameProc} {UserTypeNameVar} {UniqueStringType}
 AS
@@ -42,7 +42,7 @@ BEGIN
     RETURN (SELECT {Id} FROM {Schema}.{UserTypeTable} WHERE {UserTypeName}={UserTypeNameVar})
 END";
 
-    internal static readonly string CheckAccess = $@"
+    private static readonly string CheckAccess = $@"
 GO
 CREATE PROCEDURE {CheckAccessProc} {IdVar} INT, {UserTypeNameVar} {UniqueStringType}
 AS
@@ -57,7 +57,7 @@ BEGIN
         RETURN {InvalidAccess}
 END";
 
-    internal static readonly string UpdateActivity = $@"
+    private static readonly string UpdateActivity = $@"
 GO
 CREATE PROCEDURE {UpdateUserActivityProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
 AS
@@ -65,7 +65,7 @@ BEGIN
     UPDATE {Schema}.{UserTable} SET {LastActivity}=GETDATE() WHERE {UserAuthCondition}
 END";
 
-    internal static readonly string Create = $@"
+    private static readonly string Create = $@"
 GO
 CREATE PROCEDURE {CreateUserProc}
 {NickVar} {StringType},
@@ -94,7 +94,7 @@ BEGIN
     RETURN {UserIdVar}
 END";
 
-    internal static readonly string Authenticate = $@"
+    private static readonly string Authenticate = $@"
 GO
 CREATE PROCEDURE {AuthenticateProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
 AS
@@ -108,7 +108,7 @@ BEGIN
         RETURN {InvalidId};
 END";
 
-    internal static readonly string Select = $@"
+    private static readonly string Select = $@"
 GO
 CREATE PROCEDURE {SelectUserProc} {IdVar} INT
 AS
@@ -116,7 +116,7 @@ BEGIN
     SELECT * FROM {Schema}.{UserTable} WHERE {Id}={IdVar}
 END";
 
-    internal static readonly string UpdateNick = $@"
+    private static readonly string UpdateNick = $@"
 GO  
 CREATE PROCEDURE {UpdateUserNickProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {NickVar} {StringType}
 AS
@@ -125,7 +125,7 @@ BEGIN
     UPDATE {Schema}.{UserTable} SET {Nick}={NickVar} WHERE {UserAuthCondition};
 END";
 
-    internal static readonly string UpdateLogin = $@"
+    private static readonly string UpdateLogin = $@"
 GO  
 CREATE PROCEDURE {UpdateUserLoginProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {NewLoginVar} {UniqueStringType}
 AS
@@ -134,7 +134,7 @@ BEGIN
     UPDATE {Schema}.{UserTable} SET {Login}={NewLoginVar} WHERE {UserAuthCondition};
 END";
 
-    internal static readonly string UpdatePassword = $@"
+    private static readonly string UpdatePassword = $@"
 GO  
 CREATE PROCEDURE {UpdateUserPasswordProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {NewPasswordVar} {StringType}
 AS
@@ -143,7 +143,7 @@ BEGIN
     UPDATE {Schema}.{UserTable} SET {Password}={NewPasswordVar} WHERE {UserAuthCondition};
 END";
 
-    internal static readonly string UpdateEmail = $@"
+    private static readonly string UpdateEmail = $@"
 GO  
 CREATE PROCEDURE {UpdateUserEmailProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {EmailVar} {StringType}
 AS
@@ -152,7 +152,7 @@ BEGIN
     UPDATE {Schema}.{UserTable} SET {Email}={EmailVar} WHERE {UserAuthCondition};
 END";
 
-    internal static readonly string UpdatePicture = $@"
+    private static readonly string UpdatePicture = $@"
 GO
 CREATE PROCEDURE {UpdateUserPictureProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}, {IdVar} INT
 AS
@@ -162,7 +162,7 @@ BEGIN
     UPDATE {Schema}.{UserTable} SET {PictureId} = {IdVar} WHERE {Id}={UserIdVar}
 END";
 
-    public static readonly string SelectByNick = $@"
+    private static readonly string SelectByNick = $@"
 GO
 CREATE PROCEDURE {SelectUserByNickProc} {NickVar} {StringType}
 AS
@@ -170,7 +170,7 @@ BEGIN
     SELECT * FROM {Schema}.{UserTable} WHERE {Nick} LIKE {NickVar}
 END";
 
-    internal static readonly string SelectTop = $@"
+    private static readonly string SelectTop = $@"
 GO 
 CREATE PROCEDURE {SelectTopPlayersProc}
 AS
@@ -183,7 +183,7 @@ BEGIN
     ORDER BY {SocialCredit} DESC;
 END";
 
-    internal static readonly string SelectTopAuth = $@"
+    private static readonly string SelectTopAuth = $@"
 GO
 CREATE PROCEDURE {SelectTopPlayersAuthProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
 AS
@@ -197,4 +197,21 @@ BEGIN
     WHERE {StatisticPosition} < 2 OR {Id}={IdVar}
     ORDER BY {SocialCredit} DESC;
 END";
+
+
+    internal static readonly string Function = $@"
+--User
+{UpdateActivity}
+{TypeByName}
+{Create}
+{Authenticate}
+{CheckAccess}
+{UpdateEmail}
+{UpdateLogin}
+{UpdateNick}
+{UpdatePassword}
+{UpdatePicture}
+{SelectTop}
+{SelectTopAuth}
+{SelectByNick}";
 }

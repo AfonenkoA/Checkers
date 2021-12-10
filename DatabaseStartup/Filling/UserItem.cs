@@ -9,9 +9,9 @@ namespace DatabaseStartup.Filling;
 
 internal static class UserItem
 {
-    public const string UserPictureSource = "UserAvatars.csv";
+    private const string UserPictureSource = "UserAvatars.csv";
 
-    public static string Pictures()
+    private static string Pictures()
     {
         static string PictureId(string name) =>
             $"(SELECT {Id} FROM {PictureTable} WHERE {Name} = {name})";
@@ -20,8 +20,11 @@ internal static class UserItem
         static string ExecUpdate(string log, string pass) => $"EXEC {UpdateUserPictureProc} {log}, {pass}, @id";
         static string Update(UserPictureArgs u) => $"{Set(u.PicName)}\n{ExecUpdate(u.Login, u.Password)}";
 
-        return Common.Declaration +
+        return DeclareId +
                string.Join('\n', ReadLines(DataFile(UserPictureSource))
                    .Select(s => Update(new UserPictureArgs(s))));
     }
+
+    public static readonly string Total = $@"
+{Pictures()}";
 }
