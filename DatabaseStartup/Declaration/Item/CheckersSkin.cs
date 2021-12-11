@@ -11,7 +11,7 @@ internal static class CheckersSkin
 CREATE TABLE {CheckersSkinTable}
 (
 {Identity},
-{Name}          {UniqueStringType}      NOT NULL    UNIQUE,
+{ItemName}          {UniqueStringType}      NOT NULL    UNIQUE,
 {Detail}        {StringType}            NOT NULL,
 {ResourceId}    INT                     NOT NULL    {Fk(CheckersSkinTable, ResourceTable)},
 {Price}         INT                     NOT NULL    DEFAULT 100
@@ -49,7 +49,7 @@ AS
 BEGIN
     DECLARE {IdVar} INT
     EXEC {IdVar} = {CreateResourceFromFileProc} {PathVar}
-    INSERT INTO {Schema}.{CheckersSkinTable}({ResourceId},{Name},{Detail},{Price}) 
+    INSERT INTO {Schema}.{CheckersSkinTable}({ResourceId},{ItemName},{Detail},{Price}) 
     VALUES({IdVar},{NameVar},{DetailVar},{PriceVar});
 END";
 

@@ -10,7 +10,7 @@ internal static class Achievement
 CREATE TABLE {AchievementTable}
 (
 {Identity},
-{Name}          {UniqueStringType}      NOT NULL    UNIQUE,
+{ItemName}          {UniqueStringType}      NOT NULL    UNIQUE,
 {Detail}        {StringType}            NOT NULL,
 {ResourceId}    INT                     NOT NULL    {Fk(AchievementTable, ResourceTable)}
 );";
@@ -46,7 +46,7 @@ AS
 BEGIN
     DECLARE {IdVar} INT
     EXEC {IdVar} = {CreateResourceFromFileProc} {PathVar}
-    INSERT INTO {Schema}.{AchievementTable}({ResourceId},{Name},{Detail}) 
+    INSERT INTO {Schema}.{AchievementTable}({ResourceId},{ItemName},{Detail}) 
     VALUES({IdVar},{NameVar},{DetailVar});
 END";
 

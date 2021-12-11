@@ -11,7 +11,7 @@ internal static class Animation
 CREATE TABLE {AnimationTable}
 (
 {Identity},
-{Name}          {UniqueStringType}      NOT NULL    UNIQUE,
+{ItemName}          {UniqueStringType}      NOT NULL    UNIQUE,
 {Detail}        {StringType}            NOT NULL,
 {ResourceId}    INT                     NOT NULL    {Fk(AnimationTable, ResourceTable)},
 {Price}         INT                     NOT NULL    DEFAULT 100
@@ -49,7 +49,7 @@ AS
 BEGIN
     DECLARE {IdVar} INT
     EXEC {IdVar} = {CreateResourceFromFileProc} {PathVar}
-    INSERT INTO {Schema}.{AnimationTable}({ResourceId},{Name},{Detail},{Price}) 
+    INSERT INTO {Schema}.{AnimationTable}({ResourceId},{ItemName},{Detail},{Price}) 
     VALUES({IdVar},{NameVar},{DetailVar},{PriceVar});
 END";
 

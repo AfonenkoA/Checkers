@@ -76,7 +76,7 @@ internal static class SqlExtensions
         };
 
     private static NamedItem GetNamedItem(this SqlDataReader reader) =>
-        new(reader.GetItem()) {Name = reader.GetFieldValue<string>(Name)};
+        new(reader.GetItem()) {Name = reader.GetFieldValue<string>(ItemName)};
 
     private static DetailedItem GetDetailedItem(this SqlDataReader reader) =>
         new(reader.GetNamedItem()) {Detail = reader.GetFieldValue<string>(Detail)};

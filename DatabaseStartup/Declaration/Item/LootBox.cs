@@ -11,7 +11,7 @@ internal static class LootBox
 CREATE TABLE {LootBoxTable}
 (
 {Identity},
-{Name}          {UniqueStringType}      NOT NULL    UNIQUE,
+{ItemName}          {UniqueStringType}      NOT NULL    UNIQUE,
 {Detail}        {StringType}            NOT NULL,
 {ResourceId}    INT                     NOT NULL    {Fk(LootBoxTable, ResourceTable)},
 {Price}         INT                     NOT NULL    DEFAULT 100
@@ -49,7 +49,7 @@ AS
 BEGIN
     DECLARE {IdVar} INT
     EXEC {IdVar} = {CreateResourceFromFileProc} {PathVar}
-    INSERT INTO {Schema}.{LootBoxTable}({ResourceId},{Name},{Detail},{Price}) 
+    INSERT INTO {Schema}.{LootBoxTable}({ResourceId},{ItemName},{Detail},{Price}) 
     VALUES({IdVar},{NameVar},{DetailVar},{PriceVar});
 END";
 

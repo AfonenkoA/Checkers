@@ -14,7 +14,7 @@ internal static class UserItem
     private static string Pictures()
     {
         static string PictureId(string name) =>
-            $"(SELECT {Id} FROM {PictureTable} WHERE {Name} = {name})";
+            $"(SELECT {Id} FROM {PictureTable} WHERE {ItemName} = {name})";
 
         static string Set(string name) => $"SET @id = {PictureId(name)}";
         static string ExecUpdate(string log, string pass) => $"EXEC {UpdateUserPictureProc} {log}, {pass}, @id";

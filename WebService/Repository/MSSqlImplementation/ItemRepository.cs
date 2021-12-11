@@ -13,8 +13,9 @@ public sealed class ItemRepository : Repository, IItemRepository
     public const string CheckersSkinTable = "[CheckersSkin]";
     public const string AnimationTable = "[Animation]";
     public const string LootBoxTable = "[LootBox]";
+    public const string EmotionTable = "[Emotion]";
 
-    public const string Name = "[name]";
+    public const string ItemName = "[item_name]";
     public const string Detail = "[detail]";
     public const string Price = "[price]";
 
@@ -23,11 +24,14 @@ public sealed class ItemRepository : Repository, IItemRepository
     public const string AnimationId = "[animation_id]";
     public const string LootBoxId = "[lootbox_id]";
     public const string PictureId = "[picture_id]";
+    public const string EmotionId = "[emotion_id]";
 
     public const string DetailVar = "@detail";
     public const string PriceVar = "@price";
     public const string NameVar = "@name";
 
+    public const string AnimationIdVar = "@animation_id";
+    public const string CheckersSkinIdVar = "@checkers_skin_id";
 
     public const string CreatePictureProc = "[SP_CreatePicture]";
     public const string CreateAchievementProc = "[SP_CreateAchievement]";
@@ -46,6 +50,9 @@ public sealed class ItemRepository : Repository, IItemRepository
     public const string SelectAllCheckersSkinProc = "[SP_SelectAllCheckersSkin]";
     public const string SelectAllLootBoxProc = "[SP_SelectAllLootBox]";
     public const string SelectAllAnimationProc = "[SP_SelectAllAnimation]";
+    public const string SelectEmotionProc = "[SP_SelectEmotion]";
+    public const string SelectAllEmotionProc = "[SelectAllEmotion]";
+    public const string CreateEmotionProc = "[CreateEmotion]";
 
 
     internal ItemRepository(SqlConnection connection) : base(connection) { }

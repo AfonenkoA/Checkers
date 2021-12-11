@@ -11,7 +11,6 @@ namespace WebService.Repository.MSSqlImplementation;
 public sealed class UserRepository : Repository, IUserRepository
 {
     public const string UserTable = "[User]";
-    public const string UserItemExtendedView = "[UserItemExtended]";
     public const string UserTypeTable = "[UserType]";
     public const string FriendshipStateTable = "[FriendshipState]";
     public const string FriendshipTable = "[Friendship]";
@@ -20,6 +19,7 @@ public sealed class UserRepository : Repository, IUserRepository
     public const string UserCheckersSkinTable = "[UserCheckerSkin]";
     public const string UserAnimationTable = "[UserAnimation]";
 
+    public const string UserGameTable = "[UserGame]";
 
     public const string Nick = "[nick]";
     public const string Login = "[login]";
@@ -55,6 +55,7 @@ public sealed class UserRepository : Repository, IUserRepository
     public const string FriendshipStateNameVar = "@friendship_state";
     public const string AccessVar = "@access";
     public const string CurrencyVar = "@currency";
+    public const string SocialCreditVar = "@social_credit";
 
     public const string CreateUserProc = "[SP_CreateUser]";
     public const string SelectUserProc = "[SP_SelectUser]";
@@ -89,12 +90,17 @@ public sealed class UserRepository : Repository, IUserRepository
     public const string SelectUserAchievementProc = "[SP_SelectUserAchievement]";
     public const string SelectUserCheckersSkinProc = "[SP_SelectUserCheckersSkin]";
     public const string SelectUserAnimationProc = "[SP_SelectUserAnimation]";
-    public const string SelectUserEmotionProc = "[SP_SelectUserEmotion]";
 
     public const string UserGetAvailableAnimationProc = "[SP_GetAvailableAnimation]";
     public const string UserGetAvailableCheckersSkinProc = "[SP_GetAvailableCheckersSkin]";
     public const string UserGetAvailableLootBoxProc = "[SP_GetAvailableLootBox]";
-    
+
+
+    public const string SelectUserGameProc = "[SP_SelectUserGameProc]";
+    public const string SelectAllUserGameProc = "[SP_SelectAllUserGameProc]";
+
+    public const string CreateUserGameProc = "[SP_CreateUserGame]";
+
     public const int ValidAccess = 1;
     public const int InvalidAccess = -1;
 

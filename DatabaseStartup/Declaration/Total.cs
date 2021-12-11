@@ -1,4 +1,5 @@
-﻿using DatabaseStartup.Declaration.UserItem;
+﻿using DatabaseStartup.Declaration.GameAction;
+using DatabaseStartup.Declaration.UserItem;
 
 namespace DatabaseStartup.Declaration;
 using Item;
@@ -26,6 +27,13 @@ internal static class Total
 {Friendship.Table}
 {Post.Table}
 {Article.Table}
+{Game.Side}
+{Game.WinReason}
+{Game.Table}
+{Move.Table}
+{Emote.Table}
+{Turn.Table}
+{UserGame.Table}
 ";
 
     public static readonly string Function = $@"
@@ -39,11 +47,17 @@ internal static class Total
 {Animation.Function}
 {Picture.Function}
 {LootBox.Function}
+{Emotion.Function}
 {CheckersSkin.Function}
 {UserAchievement.Function}
 {UserAnimation.Function}
 {UserCheckersSkin.Function}
 {UserLootBox.Function}
 {Post.Function}
-{Article.Function}";
+{Article.Function}
+{Game.Function}
+{Emote.Function}
+{Turn.Function}
+{Move.Function}
+{UserGame.Function}";
 }

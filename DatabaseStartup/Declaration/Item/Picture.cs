@@ -11,7 +11,7 @@ internal static class Picture
 CREATE TABLE {PictureTable}
 (
 {Identity},
-{Name}          {UniqueStringType}      NOT NULL    UNIQUE,
+{ItemName}          {UniqueStringType}      NOT NULL    UNIQUE,
 {ResourceId}    INT                     NOT NULL    {Fk(PictureTable, ResourceTable)}
 );";
 
@@ -45,7 +45,7 @@ AS
 BEGIN
     DECLARE {IdVar} INT
     EXEC {IdVar} = {CreateResourceFromFileProc} {PathVar}
-    INSERT INTO {Schema}.{PictureTable}({ResourceId},{Name}) 
+    INSERT INTO {Schema}.{PictureTable}({ResourceId},{ItemName}) 
     VALUES ({IdVar},{NameVar});
 END";
 
