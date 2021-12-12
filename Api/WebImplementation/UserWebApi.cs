@@ -2,6 +2,7 @@
 using Api.Interface;
 using ApiContract.Action;
 using Common.Entity;
+using GameModel;
 using static ApiContract.Action.UserApiAction;
 using static ApiContract.Route;
 using static Common.CommunicationProtocol;
@@ -48,6 +49,11 @@ public sealed class UserWebApi : WebApiBase, IAsyncUserApi
                 Client.GetStringAsync(route);
         var res = Deserialize<FriendUserData>(response);
         return res != null ? (true, res) : (false, FriendUserData.Invalid);
+    }
+
+    public Task<(bool, IEnumerable<GameInfo>)> TryGetGames(Credential credential)
+    {
+        throw new NotImplementedException();
     }
 
 

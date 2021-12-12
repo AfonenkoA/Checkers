@@ -6,5 +6,5 @@ public interface IAsyncGameApi
 {
     public Task<bool> TryCreateGame(Game game);
     public Task<(bool, IdentifiableGame)> TryGetGame(int id);
-    public Task<(bool, IEnumerable<IdentifiableGame>)> TryGetGames();
+    public Task<(bool, IEnumerable<GameInfo>)> TryGetLastGames();
 }

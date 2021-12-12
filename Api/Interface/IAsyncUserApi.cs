@@ -1,4 +1,5 @@
 ﻿using Common.Entity;
+using GameModel;
 
 namespace Api.Interface;
 
@@ -10,7 +11,7 @@ public interface IAsyncUserApi
     Task<(bool, PublicUserData)> TryGetUser(int id);
     Task<(bool, User)> TryGetSelf(Credential credential);
     Task<(bool, FriendUserData)> TryGetFriend(Credential credential, int id);
-
+    Task<(bool, IEnumerable<GameInfo>)> TryGetGames(Credential credential);
     //User Item Activities
     Task<bool> SelectAnimation(Credential credential, int id);
     Task<bool> SelectCheckers(Credential credential, int id);

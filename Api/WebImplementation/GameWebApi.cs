@@ -15,7 +15,7 @@ internal class GameWebApi : IAsyncGameApi
         throw new NotImplementedException();
     }
 
-    public Task<(bool, IEnumerable<IdentifiableGame>)> TryGetGames()
+    public Task<(bool, IEnumerable<GameInfo>)> TryGetLastGames()
     {
         throw new NotImplementedException();
     }
