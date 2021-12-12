@@ -47,7 +47,7 @@
             this.LogOutButton.TabIndex = 0;
             this.LogOutButton.Text = "Log Out";
             this.LogOutButton.UseVisualStyleBackColor = true;
-            this.LogOutButton.Click += new System.EventHandler(this.LogOutButton_Click);
+            
             // 
             // pictureBox1
             // 
@@ -66,7 +66,7 @@
             this.PlayButton.TabIndex = 2;
             this.PlayButton.Text = "Play";
             this.PlayButton.UseVisualStyleBackColor = true;
-            this.PlayButton.Click += new System.EventHandler(this.PlayButton_Click);
+            
             // 
             // CollectionButton
             // 
@@ -77,7 +77,7 @@
             this.CollectionButton.TabIndex = 2;
             this.CollectionButton.Text = "Collcetion";
             this.CollectionButton.UseVisualStyleBackColor = true;
-            this.CollectionButton.Click += new System.EventHandler(this.CollectionButton_Click);
+            
             // 
             // ShopButton
             // 
@@ -88,7 +88,7 @@
             this.ShopButton.TabIndex = 2;
             this.ShopButton.Text = "Shop";
             this.ShopButton.UseVisualStyleBackColor = true;
-            this.ShopButton.Click += new System.EventHandler(this.ShopButton_Click);
+          
             // 
             // ProfileButton
             // 
@@ -99,7 +99,7 @@
             this.ProfileButton.TabIndex = 2;
             this.ProfileButton.Text = "Profile";
             this.ProfileButton.UseVisualStyleBackColor = true;
-            this.ProfileButton.Click += new System.EventHandler(this.ProfileButton_Click);
+            
             // 
             // FriendsButton
             // 
@@ -110,7 +110,7 @@
             this.FriendsButton.TabIndex = 2;
             this.FriendsButton.Text = "Friends";
             this.FriendsButton.UseVisualStyleBackColor = true;
-            this.FriendsButton.Click += new System.EventHandler(this.FriendsButton_Click);
+            
             // 
             // MainMenuWindow
             // 
@@ -126,7 +126,6 @@
             this.Controls.Add(this.LogOutButton);
             this.Name = "MainMenuWindow";
             this.Text = "MainMenuWindow";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainMenuWindow_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 

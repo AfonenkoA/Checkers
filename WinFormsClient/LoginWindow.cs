@@ -1,43 +1,35 @@
-﻿using Checkers.Api.Interface;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Checkers.Api.WebImplementation;
-using Checkers.Data.Entity;
+﻿using WinFormsClient.Presentation.Views;
 
-namespace WinFormsClient
+namespace WinFormsClient;
+
+public partial class LoginWindow : Form, ILoginView
 {
-    
-    public partial class LoginWindow : Form
+    private readonly ApplicationContext _context;
+    public LoginWindow(ApplicationContext context)
     {
-        private static readonly IAsyncUserApi UserApi = new UserWebApi();
-       
-        public LoginWindow()
-        {
-            InitializeComponent();
-        }
+        _context = context;
+        InitializeComponent();
 
-        private async void EnterButton_Click(object sender, EventArgs e)
-        {
-              
-            if (await UserApi.Authenticate(new Credential
-               {Login = LoginTextBox.Text, Password = PasswordTextBox.Text}))
-            {
-                Hide();
-                new MainMenuWindow(this).Show();
+        EnterButton.Click += (sender, args) => Invoke(LogIn);
+    }
 
-            }
-            else
-            {
-                MessageBox.Show(this, "Authorization error", "Error");
-            }
+    public new void Show()
+    {
+        _context.MainForm = this;
+        Application.Run(_context);
+    }
 
-        }
+    public string Login { get { return LoginTextBox.Text; } }
+    public string Password { get { return PasswordTextBox.Text; } }
+    public event Action LogIn;
+
+    public void ShowError(string errorMessage)
+    {
+        ErrorLabel.Text = errorMessage;
+    }
+
+    private void Invoke(Action action)
+    {
+        if (action != null) action();
     }
 }
