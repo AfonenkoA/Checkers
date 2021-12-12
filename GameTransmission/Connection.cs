@@ -1,5 +1,4 @@
 ﻿using System.Net.Sockets;
-using static System.String;
 using static Common.CommunicationProtocol;
 
 namespace GameTransmission;
@@ -23,7 +22,9 @@ public sealed class Connection : IDisposable
     public async Task<T?> ReceiveObject<T>()
     {
         var json = await _reader.ReadLineAsync();
+        if (json == null) throw new ArgumentException("Can't read received string");
         var message = Deserialize<Message>(json);
+        if (message == null) throw new ArgumentException("Message parse exception");
         return message.GetAs<T>();
     }
 

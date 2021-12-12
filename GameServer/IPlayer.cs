@@ -1,6 +1,5 @@
 ﻿using GameModel;
 using GameServer.Tcp;
-using GameTransmission;
 using EmoteAction = GameModel.EmoteAction;
 using MoveAction = GameModel.MoveAction;
 
