@@ -46,8 +46,7 @@ public sealed class UserWebApi : WebApiBase, IAsyncUserApi
     public async Task<(bool, FriendUserData)> TryGetFriend(Credential credential, int friendId)
     {
         var route = UserRoute + $"/{friendId}" + Query(credential);
-        var response = await
-                Client.GetStringAsync(route);
+        var response = await Client.GetStringAsync(route);
         var res = Deserialize<FriendUserData>(response);
         return res != null ? (true, res) : (false, FriendUserData.Invalid);
     }
@@ -70,48 +69,48 @@ public sealed class UserWebApi : WebApiBase, IAsyncUserApi
     public async Task<bool> Authenticate(Credential user)
     {
         var route = UserRoute + Query(user, UserApiAction.Authenticate);
-        var response = await Client.GetAsync(route);
+        using var response = await Client.PutAsJsonAsync(route,"1");
         return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> UpdateUserNick(Credential credential, string nick)
     {
         var route = UserRoute + Query(credential, UpdateNick);
-        var response = await Client.PutAsJsonAsync(route, nick);
+        using var response = await Client.PutAsJsonAsync(route, nick);
         return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> UpdateUserLogin(Credential credential, string login)
     {
         var route = UserRoute + Query(credential, UpdateLogin);
-        var response = await Client.PutAsJsonAsync(route, login);
+        using var response = await Client.PutAsJsonAsync(route, login);
         return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> UpdateUserPassword(Credential credential, string password)
     {
         var route = UserRoute + Query(credential, UpdatePassword);
-        var response = await Client.PutAsJsonAsync(route, password);
+        using var response = await Client.PutAsJsonAsync(route, password);
         return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> UpdateUserEmail(Credential credential, string email)
     {
         var route = UserRoute + Query(credential, UpdateEmail);
-        var response = await Client.PutAsJsonAsync(route, email);
+        using var response = await Client.PutAsJsonAsync(route, email);
         return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> UpdateUserPicture(Credential credential, int pictureId)
     {
         var route = UserRoute + Query(credential, UserApiAction.UpdateUserPicture);
-        var response = await Client.PutAsJsonAsync(route, pictureId.ToString());
+        using var response = await Client.PutAsJsonAsync(route, pictureId.ToString());
         return response.IsSuccessStatusCode;
     }
 
     public async Task<(bool, IEnumerable<PublicUserData>)> TryGetUsersByNick(string pattern)
     {
-        var resp = await Client.PutAsJsonAsync($"{UserRoute}/{QueryAction(GetUsersByNick)}", pattern);
+        using var resp = await Client.PutAsJsonAsync($"{UserRoute}/{QueryAction(GetUsersByNick)}", pattern);
         var str = await resp.Content.ReadAsStringAsync();
         var res = Deserialize<IEnumerable<PublicUserData>>(str);
         return res != null ? (true, res) : (false, Enumerable.Empty<PublicUserData>());
@@ -146,21 +145,21 @@ public sealed class UserWebApi : WebApiBase, IAsyncUserApi
 
     public async Task<(bool, IEnumerable<int>)> TryGetAvailableAnimations(Credential c)
     {
-        var response = await Client.GetStringAsync(AnimationShop+Query(c));
+        var response = await Client.GetStringAsync(AnimationShop+Query(c)).ConfigureAwait(false);
         var res = Deserialize<List<int>>(response);
         return res!=null ? (true,res) : (false, Enumerable.Empty<int>());
     }
 
     public async Task<(bool, IEnumerable<int>)> TryGetAvailableCheckers(Credential c)
     {
-        var response = await Client.GetStringAsync(CheckersSkinShop + Query(c));
+        var response = await Client.GetStringAsync(CheckersSkinShop + Query(c)).ConfigureAwait(false);
         var res = Deserialize<List<int>>(response);
         return res != null ? (true, res) : (false, Enumerable.Empty<int>());
     }
 
     public async Task<(bool, IEnumerable<int>)> TryGetAvailableLootBoxes(Credential c)
     {
-        var response = await Client.GetStringAsync(LootBoxShop + Query(c));
+        var response = await Client.GetStringAsync(LootBoxShop + Query(c)).ConfigureAwait(false);
         var res = Deserialize<List<int>>(response);
         return res != null ? (true, res) : (false, Enumerable.Empty<int>());
     }

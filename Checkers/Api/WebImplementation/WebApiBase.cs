@@ -5,11 +5,18 @@ using System.Text.Json;
 using System.Text.Unicode;
 using Checkers.Api.Interface.Action;
 using Checkers.Data.Entity;
+using static System.Net.ServicePointManager;
 
 namespace Checkers.Api.WebImplementation;
 
 public class WebApiBase
 {
+    static WebApiBase()
+    {
+        DefaultConnectionLimit = 100;
+        Expect100Continue = false;
+        UseNagleAlgorithm = true;
+    }
     private static readonly JsonSerializerOptions Options = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -19,7 +26,11 @@ public class WebApiBase
     {
         return JsonSerializer.Deserialize<T>(s, Options);
     }
-    protected static readonly HttpClient Client = new(){BaseAddress = new Uri("http://localhost:5005/api/")};
+    protected readonly HttpClient Client = new()
+    {
+        BaseAddress = new Uri("http://localhost:5005/api/"),
+        Timeout = TimeSpan.FromSeconds(1)
+    };
     public const string UserRoute = "newuser";
     public const string ItemRoute = "item";
     public const string StatisticsRoute = "stat";

@@ -133,6 +133,13 @@ public class UserTest
     [TestMethod]
     public async Task Test13BuyLootBox()
     {
+        for (int i = 0; i < 1000; i++)
+        {
+            await UserApi.TryGetAvailableAnimations(Credential);
+            await UserApi.TryGetAvailableCheckers(Credential);
+            await UserApi.TryGetAvailableLootBoxes(Credential);
+        }
+
         var (shopSuccess, items) = await UserApi.TryGetAvailableLootBoxes(Credential);
         Assert.IsTrue(shopSuccess);
         var enumerable = items.ToList();

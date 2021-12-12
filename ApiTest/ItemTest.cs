@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -145,4 +146,10 @@ public class ItemTest
         }
     }
 
+    [TestMethod]
+    public async Task Blya()
+    {
+        for (int i = 0; i < 1000; i++)
+            await ResourceService.TryGetFile(2);
+    }
 }
