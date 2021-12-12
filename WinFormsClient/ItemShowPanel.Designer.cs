@@ -70,7 +70,7 @@
             this.Controls.Add(this.pictureBox1);
             this.Name = "ItemShowPanel";
             this.Size = new System.Drawing.Size(242, 113);
-            this.Load += new System.EventHandler(this.ItemShowPanel_Load);
+            //this.Load += new System.EventHandler(this.ItemShowPanel_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
