@@ -1,9 +1,9 @@
-﻿using Checkers.Data.Entity;
-using Checkers.Data.Repository.Interface;
-using Checkers.Data.Repository.MSSqlImplementation;
+﻿using Common.Entity;
 using Microsoft.AspNetCore.Mvc;
-using static Checkers.Api.Interface.Action.UserApiAction;
-using static Checkers.Api.WebImplementation.WebApiBase;
+using WebService.Repository.Interface;
+using WebService.Repository.MSSqlImplementation;
+using static ApiContract.Action.UserApiAction;
+using static ApiContract.Route;
 
 namespace WebService.Controllers;
 
@@ -54,7 +54,6 @@ public class UserController : ControllerBase
             SelectCheckersValue => SelectCheckers(credential, int.Parse(val)),
             SelectAnimationValue => SelectAnimation(credential, int.Parse(val)),
             AuthenticateValue => Authenticate(credential),
-            BuyValue => BuyItem(credential, int.Parse(val)),
             UpdateNickValue => UpdateUserNick(credential, val),
             UpdateLoginValue => UpdateUserLogin(credential, val),
             UpdatePasswordValue => UpdateUserPassword(credential, val),
@@ -80,8 +79,6 @@ public class UserController : ControllerBase
     private IActionResult SelectCheckers(Credential credential, int checkersId) =>
         _repository.SelectCheckers(credential, checkersId) ? OkResult : BadRequestResult;
 
-    private static IActionResult BuyItem(Credential credential, int itemId)
-        => BadRequestResult;
 
     //User Account Activities 
     private IActionResult Authenticate(Credential user) =>
