@@ -1,5 +1,4 @@
 ﻿using System.Net.Sockets;
-using static System.String;
 using static Common.CommunicationProtocol;
 
 namespace GameTransmission;

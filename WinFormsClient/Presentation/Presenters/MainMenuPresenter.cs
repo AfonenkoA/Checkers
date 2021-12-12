@@ -1,4 +1,4 @@
-﻿using Checkers.Data.Entity;
+﻿using Common.Entity;
 using WinFormsClient.Presentation.Common;
 using WinFormsClient.Presentation.Views;
 

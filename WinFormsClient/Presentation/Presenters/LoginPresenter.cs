@@ -1,5 +1,5 @@
-﻿using Checkers.Api.Interface;
-using Checkers.Data.Entity;
+﻿using Api.Interface;
+using Common.Entity;
 using WinFormsClient.Presentation.Common;
 using WinFormsClient.Presentation.Views;
 

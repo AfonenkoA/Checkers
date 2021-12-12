@@ -1,5 +1,5 @@
-using Checkers.Api.Interface;
-using Checkers.Api.WebImplementation;
+using Api.Interface;
+using Api.WebImplementation;
 using WinFormsClient.Presentation.Common;
 using WinFormsClient.Presentation.Presenters;
 using WinFormsClient.Presentation.Views;
