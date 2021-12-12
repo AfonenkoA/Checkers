@@ -144,18 +144,6 @@ public sealed class UserRepository : Repository, IUserRepository
         return list;
     }
 
-    private IEnumerable<Emotion> GetUserEmotions(int id)
-    {
-        using var command = CreateProcedure(SelectUserAnimationProc);
-        command.Parameters.Add(IdParameter(id));
-        List<Emotion> list = new();
-        using var reader = command.ExecuteReader();
-        while (reader.Read())
-            list.Add(reader.GetEmotion());
-        return list;
-    }
-
-
     public bool CreateUser(UserCreationData user)
     {
         using var command = CreateProcedure(CreateUserProc);

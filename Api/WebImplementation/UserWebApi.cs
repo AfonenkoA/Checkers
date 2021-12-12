@@ -137,9 +137,6 @@ public sealed class UserWebApi : WebApiBase, IAsyncUserApi
         return response.IsSuccessStatusCode;
     }
 
-    private const string ShopRoute = Route.UserRoute + "/shop";
-
-    
     public async Task<bool> BuyCheckersSkin(Credential credential, int id)
     {
         var route = Route.UserRoute + Query(credential, UserApiAction.BuyCheckersSkin);
