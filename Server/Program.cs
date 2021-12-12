@@ -1,5 +1,5 @@
-﻿
-using GameServer.Tcp;
+﻿using GameServer.Tcp;
+using GameTransmission;
 
-var server = TcpServer.CreateServer(int.Parse(args[0]));
+var server = TcpServer.CreateServer(Connection.ServerPort);
 server.Run().Wait();

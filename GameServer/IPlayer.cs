@@ -1,5 +1,6 @@
 ﻿using GameModel;
 using GameServer.Tcp;
+using GameTransmission;
 using EmoteAction = GameModel.EmoteAction;
 using MoveAction = GameModel.MoveAction;
 
@@ -21,5 +22,5 @@ public interface IPlayer
     public event GameRequestHandler? OnGameRequest;
     public event DisconnectActionHandler? OnDisconnect;
 
-    public void Send<T>(T obj) where T : IGameEvent;
+    public void Send<T>(T obj);
 }

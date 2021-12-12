@@ -14,7 +14,7 @@ public sealed class Message
 
     public T GetAs<T>()
     {
-        if (Type != nameof(T)) throw new ArgumentException();
+        if (Type != typeof(T).Name) throw new ArgumentException();
         var val = Deserialize<T>(Value);
         if (val == null) throw new ArgumentException();
         return val;
@@ -23,7 +23,7 @@ public sealed class Message
     public static string FromValue<T>(T val) =>
         Serialize(new Message
         {
-            Type = nameof(T),
+            Type = typeof(T).Name,
             Value = Serialize(val)
         });
 

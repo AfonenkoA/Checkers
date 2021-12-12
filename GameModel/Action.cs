@@ -2,14 +2,17 @@
 
 namespace GameModel;
 
-public class Action
+public interface IGameAction 
+{}
+
+public class Action : IGameAction
 {
     public Side Side { get; set; }
 }
 
 public sealed class MoveAction : Action
 {
-    public int Form { get; set; } = InvalidInt;
+    public int From { get; set; } = InvalidInt;
     public int To { get; set; } = InvalidInt;
 }
 

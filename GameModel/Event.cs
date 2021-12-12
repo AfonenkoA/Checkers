@@ -24,6 +24,11 @@ public sealed class MoveEvent : PersonalizedEvent
     public int To { get; set; } = InvalidInt;
 }
 
+public sealed class KillEvent : PersonalizedEvent
+{
+    public int Place { get; set; } = InvalidInt;
+}
+
 public sealed class EmoteEvent : PersonalizedEvent
 {
     public Emotion Emotion { get; set; } = Invalid;

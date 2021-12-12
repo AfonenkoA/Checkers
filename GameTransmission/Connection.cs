@@ -7,6 +7,7 @@ namespace GameTransmission;
 
 public sealed class Connection : IDisposable
 {
+    public const int ServerPort = 6302;
     private readonly TcpClient _client;
     private readonly StreamWriter _writer;
     private readonly StreamReader _reader;
@@ -19,9 +20,19 @@ public sealed class Connection : IDisposable
         _reader = new StreamReader(stream);
     }
 
-    public async Task<T?> ReceiveObject<T>() 
-        => Deserialize<T>(await _reader.ReadLineAsync() ?? Empty);
-    public Task Transmit<T>(T obj) => _writer.WriteLineAsync(Serialize(obj));
+    public async Task<T?> ReceiveObject<T>()
+    {
+        var json = await _reader.ReadLineAsync();
+        var message = Deserialize<Message>(json);
+        return message.GetAs<T>();
+    }
+
+    public Task Transmit<T>(T obj)
+    {
+        var message = Message.FromValue(obj);
+        return _writer.WriteLineAsync(message);
+    }
+
     public Task<string?> ReceiveString() => _reader.ReadLineAsync();
 
     public void Dispose()

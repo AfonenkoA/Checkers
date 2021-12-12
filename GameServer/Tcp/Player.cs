@@ -71,5 +71,5 @@ public sealed class Player : IPlayer, IDisposable
     public event GameRequestHandler? OnGameRequest;
     public event DisconnectActionHandler? OnDisconnect;
 
-    public void Send<T>(T obj) where T : IGameEvent => _connection.Transmit(obj).Wait();
+    public void Send<T>(T obj) => _connection.Transmit(obj).Wait();
 }

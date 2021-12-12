@@ -79,7 +79,7 @@ internal class Match : InteroperableModel,IDisposable
         Move(new MoveEvent
         {
             Time = Time,
-            From = a.Form,
+            From = a.From,
             To = a.To,
             Side = a.Side
         });

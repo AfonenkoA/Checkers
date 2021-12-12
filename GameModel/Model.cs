@@ -8,6 +8,8 @@ public abstract class Model
     public delegate void MoveEventHandler(MoveEvent e);
     public delegate void ExceptionEventHandler(ExceptionEvent e);
     public delegate void TurnEventHandler(TurnEvent e);
+    public delegate void KillEventHandler(KillEvent e);
+
 
     public event MoveEventHandler? OnMove;
     public event EmoteEventHandler? OnEmote;
