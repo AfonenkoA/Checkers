@@ -72,7 +72,7 @@ public sealed class Client : IClient, IDisposable
 
     public Task Send<T>(T obj) where T : IGameAction => _connection.Transmit(obj);
 
-    public Task Connect() => _connection.Transmit(new ConnectRequestAction {Credential = _credential});
+    public Task Connect() => _connection.Transmit(new ConnectRequestAction { Credential = _credential });
     public Task Disconnect() => _connection.Transmit(new DisconnectRequestAction());
 
     public Task GameRequest() => _connection.Transmit(new GameRequestAction());

@@ -21,7 +21,7 @@ public sealed class StatisticsRepository : RepositoryBase, IStatisticsRepository
     {
         using var command = CreateProcedure(SelectTopPlayersProc);
         using var reader = command.ExecuteReader();
-        var dict = new Dictionary<int,BasicUserData>();
+        var dict = new Dictionary<int, BasicUserData>();
         while (reader.Read())
             dict.Add(reader.GetFieldValue<int>(StatisticPosition), reader.GetUser());
 
@@ -34,7 +34,7 @@ public sealed class StatisticsRepository : RepositoryBase, IStatisticsRepository
     {
         using var command = CreateProcedure(SelectTopPlayersProc);
         command.Parameters.AddRange(
-            new []
+            new[]
             {
                 LoginParameter(credential.Login),
                 PasswordParameter(credential.Password)

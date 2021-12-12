@@ -18,8 +18,8 @@ internal sealed class SavedMatch : MatchModel
         if (_gameStartEvent == null) throw new Exception("Game save exception");
         _repository.SaveGame(new Game
         {
-            Black = _gameStartEvent.Black,
-            White = _gameStartEvent.White,
+            Black = Black.PlayerData,
+            White = White.PlayerData,
             Duration = e.Duration,
             Emotions = _emotes,
             Moves = _moves,

@@ -4,7 +4,7 @@ using static System.DateTime;
 
 namespace GameServer.Match;
 
-internal class MatchModel : InteroperableModel,IDisposable
+internal class MatchModel : InteroperableModel, IDisposable
 {
     private const string MoveExceptionMessage = "Move action out of turn";
 
@@ -62,8 +62,8 @@ internal class MatchModel : InteroperableModel,IDisposable
             Black = blackPlayer,
             White = whitePlayer
         };
-        Black.Send(new YourSideEvent {Side = Side.Black,Time = Time});
-        White.Send(new YourSideEvent {Side = Side.White,Time = Time});
+        Black.Send(new YourSideEvent { Side = Side.Black, Time = Time });
+        White.Send(new YourSideEvent { Side = Side.White, Time = Time });
         SetTurn(Side.White);
         Start(start);
     }
@@ -106,7 +106,7 @@ internal class MatchModel : InteroperableModel,IDisposable
             WinReason = WinReason.Surrender
         });
     }
-    
+
     private void SetTurn(Side side)
     {
         _turn = side;

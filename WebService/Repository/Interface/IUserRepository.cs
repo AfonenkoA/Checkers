@@ -3,7 +3,7 @@ using Common.Entity;
 
 namespace WebService.Repository.Interface;
 
-public interface IUserRepository
+internal interface IUserRepository
 {
     bool CreateUser(UserCreationData user);
     bool DeleteUser(Credential credential);
@@ -17,7 +17,6 @@ public interface IUserRepository
     bool BuyCheckersSkin(Credential credential, int id);
     bool BuyAnimation(Credential credential, int id);
     bool BuyLootBox(Credential credential, int id);
-
 
     bool Authenticate(Credential user);
     bool UpdateUserNick(Credential credential, string nick);

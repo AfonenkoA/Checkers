@@ -7,7 +7,7 @@ namespace GameTransmission;
 public sealed class Message
 {
     public string Type { get; set; } = Empty;
-    public string Value { get; set; } = Empty;
+    private string Value { get; set; } = Empty;
 
     [JsonConstructor]
     public Message() { }
@@ -20,7 +20,7 @@ public sealed class Message
         return val;
     }
 
-    public static string FromValue<T>(T val) =>
+    internal static string FromValue<T>(T val) =>
         Serialize(new Message
         {
             Type = typeof(T).Name,

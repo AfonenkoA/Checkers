@@ -4,10 +4,10 @@ using GameTransmission;
 
 namespace GameServer.Tcp;
 
-public class PlayerFactory
+public sealed class PlayerFactory
 {
     private readonly IPlayerRepository _repository;
-    public PlayerFactory(IPlayerRepository repository) => _repository = repository;
+    internal PlayerFactory(IPlayerRepository repository) => _repository = repository;
 
     internal IPlayer CreatePlayer(Connection connection, Credential credential)
     {

@@ -2,8 +2,8 @@
 
 namespace GameModel;
 
-public interface IGameAction 
-{}
+public interface IGameAction
+{ }
 
 public class Action : IGameAction
 {

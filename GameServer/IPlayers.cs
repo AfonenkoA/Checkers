@@ -1,4 +1,4 @@
 ﻿namespace GameServer;
 
-public interface IPlayers : IAsyncEnumerable<IPlayer>
+internal interface IPlayers : IAsyncEnumerable<IPlayer>
 {}

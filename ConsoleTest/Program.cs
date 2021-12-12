@@ -47,7 +47,7 @@ async Task Act()
                 await c.Send(new EmoteAction { Side = White, Id = 3 });
                 break;
             case '5':
-                await c.Send(new SurrenderAction {Side = White});
+                await c.Send(new SurrenderAction { Side = White });
                 break;
             case '6':
                 await c.GameRequest();

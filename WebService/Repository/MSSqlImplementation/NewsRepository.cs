@@ -8,7 +8,7 @@ using static WebService.Repository.MSSqlImplementation.SqlExtensions;
 
 namespace WebService.Repository.MSSqlImplementation;
 
-public sealed class NewsRepository: RepositoryBase, INewsRepository
+public sealed class NewsRepository : RepositoryBase, INewsRepository
 {
     public const string ArticleTable = "[Article]";
     public const string ArticleAuthorId = "[article_author_id]";
@@ -142,5 +142,5 @@ public sealed class NewsRepository: RepositoryBase, INewsRepository
         using var reader = command.ExecuteReader();
         return reader.GetAllArticleInfo();
     }
-    
+
 }

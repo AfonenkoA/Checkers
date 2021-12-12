@@ -3,7 +3,7 @@ using static Common.Entity.Credential;
 
 namespace GameTransmission;
 
-public interface ITransmissionAction {}
+internal interface ITransmissionAction { }
 
 public sealed class GameRequestAction : ITransmissionAction
 { }

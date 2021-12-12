@@ -23,7 +23,7 @@ public class UserTest
 
 
     private static readonly IAsyncUserApi UserApi = new UserWebApi();
-    private static readonly Credential Credential = new(){Login = Login,Password = Password};
+    private static readonly Credential Credential = new() { Login = Login, Password = Password };
     private static readonly IAsyncItemApi ItemApi = new ItemWebApi();
 
     private static int _newAnimation;
@@ -34,7 +34,7 @@ public class UserTest
     [TestMethod]
     public async Task Test01CreateUser()
     {
-        var data = new UserCreationData {Login = Login, Email = Email, Nick = Nick, Password = Password};
+        var data = new UserCreationData { Login = Login, Email = Email, Nick = Nick, Password = Password };
         var success = await UserApi.CreateUser(data);
         IsTrue(success);
     }
@@ -42,14 +42,14 @@ public class UserTest
     [TestMethod]
     public async Task Test02Authenticate()
     {
-        var success =  await UserApi.Authenticate(Credential);
+        var success = await UserApi.Authenticate(Credential);
         IsTrue(success);
     }
 
     [TestMethod]
     public async Task Test03GetUser()
     {
-        var (success,_) = await UserApi.TryGetUser(1);
+        var (success, _) = await UserApi.TryGetUser(1);
         IsTrue(success);
     }
 
@@ -80,7 +80,7 @@ public class UserTest
     {
         var (picSuccess, items) = await ItemApi.TryGetPictures();
         IsTrue(picSuccess);
-        _newPicture = items.Select(i=>i.Id).Max();
+        _newPicture = items.Select(i => i.Id).Max();
         var success = await UserApi.UpdateUserPicture(Credential, _newPicture);
         IsTrue(success);
     }
@@ -88,7 +88,7 @@ public class UserTest
     [TestMethod]
     public async Task Test08TryGetUsersByNick()
     {
-        var (success,users) = await UserApi.TryGetUsersByNick("");
+        var (success, users) = await UserApi.TryGetUsersByNick("");
         IsTrue(users.Any());
         IsTrue(success);
     }
@@ -100,7 +100,7 @@ public class UserTest
         IsTrue(userSuccess);
         var enumerable = user.AvailableAnimations.ToList();
         IsTrue(enumerable.Any());
-        _newAnimation = enumerable.Select(a=>a.Id).Max();
+        _newAnimation = enumerable.Select(a => a.Id).Max();
         var success = await UserApi.BuyAnimation(Credential, _newAnimation);
         IsTrue(success);
     }
@@ -138,7 +138,7 @@ public class UserTest
         IsTrue(userSuccess);
         var enumerable = user.AvailableLootBox.ToList();
         IsTrue(enumerable.Any());
-        var success = await UserApi.BuyLootBox(Credential, enumerable.Select(a=>a.Id).Max());
+        var success = await UserApi.BuyLootBox(Credential, enumerable.Select(a => a.Id).Max());
         IsTrue(success);
     }
 
@@ -153,19 +153,19 @@ public class UserTest
     [TestMethod]
     public async Task Test15UpdateUserPassword()
     {
-        var success = await UserApi.UpdateUserPassword(new Credential {Login = NewLogin,Password = Password}, NewPassword);
+        var success = await UserApi.UpdateUserPassword(new Credential { Login = NewLogin, Password = Password }, NewPassword);
         IsTrue(success);
     }
 
     [TestMethod]
     public async Task Test16Final()
     {
-        var newCredential = new Credential {Login = NewLogin, Password = NewPassword};
+        var newCredential = new Credential { Login = NewLogin, Password = NewPassword };
         var (success, user) = await UserApi.TryGetSelf(newCredential);
         IsTrue(success);
-        AreEqual(NewNick,user.Nick);
-        AreEqual(_newCheckersSkin,user.SelectedCheckersId);
+        AreEqual(NewNick, user.Nick);
+        AreEqual(_newCheckersSkin, user.SelectedCheckersId);
         AreEqual(_newAnimation, user.SelectedAnimationId);
-        AreEqual(_newPicture,user.PictureId);
+        AreEqual(_newPicture, user.PictureId);
     }
 }

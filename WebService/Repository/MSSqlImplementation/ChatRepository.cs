@@ -30,7 +30,7 @@ public sealed class ChatRepository : RepositoryBase, IChatRepository
 
     public const string CommonChatName = "Common chat";
 
-    internal ChatRepository(SqlConnection connection) : base(connection){}
+    internal ChatRepository(SqlConnection connection) : base(connection) { }
 
     public IEnumerable<Message> GetMessages(Credential credential, int chatId, DateTime from)
     {

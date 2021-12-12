@@ -18,7 +18,7 @@ public class ChatController : ControllerBase
     public IActionResult GetMessages([FromQuery] Credential credential, [FromRoute] int id, [FromQuery] DateTime from) =>
         Json(_repository.GetMessages(credential, id, from));
 
-    [HttpGet,Route("public")]
+    [HttpGet, Route("public")]
     public IActionResult GetPublicChat([FromQuery] Credential credential) =>
         Json(_repository.GetCommonChatId(credential));
 

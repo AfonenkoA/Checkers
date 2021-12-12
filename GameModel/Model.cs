@@ -31,7 +31,7 @@ public abstract class Model
     protected void Emote(EmoteEvent e) => OnEmote?.Invoke(e);
 
     protected void Exception(ExceptionEvent e) => OnException?.Invoke(e);
-    
+
     protected void End(GameEndEvent e) => OnGameEnd?.Invoke(e);
 
     protected void Start(GameStartEvent e) => OnGameStart?.Invoke(e);

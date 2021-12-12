@@ -13,7 +13,7 @@ internal sealed class MatchMaker : IMatchMaker
         if (_players.Count < 2) return;
         var black = _players.Dequeue();
         var white = _players.Dequeue();
-        _factory.CreateMatch(black,white).Run();
+        _factory.CreateMatch(black, white).Run();
     }
 
     public void RemovePlayer(IPlayer sender)

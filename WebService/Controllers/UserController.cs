@@ -26,7 +26,7 @@ public class UserController : ControllerBase
     //доработать friend
     [HttpGet("{id:int}")]
     public IActionResult GetUser([FromQuery] Credential credential, [FromRoute] int id) =>
-        Json(credential.IsValid ? _repository.GetFriend(credential,id) : _repository.GetUser(id));
+        Json(credential.IsValid ? _repository.GetFriend(credential, id) : _repository.GetUser(id));
 
     [HttpGet]
     public IActionResult GetSelf([FromQuery] Credential credential) =>
@@ -36,7 +36,7 @@ public class UserController : ControllerBase
     [HttpPut]
     public IActionResult ActionHandler([FromQuery] Credential credential,
         [FromQuery] string action,
-        [FromBody] string val)=>
+        [FromBody] string val) =>
         action switch
         {
             SelectCheckersValue => SelectCheckers(credential, int.Parse(val)),

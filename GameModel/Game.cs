@@ -24,7 +24,7 @@ public enum WinReason
 public sealed class PlayerInfo
 {
     public static readonly PlayerInfo Invalid = new();
-    public PublicUserData User { get; set;} = PublicUserData.Invalid;
+    public PublicUserData User { get; set; } = PublicUserData.Invalid;
     public CheckersSkin CheckersSkin { get; set; } = CheckersSkin.Invalid;
     public Animation Animation { get; set; } = Animation.Invalid;
     public int StartSocialCredit { get; set; } = InvalidInt;

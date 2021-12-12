@@ -3,7 +3,7 @@ using static DatabaseStartup.Filling.Common;
 
 namespace DatabaseStartup.Filling.Entity;
 
-public sealed class DirectedMessageArgs : MessageArgs
+internal sealed class DirectedMessageArgs : MessageArgs
 {
     internal readonly string Direction;
     internal DirectedMessageArgs(string line) : base(line)

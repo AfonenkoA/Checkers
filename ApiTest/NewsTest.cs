@@ -16,7 +16,7 @@ public class NewsTest
     private static readonly IAsyncNewsApi NewsApi = new NewsWebApi();
     private static readonly IAsyncResourceService ResourceService = new AsyncResourceWebApi();
     private static readonly List<ArticleInfo> News = new();
-    private static readonly Credential Credential = new(){Login = "redactor", Password = "redactor"};
+    private static readonly Credential Credential = new() { Login = "redactor", Password = "redactor" };
     private const string Title = "Apple Title";
     private const string Abstract = "Apple Abstract";
     private const string Content = "Apple Content";
@@ -28,7 +28,7 @@ public class NewsTest
     private const string Image2 = @"Resource\Grape.jpg";
 
 
-    private static Task<(bool,IEnumerable<ArticleInfo>)> GetNews() => NewsApi.TryGetNews();
+    private static Task<(bool, IEnumerable<ArticleInfo>)> GetNews() => NewsApi.TryGetNews();
 
     [TestMethod]
     public async Task Test01GetNews()
@@ -53,9 +53,9 @@ public class NewsTest
     [TestMethod]
     public async Task Test03CreateArticle()
     {
-        var (success,id) = await ResourceService.TryUploadFile(Credential, await File.ReadAllBytesAsync(Image1), Ext);
+        var (success, id) = await ResourceService.TryUploadFile(Credential, await File.ReadAllBytesAsync(Image1), Ext);
         IsTrue(success);
-        var data = new ArticleCreationData {Title = Title, Abstract = Abstract, Content = Content, PictureId = id};
+        var data = new ArticleCreationData { Title = Title, Abstract = Abstract, Content = Content, PictureId = id };
         success = await NewsApi.CreateArticle(Credential, data);
         IsTrue(success);
     }

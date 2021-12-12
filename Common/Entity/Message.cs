@@ -5,7 +5,7 @@ namespace Common.Entity;
 
 public enum ChatType
 {
-    Public=1,
+    Public = 1,
     Private
 }
 

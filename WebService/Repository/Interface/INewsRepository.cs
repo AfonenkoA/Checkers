@@ -3,7 +3,7 @@ using Common.Entity;
 
 namespace WebService.Repository.Interface;
 
-public interface INewsRepository
+internal interface INewsRepository
 {
     bool CreateArticle(Credential credential, ArticleCreationData article);
     bool UpdateTitle(Credential credential, int id, string title);

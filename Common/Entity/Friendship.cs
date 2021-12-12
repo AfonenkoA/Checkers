@@ -4,7 +4,7 @@ namespace Common.Entity;
 
 public enum FriendshipState
 {
-    Accepted=1,
+    Accepted = 1,
     Canceled,
     Waiting,
     Invalid

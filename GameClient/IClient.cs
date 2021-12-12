@@ -14,7 +14,7 @@ public interface IClient
     public delegate void ExceptionEventHandler(ExceptionEvent e);
     public delegate void GameEndEventHandler(GameEndEvent e);
     public delegate void YourSideEventHandler(YourSideEvent e);
-    
+
     public event ConnectAcknowledgeEventHandler? OnConnectAcknowledge;
     public event DisconnectAcknowledgeEventHandler? OnDisconnectAcknowledge;
     public event MoveEventHandler? OnMove;

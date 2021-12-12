@@ -3,7 +3,7 @@ using static DatabaseStartup.Filling.Common;
 
 namespace DatabaseStartup.Filling.Entity;
 
-public sealed class UserPictureArgs
+internal sealed class UserPictureArgs
 {
     internal readonly string Login;
     internal readonly string Password;

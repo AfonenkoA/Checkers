@@ -11,7 +11,7 @@ GO
 CREATE TABLE {GameEmoteTable}
 (
 {Identity},
-{GameId}        INT     NOT NULL    {Fk(GameEmoteTable,GameTable)},
+{GameId}        INT     NOT NULL    {Fk(GameEmoteTable, GameTable)},
 {Time}          TIME    NOT NULL,
 {SideId}        INT     NOT NULL    {Fk(GameEmoteTable, GameSideTable)},
 {EmotionId}     INT     NOT NULL    {Fk(GameEmoteTable, EmotionTable)},

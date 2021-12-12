@@ -27,7 +27,7 @@ public class ItemTest
         var (success, items) = await ItemApi.TryGetAchievements();
         IsTrue(success);
         Achievements.AddRange(items);
-        foreach(var achievement in Achievements)
+        foreach (var achievement in Achievements)
             IsTrue(achievement.IsValid);
     }
 

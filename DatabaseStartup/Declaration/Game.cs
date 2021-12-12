@@ -26,8 +26,8 @@ CREATE TABLE {GameTable}
 {Identity},
 {GameStartTime}     DATETIME    NOT NULL,
 {GameDuration}      TIME        NOT NULL,
-{WinnerSideId}      INT         NOT NULL    {Fk(GameTable,GameSideTable)},
-{WinReasonId}       INT         NOT NULL    {Fk(GameTable,WinReasonTable)},
+{WinnerSideId}      INT         NOT NULL    {Fk(GameTable, GameSideTable)},
+{WinReasonId}       INT         NOT NULL    {Fk(GameTable, WinReasonTable)},
 );";
 
     private const string Create = $@"

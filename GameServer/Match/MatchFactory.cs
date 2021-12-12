@@ -2,7 +2,7 @@
 
 namespace GameServer.Match;
 
-public class MatchFactory
+internal sealed class MatchFactory
 {
     private readonly IGameRepository _repository;
     internal MatchFactory(IGameRepository repository) => _repository = repository;

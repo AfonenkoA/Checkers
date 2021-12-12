@@ -13,7 +13,7 @@ namespace ApiTest;
 public class ChatTest
 {
     private static readonly IAsyncChatApi ChatApi = new ChatWebApi();
-    private static readonly Credential Credential = new() {Login = "roflan", Password = "Rofl123"};
+    private static readonly Credential Credential = new() { Login = "roflan", Password = "Rofl123" };
     private const string Message = "Test message";
 
     [TestMethod]

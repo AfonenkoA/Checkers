@@ -4,7 +4,7 @@ namespace Api.Interface;
 
 public interface IAsyncItemApi
 {
-    Task<(bool,IEnumerable<Achievement>)> TryGetAchievements();
+    Task<(bool, IEnumerable<Achievement>)> TryGetAchievements();
     Task<(bool, IEnumerable<Animation>)> TryGetAnimations();
     Task<(bool, IEnumerable<CheckersSkin>)> TryGetCheckerSkins();
     Task<(bool, IEnumerable<LootBox>)> TryGetLootBoxes();

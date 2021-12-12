@@ -31,7 +31,7 @@ internal static class SqlExtensions
             LastActivity = reader.GetFieldValue<DateTime>(LastActivity),
             Type = (UserType)reader.GetFieldValue<int>(UserTypeId)
         };
-    
+
 
     private static ArticleInfo GetArticleInfo(this SqlDataReader reader) =>
         new()
@@ -128,13 +128,13 @@ internal static class SqlExtensions
     }
 
     private static NamedItem GetNamedItem(this SqlDataReader reader) =>
-        new(reader.GetItem()) {Name = reader.GetFieldValue<string>(ItemName)};
+        new(reader.GetItem()) { Name = reader.GetFieldValue<string>(ItemName) };
 
     private static DetailedItem GetDetailedItem(this SqlDataReader reader) =>
-        new(reader.GetNamedItem()) {Detail = reader.GetFieldValue<string>(Detail)};
+        new(reader.GetNamedItem()) { Detail = reader.GetFieldValue<string>(Detail) };
 
     private static SoldItem GetSoldItem(this SqlDataReader reader) =>
-        new(reader.GetDetailedItem()) {Price = reader.GetFieldValue<int>(Price)};
+        new(reader.GetDetailedItem()) { Price = reader.GetFieldValue<int>(Price) };
 
     public static Picture GetPicture(this SqlDataReader reader) => new(reader.GetNamedItem());
 
@@ -196,7 +196,7 @@ internal static class SqlExtensions
         return list;
     }
 
-    public static (byte[],string) GetFile(this SqlDataReader reader) =>
+    public static (byte[], string) GetFile(this SqlDataReader reader) =>
         (reader.GetFieldValue<byte[]>(ResourceBytes),
             reader.GetFieldValue<string>(ResourceExtension));
 

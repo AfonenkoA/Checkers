@@ -7,9 +7,9 @@ public interface IAsyncUserApi
     //User
     Task<bool> CreateUser(UserCreationData user);
     Task<bool> DeleteUser(Credential credential);
-    Task<(bool,PublicUserData)> TryGetUser(int id);
-    Task<(bool,User)> TryGetSelf(Credential credential);
-    Task<(bool,FriendUserData)> TryGetFriend(Credential credential, int id);
+    Task<(bool, PublicUserData)> TryGetUser(int id);
+    Task<(bool, User)> TryGetSelf(Credential credential);
+    Task<(bool, FriendUserData)> TryGetFriend(Credential credential, int id);
 
     //User Item Activities
     Task<bool> SelectAnimation(Credential credential, int id);

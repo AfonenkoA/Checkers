@@ -2,7 +2,7 @@
 
 namespace WebService.Repository.Interface;
 
-public interface IResourceRepository
+internal interface IResourceRepository
 {
     int CreateFile(Credential credential, byte[] picture, string ext);
     (byte[], string) GetFile(int id);

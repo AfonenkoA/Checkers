@@ -15,7 +15,7 @@ public sealed class UserCreationData
 
 public enum UserType
 {
-    Player=1,
+    Player = 1,
     Editor,
     Moderator,
     Support,
@@ -62,7 +62,7 @@ public class PublicUserData : BasicUserData
         Type = data.Type;
     }
     [JsonConstructor]
-    public PublicUserData(){}
+    public PublicUserData() { }
     public IEnumerable<Achievement> Achievements { get; set; } = Empty<Achievement>();
 
     [JsonIgnore] public override bool IsValid => base.IsValid;

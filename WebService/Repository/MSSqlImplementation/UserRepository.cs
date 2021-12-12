@@ -212,7 +212,7 @@ public sealed class UserRepository : RepositoryBase, IUserRepository
         if (userId == InvalidId)
             return FriendUserData.Invalid;
 
-        var user = new FriendUserData(GetUser(userId)) {Achievements = GetUserAchievements(userId)};
+        var user = new FriendUserData(GetUser(userId)) { Achievements = GetUserAchievements(userId) };
         using var command = CreateProcedureReturn(SelectFriendChatIdProc);
         command.Parameters.AddRange(new[]
         {
@@ -394,7 +394,7 @@ public sealed class UserRepository : RepositoryBase, IUserRepository
     public bool BuyCheckersSkin(Credential credential, int id)
     {
         using var command = CreateProcedure(UserBuyCheckersSkinProc);
-        command.Parameters.AddRange(new []
+        command.Parameters.AddRange(new[]
         {
             LoginParameter(credential.Login),
             PasswordParameter(credential.Password),

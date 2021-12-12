@@ -47,6 +47,6 @@ public sealed class GameRepository : RepositoryBase
     public const string ToVar = "@to";
 
 
-    protected GameRepository(SqlConnection connection) : base(connection)
+    internal GameRepository(SqlConnection connection) : base(connection)
     { }
 }

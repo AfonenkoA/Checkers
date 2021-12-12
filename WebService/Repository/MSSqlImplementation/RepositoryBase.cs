@@ -35,8 +35,8 @@ public class RepositoryBase
         _connection = connection;
     }
 
-    protected SqlCommand CreateProcedure(string name)=> 
-        new(name, Connection){CommandType = CommandType.StoredProcedure};
+    protected SqlCommand CreateProcedure(string name) =>
+        new(name, Connection) { CommandType = CommandType.StoredProcedure };
 
     protected SqlCommand CreateProcedureReturn(string name)
     {
@@ -46,7 +46,7 @@ public class RepositoryBase
         return cmd;
     }
 
-    public static string Fk(string t1, string t2, string s ="") =>
+    public static string Fk(string t1, string t2, string s = "") =>
         $"CONSTRAINT FK_{Unwrap(t1)}_{Unwrap(t2)}{s}    FOREIGN KEY REFERENCES {t2}({Id})";
     internal static string Unwrap(string s) => s.Replace("[", "").Replace("]", "");
 

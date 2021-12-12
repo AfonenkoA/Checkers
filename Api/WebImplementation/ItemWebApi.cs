@@ -1,23 +1,18 @@
 ﻿using Api.Interface;
-using ApiContract;
 using Common.Entity;
 using static Common.CommunicationProtocol;
+using static ApiContract.Route;
 
 namespace Api.WebImplementation;
 
 public sealed class ItemWebApi : WebApiBase, IAsyncItemApi
 {
-    private const string AchievementRoute = Route.ItemRoute + "/achievement";
-    private const string AnimationRoute = Route.ItemRoute + "/animation";
-    private const string PictureRoute = Route.ItemRoute + "/picture";
-    private const string LootBoxRoute = Route.ItemRoute + "/lootbox";
-    private const string CheckersSkinRoute = Route.ItemRoute + "/checkers-skin";
-    
+
     public async Task<(bool, IEnumerable<Achievement>)> TryGetAchievements()
     {
         var response = await Client.GetStringAsync(AchievementRoute);
         var res = Deserialize<IEnumerable<Achievement>>(response);
-        return res != null ? (true, res) :(false, Enumerable.Empty<Achievement>());
+        return res != null ? (true, res) : (false, Enumerable.Empty<Achievement>());
     }
 
     public async Task<(bool, IEnumerable<Animation>)> TryGetAnimations()
