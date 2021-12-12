@@ -1,5 +1,4 @@
 ﻿using GameModel;
-using GameServer.Tcp;
 using EmoteAction = GameModel.EmoteAction;
 using MoveAction = GameModel.MoveAction;
 
@@ -12,8 +11,8 @@ public interface IPlayer
     public delegate void MoveActionHandler(MoveAction a);
     public delegate void EmoteActionHandler(EmoteAction a);
     public delegate void SurrenderHandler(SurrenderAction a);
-    public delegate void GameRequestHandler(Player sender);
-    public delegate void DisconnectActionHandler(Player sender);
+    public delegate void GameRequestHandler(IPlayer sender);
+    public delegate void DisconnectActionHandler(IPlayer sender);
 
     public event MoveActionHandler? OnMove;
     public event EmoteActionHandler? OnEmote;

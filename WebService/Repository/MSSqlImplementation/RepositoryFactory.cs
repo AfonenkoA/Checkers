@@ -6,12 +6,12 @@ namespace WebService.Repository.MSSqlImplementation;
 
 public sealed class RepositoryFactory
 {
-    private readonly Repository[] _repositories;
+    private readonly RepositoryBase[] _repositories;
 
     internal RepositoryFactory(string connectionString)
     {
         var connection = new SqlConnection(connectionString);
-        _repositories = new Repository[]
+        _repositories = new RepositoryBase[]
         {
             new ChatRepository(connection),
             new ForumRepository(connection),
@@ -23,7 +23,7 @@ public sealed class RepositoryFactory
         };
     }
 
-    internal T Get<T>() where T : Repository
+    internal T Get<T>() where T : RepositoryBase
     {
         foreach (var rep in _repositories)
             if (rep is T repository)

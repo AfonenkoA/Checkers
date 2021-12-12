@@ -10,7 +10,7 @@ using static WebService.Repository.MSSqlImplementation.SqlExtensions;
 
 namespace WebService.Repository.MSSqlImplementation;
 
-public sealed class ChatRepository : Repository, IChatRepository
+public sealed class ChatRepository : RepositoryBase, IChatRepository
 {
     public const string ChatTable = "[Chat]";
     public const string ChatTypeTable = "[ChatType]";
@@ -42,10 +42,7 @@ public sealed class ChatRepository : Repository, IChatRepository
             new SqlParameter {ParameterName = PasswordVar,SqlDbType = NVarChar,Value = credential.Password}
         });
         using var reader = command.ExecuteReader();
-        List<Message> list = new();
-        while (reader.Read())
-            list.Add(reader.GetMessage());
-        return list;
+        return reader.GetAllMessage();
     }
 
     public bool CreateMessage(Credential credential, int chatId, string message)

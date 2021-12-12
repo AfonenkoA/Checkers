@@ -1,10 +1,10 @@
 ﻿using GameModel;
-using GameServer.Repository;
+using GameServer.GameRepository;
 using static System.DateTime;
 
 namespace GameServer.Match;
 
-internal class Match : InteroperableModel,IDisposable
+internal class MatchModel : InteroperableModel,IDisposable
 {
     private const string MoveExceptionMessage = "Move action out of turn";
 
@@ -42,7 +42,7 @@ internal class Match : InteroperableModel,IDisposable
         OnGameEnd -= p.Send;
     }
 
-    internal Match(IEmotionRepository repository, IPlayer black, IPlayer white)
+    internal MatchModel(IEmotionRepository repository, IPlayer black, IPlayer white)
     {
         Black = black;
         White = white;

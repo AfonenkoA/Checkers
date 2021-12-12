@@ -2,7 +2,7 @@
 using GameModel;
 using static Common.CommunicationProtocol;
 
-namespace GameServer.Repository;
+namespace GameServer.GameRepository;
 
 internal sealed class Repository : IGameRepository, IPlayerRepository
 {

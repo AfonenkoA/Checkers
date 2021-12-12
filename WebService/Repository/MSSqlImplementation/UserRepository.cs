@@ -8,7 +8,7 @@ using static WebService.Repository.MSSqlImplementation.SqlExtensions;
 
 namespace WebService.Repository.MSSqlImplementation;
 
-public sealed class UserRepository : Repository, IUserRepository
+public sealed class UserRepository : RepositoryBase, IUserRepository
 {
     public const string UserTable = "[User]";
     public const string UserTypeTable = "[UserType]";
@@ -115,33 +115,24 @@ public sealed class UserRepository : Repository, IUserRepository
     {
         using var command = CreateProcedure(SelectUserAchievementProc);
         command.Parameters.Add(IdParameter(id));
-        List<Achievement> list = new();
         using var reader = command.ExecuteReader();
-        while (reader.Read())
-            list.Add(reader.GetAchievement());
-        return list;
+        return reader.GetAllAchievement();
     }
 
     private IEnumerable<Animation> GetUserAnimations(int id)
     {
         using var command = CreateProcedure(SelectUserAnimationProc);
         command.Parameters.Add(IdParameter(id));
-        List<Animation> list = new();
         using var reader = command.ExecuteReader();
-        while (reader.Read())
-            list.Add(reader.GetAnimation());
-        return list;
+        return reader.GetAllAnimation();
     }
 
     private IEnumerable<CheckersSkin> GetUserCheckerSkins(int id)
     {
         using var command = CreateProcedure(SelectUserAnimationProc);
         command.Parameters.Add(IdParameter(id));
-        List<CheckersSkin> list = new();
         using var reader = command.ExecuteReader();
-        while (reader.Read())
-            list.Add(reader.GetCheckersSkin());
-        return list;
+        return reader.GetAllCheckersSkin();
     }
 
     public bool CreateUser(UserCreationData user)
@@ -204,10 +195,7 @@ public sealed class UserRepository : Repository, IUserRepository
         {
             command.Parameters.Add(IdParameter(userId));
             using var reader = command.ExecuteReader();
-            var list = new List<Friendship>();
-            while (reader.Read())
-                list.Add(reader.GetFriendship());
-            user.Friends = list;
+            user.Friends = reader.GetAllFriendship();
         }
         user.Animations = GetUserAnimations(userId);
         user.CheckerSkins = GetUserCheckerSkins(userId);
@@ -343,7 +331,6 @@ public sealed class UserRepository : Repository, IUserRepository
         List<PublicUserData> list = new();
         using (var reader = command.ExecuteReader())
         {
-
             while (reader.Read())
             {
                 var user = reader.GetUser();
@@ -380,37 +367,28 @@ public sealed class UserRepository : Repository, IUserRepository
         throw new NotImplementedException();
     }
 
-    public IEnumerable<Animation> GetAvailableAnimations(int id)
+    private IEnumerable<Animation> GetAvailableAnimations(int id)
     {
         using var command = CreateProcedure(UserGetAvailableAnimationProc);
         command.Parameters.Add(IdParameter(id));
-        List<Animation> list = new();
         using var reader = command.ExecuteReader();
-        while (reader.Read())
-            list.Add(reader.GetAnimation());
-        return list;
+        return reader.GetAllAnimation();
     }
 
-    public IEnumerable<CheckersSkin> GetAvailableCheckers(int id)
+    private IEnumerable<CheckersSkin> GetAvailableCheckers(int id)
     {
         using var command = CreateProcedure(UserGetAvailableCheckersSkinProc);
         command.Parameters.Add(IdParameter(id));
-        List<CheckersSkin> list = new();
         using var reader = command.ExecuteReader();
-        while (reader.Read())
-            list.Add(reader.GetCheckersSkin());
-        return list;
+        return reader.GetAllCheckersSkin();
     }
 
-    public IEnumerable<LootBox> GetAvailableLootBoxes(int id)
+    private IEnumerable<LootBox> GetAvailableLootBoxes(int id)
     {
         using var command = CreateProcedure(UserGetAvailableLootBoxProc);
         command.Parameters.Add(IdParameter(id));
-        List<LootBox> list = new();
         using var reader = command.ExecuteReader();
-        while (reader.Read())
-            list.Add(reader.GetLootBox());
-        return list;
+        return reader.GetAlLootBox();
     }
 
     public bool BuyCheckersSkin(Credential credential, int id)

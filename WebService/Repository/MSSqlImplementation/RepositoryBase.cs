@@ -3,7 +3,7 @@ using System.Data.SqlClient;
 
 namespace WebService.Repository.MSSqlImplementation;
 
-public class Repository
+public class RepositoryBase
 {
     public const string Id = "id";
     public const string IdVar = "@id";
@@ -30,7 +30,7 @@ public class Repository
         }
     }
 
-    protected Repository(SqlConnection connection)
+    protected RepositoryBase(SqlConnection connection)
     {
         _connection = connection;
     }

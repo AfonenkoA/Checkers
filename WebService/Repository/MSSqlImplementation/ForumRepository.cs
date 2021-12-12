@@ -5,11 +5,10 @@ using Common.Entity;
 using WebService.Repository.Interface;
 using static System.Data.SqlDbType;
 using static WebService.Repository.MSSqlImplementation.SqlExtensions;
-using static WebService.Repository.MSSqlImplementation.ChatRepository;
 
 namespace WebService.Repository.MSSqlImplementation;
 
-public sealed class ForumRepository : Repository, IForumRepository
+public sealed class ForumRepository : RepositoryBase, IForumRepository
 {
     public const string PostTable = "[Post]";
 
@@ -102,21 +101,13 @@ public sealed class ForumRepository : Repository, IForumRepository
         command.Parameters.Add(new SqlParameter { ParameterName = IdVar, SqlDbType = Int, Value = postId });
         using var reader = command.ExecuteReader();
         if (!reader.Read()) return Post.Invalid;
-        return new Post(reader.GetPost())
-        {
-            ChatId = reader.GetFieldValue<int>(ChatId),
-            AuthorId = reader.GetFieldValue<int>(PostAuthorId),
-            Created = reader.GetFieldValue<DateTime>(PostCreated),
-        };
+        return reader.GetPost();
     }
 
     public IEnumerable<PostInfo> GetPosts()
     {
         using var command = CreateProcedure(SelectPostsProc);
         using var reader = command.ExecuteReader();
-        List<PostInfo> list = new();
-        while (reader.Read())
-            list.Add(reader.GetPost());
-        return list;
+        return reader.GetAllPostInfo();
     }
 }

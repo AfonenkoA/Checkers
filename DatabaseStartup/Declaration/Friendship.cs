@@ -1,6 +1,6 @@
 ﻿using static Common.Entity.ChatType;
 using static Common.Entity.FriendshipState;
-using static WebService.Repository.MSSqlImplementation.Repository;
+using static WebService.Repository.MSSqlImplementation.RepositoryBase;
 using static WebService.Repository.MSSqlImplementation.UserRepository;
 using static WebService.Repository.MSSqlImplementation.ChatRepository;
 using static DatabaseStartup.Declaration.Markup;

@@ -1,6 +1,6 @@
 ﻿using GameModel;
 
-namespace GameServer.Repository;
+namespace GameServer.GameRepository;
 
 internal interface IGameRepository : IEmotionRepository
 {

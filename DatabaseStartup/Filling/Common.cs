@@ -1,7 +1,7 @@
 ﻿using static System.IO.Directory;
 using static System.IO.File;
 using static DatabaseStartup.Declaration.Markup;
-using static WebService.Repository.MSSqlImplementation.Repository;
+using static WebService.Repository.MSSqlImplementation.RepositoryBase;
 
 namespace DatabaseStartup.Filling;
 

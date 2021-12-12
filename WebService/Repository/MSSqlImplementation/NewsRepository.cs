@@ -8,7 +8,7 @@ using static WebService.Repository.MSSqlImplementation.SqlExtensions;
 
 namespace WebService.Repository.MSSqlImplementation;
 
-public sealed class NewsRepository: Repository, INewsRepository
+public sealed class NewsRepository: RepositoryBase, INewsRepository
 {
     public const string ArticleTable = "[Article]";
     public const string ArticleAuthorId = "[article_author_id]";
@@ -133,22 +133,14 @@ public sealed class NewsRepository: Repository, INewsRepository
         command.Parameters.Add(new SqlParameter { ParameterName = IdVar, SqlDbType = Int, Value = articleId });
         using var reader = command.ExecuteReader();
         if (!reader.Read()) return Article.Invalid;
-        return new Article(reader.GetArticle())
-        {
-            PostId = reader.GetFieldValue<int>(ArticlePostId),
-            Content = reader.GetFieldValue<string>(ArticleContent),
-            Created = reader.GetFieldValue<DateTime>(ArticleCreated)
-        };
+        return reader.GetArticle();
     }
 
     public IEnumerable<ArticleInfo> GetNews()
     {
-        var list = new List<ArticleInfo>();
         using var command = CreateProcedure(SelectNewsProc);
         using var reader = command.ExecuteReader();
-        while (reader.Read())
-            list.Add(reader.GetArticle());
-        return list;
+        return reader.GetAllArticleInfo();
     }
     
 }

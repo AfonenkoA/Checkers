@@ -1,4 +1,4 @@
-﻿using static WebService.Repository.MSSqlImplementation.Repository;
+﻿using static WebService.Repository.MSSqlImplementation.RepositoryBase;
 using static WebService.Repository.MSSqlImplementation.GameRepository;
 
 namespace DatabaseStartup.Declaration.GameAction;

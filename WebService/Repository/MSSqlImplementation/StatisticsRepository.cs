@@ -6,7 +6,7 @@ using static WebService.Repository.MSSqlImplementation.SqlExtensions;
 
 namespace WebService.Repository.MSSqlImplementation;
 
-public sealed class StatisticsRepository : Repository, IStatisticsRepository
+public sealed class StatisticsRepository : RepositoryBase, IStatisticsRepository
 {
 
     public const string SelectTopPlayersProc = "[SP_SelectTopPlayers]";
@@ -27,6 +27,8 @@ public sealed class StatisticsRepository : Repository, IStatisticsRepository
 
         return dict;
     }
+
+
 
     public IDictionary<int, BasicUserData> GetTopPlayers(Credential credential)
     {

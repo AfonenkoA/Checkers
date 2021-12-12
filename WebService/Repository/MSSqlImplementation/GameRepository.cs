@@ -2,7 +2,7 @@
 
 namespace WebService.Repository.MSSqlImplementation;
 
-public class GameRepository : Repository
+public sealed class GameRepository : RepositoryBase
 {
     public const string GameSideTable = "[GameSide]";
     public const string WinReasonTable = "[WinReason]";

@@ -1,6 +1,6 @@
 ﻿using Common.Entity;
 using GameModel;
-using GameServer.Repository;
+using GameServer.GameRepository;
 using GameTransmission;
 using static Common.CommunicationProtocol;
 using static GameServer.IPlayer;

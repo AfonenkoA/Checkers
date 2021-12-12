@@ -1,6 +1,6 @@
 ﻿using Common.Entity;
 
-namespace GameServer.Repository;
+namespace GameServer.GameRepository;
 
 internal interface IEmotionRepository
 {

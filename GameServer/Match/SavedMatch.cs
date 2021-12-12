@@ -1,9 +1,9 @@
 ﻿using GameModel;
-using GameServer.Repository;
+using GameServer.GameRepository;
 
 namespace GameServer.Match;
 
-internal sealed class SavedMatch : Match
+internal sealed class SavedMatch : MatchModel
 {
     private readonly IGameRepository _repository;
     private readonly List<MoveEvent> _moves = new();
@@ -18,8 +18,8 @@ internal sealed class SavedMatch : Match
         if (_gameStartEvent == null) throw new Exception("Game save exception");
         _repository.SaveGame(new Game
         {
-            Black = Black.PlayerData,
-            White = White.PlayerData,
+            Black = _gameStartEvent.Black,
+            White = _gameStartEvent.White,
             Duration = e.Duration,
             Emotions = _emotes,
             Moves = _moves,
@@ -28,7 +28,6 @@ internal sealed class SavedMatch : Match
             Winner = e.Winner,
             WinReason = e.WinReason
         });
-        Dispose();
         Unsubscribe();
     }
 
