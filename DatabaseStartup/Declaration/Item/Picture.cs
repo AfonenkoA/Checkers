@@ -20,7 +20,7 @@ GO
 CREATE PROCEDURE {SelectPictureProc} {IdVar} INT
 AS
 BEGIN
-    SELECT P.*, R.{ResourceExtension}
+    SELECT P.*, R.{ResourceExtension}, R.{Id}
     FROM {Schema}.{PictureTable} AS P
     JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=P.{ResourceId}
     WHERE P.{Id}={IdVar}

@@ -68,7 +68,7 @@ public sealed class UserWebApi : WebApiBase, IAsyncUserApi
     public async Task<bool> Authenticate(Credential user)
     {
         var route = Route.UserRoute + Query(user, UserApiAction.Authenticate);
-        using var response = await Client.PostAsJsonAsync(route,string.Empty);
+        using var response = await Client.PutAsJsonAsync(route,string.Empty);
         return response.IsSuccessStatusCode;
     }
 
@@ -138,31 +138,8 @@ public sealed class UserWebApi : WebApiBase, IAsyncUserApi
     }
 
     private const string ShopRoute = Route.UserRoute + "/shop";
-    private const string AnimationShop = ShopRoute + "/animation";
-    private const string CheckersSkinShop = ShopRoute + "/checkers-skin";
-    private const string LootBoxShop = ShopRoute + "/lootbox";
 
-    public async Task<(bool, IEnumerable<int>)> TryGetAvailableAnimations(Credential c)
-    {
-        var response = await Client.GetStringAsync(AnimationShop+Query(c));
-        var res = Deserialize<List<int>>(response);
-        return res!=null ? (true,res) : (false, Enumerable.Empty<int>());
-    }
-
-    public async Task<(bool, IEnumerable<int>)> TryGetAvailableCheckers(Credential c)
-    {
-        var response = await Client.GetStringAsync(CheckersSkinShop + Query(c));
-        var res = Deserialize<List<int>>(response);
-        return res != null ? (true, res) : (false, Enumerable.Empty<int>());
-    }
-
-    public async Task<(bool, IEnumerable<int>)> TryGetAvailableLootBoxes(Credential c)
-    {
-        var response = await Client.GetStringAsync(LootBoxShop + Query(c));
-        var res = Deserialize<List<int>>(response);
-        return res != null ? (true, res) : (false, Enumerable.Empty<int>());
-    }
-
+    
     public async Task<bool> BuyCheckersSkin(Credential credential, int id)
     {
         var route = Route.UserRoute + Query(credential, UserApiAction.BuyCheckersSkin);

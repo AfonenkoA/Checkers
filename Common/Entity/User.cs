@@ -110,6 +110,10 @@ public sealed class User : BasicUserData
     public IEnumerable<Emotion> Emotions { get; set; } = Empty<Emotion>();
     public IEnumerable<Friendship> Friends { get; set; } = Empty<Friendship>();
 
+    public IEnumerable<Animation> AvailableAnimations { get; set; } = Empty<Animation>();
+    public IEnumerable<CheckersSkin> AvailableCheckersSkins { get; set; } = Empty<CheckersSkin>();
+    public IEnumerable<LootBox> AvailableLootBox { get; set; } = Empty<LootBox>();
+
     [JsonIgnore]
     public override bool IsValid => base.IsValid &&
                                     CheckerSkins.Any() &&

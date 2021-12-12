@@ -31,7 +31,4 @@ public interface IUserRepository
     bool DeleteFriend(Credential credential, int userId);
     bool AcceptFriend(Credential credential, int userId);
 
-    IEnumerable<int> GetAvailableAnimations(Credential c);
-    IEnumerable<int> GetAvailableCheckers(Credential c);
-    IEnumerable<int> GetAvailableLootBoxes(Credential c);
 }

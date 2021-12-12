@@ -32,8 +32,4 @@ public interface IAsyncUserApi
     Task<bool> AddFriend(Credential credential, int id);
     Task<bool> DeleteFriend(Credential credential, int id);
     Task<bool> AcceptFriend(Credential credential, int id);
-
-    Task<(bool, IEnumerable<int>)> TryGetAvailableAnimations(Credential c);
-    Task<(bool, IEnumerable<int>)> TryGetAvailableCheckers(Credential c);
-    Task<(bool, IEnumerable<int>)> TryGetAvailableLootBoxes(Credential c);
 }

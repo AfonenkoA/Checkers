@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using Common.Entity;
 using WebService.Repository.Interface;
+using static System.Data.SqlDbType;
 using static WebService.Repository.MSSqlImplementation.SqlExtensions;
 
 namespace WebService.Repository.MSSqlImplementation;
@@ -164,9 +164,9 @@ public sealed class UserRepository : Repository, IUserRepository
             {
                 LoginParameter(user.Login),
                 PasswordParameter(user.Password),
-                new SqlParameter{ParameterName = NickVar,SqlDbType = SqlDbType.NVarChar,Value = user.Nick},
-                new SqlParameter{ParameterName = EmailVar,SqlDbType = SqlDbType.NVarChar,Value = user.Email},
-                new SqlParameter {ParameterName = UserTypeNameVar,SqlDbType = SqlDbType.NVarChar,Value = UserType.Player}
+                new SqlParameter{ParameterName = NickVar,SqlDbType = NVarChar,Value = user.Nick},
+                new SqlParameter{ParameterName = EmailVar,SqlDbType = NVarChar,Value = user.Email},
+                new SqlParameter {ParameterName = UserTypeNameVar,SqlDbType = NVarChar,Value = UserType.Player}
             });
         return command.ExecuteNonQuery() > 0;
     }
@@ -224,6 +224,9 @@ public sealed class UserRepository : Repository, IUserRepository
         user.Animations = GetUserAnimations(userId);
         user.CheckerSkins = GetUserCheckerSkins(userId);
         user.Animations = GetUserAnimations(userId);
+        user.AvailableAnimations = GetAvailableAnimations(userId);
+        user.AvailableCheckersSkins = GetAvailableCheckers(userId);
+        user.AvailableLootBox = GetAvailableLootBoxes(userId);
         return user;
     }
 
@@ -237,8 +240,8 @@ public sealed class UserRepository : Repository, IUserRepository
         using var command = CreateProcedureReturn(SelectFriendChatIdProc);
         command.Parameters.AddRange(new[]
         {
-            new SqlParameter {ParameterName = User1IdVar,SqlDbType = SqlDbType.Int,Value = userId},
-            new SqlParameter {ParameterName = User2IdVar,SqlDbType = SqlDbType.Int,Value = friendId}
+            new SqlParameter {ParameterName = User1IdVar,SqlDbType = Int,Value = userId},
+            new SqlParameter {ParameterName = User2IdVar,SqlDbType = Int,Value = friendId}
         });
         command.ExecuteNonQuery();
         user.ChatId = command.GetReturn();
@@ -285,7 +288,7 @@ public sealed class UserRepository : Repository, IUserRepository
             {
                 LoginParameter(credential.Login),
                 PasswordParameter(credential.Password),
-                new SqlParameter{ParameterName = NickVar,SqlDbType = SqlDbType.NVarChar,Value = nick}
+                new SqlParameter{ParameterName = NickVar,SqlDbType = NVarChar,Value = nick}
             });
         return command.ExecuteNonQuery() > 0;
     }
@@ -298,7 +301,7 @@ public sealed class UserRepository : Repository, IUserRepository
             {
                 LoginParameter(credential.Login),
                 PasswordParameter(credential.Password),
-                new SqlParameter{ParameterName = NewLoginVar,SqlDbType = SqlDbType.NVarChar,Value = login}
+                new SqlParameter{ParameterName = NewLoginVar,SqlDbType = NVarChar,Value = login}
             });
         return command.ExecuteNonQuery() > 0;
     }
@@ -311,7 +314,7 @@ public sealed class UserRepository : Repository, IUserRepository
             {
                 LoginParameter(credential.Login),
                 PasswordParameter(credential.Password),
-                new SqlParameter{ParameterName = NewPasswordVar,SqlDbType = SqlDbType.NVarChar,Value = password}
+                new SqlParameter{ParameterName = NewPasswordVar,SqlDbType = NVarChar,Value = password}
             });
         return command.ExecuteNonQuery() > 0;
     }
@@ -324,7 +327,7 @@ public sealed class UserRepository : Repository, IUserRepository
             {
                 LoginParameter(credential.Login),
                 PasswordParameter(credential.Password),
-                new SqlParameter{ParameterName = EmailVar,SqlDbType = SqlDbType.NVarChar,Value = email}
+                new SqlParameter{ParameterName = EmailVar,SqlDbType = NVarChar,Value = email}
             });
         return command.ExecuteNonQuery() > 0;
     }
@@ -347,7 +350,7 @@ public sealed class UserRepository : Repository, IUserRepository
         command.Parameters.AddRange(
             new[]
             {
-                new SqlParameter{ParameterName = NickVar, SqlDbType = SqlDbType.NVarChar, Value = pattern}
+                new SqlParameter{ParameterName = NickVar, SqlDbType = NVarChar, Value = pattern}
             });
         List<PublicUserData> list = new();
         using (var reader = command.ExecuteReader())
@@ -389,48 +392,36 @@ public sealed class UserRepository : Repository, IUserRepository
         throw new NotImplementedException();
     }
 
-    public IEnumerable<int> GetAvailableAnimations(Credential c)
+    public IEnumerable<Animation> GetAvailableAnimations(int id)
     {
         using var command = CreateProcedure(UserGetAvailableAnimationProc);
-        command.Parameters.AddRange(new []
-        {
-            LoginParameter(c.Login),
-            PasswordParameter(c.Password)
-        });
-        List<int> list = new();
+        command.Parameters.Add(IdParameter(id));
+        List<Animation> list = new();
         using var reader = command.ExecuteReader();
         while (reader.Read())
-            list.Add(reader.GetFieldValue<int>(Id));
+            list.Add(reader.GetAnimation());
         return list;
     }
 
-    public IEnumerable<int> GetAvailableCheckers(Credential c)
+    public IEnumerable<CheckersSkin> GetAvailableCheckers(int id)
     {
         using var command = CreateProcedure(UserGetAvailableCheckersSkinProc);
-        command.Parameters.AddRange(new[]
-        {
-            LoginParameter(c.Login),
-            PasswordParameter(c.Password)
-        });
-        List<int> list = new();
+        command.Parameters.Add(IdParameter(id));
+        List<CheckersSkin> list = new();
         using var reader = command.ExecuteReader();
         while (reader.Read())
-            list.Add(reader.GetFieldValue<int>(Id));
+            list.Add(reader.GetCheckersSkin());
         return list;
     }
 
-    public IEnumerable<int> GetAvailableLootBoxes(Credential c)
+    public IEnumerable<LootBox> GetAvailableLootBoxes(int id)
     {
         using var command = CreateProcedure(UserGetAvailableLootBoxProc);
-        command.Parameters.AddRange(new[]
-        {
-            LoginParameter(c.Login),
-            PasswordParameter(c.Password)
-        });
-        List<int> list = new();
+        command.Parameters.Add(IdParameter(id));
+        List<LootBox> list = new();
         using var reader = command.ExecuteReader();
         while (reader.Read())
-            list.Add(reader.GetFieldValue<int>(Id));
+            list.Add(reader.GetLootBox());
         return list;
     }
 

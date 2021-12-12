@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Data;
 using System.Data.SqlClient;
 using Common.Entity;
 using WebService.Repository.Interface;
+using static System.Data.SqlDbType;
 using static WebService.Repository.MSSqlImplementation.SqlExtensions;
 
 namespace WebService.Repository.MSSqlImplementation;
@@ -32,8 +32,8 @@ public sealed class ResourceRepository : Repository, IResourceRepository
         
             command.Parameters.AddRange(new []
             {
-                new SqlParameter { ParameterName = ResourceExtensionVar, SqlDbType = SqlDbType.NVarChar, Value = ext },
-                new SqlParameter { ParameterName = ResourceBytesVar, SqlDbType = SqlDbType.VarBinary,Value = picture}
+                new SqlParameter { ParameterName = ResourceExtensionVar, SqlDbType = NVarChar, Value = ext },
+                new SqlParameter { ParameterName = ResourceBytesVar, SqlDbType = VarBinary,Value = picture}
             });
             command.ExecuteNonQuery();
             return command.GetReturn();

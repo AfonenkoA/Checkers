@@ -8,7 +8,7 @@ public sealed class RepositoryFactory
 {
     private readonly Repository[] _repositories;
 
-    public RepositoryFactory(string connectionString)
+    internal RepositoryFactory(string connectionString)
     {
         var connection = new SqlConnection(connectionString);
         _repositories = new Repository[]
@@ -23,7 +23,7 @@ public sealed class RepositoryFactory
         };
     }
 
-    public T Get<T>() where T : Repository
+    internal T Get<T>() where T : Repository
     {
         foreach (var rep in _repositories)
             if (rep is T repository)

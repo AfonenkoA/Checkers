@@ -1,6 +1,7 @@
 ﻿using static WebService.Repository.MSSqlImplementation.Repository;
 using static WebService.Repository.MSSqlImplementation.UserRepository;
 using static WebService.Repository.MSSqlImplementation.ItemRepository;
+using static WebService.Repository.MSSqlImplementation.ResourceRepository;
 
 namespace DatabaseStartup.Declaration.UserItem;
 
@@ -19,8 +20,9 @@ GO
 CREATE PROCEDURE {SelectUserAnimationProc} {IdVar} INT
 AS
 BEGIN
-    SELECT A.* FROM {Schema}.{UserAnimationTable} AS UA
-    JOIN {AnimationTable} AS A ON UA.{AnimationId}=A.{Id} 
+    SELECT A.*, R.{Id}, R.{ResourceExtension} FROM {Schema}.{UserAnimationTable} AS UA
+    JOIN {AnimationTable} AS A ON UA.{AnimationId}=A.{Id}
+    JOIN {ResourceTable} AS R ON A.{ResourceId}=R.{Id}
     WHERE {UserId}={IdVar}
 END";
 
@@ -62,17 +64,19 @@ END";
 
     private const string GetAvailable = $@"
 GO
-CREATE PROCEDURE {UserGetAvailableAnimationProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
+CREATE PROCEDURE {UserGetAvailableAnimationProc} {IdVar} INT
 AS
 BEGIN
-    DECLARE {UserIdVar} INT
-    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar},{PasswordVar}
-    SELECT {Id} FROM {Schema}.{AnimationTable} 
+    SELECT A.*, R.{Id}, R.{ResourceExtension} FROM {Schema}.{AnimationTable} AS A
+    JOIN {ResourceTable} AS R ON R.{Id}=A.{ResourceId}
     EXCEPT
-    SELECT {AnimationId} FROM {Schema}.{UserAnimationTable}
+    SELECT A.*, R.{Id}, R.{ResourceExtension} FROM {Schema}.{UserAnimationTable} AS UA
+    JOIN {Schema}.{AnimationTable} AS A ON A.{Id}=UA.{AnimationId}
+    JOIN {ResourceTable} AS R ON R.{Id}=A.{ResourceId}
+    WHERE UA.{UserId}={IdVar}
 END";
 
-    public static readonly string Function = $@"
+    public const string Function = $@"
 --UserAnimation
 {Select}
 {Update}

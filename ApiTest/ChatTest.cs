@@ -5,6 +5,7 @@ using Api.Interface;
 using Api.WebImplementation;
 using Common.Entity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace ApiTest;
 
@@ -19,20 +20,20 @@ public class ChatTest
     public async Task Test01SendToAllChat()
     {
         var (getChatSuccess, id) = await ChatApi.TryGetCommonChatId(Credential);
-        Assert.IsTrue(getChatSuccess);
+        IsTrue(getChatSuccess);
         var success = await ChatApi.SendMessage(Credential, id, Message);
-        Assert.IsTrue(success);
+        IsTrue(success);
     }
 
     [TestMethod]
     public async Task Test02GetFromAllChat()
     {
         var (getChatSuccess, id) = await ChatApi.TryGetCommonChatId(Credential);
-        Assert.IsTrue(getChatSuccess);
+        IsTrue(getChatSuccess);
         var (success, messages) = await ChatApi.TryGetMessages(Credential, id, DateTime.MinValue);
-        Assert.IsTrue(success);
+        IsTrue(success);
         var enumerable = messages.ToList();
-        Assert.IsTrue(enumerable.Any());
-        Assert.IsTrue(enumerable.Any(m => m.Content == Message));
+        IsTrue(enumerable.Any());
+        IsTrue(enumerable.Any(m => m.Content == Message));
     }
 }

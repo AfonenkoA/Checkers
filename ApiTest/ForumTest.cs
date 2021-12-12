@@ -6,6 +6,7 @@ using Api.Interface;
 using Api.WebImplementation;
 using Common.Entity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace ApiTest;
 
@@ -31,9 +32,9 @@ public class ForumTest
     public async Task Test01GetPosts()
     {
         var (success, posts) = await GetPosts();
-        Assert.IsTrue(success);
+        IsTrue(success);
         Posts.AddRange(posts);
-        Assert.IsTrue(Posts.Any());
+        IsTrue(Posts.Any());
     }
 
     [TestMethod]
@@ -42,8 +43,8 @@ public class ForumTest
         foreach (var p in Posts)
         {
             var (success, post) = await ForumApi.TryGetPost(p.Id);
-            Assert.IsTrue(success);
-            Assert.IsTrue(post.IsValid);
+            IsTrue(success);
+            IsTrue(post.IsValid);
         }
     }
 
@@ -51,10 +52,10 @@ public class ForumTest
     public async Task Test03CreatePost()
     {
         var (success, id) = await ResourceService.TryUploadFile(Credential, await File.ReadAllBytesAsync(Image1), Ext);
-        Assert.IsTrue(success);
+        IsTrue(success);
         var data = new PostCreationData { Title = Title, Content = Content, PictureId = id };
         success = await ForumApi.CreatePost(Credential, data);
-        Assert.IsTrue(success);
+        IsTrue(success);
     }
 
 
@@ -69,7 +70,7 @@ public class ForumTest
     {
         var id = await GetId();
         var success = await ForumApi.UpdateContent(Credential, id, NewContent);
-        Assert.IsTrue(success);
+        IsTrue(success);
     }
 
     [TestMethod]
@@ -77,9 +78,9 @@ public class ForumTest
     {
         var id = await GetId();
         var (success, pic) = await ResourceService.TryUploadFile(Credential, await File.ReadAllBytesAsync(Image2), Ext);
-        Assert.IsTrue(success);
+        IsTrue(success);
         success = await ForumApi.UpdatePicture(Credential, id, pic);
-        Assert.IsTrue(success);
+        IsTrue(success);
     }
 
     [TestMethod]
@@ -87,7 +88,7 @@ public class ForumTest
     {
         var id = await GetId();
         var success = await ForumApi.UpdateTitle(Credential, id, NewTitle);
-        Assert.IsTrue(success);
+        IsTrue(success);
     }
 
 
