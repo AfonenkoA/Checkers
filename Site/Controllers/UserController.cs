@@ -21,7 +21,7 @@ public class UserController : Controller
     public async Task<ViewResult> Picture()
     {
         var (_, User) = await api.TryGetUser(1);
-        var str = resourseApi.GetFileUrl(User.PictureId);
+        var str = resourseApi.GetFileUrl(User.Picture.Resource.Id);
         return View((object)str);
     }
 }
