@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 using Common.Entity;
 using WebService.Repository.Interface;
+using static System.Linq.Enumerable;
 using static WebService.Repository.MSSqlImplementation.SqlExtensions;
 
 namespace WebService.Repository.MSSqlImplementation;
@@ -61,10 +62,7 @@ public sealed class ItemRepository : RepositoryBase, IItemRepository
     {
         using var command = CreateProcedure(SelectAllAchievementProc);
         using var reader = command.ExecuteReader();
-        List<Achievement> list = new();
-        while (reader.Read())
-            list.Add(reader.GetAchievement());
-        return list;
+        return  reader.GetAllAchievement();
     }
 
     public IEnumerable<Animation> GetAnimations()

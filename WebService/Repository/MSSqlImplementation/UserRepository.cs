@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using Common.Entity;
 using WebService.Repository.Interface;
 using static System.Data.SqlDbType;
+using static System.Linq.Enumerable;
 using static WebService.Repository.MSSqlImplementation.SqlExtensions;
 
 namespace WebService.Repository.MSSqlImplementation;
@@ -110,8 +111,6 @@ public sealed class UserRepository : RepositoryBase, IUserRepository
 
     internal UserRepository(SqlConnection connection) : base(connection) { }
 
-
-
     private IEnumerable<Achievement> GetUserAchievements(int id)
     {
         using var command = CreateProcedure(SelectUserAchievementProc);
@@ -175,14 +174,12 @@ public sealed class UserRepository : RepositoryBase, IUserRepository
         return user;
     }
 
-
-
     private Picture GetUserPicture(int userId)
     {
         using var command = CreateProcedure(SelectUserPictureProc);
         command.Parameters.Add(IdParameter(userId));
         using var reader = command.ExecuteReader();
-        return reader.GetPicture();
+        return reader.Read() ? reader.GetPicture() : Picture.Invalid;
     }
 
 
@@ -401,7 +398,7 @@ public sealed class UserRepository : RepositoryBase, IUserRepository
         using var command = CreateProcedure(UserGetAvailableLootBoxProc);
         command.Parameters.Add(IdParameter(id));
         using var reader = command.ExecuteReader();
-        return reader.GetAlLootBox();
+        return  reader.GetAlLootBox();
     }
 
     public bool BuyCheckersSkin(Credential credential, int id)
