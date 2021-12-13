@@ -22,7 +22,7 @@ GO
 CREATE PROCEDURE {SelectLootBoxProc} {IdVar} INT
 AS
 BEGIN
-    SELECT L.*, R.{ResourceExtension}, R.{Id}
+    SELECT L.*, R.{ResourceExtension}
     FROM {Schema}.{LootBoxTable} AS L
     JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=L.{ResourceId}
     WHERE L.{Id}={IdVar}

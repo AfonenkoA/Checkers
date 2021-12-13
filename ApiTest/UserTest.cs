@@ -166,6 +166,5 @@ public class UserTest
         AreEqual(NewNick, user.Nick);
         AreEqual(_newCheckersSkin, user.SelectedCheckersId);
         AreEqual(_newAnimation, user.SelectedAnimationId);
-        AreEqual(_newPicture, user.PictureId);
     }
 }

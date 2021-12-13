@@ -1,5 +1,4 @@
 ﻿using GameModel;
-using GameTransmission;
 
 namespace GameClient;
 

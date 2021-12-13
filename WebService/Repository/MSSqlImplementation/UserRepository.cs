@@ -90,6 +90,7 @@ public sealed class UserRepository : RepositoryBase, IUserRepository
     public const string SelectUserAchievementProc = "[SP_SelectUserAchievement]";
     public const string SelectUserCheckersSkinProc = "[SP_SelectUserCheckersSkin]";
     public const string SelectUserAnimationProc = "[SP_SelectUserAnimation]";
+    public const string SelectUserPictureProc = "[SP_SelectUserPicture]";
 
     public const string UserGetAvailableAnimationProc = "[SP_GetAvailableAnimation]";
     public const string UserGetAvailableCheckersSkinProc = "[SP_GetAvailableCheckersSkin]";
@@ -168,8 +169,20 @@ public sealed class UserRepository : RepositoryBase, IUserRepository
             else
                 return user;
         }
+
+        user.Picture = GetUserPicture(userId);
         user.Achievements = GetUserAchievements(userId);
         return user;
+    }
+
+
+
+    private Picture GetUserPicture(int userId)
+    {
+        using var command = CreateProcedure(SelectUserPictureProc);
+        command.Parameters.Add(IdParameter(userId));
+        using var reader = command.ExecuteReader();
+        return reader.GetPicture();
     }
 
 

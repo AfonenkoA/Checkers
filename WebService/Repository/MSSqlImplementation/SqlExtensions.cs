@@ -11,7 +11,6 @@ using static WebService.Repository.MSSqlImplementation.ItemRepository;
 using static WebService.Repository.MSSqlImplementation.ResourceRepository;
 using static WebService.Repository.MSSqlImplementation.MessageRepository;
 using static WebService.Repository.MSSqlImplementation.ChatRepository;
-using static WebService.Repository.MSSqlImplementation.StatisticsRepository;
 
 namespace WebService.Repository.MSSqlImplementation;
 
@@ -25,7 +24,6 @@ internal static class SqlExtensions
             Id = reader.GetFieldValue<int>(Id),
             Nick = reader.GetFieldValue<string>(Nick),
             SocialCredit = reader.GetFieldValue<int>(SocialCredit),
-            PictureId = reader.GetFieldValue<int>(PictureId),
             SelectedAnimationId = reader.GetFieldValue<int>(AnimationId),
             SelectedCheckersId = reader.GetFieldValue<int>(CheckersSkinId),
             LastActivity = reader.GetFieldValue<DateTime>(LastActivity),

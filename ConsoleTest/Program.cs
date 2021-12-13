@@ -5,7 +5,6 @@ using GameClient;
 using GameModel;
 using GameTransmission;
 using static System.Console;
-using static System.Threading.Tasks.Task;
 using static GameModel.Side;
 
 var acting = true;

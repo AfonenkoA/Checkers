@@ -53,6 +53,7 @@ internal static class Total
 {UserAnimation.Function}
 {UserCheckersSkin.Function}
 {UserLootBox.Function}
+{UserPicture.Function}
 {Post.Function}
 {Article.Function}
 {Game.Function}

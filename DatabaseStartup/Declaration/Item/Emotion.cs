@@ -19,7 +19,7 @@ GO
 CREATE PROCEDURE {SelectEmotionProc} {IdVar} INT
 AS
 BEGIN
-    SELECT E.*, R.{ResourceExtension}, R.{Id}
+    SELECT E.*, R.{ResourceExtension}
     FROM {Schema}.{EmotionTable} AS E
     JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=E.{ResourceId}
     WHERE E.{Id}={IdVar}
