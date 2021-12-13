@@ -23,29 +23,31 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Server\Server.csp
 		{29C6E93E-C0C7-4ADD-AB27-F23484348393} = {29C6E93E-C0C7-4ADD-AB27-F23484348393}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{DE2D27D1-CC11-4ED3-BBCD-03190A243B2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{DE2D27D1-CC11-4ED3-BBCD-03190A243B2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameModel", "GameModel\GameModel.csproj", "{E7186F96-93F0-4829-83BD-AF23BBC614E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameModel", "GameModel\GameModel.csproj", "{E7186F96-93F0-4829-83BD-AF23BBC614E4}"
 	ProjectSection(ProjectDependencies) = postProject
 		{DE2D27D1-CC11-4ED3-BBCD-03190A243B2E} = {DE2D27D1-CC11-4ED3-BBCD-03190A243B2E}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameTransmission", "GameTransmission\GameTransmission.csproj", "{0BA434DC-C7EC-46E4-ADD5-E966246FABBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameTransmission", "GameTransmission\GameTransmission.csproj", "{0BA434DC-C7EC-46E4-ADD5-E966246FABBA}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E7186F96-93F0-4829-83BD-AF23BBC614E4} = {E7186F96-93F0-4829-83BD-AF23BBC614E4}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiContract", "ApiContract\ApiContract.csproj", "{612B51B4-E37E-4C6D-A07E-44BC5441191B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiContract", "ApiContract\ApiContract.csproj", "{612B51B4-E37E-4C6D-A07E-44BC5441191B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{7531C773-4CAF-4D51-83CE-73F58C040A2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "Api\Api.csproj", "{7531C773-4CAF-4D51-83CE-73F58C040A2E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{612B51B4-E37E-4C6D-A07E-44BC5441191B} = {612B51B4-E37E-4C6D-A07E-44BC5441191B}
 		{DE2D27D1-CC11-4ED3-BBCD-03190A243B2E} = {DE2D27D1-CC11-4ED3-BBCD-03190A243B2E}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServer", "GameServer\GameServer.csproj", "{29C6E93E-C0C7-4ADD-AB27-F23484348393}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameServer", "GameServer\GameServer.csproj", "{29C6E93E-C0C7-4ADD-AB27-F23484348393}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameClient", "GameClient\GameClient.csproj", "{316E7719-5645-406A-83ED-66AF10871468}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameClient", "GameClient\GameClient.csproj", "{316E7719-5645-406A-83ED-66AF10871468}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Site", "Site\Site.csproj", "{E7CD284E-F835-47E5-8211-E771F6B46D14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +103,10 @@ Global
 		{316E7719-5645-406A-83ED-66AF10871468}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{316E7719-5645-406A-83ED-66AF10871468}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{316E7719-5645-406A-83ED-66AF10871468}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7CD284E-F835-47E5-8211-E771F6B46D14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7CD284E-F835-47E5-8211-E771F6B46D14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7CD284E-F835-47E5-8211-E771F6B46D14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7CD284E-F835-47E5-8211-E771F6B46D14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

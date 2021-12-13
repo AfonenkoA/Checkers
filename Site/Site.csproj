@@ -7,12 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Mocks\" />
+    <Compile Remove="Data\**" />
+    <Content Remove="Data\**" />
+    <EmbeddedResource Remove="Data\**" />
+    <None Remove="Data\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ApiTest\ApiTest.csproj" />
-    <ProjectReference Include="..\DatabaseStartup\DatabaseStartup.csproj" />
+    <ProjectReference Include="..\Api\Api.csproj" />
+    <ProjectReference Include="..\Common\Common.csproj" />
   </ItemGroup>
 
 </Project>
