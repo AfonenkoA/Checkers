@@ -22,7 +22,7 @@ GO
 CREATE PROCEDURE {SelectCheckersSkinProc} {IdVar} INT
 AS
 BEGIN
-    SELECT CH.*, R.{ResourceExtension}, R.{Id}
+    SELECT CH.*, R.{ResourceExtension}
     FROM {Schema}.{CheckersSkinTable} AS CH 
     JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=CH.{ResourceId}
     WHERE CH.{Id}={IdVar}

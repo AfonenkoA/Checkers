@@ -30,7 +30,6 @@ public class BasicUserData
     public int Id { get; init; } = InvalidInt;
     public string Nick { get; init; } = InvalidString;
     public int SocialCredit { get; init; } = InvalidInt;
-    public int PictureId { get; init; } = InvalidInt;
     public DateTime LastActivity { get; init; } = InvalidDate;
     public int SelectedCheckersId { get; init; } = InvalidInt;
     public int SelectedAnimationId { get; init; } = InvalidInt;
@@ -40,7 +39,6 @@ public class BasicUserData
     public virtual bool IsValid => !(Id == InvalidInt ||
                              Nick == InvalidString ||
                              SocialCredit == InvalidInt ||
-                             PictureId == InvalidInt ||
                              LastActivity == InvalidDate ||
                              SelectedCheckersId == InvalidInt ||
                              SelectedAnimationId == InvalidInt ||
@@ -55,7 +53,6 @@ public class PublicUserData : BasicUserData
         Id = data.Id;
         Nick = data.Nick;
         SocialCredit = data.SocialCredit;
-        PictureId = data.PictureId;
         LastActivity = data.LastActivity;
         SelectedAnimationId = data.SelectedAnimationId;
         SelectedCheckersId = data.SelectedCheckersId;
@@ -64,7 +61,7 @@ public class PublicUserData : BasicUserData
     [JsonConstructor]
     public PublicUserData() { }
     public IEnumerable<Achievement> Achievements { get; set; } = Empty<Achievement>();
-
+    public Picture Picture { get; set; } = Picture.Invalid;
     [JsonIgnore] public override bool IsValid => base.IsValid;
 }
 
@@ -95,7 +92,6 @@ public sealed class User : BasicUserData
         Id = data.Id;
         Nick = data.Nick;
         SocialCredit = data.SocialCredit;
-        PictureId = data.PictureId;
         LastActivity = data.LastActivity;
         SelectedAnimationId = data.SelectedAnimationId;
         SelectedCheckersId = data.SelectedCheckersId;
@@ -114,6 +110,7 @@ public sealed class User : BasicUserData
     public IEnumerable<CheckersSkin> AvailableCheckersSkins { get; set; } = Empty<CheckersSkin>();
     public IEnumerable<LootBox> AvailableLootBox { get; set; } = Empty<LootBox>();
     public IEnumerable<Achievement> AvailableAchievement { get; set; } = Empty<Achievement>();
+    public Picture Picture { get; init; } = Picture.Invalid;
 
     [JsonIgnore]
     public override bool IsValid => base.IsValid &&

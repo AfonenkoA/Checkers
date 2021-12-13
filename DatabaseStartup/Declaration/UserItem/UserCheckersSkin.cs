@@ -20,7 +20,7 @@ GO
 CREATE PROCEDURE {SelectUserCheckersSkinProc} {IdVar} INT
 AS
 BEGIN
-    SELECT C.*, R.{Id}, R.{ResourceExtension} FROM {Schema}.{UserCheckersSkinTable} AS UC
+    SELECT C.*, R.{ResourceExtension} FROM {Schema}.{UserCheckersSkinTable} AS UC
     JOIN {CheckersSkinTable} AS C ON UC.{CheckersSkinId}=C.{Id}
     JOIN {ResourceTable} AS R ON R.{Id}=C.{ResourceId}
     WHERE {UserId}={IdVar}
