@@ -24,3 +24,6 @@ public sealed class EmoteAction : Action
 
 public sealed class SurrenderAction : Action
 { }
+
+public sealed class GameStopAction : IGameAction
+{ }

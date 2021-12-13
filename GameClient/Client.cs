@@ -18,6 +18,7 @@ public sealed class Client : IPlayer, IClient, IDisposable
     {
         _connection = connection;
         _connectionRequest = new ConnectRequestAction { Credential = credential };
+        OnGameEnd += async _ => await Send(new GameStopAction());
     }
 
 

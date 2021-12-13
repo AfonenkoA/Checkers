@@ -65,7 +65,7 @@ internal sealed class Player : IPlayer, IDisposable
                         var s = Deserialize<SurrenderAction>(json);
                         if (s == null) break;
                         OnSurrender?.Invoke(s);
-                        return;
+                        break;
                     }
                 case nameof(EmoteAction):
                     {
@@ -73,6 +73,8 @@ internal sealed class Player : IPlayer, IDisposable
                         OnEmote?.Invoke(emote);
                         break;
                     }
+                case nameof(GameStopAction):
+                    return;
             }
         }
     }
