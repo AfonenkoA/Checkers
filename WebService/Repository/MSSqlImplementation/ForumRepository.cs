@@ -1,0 +1,113 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using Common.Entity;
+using WebService.Repository.Interface;
+using static System.Data.SqlDbType;
+using static WebService.Repository.MSSqlImplementation.SqlExtensions;
+
+namespace WebService.Repository.MSSqlImplementation;
+
+public sealed class ForumRepository : RepositoryBase, IForumRepository
+{
+    public const string PostTable = "[Post]";
+
+    public const string PostTitle = "[post_title]";
+    public const string PostAuthorId = "[post_author_id]";
+    public const string PostContent = "[post_content]";
+    public const string PostCreated = "[post_created]";
+    public const string PostPictureId = "[post_picture_id]";
+
+    public const string PostTitleVar = "@post_title";
+    public const string PostContentVar = "@post_content";
+    public const string PostPictureIdVar = "@post_picture_id";
+    public const string PostAuthorIdVar = "@post_author_id";
+
+    public const string CreatePostProc = "[SP_CreatePost]";
+    public const string SelectPostInfoProc = "[SP_SelectPostInfo]";
+    public const string SelectPostProc = "[SP_SelectPost]";
+    public const string SelectPostsProc = "[SP_SelectPosts]";
+    public const string UpdatePostTitleProc = "[SP_UpdatePostTitle]";
+    public const string UpdatePostContentProc = "[SP_UpdatePostContent]";
+    public const string UpdatePostPictureIdProc = "[SP_UpdatePostPictureId]";
+
+    internal ForumRepository(SqlConnection connection) : base(connection) { }
+
+    public bool CreatePost(Credential credential, PostCreationData post)
+    {
+        using var command = CreateProcedure(CreatePostProc);
+        command.Parameters.AddRange(
+            new[]
+            {
+                LoginParameter(credential.Login),
+                PasswordParameter(credential.Password),
+                new SqlParameter{ParameterName = PostTitleVar,SqlDbType = NVarChar,Value = post.Title},
+                new SqlParameter{ParameterName = PostContentVar,SqlDbType = NVarChar,Value = post.Content},
+                new SqlParameter{ParameterName = PostPictureIdVar,SqlDbType = Int,Value = post.PictureId}
+            });
+        return command.ExecuteNonQuery() > 0;
+    }
+
+    public bool UpdateTitle(Credential credential, int postId, string title)
+    {
+        using var command = CreateProcedure(UpdatePostTitleProc);
+        command.Parameters.AddRange(
+            new[]
+            {
+                LoginParameter(credential.Login),
+                PasswordParameter(credential.Password),
+                IdParameter(postId),
+                new SqlParameter{ParameterName = PostTitleVar,SqlDbType = NVarChar,Value = title}
+            });
+        return command.ExecuteNonQuery() > 0;
+    }
+
+    public bool UpdateContent(Credential credential, int postId, string content)
+    {
+        using var command = CreateProcedure(UpdatePostContentProc);
+        command.Parameters.AddRange(
+            new[]
+            {
+                LoginParameter(credential.Login),
+                PasswordParameter(credential.Password),
+                IdParameter(postId),
+                new SqlParameter{ParameterName = PostContentVar,SqlDbType = NVarChar,Value = content}
+            });
+        return command.ExecuteNonQuery() > 0;
+    }
+
+    public bool UpdatePictureId(Credential credential, int postId, int imageId)
+    {
+        using var command = CreateProcedure(UpdatePostPictureIdProc);
+        command.Parameters.AddRange(
+            new[]
+            {
+                LoginParameter(credential.Login),
+                PasswordParameter(credential.Password),
+                IdParameter(postId),
+                new SqlParameter{ParameterName = PostPictureIdVar,SqlDbType = NVarChar,Value = imageId}
+            });
+        return command.ExecuteNonQuery() > 0;
+    }
+
+    public bool DeletePost(Credential credential, int postId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Post GetPost(int postId)
+    {
+        using var command = CreateProcedure(SelectPostProc);
+        command.Parameters.Add(new SqlParameter { ParameterName = IdVar, SqlDbType = Int, Value = postId });
+        using var reader = command.ExecuteReader();
+        if (!reader.Read()) return Post.Invalid;
+        return reader.GetPost();
+    }
+
+    public IEnumerable<PostInfo> GetPosts()
+    {
+        using var command = CreateProcedure(SelectPostsProc);
+        using var reader = command.ExecuteReader();
+        return reader.GetAllPostInfo();
+    }
+}
