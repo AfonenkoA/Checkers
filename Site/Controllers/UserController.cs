@@ -1,23 +1,27 @@
 ﻿using System;
-using Checkers.Site.Data.Models;
+using Api.Interface;
+using Api.WebImplementation;
+using Common.Entity;
 using Microsoft.AspNetCore.Mvc;
-using Checkers.Site.Data.Interfaces;
-using Checkers.Site.Data.Mocks;
 
 namespace Checkers.Site.Controllers;
    
 public class UserController : Controller
 {
-    private readonly IUserRep _Users;
+  
+    private static readonly IAsyncUserApi api = new UserWebApi();
+    private static readonly IAsyncResourceService resourseApi = new AsyncResourceWebApi();
 
-    public UserController(IUserRep iUsers)
+    public async Task<ViewResult> List()
     {
-        _Users = iUsers;
+        var (_, Users) = await api.TryGetUsersByNick("");
+        return View(Users);
     }
 
-    public ViewResult List()
+    public async Task<ViewResult> Picture()
     {
-        var users = _Users;
-        return View(users);
+        var (_, User) = await api.TryGetUser(1);
+        var str = resourseApi.GetFileUrl(User.PictureId);
+        return View((object)str);
     }
 }

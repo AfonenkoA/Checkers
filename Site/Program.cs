@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Checkers
+namespace Site
 {
     public class Program
     {
@@ -38,7 +38,7 @@ namespace Checkers
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=User}/{action=List}/{id?}");
+                pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
             //CreateWebHostBuilder(args).Build().Run();

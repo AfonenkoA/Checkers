@@ -6,16 +6,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
-using Checkers.Data.Old;
-using Checkers.Data.Repository.MSSqlImplementation;
-using Checkers.Api.Interface;
-using Checkers.Api.WebImplementation;
-using Checkers.Site;
-using Checkers.Site.Data.Interfaces;
-using Checkers.Site.Data.Mocks;
 
-namespace Checkers
+
+namespace Site
 {
     public class Startup
     {
@@ -34,22 +27,6 @@ namespace Checkers
                 Options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            /*services.AddDbContext<UserContex>(Options => Options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddScoped<IAsyncUserApi, UserWebApi>();
-            services.AddControllersWithViews();*/
-
-            var config = Configuration.GetSection("DatabaseConfig").Get<DatabaseConfig>();
-            services.AddSingleton(new RepositoryFactory(config.Current));
-            services.AddSingleton(new GameDatabase.Factory(config.Old));
-            services.AddControllers();
-            services.AddMvc();
-            services.AddSingleton<IUserRep, UserRep>();
-            services.AddSingleton<IChatRep, ChatRep>();
-            services.AddSingleton<IForumRep, ForumRep>();
-            services.AddSingleton<IStatisticsRep, StatisticsRep>();
-            services.AddSingleton<IResourceRep, ResourceRep>();
-            services.AddSingleton<IItemRep, ItemRep>();
-            services.AddSingleton<INewsRep, NewsRep>();
             services.AddHttpContextAccessor();
 
         }
