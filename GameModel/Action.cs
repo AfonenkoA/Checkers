@@ -1,4 +1,5 @@
-﻿using static Common.Entity.EntityValues;
+﻿using Common.Entity;
+using static Common.Entity.EntityValues;
 
 namespace GameModel;
 
@@ -18,7 +19,7 @@ public sealed class MoveAction : Action
 
 public sealed class EmoteAction : Action
 {
-    public int Id { get; set; } = InvalidInt;
+    public Emotion Emotion { get; set; } = Emotion.Invalid;
 }
 
 public sealed class SurrenderAction : Action

@@ -2,7 +2,7 @@
 
 namespace GameServer.GameRepository;
 
-internal interface IGameRepository : IEmotionRepository
+internal interface IGameRepository
 {
     public void SaveGame(Game game);
 }

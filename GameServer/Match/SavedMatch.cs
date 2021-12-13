@@ -56,7 +56,7 @@ internal sealed class SavedMatch : MatchModel
     }
 
     internal SavedMatch(IGameRepository repository, IPlayer black, IPlayer white) :
-        base(repository, black, white)
+        base(black, white)
     {
         _repository = repository;
         Subscribe();

@@ -12,7 +12,6 @@ internal class MatchModel : InteroperableModel, IDisposable
     protected readonly IPlayer White;
     private Side _turn = Side.White;
     private readonly DateTime _startTime = Now;
-    private readonly IEmotionRepository _repository;
 
     private TimeSpan Time => Now - _startTime;
 
@@ -42,11 +41,10 @@ internal class MatchModel : InteroperableModel, IDisposable
         OnGameEnd -= p.Send;
     }
 
-    internal MatchModel(IEmotionRepository repository, IPlayer black, IPlayer white)
+    internal MatchModel(IPlayer black, IPlayer white)
     {
         Black = black;
         White = white;
-        _repository = repository;
         Subscribe(black);
         Subscribe(white);
     }
@@ -64,8 +62,8 @@ internal class MatchModel : InteroperableModel, IDisposable
         };
         Black.Send(new YourSideEvent { Side = Side.Black, Time = Time });
         White.Send(new YourSideEvent { Side = Side.White, Time = Time });
-        SetTurn(Side.White);
         Start(start);
+        SetTurn(Side.White);
     }
 
     public override void Move(MoveAction a)
@@ -91,7 +89,7 @@ internal class MatchModel : InteroperableModel, IDisposable
         Emote(new EmoteEvent
         {
             Side = a.Side,
-            Emotion = _repository.GetEmotion(a.Id),
+            Emotion = a.Emotion,
             Time = Time
         });
     }

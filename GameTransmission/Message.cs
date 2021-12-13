@@ -7,7 +7,7 @@ namespace GameTransmission;
 public sealed class Message
 {
     public string Type { get; set; } = Empty;
-    private string Value { get; set; } = Empty;
+    public string Value { get; set; } = Empty;
 
     [JsonConstructor]
     public Message() { }

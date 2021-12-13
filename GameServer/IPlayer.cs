@@ -21,4 +21,5 @@ public interface IPlayer
     public event DisconnectActionHandler? OnDisconnect;
 
     public void Send<T>(T obj);
+    void Listen();
 }

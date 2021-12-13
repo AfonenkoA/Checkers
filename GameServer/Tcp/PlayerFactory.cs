@@ -12,7 +12,7 @@ public sealed class PlayerFactory
     internal IPlayer CreatePlayer(Connection connection, Credential credential)
     {
         var p = new Player(_repository, connection, credential);
-        Task.Run(p.Listen);
+        Task.Run(p.ListenClient);
         return p;
     }
 }
