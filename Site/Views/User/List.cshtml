@@ -1,0 +1,26 @@
+﻿@using Checkers.Site.Data.Models
+@model IEnumerable<User>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta name="viewport" content="width-device-width" />
+        <title>List</title>
+    </head>
+    <body>
+        <h2>Все пользователи</h2>
+    @{
+        foreach(var users in Model)
+        {
+            <div>
+                <h2>@users.Nick</h2>
+            </div>
+        }
+    }
+    </body>
+</html>
