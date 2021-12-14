@@ -38,7 +38,7 @@ namespace Site
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=User}/{action=Nick}/{id?}");
+                pattern: "{controller=Statistics}/{action=Get}/{id?}");
 
             app.Run();
             //CreateWebHostBuilder(args).Build().Run();

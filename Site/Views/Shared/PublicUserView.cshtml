@@ -1,0 +1,18 @@
+﻿@using Site.Data.Models
+@model PublicUserModel
+@{
+}
+
+
+<div class="icon"><img style="padding: 5px;" src="@Model.PictureUrl" width="140" height="140" alt="user"></div>
+<h3>Ник: @Model.Nick</h3>
+<h3>Рейтинг: @Model.SocialCredit</h3>
+<h3>Дата регистрации: @Model.LastActivity</h3>
+
+<style contenteditable>
+    .icon {
+        margin: 0px 10px 10px 0px;
+        border: 3px solid black;
+        float: left
+    }
+</style>
