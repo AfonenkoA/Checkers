@@ -23,6 +23,11 @@ namespace Site.Controllers
             return View();
         }
 
+        public IActionResult AboutGame()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
