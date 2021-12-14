@@ -183,11 +183,11 @@ internal static class SqlExtensions
         return list;
     }
 
-    public static IDictionary<int, int> GetTopUsers(this SqlDataReader reader)
+    public static IDictionary<long, int> GetTopUsers(this SqlDataReader reader)
     {
-        var dict = new Dictionary<int, int>();
+        var dict = new Dictionary<long, int>();
         while (reader.Read())
-            dict.Add(reader.GetFieldValue<int>(StatisticPosition), reader.GetFieldValue<int>(Id));
+            dict.Add(reader.GetFieldValue<long>(StatisticPosition), reader.GetFieldValue<int>(Id));
         return dict;
     }
 

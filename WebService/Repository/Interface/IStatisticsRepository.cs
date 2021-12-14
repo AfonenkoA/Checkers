@@ -5,6 +5,6 @@ namespace WebService.Repository.Interface;
 
 internal interface IStatisticsRepository
 {
-    IDictionary<int, PublicUserData> GetTopPlayers();
-    IDictionary<int, PublicUserData> GetTopPlayers(Credential credential);
+    IDictionary<long, PublicUserData> GetTopPlayers();
+    IDictionary<long, PublicUserData> GetTopPlayers(Credential credential);
 }

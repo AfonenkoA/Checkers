@@ -14,11 +14,12 @@ public sealed class StatisticsRepository : UserRepositoryBase, IStatisticsReposi
 
     public const string StatisticPosition = "RowNumber";
     public const string OrderedPlayers = "OrderedPlayers";
+    public const string ShowCount = "10";
 
     internal StatisticsRepository(SqlConnection connection) : base(connection) { }
 
 
-    private IDictionary<int, int> GetTopPlayersId()
+    private IDictionary<long, int> GetTopPlayersId()
     {
         using var command = CreateProcedure(SelectTopPlayersProc);
         using var reader = command.ExecuteReader();
@@ -26,9 +27,9 @@ public sealed class StatisticsRepository : UserRepositoryBase, IStatisticsReposi
         return dict;
     }
 
-    private IDictionary<int, int> GetTopPlayersIdAuth(Credential credential)
+    private IDictionary<long, int> GetTopPlayersIdAuth(Credential credential)
     {
-        using var command = CreateProcedure(SelectTopPlayersProc);
+        using var command = CreateProcedure(SelectTopPlayersAuthProc);
         command.Parameters.AddRange(
             new[]
             {
@@ -40,19 +41,19 @@ public sealed class StatisticsRepository : UserRepositoryBase, IStatisticsReposi
         return dict;
     }
 
-    public IDictionary<int, PublicUserData> GetTopPlayers()
+    public IDictionary<long, PublicUserData> GetTopPlayers()
     {
         var idDict = GetTopPlayersId();
-        var dict = new Dictionary<int, PublicUserData>();
+        var dict = new Dictionary<long, PublicUserData>();
         foreach (var (key,value) in idDict)
             dict.Add(key,GetPublicUserDataUser(value));
         return dict;
     }
 
-    public IDictionary<int, PublicUserData> GetTopPlayers(Credential credential)
+    public IDictionary<long, PublicUserData> GetTopPlayers(Credential credential)
     {
         var idDict = GetTopPlayersIdAuth(credential);
-        var dict = new Dictionary<int, PublicUserData>();
+        var dict = new Dictionary<long, PublicUserData>();
         foreach (var (key, value) in idDict)
             dict.Add(key, GetPublicUserDataUser(value));
         return dict;
