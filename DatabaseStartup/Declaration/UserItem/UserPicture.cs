@@ -17,7 +17,7 @@ BEGIN
     FROM {Schema}.{UserTable} AS U
     JOIN {Schema}.{PictureTable} AS P ON U.{PictureId}=P.{Id}
     JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=P.{ResourceId}
-    WHERE U.{PictureId}={IdVar}
+    WHERE U.{Id}={IdVar}
 END";
 
     public const string Function = $@"

@@ -70,7 +70,8 @@ BEGIN
     SELECT C.*, R.{ResourceExtension}, R.{Id} FROM {Schema}.{CheckersSkinTable} AS C
     JOIN {Schema}.{ResourceTable} AS R ON C.{ResourceId}=R.{Id}
     EXCEPT
-    SELECT C.*, R.{ResourceExtension}, R.{Id} FROM {Schema}.{UserCheckersSkinTable} AS UC
+    SELECT C.*, R.{ResourceExtension}, R.{Id}
+    FROM {Schema}.{UserCheckersSkinTable} AS UC
     JOIN {Schema}.{CheckersSkinTable} AS C ON C.{Id} = UC.{CheckersSkinId}
     JOIN {Schema}.{ResourceTable} AS R ON C.{ResourceId}=R.{Id}
     WHERE UC.{UserId}={IdVar}
