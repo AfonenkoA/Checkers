@@ -2,7 +2,6 @@
 using System.Data.SqlClient;
 using Common.Entity;
 using WebService.Repository.Interface;
-using static System.Linq.Enumerable;
 using static WebService.Repository.MSSqlImplementation.SqlExtensions;
 
 namespace WebService.Repository.MSSqlImplementation;

@@ -20,7 +20,8 @@ GO
 CREATE PROCEDURE {SelectUserAnimationProc} {IdVar} INT
 AS
 BEGIN
-    SELECT A.*, R.{ResourceExtension} FROM {Schema}.{UserAnimationTable} AS UA
+    SELECT A.*, R.{ResourceExtension}
+    FROM {Schema}.{UserAnimationTable} AS UA
     JOIN {AnimationTable} AS A ON UA.{AnimationId}=A.{Id}
     JOIN {ResourceTable} AS R ON A.{ResourceId}=R.{Id}
     WHERE {UserId}={IdVar}

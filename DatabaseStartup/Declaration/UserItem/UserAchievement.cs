@@ -20,7 +20,8 @@ GO
 CREATE PROCEDURE {SelectUserAchievementProc} {IdVar} INT
 AS
 BEGIN
-    SELECT A.*, R.{Id}, R.{ResourceExtension} FROM {Schema}.{UserAchievementTable} AS UA
+    SELECT A.*, R.{Id}, R.{ResourceExtension}
+    FROM {Schema}.{UserAchievementTable} AS UA
     JOIN {AchievementTable} AS A ON UA.{AchievementId}=A.{Id}
     JOIN {ResourceTable} AS R ON R.{Id}=A.{ResourceId}
     WHERE {UserId}={IdVar}
