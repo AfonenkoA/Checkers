@@ -164,7 +164,5 @@ public class UserTest
         var (success, user) = await UserApi.TryGetSelf(newCredential);
         IsTrue(success);
         AreEqual(NewNick, user.Nick);
-        AreEqual(_newCheckersSkin, user.SelectedCheckersId);
-        AreEqual(_newAnimation, user.SelectedAnimationId);
     }
 }

@@ -11,6 +11,7 @@ using static WebService.Repository.MSSqlImplementation.ItemRepository;
 using static WebService.Repository.MSSqlImplementation.ResourceRepository;
 using static WebService.Repository.MSSqlImplementation.MessageRepository;
 using static WebService.Repository.MSSqlImplementation.ChatRepository;
+using static WebService.Repository.MSSqlImplementation.StatisticsRepository;
 
 namespace WebService.Repository.MSSqlImplementation;
 
@@ -24,8 +25,6 @@ internal static class SqlExtensions
             Id = reader.GetFieldValue<int>(Id),
             Nick = reader.GetFieldValue<string>(Nick),
             SocialCredit = reader.GetFieldValue<int>(SocialCredit),
-            SelectedAnimationId = reader.GetFieldValue<int>(AnimationId),
-            SelectedCheckersId = reader.GetFieldValue<int>(CheckersSkinId),
             LastActivity = reader.GetFieldValue<DateTime>(LastActivity),
             Type = (UserType)reader.GetFieldValue<int>(UserTypeId)
         };
@@ -182,6 +181,14 @@ internal static class SqlExtensions
         while (reader.Read())
             list.Add(reader.GetLootBox());
         return list;
+    }
+
+    public static IDictionary<long, int> GetTopUsers(this SqlDataReader reader)
+    {
+        var dict = new Dictionary<long, int>();
+        while (reader.Read())
+            dict.Add(reader.GetFieldValue<long>(StatisticPosition), reader.GetFieldValue<int>(Id));
+        return dict;
     }
 
     public static Emotion GetEmotion(this SqlDataReader reader) => new(reader.GetNamedItem());

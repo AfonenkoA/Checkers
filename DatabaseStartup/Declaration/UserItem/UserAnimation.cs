@@ -2,6 +2,7 @@
 using static WebService.Repository.MSSqlImplementation.UserRepository;
 using static WebService.Repository.MSSqlImplementation.ItemRepository;
 using static WebService.Repository.MSSqlImplementation.ResourceRepository;
+using static WebService.Repository.MSSqlImplementation.UserRepositoryBase;
 
 namespace DatabaseStartup.Declaration.UserItem;
 
@@ -15,9 +16,9 @@ CREATE TABLE {UserAnimationTable}
 {UserId}        INT     NOT NULL    {Fk(UserAnimationTable, UserTable)}
 );";
 
-    private const string Select = $@"
+    private const string SelectAll = $@"
 GO
-CREATE PROCEDURE {SelectUserAnimationProc} {IdVar} INT
+CREATE PROCEDURE {SelectAllUserAnimationProc} {IdVar} INT
 AS
 BEGIN
     SELECT A.*, R.{ResourceExtension}
@@ -25,6 +26,18 @@ BEGIN
     JOIN {AnimationTable} AS A ON UA.{AnimationId}=A.{Id}
     JOIN {ResourceTable} AS R ON A.{ResourceId}=R.{Id}
     WHERE {UserId}={IdVar}
+END";
+
+    private const string Select = $@"
+GO
+CREATE PROCEDURE {SelectUserAnimationProc} {IdVar} INT
+AS
+BEGIN
+    SELECT A.*, R.{ResourceExtension}
+    FROM {Schema}.{UserTable} AS U
+    JOIN {Schema}.{AnimationTable} AS A ON U.{AnimationId}=A.{Id}
+    JOIN {ResourceTable} AS R ON A.{ResourceId}=R.{Id}
+    WHERE U.{Id}={IdVar}    
 END";
 
     private const string Update = $@"
@@ -80,6 +93,7 @@ END";
     public const string Function = $@"
 --UserAnimation
 {Select}
+{SelectAll}
 {Update}
 {GetAvailable}
 {Buy}";

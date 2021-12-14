@@ -2,6 +2,7 @@
 using static WebService.Repository.MSSqlImplementation.ItemRepository;
 using static WebService.Repository.MSSqlImplementation.ResourceRepository;
 using static WebService.Repository.MSSqlImplementation.RepositoryBase;
+using static WebService.Repository.MSSqlImplementation.UserRepositoryBase;
 
 namespace DatabaseStartup.Declaration.UserItem;
 

@@ -31,8 +31,6 @@ public class BasicUserData
     public string Nick { get; init; } = InvalidString;
     public int SocialCredit { get; init; } = InvalidInt;
     public DateTime LastActivity { get; init; } = InvalidDate;
-    public int SelectedCheckersId { get; init; } = InvalidInt;
-    public int SelectedAnimationId { get; init; } = InvalidInt;
     public UserType Type { get; init; } = UserType.Invalid;
 
     [JsonIgnore]
@@ -40,8 +38,6 @@ public class BasicUserData
                              Nick == InvalidString ||
                              SocialCredit == InvalidInt ||
                              LastActivity == InvalidDate ||
-                             SelectedCheckersId == InvalidInt ||
-                             SelectedAnimationId == InvalidInt ||
                              Type == UserType.Invalid);
 }
 
@@ -54,14 +50,16 @@ public class PublicUserData : BasicUserData
         Nick = data.Nick;
         SocialCredit = data.SocialCredit;
         LastActivity = data.LastActivity;
-        SelectedAnimationId = data.SelectedAnimationId;
-        SelectedCheckersId = data.SelectedCheckersId;
         Type = data.Type;
     }
     [JsonConstructor]
     public PublicUserData() { }
+
     public IEnumerable<Achievement> Achievements { get; set; } = Empty<Achievement>();
     public Picture Picture { get; set; } = Picture.Invalid;
+    public CheckersSkin SelectedCheckers { get; set; } = CheckersSkin.Invalid;
+    public Animation SelectedAnimation { get; set; } = Animation.Invalid;
+
     [JsonIgnore] public override bool IsValid => base.IsValid;
 }
 
@@ -71,6 +69,8 @@ public sealed class FriendUserData : PublicUserData
     public FriendUserData(PublicUserData data) : base(data)
     {
         Achievements = data.Achievements;
+        SelectedAnimation = data.SelectedAnimation;
+        SelectedCheckers = data.SelectedCheckers;
     }
     [JsonConstructor]
     public FriendUserData() { }
@@ -85,16 +85,14 @@ public sealed class FriendUserData : PublicUserData
 public sealed class User : BasicUserData
 {
 
-    public new static readonly User Invalid = new(BasicUserData.Invalid);
+    public new static readonly User Invalid = new(PublicUserData.Invalid);
 
-    public User(BasicUserData data)
+    public User(PublicUserData data)
     {
         Id = data.Id;
         Nick = data.Nick;
         SocialCredit = data.SocialCredit;
         LastActivity = data.LastActivity;
-        SelectedAnimationId = data.SelectedAnimationId;
-        SelectedCheckersId = data.SelectedCheckersId;
         Type = data.Type;
     }
 
@@ -103,14 +101,12 @@ public sealed class User : BasicUserData
 
     public IEnumerable<CheckersSkin> CheckerSkins { get; set; } = Empty<CheckersSkin>();
     public IEnumerable<Animation> Animations { get; set; } = Empty<Animation>();
-    public IEnumerable<Emotion> Emotions { get; set; } = Empty<Emotion>();
     public IEnumerable<Friendship> Friends { get; set; } = Empty<Friendship>();
 
     public IEnumerable<Animation> AvailableAnimations { get; set; } = Empty<Animation>();
     public IEnumerable<CheckersSkin> AvailableCheckersSkins { get; set; } = Empty<CheckersSkin>();
     public IEnumerable<LootBox> AvailableLootBox { get; set; } = Empty<LootBox>();
     public IEnumerable<Achievement> AvailableAchievement { get; set; } = Empty<Achievement>();
-    public Picture Picture { get; init; } = Picture.Invalid;
 
     [JsonIgnore]
     public override bool IsValid => base.IsValid &&

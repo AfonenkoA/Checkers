@@ -5,6 +5,7 @@ using static WebService.Repository.MSSqlImplementation.RepositoryBase;
 using static WebService.Repository.MSSqlImplementation.UserRepository;
 using static WebService.Repository.MSSqlImplementation.ItemRepository;
 using static WebService.Repository.MSSqlImplementation.StatisticsRepository;
+using static WebService.Repository.MSSqlImplementation.UserRepositoryBase;
 
 namespace DatabaseStartup.Declaration;
 
@@ -180,7 +181,7 @@ BEGIN
     (SELECT ROW_NUMBER() OVER(ORDER BY {SocialCredit} DESC) AS {StatisticPosition}, U.*
     FROM {Schema}.{UserTable} AS U) 
     SELECT * FROM {OrderedPlayers}
-    WHERE {StatisticPosition} < 2
+    WHERE {StatisticPosition} < {ShowCount}
     ORDER BY {SocialCredit} DESC;
 END";
 
@@ -195,7 +196,7 @@ BEGIN
     (SELECT ROW_NUMBER() OVER(ORDER BY {SocialCredit} DESC) AS {StatisticPosition}, U.*
     FROM {Schema}.{UserTable} AS U)
     SELECT * FROM {OrderedPlayers}
-    WHERE {StatisticPosition} < 2 OR {Id}={IdVar}
+    WHERE {StatisticPosition} < {ShowCount} OR {Id}={IdVar}
     ORDER BY {SocialCredit} DESC;
 END";
 
