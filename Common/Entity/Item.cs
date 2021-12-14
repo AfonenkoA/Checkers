@@ -37,7 +37,7 @@ public class NamedItem : Item
     }
 
     [JsonConstructor]
-    public NamedItem(){}
+    public NamedItem() { }
 
     [JsonIgnore] public override bool IsValid => base.IsValid && Name != InvalidString;
 }
@@ -70,10 +70,10 @@ public class SoldItem : DetailedItem
     }
 
     [JsonConstructor]
-    public SoldItem(){}
+    public SoldItem() { }
 
-    [JsonIgnore] 
-    public override bool IsValid => base.IsValid && Price!=InvalidInt;
+    [JsonIgnore]
+    public override bool IsValid => base.IsValid && Price != InvalidInt;
 }
 
 public sealed class Achievement : DetailedItem

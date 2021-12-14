@@ -1,6 +1,8 @@
-﻿using static WebService.Repository.MSSqlImplementation.Repository;
+﻿using static WebService.Repository.MSSqlImplementation.RepositoryBase;
 using static WebService.Repository.MSSqlImplementation.UserRepository;
 using static WebService.Repository.MSSqlImplementation.ItemRepository;
+using static WebService.Repository.MSSqlImplementation.ResourceRepository;
+using static WebService.Repository.MSSqlImplementation.UserRepositoryBase;
 
 namespace DatabaseStartup.Declaration.UserItem;
 
@@ -14,14 +16,28 @@ CREATE TABLE {UserAnimationTable}
 {UserId}        INT     NOT NULL    {Fk(UserAnimationTable, UserTable)}
 );";
 
+    private const string SelectAll = $@"
+GO
+CREATE PROCEDURE {SelectAllUserAnimationProc} {IdVar} INT
+AS
+BEGIN
+    SELECT A.*, R.{ResourceExtension}
+    FROM {Schema}.{UserAnimationTable} AS UA
+    JOIN {AnimationTable} AS A ON UA.{AnimationId}=A.{Id}
+    JOIN {ResourceTable} AS R ON A.{ResourceId}=R.{Id}
+    WHERE {UserId}={IdVar}
+END";
+
     private const string Select = $@"
 GO
 CREATE PROCEDURE {SelectUserAnimationProc} {IdVar} INT
 AS
 BEGIN
-    SELECT A.* FROM {Schema}.{UserAnimationTable} AS UA
-    JOIN {AnimationTable} AS A ON UA.{AnimationId}=A.{Id} 
-    WHERE {UserId}={IdVar}
+    SELECT A.*, R.{ResourceExtension}
+    FROM {Schema}.{UserTable} AS U
+    JOIN {Schema}.{AnimationTable} AS A ON U.{AnimationId}=A.{Id}
+    JOIN {ResourceTable} AS R ON A.{ResourceId}=R.{Id}
+    WHERE U.{Id}={IdVar}    
 END";
 
     private const string Update = $@"
@@ -62,19 +78,22 @@ END";
 
     private const string GetAvailable = $@"
 GO
-CREATE PROCEDURE {UserGetAvailableAnimationProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
+CREATE PROCEDURE {UserGetAvailableAnimationProc} {IdVar} INT
 AS
 BEGIN
-    DECLARE {UserIdVar} INT
-    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar},{PasswordVar}
-    SELECT {Id} FROM {Schema}.{AnimationTable} 
+    SELECT A.*, R.{Id}, R.{ResourceExtension} FROM {Schema}.{AnimationTable} AS A
+    JOIN {ResourceTable} AS R ON R.{Id}=A.{ResourceId}
     EXCEPT
-    SELECT {AnimationId} FROM {Schema}.{UserAnimationTable}
+    SELECT A.*, R.{Id}, R.{ResourceExtension} FROM {Schema}.{UserAnimationTable} AS UA
+    JOIN {Schema}.{AnimationTable} AS A ON A.{Id}=UA.{AnimationId}
+    JOIN {ResourceTable} AS R ON R.{Id}=A.{ResourceId}
+    WHERE UA.{UserId}={IdVar}
 END";
 
-    public static readonly string Function = $@"
+    public const string Function = $@"
 --UserAnimation
 {Select}
+{SelectAll}
 {Update}
 {GetAvailable}
 {Buy}";

@@ -2,7 +2,7 @@
 using static Common.Entity.UserType;
 using static DatabaseStartup.Declaration.Markup;
 using static WebService.Repository.MSSqlImplementation.ForumRepository;
-using static WebService.Repository.MSSqlImplementation.Repository;
+using static WebService.Repository.MSSqlImplementation.RepositoryBase;
 using static WebService.Repository.MSSqlImplementation.ChatRepository;
 using static WebService.Repository.MSSqlImplementation.UserRepository;
 using static WebService.Repository.MSSqlImplementation.ResourceRepository;

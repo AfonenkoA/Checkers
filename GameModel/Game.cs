@@ -24,14 +24,14 @@ public enum WinReason
 public sealed class PlayerInfo
 {
     public static readonly PlayerInfo Invalid = new();
-    public PublicUserData User { get; set;} = PublicUserData.Invalid;
+    public PublicUserData User { get; set; } = PublicUserData.Invalid;
     public CheckersSkin CheckersSkin { get; set; } = CheckersSkin.Invalid;
     public Animation Animation { get; set; } = Animation.Invalid;
     public int StartSocialCredit { get; set; } = InvalidInt;
     public int SocialCreditChange { get; set; } = InvalidInt;
 }
 
-public class Game
+public class BasicGameData
 {
     public DateTime Start { get; set; } = InvalidDate;
     public TimeSpan Duration { get; set; } = InvalidTime;
@@ -39,9 +39,18 @@ public class Game
     public WinReason WinReason { get; set; }
     public PlayerInfo Black { get; set; } = PlayerInfo.Invalid;
     public PlayerInfo White { get; set; } = PlayerInfo.Invalid;
+}
+
+public class Game : BasicGameData
+{
     public IEnumerable<TurnEvent> Turns { get; set; } = Empty<TurnEvent>();
     public IEnumerable<MoveEvent> Moves { get; set; } = Empty<MoveEvent>();
     public IEnumerable<EmoteEvent> Emotions { get; set; } = Empty<EmoteEvent>();
+}
+
+public class GameInfo : BasicGameData
+{
+    public int Id { get; set; } = InvalidInt;
 }
 
 public class IdentifiableGame : Game

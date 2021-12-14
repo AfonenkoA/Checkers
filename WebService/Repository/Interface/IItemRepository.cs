@@ -3,7 +3,7 @@ using Common.Entity;
 
 namespace WebService.Repository.Interface;
 
-public interface IItemRepository
+internal interface IItemRepository
 {
     IEnumerable<Achievement> GetAchievements();
     IEnumerable<Animation> GetAnimations();

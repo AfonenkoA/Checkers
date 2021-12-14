@@ -2,21 +2,25 @@
 using GameModel;
 using GameTransmission;
 using static GameTransmission.Message;
-using static GameClient.IClient;
+using static GameClient.IPlayer;
 
 namespace GameClient;
 
-public sealed class Client : IClient, IDisposable
+public sealed class Client : IPlayer, IClient, IDisposable
 {
     private readonly Connection _connection;
-    private readonly Credential _credential;
 
+    private readonly ConnectRequestAction _connectionRequest;
+    private readonly GameRequestAction _gameRequest = new();
+    private readonly DisconnectRequestAction _disconnectRequest = new();
 
     public Client(Connection connection, Credential credential)
     {
         _connection = connection;
-        _credential = credential;
+        _connectionRequest = new ConnectRequestAction { Credential = credential };
+        OnGameEnd += async _ => await Send(new GameStopAction());
     }
+
 
     public async void Listen()
     {
@@ -28,21 +32,13 @@ public sealed class Client : IClient, IDisposable
             if (message == null) continue;
             switch (message.Type)
             {
-                case nameof(ConnectAcknowledgeEvent):
-                    var cAck = message.GetAs<ConnectAcknowledgeEvent>();
-                    OnConnectAcknowledge?.Invoke(cAck);
-                    break;
-                case nameof(DisconnectAcknowledgeEvent):
-                    var dAck = message.GetAs<DisconnectAcknowledgeEvent>();
-                    OnDisconnectAcknowledge?.Invoke(dAck);
+                case nameof(TurnEvent):
+                    var turn = message.GetAs<TurnEvent>();
+                    OnTurn?.Invoke(turn);
                     break;
                 case nameof(MoveEvent):
                     var move = message.GetAs<MoveEvent>();
                     OnMove?.Invoke(move);
-                    break;
-                case nameof(KillEvent):
-                    var kill = message.GetAs<KillEvent>();
-                    OnKill?.Invoke(kill);
                     break;
                 case nameof(EmoteEvent):
                     var emote = message.GetAs<EmoteEvent>();
@@ -59,7 +55,7 @@ public sealed class Client : IClient, IDisposable
                 case nameof(GameEndEvent):
                     var gameEnd = message.GetAs<GameEndEvent>();
                     OnGameEnd?.Invoke(gameEnd);
-                    break;
+                    return;
                 case nameof(YourSideEvent):
                     var yourSide = message.GetAs<YourSideEvent>();
                     OnYouSide?.Invoke(yourSide);
@@ -70,23 +66,35 @@ public sealed class Client : IClient, IDisposable
 
     public void Dispose() => _connection.Dispose();
 
+    public event TurnEventHandler? OnTurn;
     public Task Send<T>(T obj) where T : IGameAction => _connection.Transmit(obj);
 
-    public Task Connect() => _connection.Transmit(new ConnectRequestAction {Credential = _credential});
-    public Task Disconnect() => _connection.Transmit(new DisconnectRequestAction());
 
-    public Task GameRequest() => _connection.Transmit(new GameRequestAction());
+    public async Task<InteroperableModel> Play()
+    {
+        await _connection.Transmit(_gameRequest);
+        var _ = await _connection.ReceiveObject<GameAcknowledgeEvent>();
+        return new ClientGameModel(this);
+    }
 
-    public event ConnectAcknowledgeEventHandler? OnConnectAcknowledge;
-    public event DisconnectAcknowledgeEventHandler? OnDisconnectAcknowledge;
+    public async Task Connect()
+    {
+        await _connection.Transmit(_connectionRequest);
+        var _ = await _connection.ReceiveObject<ConnectAcknowledgeEvent>();
+    }
+
+    public async Task Disconnect()
+    {
+        await _connection.Transmit(_disconnectRequest);
+        await _connection.ReceiveObject<DisconnectAcknowledgeEvent>();
+    }
+
     public event MoveEventHandler? OnMove;
-    public event KillEventHandler? OnKill;
     public event EmoteEventHandler? OnEmote;
     public event GameStartEventHandler? OnGameStart;
     public event ExceptionEventHandler? OnException;
     public event GameEndEventHandler? OnGameEnd;
     public event YourSideEventHandler? OnYouSide;
-
 }
 
 

@@ -3,7 +3,7 @@ using static DatabaseStartup.Filling.Common;
 
 namespace DatabaseStartup.Filling.Entity;
 
-public class MessageArgs
+internal class MessageArgs
 {
     internal readonly string Login;
     internal readonly string Password;

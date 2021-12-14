@@ -1,5 +1,5 @@
 ﻿using DatabaseStartup.Filling.Entity;
-using static WebService.Repository.MSSqlImplementation.Repository;
+using static WebService.Repository.MSSqlImplementation.RepositoryBase;
 using static WebService.Repository.MSSqlImplementation.ResourceRepository;
 using static WebService.Repository.MSSqlImplementation.NewsRepository;
 using static WebService.Repository.MSSqlImplementation.MessageRepository;

@@ -1,6 +1,8 @@
-﻿using static WebService.Repository.MSSqlImplementation.Repository;
+﻿using static WebService.Repository.MSSqlImplementation.RepositoryBase;
 using static WebService.Repository.MSSqlImplementation.UserRepository;
 using static WebService.Repository.MSSqlImplementation.ItemRepository;
+using static WebService.Repository.MSSqlImplementation.ResourceRepository;
+using static WebService.Repository.MSSqlImplementation.UserRepositoryBase;
 
 namespace DatabaseStartup.Declaration.UserItem;
 
@@ -14,14 +16,28 @@ CREATE TABLE {UserCheckersSkinTable}
 {UserId}        INT     NOT NULL    {Fk(UserCheckersSkinTable, UserTable)}
 );";
 
+    private const string SelectAll = $@"
+GO
+CREATE PROCEDURE {SelectAllUserCheckersSkinProc} {IdVar} INT
+AS
+BEGIN
+    SELECT C.*, R.{ResourceExtension} 
+    FROM {Schema}.{UserCheckersSkinTable} AS UC
+    JOIN {CheckersSkinTable} AS C ON UC.{CheckersSkinId}=C.{Id}
+    JOIN {ResourceTable} AS R ON R.{Id}=C.{ResourceId}
+    WHERE {UserId}={IdVar}
+END";
+
     private const string Select = $@"
 GO
 CREATE PROCEDURE {SelectUserCheckersSkinProc} {IdVar} INT
 AS
 BEGIN
-    SELECT C.* FROM {Schema}.{UserCheckersSkinTable} AS UC
-    JOIN {CheckersSkinTable} AS C ON UC.{CheckersSkinId}=C.{Id}
-    WHERE {UserId}={IdVar}
+    SELECT C.*, R.{ResourceExtension} 
+    FROM {Schema}.{UserTable} AS U
+    JOIN {CheckersSkinTable} AS C ON U.{CheckersSkinId}=C.{Id}
+    JOIN {ResourceTable} AS R ON R.{Id}=C.{ResourceId}
+    WHERE U.{Id}={IdVar}    
 END";
 
     private const string Update = $@"
@@ -62,19 +78,23 @@ END";
 
     private const string GetAvailable = $@"
 GO
-CREATE PROCEDURE {UserGetAvailableCheckersSkinProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
+CREATE PROCEDURE {UserGetAvailableCheckersSkinProc} {IdVar} INT
 AS
 BEGIN
-    DECLARE {UserIdVar} INT
-    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar},{PasswordVar}
-    SELECT {Id} FROM {Schema}.{CheckersSkinTable} 
+    SELECT C.*, R.{ResourceExtension}, R.{Id} FROM {Schema}.{CheckersSkinTable} AS C
+    JOIN {Schema}.{ResourceTable} AS R ON C.{ResourceId}=R.{Id}
     EXCEPT
-    SELECT {CheckersSkinId} FROM {Schema}.{UserCheckersSkinTable}
+    SELECT C.*, R.{ResourceExtension}, R.{Id}
+    FROM {Schema}.{UserCheckersSkinTable} AS UC
+    JOIN {Schema}.{CheckersSkinTable} AS C ON C.{Id} = UC.{CheckersSkinId}
+    JOIN {Schema}.{ResourceTable} AS R ON C.{ResourceId}=R.{Id}
+    WHERE UC.{UserId}={IdVar}
 END";
 
-    public static readonly string Function = $@"
+    public const string Function = $@"
 --UserCheckersSkin
 {Select}
+{SelectAll}
 {Update}
 {GetAvailable}
 {Buy}";

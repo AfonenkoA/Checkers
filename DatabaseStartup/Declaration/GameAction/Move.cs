@@ -1,4 +1,4 @@
-﻿using static WebService.Repository.MSSqlImplementation.Repository;
+﻿using static WebService.Repository.MSSqlImplementation.RepositoryBase;
 using static WebService.Repository.MSSqlImplementation.GameRepository;
 
 namespace DatabaseStartup.Declaration.GameAction;
@@ -6,7 +6,6 @@ namespace DatabaseStartup.Declaration.GameAction;
 internal static class Move
 {
     internal static readonly string Table = $@"
-GO
 CREATE TABLE {GameMoveTable}
 (
 {Identity},

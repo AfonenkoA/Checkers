@@ -3,7 +3,7 @@ using static DatabaseStartup.Filling.Common;
 
 namespace DatabaseStartup.Filling.Entity;
 
-public sealed class FriendshipArgs
+internal sealed class FriendshipArgs
 {
     internal readonly string Login;
     internal readonly string Friend;

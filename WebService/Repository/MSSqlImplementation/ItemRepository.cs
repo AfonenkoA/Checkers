@@ -6,7 +6,7 @@ using static WebService.Repository.MSSqlImplementation.SqlExtensions;
 
 namespace WebService.Repository.MSSqlImplementation;
 
-public sealed class ItemRepository : Repository, IItemRepository
+public sealed class ItemRepository : RepositoryBase, IItemRepository
 {
     public const string PictureTable = "[Picture]";
     public const string AchievementTable = "[Achievement]";
@@ -61,50 +61,35 @@ public sealed class ItemRepository : Repository, IItemRepository
     {
         using var command = CreateProcedure(SelectAllAchievementProc);
         using var reader = command.ExecuteReader();
-        List<Achievement> list = new();
-        while (reader.Read())
-            list.Add(reader.GetAchievement());
-        return list;
+        return  reader.GetAllAchievement();
     }
 
     public IEnumerable<Animation> GetAnimations()
     {
         using var command = CreateProcedure(SelectAllAnimationProc);
         using var reader = command.ExecuteReader();
-        List<Animation> list = new();
-        while (reader.Read())
-            list.Add(reader.GetAnimation());
-        return list;
+        return reader.GetAllAnimation();
     }
 
     public IEnumerable<CheckersSkin> GetCheckerSkins()
     {
         using var command = CreateProcedure(SelectAllCheckersSkinProc);
         using var reader = command.ExecuteReader();
-        List<CheckersSkin> list = new();
-        while (reader.Read())
-            list.Add(reader.GetCheckersSkin());
-        return list;
+        return reader.GetAllCheckersSkin();
     }
 
     public IEnumerable<LootBox> GetLootBoxes()
     {
         using var command = CreateProcedure(SelectAllLootBoxProc);
         using var reader = command.ExecuteReader();
-        List<LootBox> list = new();
-        while (reader.Read())
-            list.Add(reader.GetLootBox());
-        return list;
+        return reader.GetAlLootBox();
     }
 
     public IEnumerable<Picture> GetPictures()
     {
         using var command = CreateProcedure(SelectAllPictureProc);
         using var reader = command.ExecuteReader();
-        List<Picture> list = new();
-        while (reader.Read())
-            list.Add(reader.GetPicture());
-        return list;
+        return reader.GetAllPicture();
     }
 
     public Achievement GetAchievement(int id)

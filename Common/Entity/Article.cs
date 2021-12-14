@@ -44,7 +44,7 @@ public sealed class Article : ArticleInfo
     }
 
     [JsonConstructor]
-    public Article(){}
+    public Article() { }
     public string Content { get; init; } = InvalidString;
     public int PostId { get; init; } = InvalidInt;
     public DateTime Created { get; init; } = InvalidDate;

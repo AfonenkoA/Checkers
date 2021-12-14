@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using Common.Entity;
 using static WebService.Repository.MSSqlImplementation.UserRepository;
-using static WebService.Repository.MSSqlImplementation.Repository;
+using static WebService.Repository.MSSqlImplementation.RepositoryBase;
 using static WebService.Repository.MSSqlImplementation.NewsRepository;
 using static WebService.Repository.MSSqlImplementation.ForumRepository;
 using static WebService.Repository.MSSqlImplementation.ItemRepository;
 using static WebService.Repository.MSSqlImplementation.ResourceRepository;
 using static WebService.Repository.MSSqlImplementation.MessageRepository;
+using static WebService.Repository.MSSqlImplementation.ChatRepository;
+using static WebService.Repository.MSSqlImplementation.StatisticsRepository;
 
 namespace WebService.Repository.MSSqlImplementation;
 
@@ -16,20 +19,18 @@ internal static class SqlExtensions
 {
     internal static T GetFieldValue<T>(this SqlDataReader reader, string col) => (T)reader[Unwrap(col)];
 
-    internal static BasicUserData GetUser(this SqlDataReader reader) =>
+    public static BasicUserData GetUser(this SqlDataReader reader) =>
         new()
         {
             Id = reader.GetFieldValue<int>(Id),
             Nick = reader.GetFieldValue<string>(Nick),
             SocialCredit = reader.GetFieldValue<int>(SocialCredit),
-            PictureId = reader.GetFieldValue<int>(PictureId),
-            SelectedAnimationId = reader.GetFieldValue<int>(AnimationId),
-            SelectedCheckersId = reader.GetFieldValue<int>(CheckersSkinId),
             LastActivity = reader.GetFieldValue<DateTime>(LastActivity),
             Type = (UserType)reader.GetFieldValue<int>(UserTypeId)
         };
 
-    internal static ArticleInfo GetArticle(this SqlDataReader reader) =>
+
+    private static ArticleInfo GetArticleInfo(this SqlDataReader reader) =>
         new()
         {
             Id = reader.GetFieldValue<int>(Id),
@@ -38,7 +39,23 @@ internal static class SqlExtensions
             PictureId = reader.GetFieldValue<int>(ArticlePictureId)
         };
 
-    internal static PostInfo GetPost(this SqlDataReader reader) =>
+    public static Article GetArticle(this SqlDataReader reader) =>
+        new(reader.GetArticleInfo())
+        {
+            PostId = reader.GetFieldValue<int>(ArticlePostId),
+            Content = reader.GetFieldValue<string>(ArticleContent),
+            Created = reader.GetFieldValue<DateTime>(ArticleCreated)
+        };
+
+    public static IEnumerable<ArticleInfo> GetAllArticleInfo(this SqlDataReader reader)
+    {
+        var list = new List<ArticleInfo>();
+        while (reader.Read())
+            list.Add(reader.GetArticle());
+        return list;
+    }
+
+    private static PostInfo GetPostInfo(this SqlDataReader reader) =>
         new()
         {
             Id = reader.GetFieldValue<int>(Id),
@@ -47,12 +64,36 @@ internal static class SqlExtensions
             PictureId = reader.GetFieldValue<int>(PostPictureId)
         };
 
-    internal static Friendship GetFriendship(this SqlDataReader reader) =>
+    public static Post GetPost(this SqlDataReader reader) =>
+        new(reader.GetPostInfo())
+        {
+            ChatId = reader.GetFieldValue<int>(ChatId),
+            AuthorId = reader.GetFieldValue<int>(PostAuthorId),
+            Created = reader.GetFieldValue<DateTime>(PostCreated),
+        };
+
+    public static IEnumerable<PostInfo> GetAllPostInfo(this SqlDataReader reader)
+    {
+        List<PostInfo> list = new();
+        while (reader.Read())
+            list.Add(reader.GetPostInfo());
+        return list;
+    }
+
+    private static Friendship GetFriendship(this SqlDataReader reader) =>
         new()
         {
             Id = reader.GetFieldValue<int>(User2Id),
             State = FriendshipState.Accepted
         };
+
+    public static IEnumerable<Friendship> GetAllFriendship(this SqlDataReader reader)
+    {
+        var list = new List<Friendship>();
+        while (reader.Read())
+            list.Add(reader.GetFriendship());
+        return list;
+    }
 
 
     private static Item GetItem(this SqlDataReader reader) =>
@@ -66,7 +107,7 @@ internal static class SqlExtensions
             }
         };
 
-    public static Message GetMessage(this SqlDataReader reader) =>
+    private static Message GetMessage(this SqlDataReader reader) =>
         new()
         {
             Id = reader.GetFieldValue<int>(Id),
@@ -75,26 +116,94 @@ internal static class SqlExtensions
             Content = reader.GetFieldValue<string>(MessageContent)
         };
 
+    public static IEnumerable<Message> GetAllMessage(this SqlDataReader reader)
+    {
+        List<Message> list = new();
+        while (reader.Read())
+            list.Add(reader.GetMessage());
+        return list;
+    }
+
     private static NamedItem GetNamedItem(this SqlDataReader reader) =>
-        new(reader.GetItem()) {Name = reader.GetFieldValue<string>(ItemName)};
+        new(reader.GetItem()) { Name = reader.GetFieldValue<string>(ItemName) };
 
     private static DetailedItem GetDetailedItem(this SqlDataReader reader) =>
-        new(reader.GetNamedItem()) {Detail = reader.GetFieldValue<string>(Detail)};
+        new(reader.GetNamedItem()) { Detail = reader.GetFieldValue<string>(Detail) };
 
     private static SoldItem GetSoldItem(this SqlDataReader reader) =>
-        new(reader.GetDetailedItem()) {Price = reader.GetFieldValue<int>(Price)};
+        new(reader.GetDetailedItem()) { Price = reader.GetFieldValue<int>(Price) };
 
     public static Picture GetPicture(this SqlDataReader reader) => new(reader.GetNamedItem());
 
+    public static IEnumerable<Picture> GetAllPicture(this SqlDataReader reader)
+    {
+        List<Picture> list = new();
+        while (reader.Read())
+            list.Add(reader.GetPicture());
+        return list;
+    }
+
     public static Achievement GetAchievement(this SqlDataReader reader) => new(reader.GetDetailedItem());
+
+    public static IEnumerable<Achievement> GetAllAchievement(this SqlDataReader reader)
+    {
+        List<Achievement> list = new();
+        while (reader.Read())
+            list.Add(reader.GetAchievement());
+        return list;
+    }
 
     public static Animation GetAnimation(this SqlDataReader reader) => new(reader.GetSoldItem());
 
+    public static IEnumerable<Animation> GetAllAnimation(this SqlDataReader reader)
+    {
+        List<Animation> list = new();
+        while (reader.Read())
+            list.Add(reader.GetAnimation());
+        return list;
+    }
+
     public static CheckersSkin GetCheckersSkin(this SqlDataReader reader) => new(reader.GetSoldItem());
+
+    public static IEnumerable<CheckersSkin> GetAllCheckersSkin(this SqlDataReader reader)
+    {
+        List<CheckersSkin> list = new();
+        while (reader.Read())
+            list.Add(reader.GetCheckersSkin());
+        return list;
+    }
 
     public static LootBox GetLootBox(this SqlDataReader reader) => new(reader.GetSoldItem());
 
+    public static IEnumerable<LootBox> GetAlLootBox(this SqlDataReader reader)
+    {
+        List<LootBox> list = new();
+        while (reader.Read())
+            list.Add(reader.GetLootBox());
+        return list;
+    }
+
+    public static IDictionary<long, int> GetTopUsers(this SqlDataReader reader)
+    {
+        var dict = new Dictionary<long, int>();
+        while (reader.Read())
+            dict.Add(reader.GetFieldValue<long>(StatisticPosition), reader.GetFieldValue<int>(Id));
+        return dict;
+    }
+
     public static Emotion GetEmotion(this SqlDataReader reader) => new(reader.GetNamedItem());
+
+    public static IEnumerable<Emotion> GetAllEmotion(this SqlDataReader reader)
+    {
+        List<Emotion> list = new();
+        while (reader.Read())
+            list.Add(reader.GetEmotion());
+        return list;
+    }
+
+    public static (byte[], string) GetFile(this SqlDataReader reader) =>
+        (reader.GetFieldValue<byte[]>(ResourceBytes),
+            reader.GetFieldValue<string>(ResourceExtension));
 
     internal static int GetReturn(this SqlCommand command) => (int)command.Parameters[ReturnValue].Value;
 

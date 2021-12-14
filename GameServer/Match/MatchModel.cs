@@ -1,10 +1,9 @@
 ﻿using GameModel;
-using GameServer.Repository;
 using static System.DateTime;
 
 namespace GameServer.Match;
 
-internal class Match : InteroperableModel,IDisposable
+internal class MatchModel : InteroperableModel, IDisposable
 {
     private const string MoveExceptionMessage = "Move action out of turn";
 
@@ -12,7 +11,6 @@ internal class Match : InteroperableModel,IDisposable
     protected readonly IPlayer White;
     private Side _turn = Side.White;
     private readonly DateTime _startTime = Now;
-    private readonly IEmotionRepository _repository;
 
     private TimeSpan Time => Now - _startTime;
 
@@ -42,11 +40,10 @@ internal class Match : InteroperableModel,IDisposable
         OnGameEnd -= p.Send;
     }
 
-    internal Match(IEmotionRepository repository, IPlayer black, IPlayer white)
+    internal MatchModel(IPlayer black, IPlayer white)
     {
         Black = black;
         White = white;
-        _repository = repository;
         Subscribe(black);
         Subscribe(white);
     }
@@ -62,10 +59,10 @@ internal class Match : InteroperableModel,IDisposable
             Black = blackPlayer,
             White = whitePlayer
         };
-        Black.Send(new YourSideEvent {Side = Side.Black,Time = Time});
-        White.Send(new YourSideEvent {Side = Side.White,Time = Time});
-        SetTurn(Side.White);
+        Black.Send(new YourSideEvent { Side = Side.Black, Time = Time });
+        White.Send(new YourSideEvent { Side = Side.White, Time = Time });
         Start(start);
+        SetTurn(Side.White);
     }
 
     public override void Move(MoveAction a)
@@ -91,7 +88,7 @@ internal class Match : InteroperableModel,IDisposable
         Emote(new EmoteEvent
         {
             Side = a.Side,
-            Emotion = _repository.GetEmotion(a.Id),
+            Emotion = a.Emotion,
             Time = Time
         });
     }
@@ -106,7 +103,7 @@ internal class Match : InteroperableModel,IDisposable
             WinReason = WinReason.Surrender
         });
     }
-    
+
     private void SetTurn(Side side)
     {
         _turn = side;

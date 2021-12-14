@@ -6,7 +6,7 @@ using static Common.Entity.EntityValues;
 namespace GameModel;
 
 public interface IGameEvent
-{}
+{ }
 
 public class TimeMarkedEvent : IGameEvent
 {
@@ -58,4 +58,4 @@ public sealed class GameEndEvent : IGameEvent
 }
 
 public sealed class YourSideEvent : PersonalizedEvent
-{}
+{ }

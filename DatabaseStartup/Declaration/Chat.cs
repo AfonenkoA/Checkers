@@ -1,5 +1,5 @@
 ﻿using static WebService.Repository.MSSqlImplementation.ChatRepository;
-using static WebService.Repository.MSSqlImplementation.Repository;
+using static WebService.Repository.MSSqlImplementation.RepositoryBase;
 using static DatabaseStartup.Declaration.Markup;
 
 

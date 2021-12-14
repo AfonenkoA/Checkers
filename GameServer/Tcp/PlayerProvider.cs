@@ -4,11 +4,12 @@ using static System.Net.Sockets.TcpListener;
 
 namespace GameServer.Tcp;
 
-public sealed class PlayerProvider : IPlayers
+internal sealed class PlayerProvider : IPlayers
 {
     private readonly TcpListener _listener;
     private readonly PlayerFactory _factory;
-    public PlayerProvider(PlayerFactory factory, int port)
+
+    internal PlayerProvider(PlayerFactory factory, int port)
     {
         _listener = Create(port);
         _factory = factory;

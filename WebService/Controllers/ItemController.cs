@@ -14,33 +14,33 @@ public class ItemController : ControllerBase
 
     private readonly IItemRepository _repository;
 
-    [HttpGet,Route("achievement")]
+    [HttpGet, Route("achievement")]
     public IActionResult GetAchievements() => Json(_repository.GetAchievements());
 
-    [HttpGet,Route("animation")]
+    [HttpGet, Route("animation")]
     public IActionResult GetAnimations() => Json(_repository.GetAnimations());
 
-    [HttpGet,Route("checkers-skin")]
+    [HttpGet, Route("checkers-skin")]
     public IActionResult GetCheckerSkins() => Json(_repository.GetCheckerSkins());
-    [HttpGet,Route("lootbox")]
+    [HttpGet, Route("lootbox")]
     public IActionResult GetLootBoxes() => Json(_repository.GetLootBoxes());
 
-    [HttpGet,Route("picture")]
+    [HttpGet, Route("picture")]
     public IActionResult GetPictures() => Json(_repository.GetPictures());
 
 
-    [HttpGet,Route("animation/{id:int}")]
+    [HttpGet, Route("animation/{id:int}")]
     public IActionResult GetAnimation(int id) => Json(_repository.GetAnimation(id));
 
-    [HttpGet,Route("checkers-skin/{id:int}")]
+    [HttpGet, Route("checkers-skin/{id:int}")]
     public IActionResult GetCheckersSkin(int id) => Json(_repository.GetCheckersSkin(id));
 
-    [HttpGet,Route("lootbox/{id:int}")]
+    [HttpGet, Route("lootbox/{id:int}")]
     public IActionResult GetLootBox(int id) => Json(_repository.GetLootBox(id));
 
-    [HttpGet,Route("picture/{id:int}")]
+    [HttpGet, Route("picture/{id:int}")]
     public IActionResult GetPicture(int id) => Json(_repository.GetPicture(id));
 
-    [HttpGet,Route("achievement/{id:int}")]
+    [HttpGet, Route("achievement/{id:int}")]
     public IActionResult GetAchievement(int id) => Json(_repository.GetAchievement(id));
 }

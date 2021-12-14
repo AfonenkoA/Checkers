@@ -1,6 +1,7 @@
-﻿using static WebService.Repository.MSSqlImplementation.Repository;
+﻿using static WebService.Repository.MSSqlImplementation.RepositoryBase;
 using static WebService.Repository.MSSqlImplementation.UserRepository;
 using static WebService.Repository.MSSqlImplementation.ItemRepository;
+using static WebService.Repository.MSSqlImplementation.ResourceRepository;
 
 namespace DatabaseStartup.Declaration.UserItem;
 
@@ -21,15 +22,15 @@ END";
 
     private const string GetAvailable = $@"
 GO
-CREATE PROCEDURE {UserGetAvailableLootBoxProc} {LoginVar} {UniqueStringType}, {PasswordVar} {StringType}
+CREATE PROCEDURE {UserGetAvailableLootBoxProc} {IdVar} INT
 AS
 BEGIN
-    DECLARE {UserIdVar} INT
-    EXEC {UserIdVar} = {AuthenticateProc} {LoginVar},{PasswordVar}
-    SELECT {Id} FROM {Schema}.{LootBoxTable} 
+    SELECT L.*, R.{ResourceExtension}
+    FROM {Schema}.{LootBoxTable} AS L
+    JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=L.{ResourceId}
 END";
 
-    public static readonly string Function = $@"
+    public const string Function = $@"
 --UserLootBox
 {GetAvailable}
 {Buy}";

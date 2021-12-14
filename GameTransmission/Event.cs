@@ -1,7 +1,10 @@
 ﻿namespace GameTransmission;
 
-public interface ITransmissionEvent 
-{}
+internal interface ITransmissionEvent
+{ }
+
+public sealed class GameAcknowledgeEvent : ITransmissionEvent
+{ }
 
 public sealed class ConnectAcknowledgeEvent : ITransmissionEvent
 { }

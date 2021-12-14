@@ -1,6 +1,6 @@
 ﻿using Common.Entity;
 using GameModel;
-using GameServer.Repository;
+using GameServer.GameRepository;
 using GameTransmission;
 using static Common.CommunicationProtocol;
 using static GameServer.IPlayer;
@@ -9,7 +9,8 @@ using SurrenderAction = GameModel.SurrenderAction;
 
 namespace GameServer.Tcp;
 
-public sealed class Player : IPlayer, IDisposable
+
+internal sealed class Player : IPlayer, IDisposable
 {
     private readonly Connection _connection;
     private readonly IPlayerRepository _repository;
@@ -23,7 +24,7 @@ public sealed class Player : IPlayer, IDisposable
         _credential = credential;
     }
 
-    internal async void Listen()
+    internal async void ListenClient()
     {
         while (true)
         {
@@ -35,10 +36,24 @@ public sealed class Player : IPlayer, IDisposable
             {
                 case nameof(GameRequestAction):
                     OnGameRequest?.Invoke(this);
-                    break;
+                    return;
                 case nameof(DisconnectRequestAction):
                     OnDisconnect?.Invoke(this);
-                    break;
+                    return;
+            }
+        }
+    }
+
+    public async void Listen()
+    {
+        while (true)
+        {
+            var json = await _connection.ReceiveString();
+            if (json == null) continue;
+            var message = FromString(json);
+            if (message == null) continue;
+            switch (message.Type)
+            {
                 case nameof(MoveAction):
                     {
                         var move = message.GetAs<MoveAction>();
@@ -58,6 +73,8 @@ public sealed class Player : IPlayer, IDisposable
                         OnEmote?.Invoke(emote);
                         break;
                     }
+                case nameof(GameStopAction):
+                    return;
             }
         }
     }

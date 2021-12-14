@@ -5,55 +5,52 @@ using GameClient;
 using GameModel;
 using GameTransmission;
 using static System.Console;
-using static System.Threading.Tasks.Task;
 using static GameModel.Side;
 
+var acting = true;
 var tcp = new TcpClient();
 await tcp.ConnectAsync(IPAddress.Loopback, Connection.ServerPort);
 var c = new Client(new Connection(tcp), new Credential { Login = "log", Password = "pass" });
-var _ = Run(c.Listen);
-c.OnConnectAcknowledge += _ => WriteLine("OnConnectAcknowledge");
-c.OnDisconnectAcknowledge += _ => WriteLine("OnDisconnectAcknowledge");
-c.OnEmote += _ => WriteLine("OnEmote");
-c.OnException += _ => WriteLine("OnException");
-c.OnGameEnd += _ => WriteLine("GameEnd");
-c.OnGameStart += _ => WriteLine("OnGameStart");
-c.OnKill += _ => WriteLine("OnKill");
-c.OnYouSide += _ => WriteLine("OnYourSide");
-c.OnMove += _ => WriteLine("OnMove");
 
-async Task Act()
+
+await c.Connect();
+var m = await c.Play();
+m.OnEmote += _ => WriteLine("OnEmote");
+m.OnException += _ => WriteLine("OnException");
+m.OnGameEnd += _ =>
 {
-    WriteLine("1:   ConnectionRequest");
-    WriteLine("2:   DisconnectRequest");
+    acting = false;
+    WriteLine("GameEnd");
+};
+m.OnGameStart += _ => WriteLine("OnGameStart");
+c.OnYouSide += _ => WriteLine("OnYourSide");
+m.OnMove += _ => WriteLine("OnMove");
+m.OnTurn += _ => WriteLine("Turn");
+
+void Act()
+{
     WriteLine("3:   MoveAction");
     WriteLine("4:   EmoteAction");
     WriteLine("5:   SurrenderAction");
-    WriteLine("6:   GameRequest");
-    while (true)
+    while (acting)
     {
         switch (Read())
         {
-            case '1':
-                await c.Connect();
-                break;
-            case '2':
-                await c.Disconnect();
-                break;
             case '3':
-                await c.Send(new MoveAction { Side = White, From = 0, To = 5 });
+                if (!acting) return;
+                m.Move(new MoveAction { Side = White, From = 0, To = 5 });
                 break;
+
             case '4':
-                await c.Send(new EmoteAction { Side = White, Id = 3 });
+                if (!acting) return;
+                m.Emote(new EmoteAction { Side = White, Emotion = Emotion.Invalid });
                 break;
             case '5':
-                await c.Send(new SurrenderAction {Side = White});
-                break;
-            case '6':
-                await c.GameRequest();
+                if (!acting) return;
+                m.Surrender(new SurrenderAction { Side = White });
                 break;
         }
     }
 }
-
-Run(Act).Wait();
+Act();
+await c.Disconnect();

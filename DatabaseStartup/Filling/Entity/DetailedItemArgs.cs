@@ -3,7 +3,7 @@ using static DatabaseStartup.Filling.Common;
 
 namespace DatabaseStartup.Filling.Entity;
 
-public class DetailedItemArgs : NamedItemArgs
+internal class DetailedItemArgs : NamedItemArgs
 {
     private readonly string _detail;
     internal DetailedItemArgs(string line) : base(line)

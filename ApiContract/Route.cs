@@ -10,4 +10,13 @@ public static class Route
     public const string ForumRoute = "forum";
     public const string ResourceRoute = "res";
     public const string GameRoute = "game";
+
+    public const string AchievementRoute = $"{ItemRoute}/achievement";
+    public const string AnimationRoute = $"{ItemRoute}/animation";
+    public const string CheckersSkinRoute = $"{ItemRoute}/checkers-skin";
+    public const string LootBoxRoute = $"{ItemRoute}/lootbox";
+    public const string PictureRoute = $"{ItemRoute}/picture";
+
+    public const string ChatPublic = $"{ChatRoute}/public";
+
 }

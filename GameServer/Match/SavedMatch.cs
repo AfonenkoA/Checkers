@@ -1,9 +1,9 @@
 ﻿using GameModel;
-using GameServer.Repository;
+using GameServer.GameRepository;
 
 namespace GameServer.Match;
 
-internal sealed class SavedMatch : Match
+internal sealed class SavedMatch : MatchModel
 {
     private readonly IGameRepository _repository;
     private readonly List<MoveEvent> _moves = new();
@@ -28,7 +28,6 @@ internal sealed class SavedMatch : Match
             Winner = e.Winner,
             WinReason = e.WinReason
         });
-        Dispose();
         Unsubscribe();
     }
 
@@ -57,7 +56,7 @@ internal sealed class SavedMatch : Match
     }
 
     internal SavedMatch(IGameRepository repository, IPlayer black, IPlayer white) :
-        base(repository, black, white)
+        base(black, white)
     {
         _repository = repository;
         Subscribe();

@@ -1,7 +1,7 @@
 ﻿using Common.Entity;
 using GameModel;
 
-namespace GameServer.Repository;
+namespace GameServer.GameRepository;
 
 public interface IPlayerRepository
 {

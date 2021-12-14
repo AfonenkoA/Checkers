@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using Common.Entity;
 using WebService.Repository.Interface;
+using static System.Data.SqlDbType;
 using static WebService.Repository.MSSqlImplementation.UserRepository;
 using static WebService.Repository.MSSqlImplementation.MessageRepository;
 using static WebService.Repository.MSSqlImplementation.SqlExtensions;
 
 namespace WebService.Repository.MSSqlImplementation;
 
-public sealed class ChatRepository : Repository, IChatRepository
+public sealed class ChatRepository : RepositoryBase, IChatRepository
 {
     public const string ChatTable = "[Chat]";
     public const string ChatTypeTable = "[ChatType]";
@@ -30,22 +30,19 @@ public sealed class ChatRepository : Repository, IChatRepository
 
     public const string CommonChatName = "Common chat";
 
-    internal ChatRepository(SqlConnection connection) : base(connection){}
+    internal ChatRepository(SqlConnection connection) : base(connection) { }
 
     public IEnumerable<Message> GetMessages(Credential credential, int chatId, DateTime from)
     {
         using var command = CreateProcedure(SelectMessageProc);
         command.Parameters.AddRange(new[]
         {
-            new SqlParameter { ParameterName = ChatIdVar, SqlDbType = SqlDbType.Int, Value = chatId },
-            new SqlParameter {ParameterName = LoginVar,SqlDbType = SqlDbType.NVarChar,Value = credential.Login},
-            new SqlParameter {ParameterName = PasswordVar,SqlDbType = SqlDbType.NVarChar,Value = credential.Password}
+            new SqlParameter { ParameterName = ChatIdVar, SqlDbType = Int, Value = chatId },
+            new SqlParameter {ParameterName = LoginVar,SqlDbType = NVarChar,Value = credential.Login},
+            new SqlParameter {ParameterName = PasswordVar,SqlDbType = NVarChar,Value = credential.Password}
         });
         using var reader = command.ExecuteReader();
-        List<Message> list = new();
-        while (reader.Read())
-            list.Add(reader.GetMessage());
-        return list;
+        return reader.GetAllMessage();
     }
 
     public bool CreateMessage(Credential credential, int chatId, string message)
@@ -55,8 +52,8 @@ public sealed class ChatRepository : Repository, IChatRepository
         {
             LoginParameter(credential.Login),
             PasswordParameter(credential.Password),
-            new SqlParameter { ParameterName = ChatIdVar, SqlDbType = SqlDbType.Int, Value = chatId },
-            new SqlParameter {ParameterName = MessageContentVar,SqlDbType = SqlDbType.NVarChar,Value = message}
+            new SqlParameter { ParameterName = ChatIdVar, SqlDbType = Int, Value = chatId },
+            new SqlParameter {ParameterName = MessageContentVar,SqlDbType = NVarChar,Value = message}
         });
         return command.ExecuteNonQuery() > 0;
     }
@@ -64,11 +61,6 @@ public sealed class ChatRepository : Repository, IChatRepository
     public int GetCommonChatId(Credential credential)
     {
         using var command = CreateProcedureReturn(GetCommonChatIdProc);
-        command.Parameters.AddRange(new[]
-        {
-            LoginParameter(credential.Login),
-            PasswordParameter(credential.Password),
-        });
         command.ExecuteScalar();
         return command.GetReturn();
     }

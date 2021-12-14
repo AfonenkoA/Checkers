@@ -12,5 +12,5 @@ public static class CommunicationProtocol
         Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
     };
     public static T? Deserialize<T>(string s) => JsonSerializer.Deserialize<T>(s, Options);
-    public static string Serialize<T>(T obj) => JsonSerializer.Serialize(obj,Options);
+    public static string Serialize<T>(T obj) => JsonSerializer.Serialize(obj, Options);
 }

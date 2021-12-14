@@ -1,4 +1,4 @@
-﻿using static WebService.Repository.MSSqlImplementation.Repository;
+﻿using static WebService.Repository.MSSqlImplementation.RepositoryBase;
 using static WebService.Repository.MSSqlImplementation.GameRepository;
 using static WebService.Repository.MSSqlImplementation.ItemRepository;
 
@@ -7,11 +7,10 @@ namespace DatabaseStartup.Declaration.GameAction;
 internal static class Emote
 {
     internal static readonly string Table = $@"
-GO
 CREATE TABLE {GameEmoteTable}
 (
 {Identity},
-{GameId}        INT     NOT NULL    {Fk(GameEmoteTable,GameTable)},
+{GameId}        INT     NOT NULL    {Fk(GameEmoteTable, GameTable)},
 {Time}          TIME    NOT NULL,
 {SideId}        INT     NOT NULL    {Fk(GameEmoteTable, GameSideTable)},
 {EmotionId}     INT     NOT NULL    {Fk(GameEmoteTable, EmotionTable)},

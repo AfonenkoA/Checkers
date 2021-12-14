@@ -6,6 +6,7 @@ using Api.Interface;
 using Api.WebImplementation;
 using Common.Entity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace ApiTest;
 
@@ -15,7 +16,7 @@ public class NewsTest
     private static readonly IAsyncNewsApi NewsApi = new NewsWebApi();
     private static readonly IAsyncResourceService ResourceService = new AsyncResourceWebApi();
     private static readonly List<ArticleInfo> News = new();
-    private static readonly Credential Credential = new(){Login = "redactor", Password = "redactor"};
+    private static readonly Credential Credential = new() { Login = "redactor", Password = "redactor" };
     private const string Title = "Apple Title";
     private const string Abstract = "Apple Abstract";
     private const string Content = "Apple Content";
@@ -27,15 +28,15 @@ public class NewsTest
     private const string Image2 = @"Resource\Grape.jpg";
 
 
-    private static Task<(bool,IEnumerable<ArticleInfo>)> GetNews() => NewsApi.TryGetNews();
+    private static Task<(bool, IEnumerable<ArticleInfo>)> GetNews() => NewsApi.TryGetNews();
 
     [TestMethod]
     public async Task Test01GetNews()
     {
         var (success, news) = await GetNews();
-        Assert.IsTrue(success);
+        IsTrue(success);
         News.AddRange(news);
-        Assert.IsTrue(News.Any());
+        IsTrue(News.Any());
     }
 
     [TestMethod]
@@ -44,19 +45,19 @@ public class NewsTest
         foreach (var a in News)
         {
             var (success, article) = await NewsApi.TryGetArticle(a.Id);
-            Assert.IsTrue(success);
-            Assert.IsTrue(article.IsValid);
+            IsTrue(success);
+            IsTrue(article.IsValid);
         }
     }
 
     [TestMethod]
     public async Task Test03CreateArticle()
     {
-        var (success,id) = await ResourceService.TryUploadFile(Credential, await File.ReadAllBytesAsync(Image1), Ext);
-        Assert.IsTrue(success);
-        var data = new ArticleCreationData {Title = Title, Abstract = Abstract, Content = Content, PictureId = id};
+        var (success, id) = await ResourceService.TryUploadFile(Credential, await File.ReadAllBytesAsync(Image1), Ext);
+        IsTrue(success);
+        var data = new ArticleCreationData { Title = Title, Abstract = Abstract, Content = Content, PictureId = id };
         success = await NewsApi.CreateArticle(Credential, data);
-        Assert.IsTrue(success);
+        IsTrue(success);
     }
 
 
@@ -71,7 +72,7 @@ public class NewsTest
     {
         var id = await GetId();
         var success = await NewsApi.UpdateAbstract(Credential, id, NewAbstract);
-        Assert.IsTrue(success);
+        IsTrue(success);
     }
 
     [TestMethod]
@@ -79,7 +80,7 @@ public class NewsTest
     {
         var id = await GetId();
         var success = await NewsApi.UpdateContent(Credential, id, NewContent);
-        Assert.IsTrue(success);
+        IsTrue(success);
     }
 
     [TestMethod]
@@ -87,9 +88,9 @@ public class NewsTest
     {
         var id = await GetId();
         var (success, pic) = await ResourceService.TryUploadFile(Credential, await File.ReadAllBytesAsync(Image2), Ext);
-        Assert.IsTrue(success);
+        IsTrue(success);
         success = await NewsApi.UpdatePicture(Credential, id, pic);
-        Assert.IsTrue(success);
+        IsTrue(success);
     }
 
     [TestMethod]
@@ -97,6 +98,6 @@ public class NewsTest
     {
         var id = await GetId();
         var success = await NewsApi.UpdateTitle(Credential, id, NewTitle);
-        Assert.IsTrue(success);
+        IsTrue(success);
     }
 }

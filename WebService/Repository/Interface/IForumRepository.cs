@@ -3,7 +3,7 @@ using Common.Entity;
 
 namespace WebService.Repository.Interface;
 
-public interface IForumRepository
+internal interface IForumRepository
 {
     bool CreatePost(Credential credential, PostCreationData post);
     bool UpdateTitle(Credential credential, int postId, string title);

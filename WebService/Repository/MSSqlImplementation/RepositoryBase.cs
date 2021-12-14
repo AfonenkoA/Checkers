@@ -3,7 +3,7 @@ using System.Data.SqlClient;
 
 namespace WebService.Repository.MSSqlImplementation;
 
-public class Repository
+public class RepositoryBase
 {
     public const string Id = "id";
     public const string IdVar = "@id";
@@ -30,13 +30,13 @@ public class Repository
         }
     }
 
-    protected Repository(SqlConnection connection)
+    protected RepositoryBase(SqlConnection connection)
     {
         _connection = connection;
     }
 
-    protected SqlCommand CreateProcedure(string name)=> 
-        new(name, Connection){CommandType = CommandType.StoredProcedure};
+    protected SqlCommand CreateProcedure(string name) =>
+        new(name, Connection) { CommandType = CommandType.StoredProcedure };
 
     protected SqlCommand CreateProcedureReturn(string name)
     {
@@ -46,7 +46,7 @@ public class Repository
         return cmd;
     }
 
-    public static string Fk(string t1, string t2, string s ="") =>
+    public static string Fk(string t1, string t2, string s = "") =>
         $"CONSTRAINT FK_{Unwrap(t1)}_{Unwrap(t2)}{s}    FOREIGN KEY REFERENCES {t2}({Id})";
     internal static string Unwrap(string s) => s.Replace("[", "").Replace("]", "");
 

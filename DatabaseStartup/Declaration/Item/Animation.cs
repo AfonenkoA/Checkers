@@ -1,4 +1,4 @@
-﻿using static WebService.Repository.MSSqlImplementation.Repository;
+﻿using static WebService.Repository.MSSqlImplementation.RepositoryBase;
 using static WebService.Repository.MSSqlImplementation.ItemRepository;
 using static WebService.Repository.MSSqlImplementation.ResourceRepository;
 
@@ -33,7 +33,7 @@ GO
 CREATE PROCEDURE {SelectAllAnimationProc}
 AS
 BEGIN
-    SELECT A.*, R.{ResourceExtension}
+    SELECT A.*, R.{ResourceExtension}, R.{Id}
     FROM {Schema}.{AnimationTable} AS A
     JOIN {Schema}.{ResourceTable} AS R ON R.{Id}=A.{ResourceId}
 END";

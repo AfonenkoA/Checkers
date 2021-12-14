@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using Common.Entity;
 using WebService.Repository.Interface;
+using static System.Data.SqlDbType;
 using static WebService.Repository.MSSqlImplementation.SqlExtensions;
 
 namespace WebService.Repository.MSSqlImplementation;
 
-public sealed class NewsRepository: Repository, INewsRepository
+public sealed class NewsRepository : RepositoryBase, INewsRepository
 {
     public const string ArticleTable = "[Article]";
     public const string ArticleAuthorId = "[article_author_id]";
@@ -44,10 +44,10 @@ public sealed class NewsRepository: Repository, INewsRepository
             {
                 LoginParameter(credential.Login),
                 PasswordParameter(credential.Password),
-                new SqlParameter{ParameterName = ArticleTitleVar,SqlDbType = SqlDbType.NVarChar,Value = article.Title},
-                new SqlParameter{ParameterName = ArticleAbstractVar,SqlDbType = SqlDbType.NVarChar,Value = article.Abstract},
-                new SqlParameter{ParameterName = ArticleContentVar,SqlDbType = SqlDbType.NVarChar,Value = article.Content},
-                new SqlParameter{ParameterName = ArticlePictureIdVar,SqlDbType = SqlDbType.Int,Value = article.PictureId}
+                new SqlParameter{ParameterName = ArticleTitleVar,SqlDbType = NVarChar,Value = article.Title},
+                new SqlParameter{ParameterName = ArticleAbstractVar,SqlDbType = NVarChar,Value = article.Abstract},
+                new SqlParameter{ParameterName = ArticleContentVar,SqlDbType = NVarChar,Value = article.Content},
+                new SqlParameter{ParameterName = ArticlePictureIdVar,SqlDbType = Int,Value = article.PictureId}
             });
         return command.ExecuteNonQuery() > 0;
     }
@@ -61,7 +61,7 @@ public sealed class NewsRepository: Repository, INewsRepository
                 LoginParameter(credential.Login),
                 PasswordParameter(credential.Password),
                 IdParameter(id),
-                new SqlParameter{ParameterName = ArticleTitleVar,SqlDbType = SqlDbType.NVarChar,Value = title}
+                new SqlParameter{ParameterName = ArticleTitleVar,SqlDbType = NVarChar,Value = title}
             });
         return command.ExecuteNonQuery() > 0;
     }
@@ -75,7 +75,7 @@ public sealed class NewsRepository: Repository, INewsRepository
                 LoginParameter(credential.Login),
                 PasswordParameter(credential.Password),
                 IdParameter(id),
-                new SqlParameter{ParameterName = ArticleAbstractVar,SqlDbType = SqlDbType.NVarChar,Value = @abstract}
+                new SqlParameter{ParameterName = ArticleAbstractVar,SqlDbType = NVarChar,Value = @abstract}
             });
         return command.ExecuteNonQuery() > 0;
     }
@@ -89,7 +89,7 @@ public sealed class NewsRepository: Repository, INewsRepository
                 LoginParameter(credential.Login),
                 PasswordParameter(credential.Password),
                 IdParameter(id),
-                new SqlParameter{ParameterName = ArticleContentVar,SqlDbType = SqlDbType.NVarChar,Value = content}
+                new SqlParameter{ParameterName = ArticleContentVar,SqlDbType = NVarChar,Value = content}
             });
         return command.ExecuteNonQuery() > 0;
     }
@@ -103,7 +103,7 @@ public sealed class NewsRepository: Repository, INewsRepository
                 LoginParameter(credential.Login),
                 PasswordParameter(credential.Password),
                 IdParameter(id),
-                new SqlParameter{ParameterName = ArticlePictureIdVar,SqlDbType = SqlDbType.Int,Value = pictureId}
+                new SqlParameter{ParameterName = ArticlePictureIdVar,SqlDbType = Int,Value = pictureId}
             });
         return command.ExecuteNonQuery() > 0;
     }
@@ -117,7 +117,7 @@ public sealed class NewsRepository: Repository, INewsRepository
                 LoginParameter(credential.Login),
                 PasswordParameter(credential.Password),
                 IdParameter(id),
-                new SqlParameter{ParameterName = ArticlePostIdVar,SqlDbType = SqlDbType.Int,Value = postId}
+                new SqlParameter{ParameterName = ArticlePostIdVar,SqlDbType = Int,Value = postId}
             });
         return command.ExecuteNonQuery() > 0;
     }
@@ -130,25 +130,17 @@ public sealed class NewsRepository: Repository, INewsRepository
     public Article GetArticle(int articleId)
     {
         using var command = CreateProcedure(SelectArticleProc);
-        command.Parameters.Add(new SqlParameter { ParameterName = IdVar, SqlDbType = SqlDbType.Int, Value = articleId });
+        command.Parameters.Add(new SqlParameter { ParameterName = IdVar, SqlDbType = Int, Value = articleId });
         using var reader = command.ExecuteReader();
         if (!reader.Read()) return Article.Invalid;
-        return new Article(reader.GetArticle())
-        {
-            PostId = reader.GetFieldValue<int>(ArticlePostId),
-            Content = reader.GetFieldValue<string>(ArticleContent),
-            Created = reader.GetFieldValue<DateTime>(ArticleCreated)
-        };
+        return reader.GetArticle();
     }
 
     public IEnumerable<ArticleInfo> GetNews()
     {
-        var list = new List<ArticleInfo>();
         using var command = CreateProcedure(SelectNewsProc);
         using var reader = command.ExecuteReader();
-        while (reader.Read())
-            list.Add(reader.GetArticle());
-        return list;
+        return reader.GetAllArticleInfo();
     }
-    
+
 }

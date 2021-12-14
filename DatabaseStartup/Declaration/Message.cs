@@ -1,7 +1,7 @@
 ﻿using static Common.Entity.ChatType;
 using static DatabaseStartup.Declaration.Markup;
 using static WebService.Repository.MSSqlImplementation.MessageRepository;
-using static WebService.Repository.MSSqlImplementation.Repository;
+using static WebService.Repository.MSSqlImplementation.RepositoryBase;
 using static WebService.Repository.MSSqlImplementation.ChatRepository;
 using static WebService.Repository.MSSqlImplementation.UserRepository;
 

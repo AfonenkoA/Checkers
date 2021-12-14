@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using Common.Entity;
 using WebService.Repository.Interface;
+using static System.Data.SqlDbType;
 using static WebService.Repository.MSSqlImplementation.SqlExtensions;
-using static WebService.Repository.MSSqlImplementation.ChatRepository;
 
 namespace WebService.Repository.MSSqlImplementation;
 
-public sealed class ForumRepository : Repository, IForumRepository
+public sealed class ForumRepository : RepositoryBase, IForumRepository
 {
     public const string PostTable = "[Post]";
 
@@ -42,9 +41,9 @@ public sealed class ForumRepository : Repository, IForumRepository
             {
                 LoginParameter(credential.Login),
                 PasswordParameter(credential.Password),
-                new SqlParameter{ParameterName = PostTitleVar,SqlDbType = SqlDbType.NVarChar,Value = post.Title},
-                new SqlParameter{ParameterName = PostContentVar,SqlDbType = SqlDbType.NVarChar,Value = post.Content},
-                new SqlParameter{ParameterName = PostPictureIdVar,SqlDbType = SqlDbType.Int,Value = post.PictureId}
+                new SqlParameter{ParameterName = PostTitleVar,SqlDbType = NVarChar,Value = post.Title},
+                new SqlParameter{ParameterName = PostContentVar,SqlDbType = NVarChar,Value = post.Content},
+                new SqlParameter{ParameterName = PostPictureIdVar,SqlDbType = Int,Value = post.PictureId}
             });
         return command.ExecuteNonQuery() > 0;
     }
@@ -58,7 +57,7 @@ public sealed class ForumRepository : Repository, IForumRepository
                 LoginParameter(credential.Login),
                 PasswordParameter(credential.Password),
                 IdParameter(postId),
-                new SqlParameter{ParameterName = PostTitleVar,SqlDbType = SqlDbType.NVarChar,Value = title}
+                new SqlParameter{ParameterName = PostTitleVar,SqlDbType = NVarChar,Value = title}
             });
         return command.ExecuteNonQuery() > 0;
     }
@@ -72,7 +71,7 @@ public sealed class ForumRepository : Repository, IForumRepository
                 LoginParameter(credential.Login),
                 PasswordParameter(credential.Password),
                 IdParameter(postId),
-                new SqlParameter{ParameterName = PostContentVar,SqlDbType = SqlDbType.NVarChar,Value = content}
+                new SqlParameter{ParameterName = PostContentVar,SqlDbType = NVarChar,Value = content}
             });
         return command.ExecuteNonQuery() > 0;
     }
@@ -86,7 +85,7 @@ public sealed class ForumRepository : Repository, IForumRepository
                 LoginParameter(credential.Login),
                 PasswordParameter(credential.Password),
                 IdParameter(postId),
-                new SqlParameter{ParameterName = PostPictureIdVar,SqlDbType = SqlDbType.NVarChar,Value = imageId}
+                new SqlParameter{ParameterName = PostPictureIdVar,SqlDbType = NVarChar,Value = imageId}
             });
         return command.ExecuteNonQuery() > 0;
     }
@@ -99,24 +98,16 @@ public sealed class ForumRepository : Repository, IForumRepository
     public Post GetPost(int postId)
     {
         using var command = CreateProcedure(SelectPostProc);
-        command.Parameters.Add(new SqlParameter { ParameterName = IdVar, SqlDbType = SqlDbType.Int, Value = postId });
+        command.Parameters.Add(new SqlParameter { ParameterName = IdVar, SqlDbType = Int, Value = postId });
         using var reader = command.ExecuteReader();
         if (!reader.Read()) return Post.Invalid;
-        return new Post(reader.GetPost())
-        {
-            ChatId = reader.GetFieldValue<int>(ChatId),
-            AuthorId = reader.GetFieldValue<int>(PostAuthorId),
-            Created = reader.GetFieldValue<DateTime>(PostCreated),
-        };
+        return reader.GetPost();
     }
 
     public IEnumerable<PostInfo> GetPosts()
     {
         using var command = CreateProcedure(SelectPostsProc);
         using var reader = command.ExecuteReader();
-        List<PostInfo> list = new();
-        while (reader.Read())
-            list.Add(reader.GetPost());
-        return list;
+        return reader.GetAllPostInfo();
     }
 }

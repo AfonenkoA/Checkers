@@ -1,21 +1,13 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using WebService;
 
-namespace WebService;
+CreateHostBuilder(args).Build().Run();
 
-internal static class Program
-{
-    public static void Main(string[] args)
+static IHostBuilder CreateHostBuilder(string[] args) =>
+Host.CreateDefaultBuilder(args)
+    .ConfigureWebHostDefaults(webBuilder =>
     {
-        CreateHostBuilder(args).Build().Run();
-    }
-
-    private static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseUrls("http://localhost:5005/");
-                webBuilder.UseStartup<Startup>();
-
-            });
-}
+        webBuilder.UseUrls("http://localhost:5005/");
+        webBuilder.UseStartup<Startup>();
+    });

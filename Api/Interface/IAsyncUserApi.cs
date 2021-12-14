@@ -1,4 +1,5 @@
 ﻿using Common.Entity;
+using GameModel;
 
 namespace Api.Interface;
 
@@ -7,10 +8,10 @@ public interface IAsyncUserApi
     //User
     Task<bool> CreateUser(UserCreationData user);
     Task<bool> DeleteUser(Credential credential);
-    Task<(bool,PublicUserData)> TryGetUser(int id);
-    Task<(bool,User)> TryGetSelf(Credential credential);
-    Task<(bool,FriendUserData)> TryGetFriend(Credential credential, int id);
-
+    Task<(bool, PublicUserData)> TryGetUser(int id);
+    Task<(bool, User)> TryGetSelf(Credential credential);
+    Task<(bool, FriendUserData)> TryGetFriend(Credential credential, int id);
+    Task<(bool, IEnumerable<GameInfo>)> TryGetGames(Credential credential);
     //User Item Activities
     Task<bool> SelectAnimation(Credential credential, int id);
     Task<bool> SelectCheckers(Credential credential, int id);
@@ -32,8 +33,4 @@ public interface IAsyncUserApi
     Task<bool> AddFriend(Credential credential, int id);
     Task<bool> DeleteFriend(Credential credential, int id);
     Task<bool> AcceptFriend(Credential credential, int id);
-
-    Task<(bool, IEnumerable<int>)> TryGetAvailableAnimations(Credential c);
-    Task<(bool, IEnumerable<int>)> TryGetAvailableCheckers(Credential c);
-    Task<(bool, IEnumerable<int>)> TryGetAvailableLootBoxes(Credential c);
 }
