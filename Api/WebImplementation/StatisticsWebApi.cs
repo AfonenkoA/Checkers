@@ -1,18 +1,26 @@
 ﻿using Api.Interface;
 using Common.Entity;
+using static ApiContract.Route;
+using static Common.CommunicationProtocol;
 
 namespace Api.WebImplementation;
 
 public sealed class StatisticsWebApi : WebApiBase, IAsyncStatisticsApi
 {
-    public Task<(bool, IDictionary<int, PublicUserData>)> TryGetTopPlayers()
+    public async Task<(bool, IDictionary<long, PublicUserData>)> TryGetTopPlayers()
     {
-        throw new NotImplementedException();
+        const string route = $"{StatisticsRoute}";
+        var response = await Client.GetStringAsync(route);
+        var res = Deserialize<IDictionary<long, PublicUserData>>(response);
+        return res != null ? (true, res) : (false, new Dictionary<long,PublicUserData>());
     }
 
-    public Task<(bool, IDictionary<int, PublicUserData>)> TryGetTopPlayers(Credential credential)
+    public async Task<(bool, IDictionary<long, PublicUserData>)> TryGetTopPlayers(Credential credential)
     {
-        throw new NotImplementedException();
+        var route = $"{StatisticsRoute}{Query(credential)}";
+        var response = await Client.GetStringAsync(route);
+        var res = Deserialize<IDictionary<long, PublicUserData>>(response);
+        return res != null ? (true, res) : (false, new Dictionary<long, PublicUserData>());
     }
 
     public string GetOnlineImageUrl()
