@@ -6,7 +6,7 @@ using static WebService.Repository.MSSqlImplementation.SqlExtensions;
 
 namespace WebService.Repository.MSSqlImplementation;
 
-public sealed class StatisticsRepository : RepositoryBase, IStatisticsRepository
+public sealed class StatisticsRepository : UserRepositoryBase, IStatisticsRepository
 {
 
     public const string SelectTopPlayersProc = "[SP_SelectTopPlayers]";
@@ -17,20 +17,16 @@ public sealed class StatisticsRepository : RepositoryBase, IStatisticsRepository
 
     internal StatisticsRepository(SqlConnection connection) : base(connection) { }
 
-    public IDictionary<int, BasicUserData> GetTopPlayers()
+
+    private IDictionary<int, int> GetTopPlayersId()
     {
         using var command = CreateProcedure(SelectTopPlayersProc);
         using var reader = command.ExecuteReader();
-        var dict = new Dictionary<int, BasicUserData>();
-        while (reader.Read())
-            dict.Add(reader.GetFieldValue<int>(StatisticPosition), reader.GetUser());
-
+        var dict = reader.GetTopUsers();
         return dict;
     }
 
-
-
-    public IDictionary<int, BasicUserData> GetTopPlayers(Credential credential)
+    private IDictionary<int, int> GetTopPlayersIdAuth(Credential credential)
     {
         using var command = CreateProcedure(SelectTopPlayersProc);
         command.Parameters.AddRange(
@@ -40,9 +36,25 @@ public sealed class StatisticsRepository : RepositoryBase, IStatisticsRepository
                 PasswordParameter(credential.Password)
             });
         using var reader = command.ExecuteReader();
-        var dict = new Dictionary<int, BasicUserData>();
-        while (reader.Read())
-            dict.Add(reader.GetFieldValue<int>(StatisticPosition), reader.GetUser());
+        var dict = reader.GetTopUsers();
+        return dict;
+    }
+
+    public IDictionary<int, PublicUserData> GetTopPlayers()
+    {
+        var idDict = GetTopPlayersId();
+        var dict = new Dictionary<int, PublicUserData>();
+        foreach (var (key,value) in idDict)
+            dict.Add(key,GetPublicUserDataUser(value));
+        return dict;
+    }
+
+    public IDictionary<int, PublicUserData> GetTopPlayers(Credential credential)
+    {
+        var idDict = GetTopPlayersIdAuth(credential);
+        var dict = new Dictionary<int, PublicUserData>();
+        foreach (var (key, value) in idDict)
+            dict.Add(key, GetPublicUserDataUser(value));
         return dict;
     }
 }

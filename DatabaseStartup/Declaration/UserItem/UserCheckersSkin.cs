@@ -2,6 +2,7 @@
 using static WebService.Repository.MSSqlImplementation.UserRepository;
 using static WebService.Repository.MSSqlImplementation.ItemRepository;
 using static WebService.Repository.MSSqlImplementation.ResourceRepository;
+using static WebService.Repository.MSSqlImplementation.UserRepositoryBase;
 
 namespace DatabaseStartup.Declaration.UserItem;
 
@@ -15,15 +16,28 @@ CREATE TABLE {UserCheckersSkinTable}
 {UserId}        INT     NOT NULL    {Fk(UserCheckersSkinTable, UserTable)}
 );";
 
+    private const string SelectAll = $@"
+GO
+CREATE PROCEDURE {SelectAllUserCheckersSkinProc} {IdVar} INT
+AS
+BEGIN
+    SELECT C.*, R.{ResourceExtension} 
+    FROM {Schema}.{UserCheckersSkinTable} AS UC
+    JOIN {CheckersSkinTable} AS C ON UC.{CheckersSkinId}=C.{Id}
+    JOIN {ResourceTable} AS R ON R.{Id}=C.{ResourceId}
+    WHERE {UserId}={IdVar}
+END";
+
     private const string Select = $@"
 GO
 CREATE PROCEDURE {SelectUserCheckersSkinProc} {IdVar} INT
 AS
 BEGIN
-    SELECT C.*, R.{ResourceExtension} FROM {Schema}.{UserCheckersSkinTable} AS UC
-    JOIN {CheckersSkinTable} AS C ON UC.{CheckersSkinId}=C.{Id}
+    SELECT C.*, R.{ResourceExtension} 
+    FROM {Schema}.{UserTable} AS U
+    JOIN {CheckersSkinTable} AS C ON U.{CheckersSkinId}=C.{Id}
     JOIN {ResourceTable} AS R ON R.{Id}=C.{ResourceId}
-    WHERE {UserId}={IdVar}
+    WHERE U.{Id}={IdVar}    
 END";
 
     private const string Update = $@"
@@ -80,6 +94,7 @@ END";
     public const string Function = $@"
 --UserCheckersSkin
 {Select}
+{SelectAll}
 {Update}
 {GetAvailable}
 {Buy}";

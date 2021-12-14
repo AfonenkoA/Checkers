@@ -7,7 +7,6 @@ namespace DatabaseStartup.Declaration.GameAction;
 internal static class Emote
 {
     internal static readonly string Table = $@"
-GO
 CREATE TABLE {GameEmoteTable}
 (
 {Identity},

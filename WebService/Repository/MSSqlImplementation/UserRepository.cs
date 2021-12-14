@@ -4,12 +4,11 @@ using System.Data.SqlClient;
 using Common.Entity;
 using WebService.Repository.Interface;
 using static System.Data.SqlDbType;
-using static System.Linq.Enumerable;
 using static WebService.Repository.MSSqlImplementation.SqlExtensions;
 
 namespace WebService.Repository.MSSqlImplementation;
 
-public sealed class UserRepository : RepositoryBase, IUserRepository
+public sealed class UserRepository : UserRepositoryBase, IUserRepository
 {
     public const string UserTable = "[User]";
     public const string UserTypeTable = "[UserType]";
@@ -59,7 +58,6 @@ public sealed class UserRepository : RepositoryBase, IUserRepository
     public const string SocialCreditVar = "@social_credit";
 
     public const string CreateUserProc = "[SP_CreateUser]";
-    public const string SelectUserProc = "[SP_SelectUser]";
     public const string UpdateUserNickProc = "[SP_UpdateUserNick]";
     public const string UpdateUserLoginProc = "[SP_UpdateUserLogin]";
     public const string UpdateUserPasswordProc = "[SP_UpdateUserPassword]";
@@ -88,11 +86,6 @@ public sealed class UserRepository : RepositoryBase, IUserRepository
     public const string UserBuyAnimationProc = "[SP_UserBuyAnimation]";
     public const string UserBuyLootBoxProc = "[SP_UserBuyLootBox]";
 
-    public const string SelectUserAchievementProc = "[SP_SelectUserAchievement]";
-    public const string SelectUserCheckersSkinProc = "[SP_SelectUserCheckersSkin]";
-    public const string SelectUserAnimationProc = "[SP_SelectUserAnimation]";
-    public const string SelectUserPictureProc = "[SP_SelectUserPicture]";
-
     public const string UserGetAvailableAnimationProc = "[SP_GetAvailableAnimation]";
     public const string UserGetAvailableCheckersSkinProc = "[SP_GetAvailableCheckersSkin]";
     public const string UserGetAvailableLootBoxProc = "[SP_GetAvailableLootBox]";
@@ -111,29 +104,7 @@ public sealed class UserRepository : RepositoryBase, IUserRepository
 
     internal UserRepository(SqlConnection connection) : base(connection) { }
 
-    private IEnumerable<Achievement> GetUserAchievements(int id)
-    {
-        using var command = CreateProcedure(SelectUserAchievementProc);
-        command.Parameters.Add(IdParameter(id));
-        using var reader = command.ExecuteReader();
-        return reader.GetAllAchievement();
-    }
-
-    private IEnumerable<Animation> GetUserAnimations(int id)
-    {
-        using var command = CreateProcedure(SelectUserAnimationProc);
-        command.Parameters.Add(IdParameter(id));
-        using var reader = command.ExecuteReader();
-        return reader.GetAllAnimation();
-    }
-
-    private IEnumerable<CheckersSkin> GetUserCheckerSkins(int id)
-    {
-        using var command = CreateProcedure(SelectUserAnimationProc);
-        command.Parameters.Add(IdParameter(id));
-        using var reader = command.ExecuteReader();
-        return reader.GetAllCheckersSkin();
-    }
+    
 
     public bool CreateUser(UserCreationData user)
     {
@@ -155,33 +126,8 @@ public sealed class UserRepository : RepositoryBase, IUserRepository
         throw new NotImplementedException();
     }
 
-    public PublicUserData GetUser(int userId)
-    {
-        var user = PublicUserData.Invalid;
-        using (var command = CreateProcedure(SelectUserProc))
-        {
-            command.Parameters.Add(IdParameter(userId));
 
-            using var reader = command.ExecuteReader();
-            if (reader.Read())
-                user = new PublicUserData(reader.GetUser());
-            else
-                return user;
-        }
-
-        user.Picture = GetUserPicture(userId);
-        user.Achievements = GetUserAchievements(userId);
-        return user;
-    }
-
-    private Picture GetUserPicture(int userId)
-    {
-        using var command = CreateProcedure(SelectUserPictureProc);
-        command.Parameters.Add(IdParameter(userId));
-        using var reader = command.ExecuteReader();
-        return reader.Read() ? reader.GetPicture() : Picture.Invalid;
-    }
-
+    public PublicUserData GetUser(int userId) => GetPublicUserDataUser(userId);
 
     private int Auth(Credential credential)
     {

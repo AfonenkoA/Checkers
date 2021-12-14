@@ -6,7 +6,6 @@ namespace DatabaseStartup.Declaration.GameAction;
 internal static class Move
 {
     internal static readonly string Table = $@"
-GO
 CREATE TABLE {GameMoveTable}
 (
 {Identity},
