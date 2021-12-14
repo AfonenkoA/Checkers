@@ -10,7 +10,8 @@ public class MainMenuPresenter : BasePresenter<IMainMenuView,Credential>
 
     public MainMenuPresenter(IApplicationController controller, IMainMenuView view) : base(controller, view)
     {
-       // View.ShowProfile += ShowProfile;
+        View.ShowProfile += ShowProfile;
+        View.ShowShop += ShowShop;
     }
 
     public override void Run(Credential argument)
@@ -19,9 +20,15 @@ public class MainMenuPresenter : BasePresenter<IMainMenuView,Credential>
         View.Show();
     }
 
-    private void ShowProfile(Credential credential)
+    private void ShowProfile()
     {
-        _credential = credential;
+        
+        Controller.Run<ProfilePresenter,Credential>(_credential);
+        
+    }
 
+    private void ShowShop()
+    {
+        Controller.Run<ShopPresenter,Credential>(_credential);
     }
 }

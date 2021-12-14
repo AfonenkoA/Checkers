@@ -1,22 +1,26 @@
-﻿namespace WinFormsClient;
+﻿using WinFormsClient.Presentation.Views;
 
-public partial class ProfileWindow : Form
+namespace WinFormsClient;
+
+public partial class ProfileWindow : Form, IProfileView
 {
-    private readonly MainMenuWindow _menuWindow;
-    public ProfileWindow(MainMenuWindow window)
+    private readonly ApplicationContext _context;
+    public ProfileWindow(ApplicationContext context)
     {
-        _menuWindow = window;
+        _context = context;
         InitializeComponent();
     }
 
-    private void ProfileWindow_FormClosed(object sender, FormClosedEventArgs e)
+    public new void Show()
     {
-        _menuWindow.Close();
+        _context.MainForm = this;
+        base.Show();
     }
 
-    private void ReturnButton_Click(object sender, EventArgs e)
+    public void SetUserInfo(string username, string password,string lastactivity)
     {
-        Hide();
-        _menuWindow.Show();
+        NickLabel.Text = username;
+        RatingLabel.Text = password;
+        lastActivityLabel.Text= lastactivity;
     }
 }

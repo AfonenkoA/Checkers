@@ -5,4 +5,5 @@ namespace WinFormsClient.Presentation.Views;
 public interface IMainMenuView :IView
 {
     event Action ShowProfile;
+    event Action ShowShop;
 }

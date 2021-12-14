@@ -47,7 +47,7 @@
             this.ReturnButton.TabIndex = 3;
             this.ReturnButton.Text = "Return";
             this.ReturnButton.UseVisualStyleBackColor = true;
-            this.ReturnButton.Click += new System.EventHandler(this.ReturnButton_Click);
+            
             // 
             // CurrencyLabel
             // 
@@ -131,7 +131,6 @@
             this.Controls.Add(this.ReturnButton);
             this.Name = "ShopWindow";
             this.Text = "ShopWindow";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ShopWindow_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 

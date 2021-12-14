@@ -22,7 +22,11 @@ internal static class Program
         var controller = new ApplicationController(new LightInjectAdapder())
             .RegisterView<ILoginView, LoginWindow>()
             .RegisterView<IMainMenuView,MainMenuWindow>()
+            .RegisterView<IProfileView,ProfileWindow>()
+            .RegisterView<IShopView,ShopWindow>()
             .RegisterService<IAsyncUserApi, UserWebApi>()
+            .RegisterService<IAsyncItemApi, ItemWebApi>()
+            .RegisterService<IAsyncResourceService,AsyncResourceWebApi>()
             .RegisterInstance(new ApplicationContext());
 
         controller.Run<LoginPresenter>();

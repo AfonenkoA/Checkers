@@ -47,7 +47,6 @@
             this.LogOutButton.TabIndex = 0;
             this.LogOutButton.Text = "Log Out";
             this.LogOutButton.UseVisualStyleBackColor = true;
-            
             // 
             // pictureBox1
             // 
@@ -66,7 +65,6 @@
             this.PlayButton.TabIndex = 2;
             this.PlayButton.Text = "Play";
             this.PlayButton.UseVisualStyleBackColor = true;
-            
             // 
             // CollectionButton
             // 
@@ -75,9 +73,8 @@
             this.CollectionButton.Name = "CollectionButton";
             this.CollectionButton.Size = new System.Drawing.Size(158, 37);
             this.CollectionButton.TabIndex = 2;
-            this.CollectionButton.Text = "Collcetion";
+            this.CollectionButton.Text = "Collection";
             this.CollectionButton.UseVisualStyleBackColor = true;
-            
             // 
             // ShopButton
             // 
@@ -88,7 +85,6 @@
             this.ShopButton.TabIndex = 2;
             this.ShopButton.Text = "Shop";
             this.ShopButton.UseVisualStyleBackColor = true;
-          
             // 
             // ProfileButton
             // 
@@ -99,7 +95,6 @@
             this.ProfileButton.TabIndex = 2;
             this.ProfileButton.Text = "Profile";
             this.ProfileButton.UseVisualStyleBackColor = true;
-            
             // 
             // FriendsButton
             // 
@@ -110,7 +105,6 @@
             this.FriendsButton.TabIndex = 2;
             this.FriendsButton.Text = "Friends";
             this.FriendsButton.UseVisualStyleBackColor = true;
-            
             // 
             // MainMenuWindow
             // 

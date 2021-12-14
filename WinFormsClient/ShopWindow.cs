@@ -1,23 +1,27 @@
-﻿namespace WinFormsClient;
+﻿using WinFormsClient.Presentation.Views;
 
-public partial class ShopWindow : Form
+namespace WinFormsClient;
+
+public partial class ShopWindow : Form, IShopView
 {
-    private readonly MainMenuWindow _menuWindow;
-    public ShopWindow(MainMenuWindow window)
+    private readonly ApplicationContext _context;
+    public ShopWindow(ApplicationContext context)
 
     {
-        _menuWindow = window;
+        _context = context;
         InitializeComponent();
+}
+
+    public new void Show()
+    {
+        _context.MainForm = this;
+        base.Show();
     }
 
-    private void ReturnButton_Click(object sender, EventArgs e)
+    public void SetShopInfo(List<Control> l1, List<Control> l2, List<Control> l3)
     {
-        Hide();
-        _menuWindow.Show();
-    }
-
-    private void ShopWindow_FormClosed(object sender, FormClosedEventArgs e)
-    {
-        _menuWindow.Close();
+        flowLayoutPanel1.Controls.AddRange(l1.ToArray());
+        flowLayoutPanel2.Controls.AddRange(l2.ToArray());
+        flowLayoutPanel3.Controls.AddRange(l3.ToArray());
     }
 }

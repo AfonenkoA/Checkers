@@ -10,15 +10,19 @@ public partial class MainMenuWindow : Form, IMainMenuView
     {
         _context = context;
         InitializeComponent();
-
-
+        ProfileButton.Click += (sender, args) => Invoke(ShowProfile);
+        ShopButton.Click += (sender,args)=>Invoke(ShowShop);
     }
+
+   
+
     public new void Show()
     {
         _context.MainForm = this;
         base.Show();
     }
     public event Action ShowProfile;
+    public event Action ShowShop;
     private void Invoke(Action action)
     {
         if (action != null) action();
