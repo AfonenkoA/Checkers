@@ -1,5 +1,4 @@
-﻿@using Common.Entity
-@using Site.Data.Models
+﻿@using Site.Data.Models
 @model IDictionary<long,PublicUserModel>
 
 @{
@@ -8,31 +7,19 @@
 
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Checkers Online - Личный профиль</title>
-        <meta charset="UTF-8">
-        <link rel="shortcut icon" href="../22.970@2x.png"/>
-    </head>
-    <body>
-        <h1><div style="text-align: center;">Checkers Online - Личный профиль</div></h1>
-        <hr>
-        <div class="btn-group">
-            <input type="button" value="Редактировать профиль" onClick='location.href="redact.html"'>
-            <input type="button" value="Друзья" onClick='location.href="friends.html"'>
-            <input type="button" value="Найти игрока" onClick='location.href="findplayer.html"'>
-            <input type="button" value="Выход" onClick='location.href="../login/login.html"'>
-            <input type="button" value="Вернуться на главную" onClick='location.href="../index.html"'>
-       </div>
-           @{
-        foreach(var (pos,user) in Model)
+<head>
+    <title>Статистика</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    @{
+        foreach (var (pos, user) in Model)
         {
             <div>
-            <h2>@pos</h2>
+                <h2>@pos</h2>
                 @await Html.PartialAsync("PublicUserView", user)
             </div>
         }
     }
-       
-
-    </body>
+</body>
 </html>

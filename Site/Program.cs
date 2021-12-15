@@ -1,12 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace Site
 {
@@ -37,8 +29,8 @@ namespace Site
             app.UseAuthorization();
 
             app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Statistics}/{action=Get}/{id?}");
+                "default",
+                "{controller=Home}/{action=Index}");
 
             app.Run();
             //CreateWebHostBuilder(args).Build().Run();

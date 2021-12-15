@@ -61,7 +61,7 @@ public sealed class ItemRepository : RepositoryBase, IItemRepository
     {
         using var command = CreateProcedure(SelectAllAchievementProc);
         using var reader = command.ExecuteReader();
-        return  reader.GetAllAchievement();
+        return reader.GetAllAchievement();
     }
 
     public IEnumerable<Animation> GetAnimations()

@@ -1,19 +1,18 @@
-﻿using Api.Interface;
-using Api.WebImplementation;
-using Common.Entity;
+﻿using Common.Entity;
+using static System.String;
 
 namespace Site.Data.Models
 {
-    public class PublicUserModel
+    public sealed class PublicUserModel : CredentialModel
     {
-        public int Id { get; set; }
-        public string Nick { get; set; }
-        public DateTime LastActivity { get; set; }
-        public string PictureUrl { get; set; } = String.Empty;
-        public string Type { get; set; }
-        public int SocialCredit { get; set; }
+        internal int Id { get; }
+        internal string Nick { get; }
+        internal DateTime LastActivity { get; }
+        internal string PictureUrl { get; init; } = Empty;
+        internal string Type { get; }
+        internal int SocialCredit { get; }
 
-        public PublicUserModel(BasicUserData data)
+        public PublicUserModel(Credential c,BasicUserData data) : base(c)
         {
             Id = data.Id;
             Nick = data.Nick;

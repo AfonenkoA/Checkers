@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-
-
-namespace Site
+﻿namespace Site
 {
     public class Startup
     {
@@ -21,10 +11,10 @@ namespace Site
 
         public void ConfigureServices(IServiceCollection services) 
         {
-            services.Configure<CookiePolicyOptions>(Options =>
+            services.Configure<CookiePolicyOptions>(options =>
             {
-                Options.CheckConsentNeeded = context => true;
-                Options.MinimumSameSitePolicy = SameSiteMode.None;
+                options.CheckConsentNeeded = _ => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
             services.AddHttpContextAccessor();

@@ -1,37 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
+﻿using Api.Interface;
+using Api.WebImplementation;
+using Common.Entity;
+using Microsoft.AspNetCore.Mvc;
+using Site.Data.Models;
 
 
-namespace Site.Controllers
+namespace Site.Controllers;
+
+public sealed class HomeController : Controller
 {
-    public class HomeController : Controller
+        
+    public IActionResult Index([FromQuery] Credential c)
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
-
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        public IActionResult AboutGame()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(/*new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier }*/);
-        }
+        return View(new CredentialModel(c));
     }
 }

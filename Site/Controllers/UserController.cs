@@ -1,60 +1,36 @@
-﻿using System;
-using Api.Interface;
+﻿using Api.Interface;
 using Api.WebImplementation;
 using Common.Entity;
 using Microsoft.AspNetCore.Mvc;
 using Site.Data.Models;
 
-namespace Checkers.Site.Controllers;
-   
-public class UserController : Controller
-{
-  
-    private static readonly IAsyncUserApi api = new UserWebApi();
-    private static readonly IAsyncResourceService resourseApi = new AsyncResourceWebApi();
+namespace Site.Controllers;
 
-    public async Task<ViewResult> Get(int id)
+public sealed class UserController : Controller
+{
+
+    private static readonly IAsyncUserApi UserApi = new UserWebApi();
+    private static readonly IAsyncResourceService ResourceApi = new AsyncResourceWebApi();
+
+    public async Task<IActionResult> Profile([FromQuery] Credential c, [FromRoute] int id)
     {
-        var (_, User) = await api.TryGetUser(id);
-        var picture = resourseApi.GetFileUrl(User.Picture.Resource.Id);
-        var model = new PublicUserModel(User) { PictureUrl = picture };
+        if (!c.IsValid) return View("Error");
+        var (success, user) = await UserApi.TryGetUser(id);
+        if (!success) return View("Error");
+        var picture = ResourceApi.GetFileUrl(user.Picture.Resource.Id);
+        var model = new PublicUserModel(c, user) { PictureUrl = picture };
         return View(model);
     }
-    public async Task<ViewResult> List()
+
+    public async Task<IActionResult> List()
     {
-        var (_, Users) = await api.TryGetUsersByNick("");
-        return View(Users);
+        var (_, users) = await UserApi.TryGetUsersByNick("");
+        return View(users);
     }
 
-    public async Task<ViewResult> Nick()
+    public async Task<IActionResult> PersonalArea([FromQuery] Credential c)
     {
-        var (_, User) = await api.TryGetUser(1);
-        var str = User.Nick;
-        return View((object)str); ;
+        var (success, self) = await UserApi.TryGetSelf(c);
+        return !success ? View("Error") : View(new PublicUserModel(c,self));
     }
-
-    public async Task<ViewResult> LastActivity()
-    {
-        var (_, User) = await api.TryGetUser(1);
-        var str = User.LastActivity;
-        return View(str);
-    }
-
-    public async Task<ViewResult> Picture()
-    {
-        var (_, User) = await api.TryGetUser(1);
-        var str = resourseApi.GetFileUrl(User.Picture.Resource.Id);
-        return View((object)str);
-    }
-
-    public async Task<ViewResult> DataUser()
-    {
-        var (_, User) = await api.TryGetUser(1);
-        var str = resourseApi.GetFileUrl(User.Picture.Resource.Id);
-        var activity = User.LastActivity;
-        var nick = User.Nick;
-        var rating = User.SocialCredit;
-        return View((object)str);
-    }
-
 }

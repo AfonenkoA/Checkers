@@ -1,15 +1,14 @@
-﻿@{
-    ViewData["Title"] = "Главная страница";
-}
+﻿@using Site.Data.Models;
+@model CredentialModel
 
-<div class="text-center">
-    <h1 class="display-4">КУДА</h1>
-    <p>Авторизация - login/login.html</p>
-    <p>Профиль - profile/myprofile.html
-    <p>Статистика - statistic/statistic.html
-    <p>Форум - forum/forum.html
-    <p>Общий чат - chat/chat.html
-    <p>Новости - news/news.html
-    <p>Скачать игру - ???
-    <p>Подробнее об игре - aboutgame.html</p>
-</div>
+<html>
+<head>
+    <meta name="viewport" content="width-device-width" />
+    <title>Nick</title>
+</head>
+<body>
+<a href="/Authorization/Login">Войти</a>
+<a href="/User/PersonalArea/@Model.Query">Профиль</a>
+
+</body>
+</html>

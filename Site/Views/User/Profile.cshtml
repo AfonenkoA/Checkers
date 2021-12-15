@@ -1,0 +1,18 @@
+﻿@using Site.Data.Models
+@model PublicUserModel
+    
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Профиль игрока</title>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <h1>Профиль игрока</h1>
+    @await Html.PartialAsync("PublicUserView", Model)
+    </body>
+</html>
