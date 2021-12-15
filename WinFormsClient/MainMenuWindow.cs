@@ -12,6 +12,7 @@ public partial class MainMenuWindow : Form, IMainMenuView
         InitializeComponent();
         ProfileButton.Click += (sender, args) => Invoke(ShowProfile);
         ShopButton.Click += (sender,args)=>Invoke(ShowShop);
+       // LogOutButton.Click += (sender, args) => Invoke(LogOut);
     }
 
    
@@ -23,6 +24,9 @@ public partial class MainMenuWindow : Form, IMainMenuView
     }
     public event Action ShowProfile;
     public event Action ShowShop;
+
+    public event Action ShowCollection;
+    //public event Action LogOut;
     private void Invoke(Action action)
     {
         if (action != null) action();

@@ -44,7 +44,7 @@
             this.ReturnButton.TabIndex = 2;
             this.ReturnButton.Text = "Return";
             this.ReturnButton.UseVisualStyleBackColor = true;
-            this.ReturnButton.Click += new System.EventHandler(this.ReturnButton_Click);
+            
             // 
             // CheckersLabel
             // 
@@ -92,7 +92,7 @@
             this.Controls.Add(this.ReturnButton);
             this.Name = "CollectionWindow";
             this.Text = "CollectionWindow";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.CollectionWindow_FormClosed);
+            
             this.ResumeLayout(false);
             this.PerformLayout();
 

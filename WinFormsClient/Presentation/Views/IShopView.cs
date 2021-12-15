@@ -5,5 +5,6 @@ namespace WinFormsClient.Presentation.Views;
 
 public interface IShopView : IView
 {
-    void SetShopInfo(IEnumerable<Animation> l1, IEnumerable<LootBox> l2, IEnumerable<CheckersSkin> l3);
+    event Action BackToMenu;
+    void SetShopInfo(IEnumerable<(Animation,Image)> l1, IEnumerable<(LootBox,Image)> l2, IEnumerable<(CheckersSkin,Image)> l3);
 }

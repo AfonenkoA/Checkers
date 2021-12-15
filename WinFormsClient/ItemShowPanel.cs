@@ -1,6 +1,7 @@
 ﻿using Api.Interface;
 using Api.WebImplementation;
 using Common.Entity;
+using WinFormsClient.Presentation.Common;
 
 namespace WinFormsClient
 {
@@ -9,18 +10,18 @@ namespace WinFormsClient
         
         private static readonly IAsyncResourceService ResourceService = new AsyncResourceWebApi();
         private readonly DetailedItem _item;
-        public ItemShowPanel(DetailedItem item)
+       
+
+        public ItemShowPanel(DetailedItem item,Image img)
         {
             _item = item;
             InitializeComponent();
-        }
-
-
-        private  void ItemShowPanel_Load(object sender, EventArgs e)
-        {
-            
             TitleLabel.Text = _item.Name;
             DescriptionLabel.Text = _item.Detail;
+            pictureBox1.Image = img;
         }
+
+
+        
     }
 }

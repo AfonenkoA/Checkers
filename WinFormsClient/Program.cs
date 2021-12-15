@@ -24,9 +24,11 @@ internal static class Program
             .RegisterView<IMainMenuView,MainMenuWindow>()
             .RegisterView<IProfileView,ProfileWindow>()
             .RegisterView<IShopView,ShopWindow>()
+            .RegisterView<ICollectionView,CollectionWindow>()
             .RegisterService<IAsyncUserApi, UserWebApi>()
             .RegisterService<IAsyncItemApi, ItemWebApi>()
             .RegisterService<IAsyncResourceService,AsyncResourceWebApi>()
+            .RegisterService<ResourceManager,ResourceManager>()
             .RegisterInstance(new ApplicationContext());
 
         controller.Run<LoginPresenter>();

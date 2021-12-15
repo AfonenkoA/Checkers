@@ -13,7 +13,7 @@ public partial class ProfileWindow : Form, IProfileView
 
     public new void Show()
     {
-        _context.MainForm = this;
+        
         base.Show();
     }
 

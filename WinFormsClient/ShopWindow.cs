@@ -11,7 +11,8 @@ public partial class ShopWindow : Form, IShopView
     {
         _context = context;
         InitializeComponent();
-}
+        ReturnButton.Click+= (sender, args) => Invoke(BackToMenu);
+    }
 
     public new void Show()
     {
@@ -29,5 +30,11 @@ public partial class ShopWindow : Form, IShopView
             flowLayoutPanel2.Controls.Add(new ItemShowPanel(lootBox));
         foreach (var skin in skins)
             flowLayoutPanel3.Controls.Add(new ItemShowPanel(skin));
+    }
+
+    public event Action BackToMenu;
+    private void Invoke(Action action)
+    {
+        if (action != null) action();
     }
 }
