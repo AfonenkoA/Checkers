@@ -1,8 +1,9 @@
-﻿using WinFormsClient.Presentation.Common;
+﻿using Common.Entity;
+using WinFormsClient.Presentation.Common;
 
 namespace WinFormsClient.Presentation.Views;
 
-public interface IShopView:IView
+public interface IShopView : IView
 {
-    void SetShopInfo(List<Control> l1, List<Control> l2, List<Control> l3);
+    void SetShopInfo(IEnumerable<Animation> l1, IEnumerable<LootBox> l2, IEnumerable<CheckersSkin> l3);
 }

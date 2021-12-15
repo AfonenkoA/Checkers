@@ -1,4 +1,5 @@
-﻿using WinFormsClient.Presentation.Views;
+﻿using Common.Entity;
+using WinFormsClient.Presentation.Views;
 
 namespace WinFormsClient;
 
@@ -18,10 +19,15 @@ public partial class ShopWindow : Form, IShopView
         base.Show();
     }
 
-    public void SetShopInfo(List<Control> l1, List<Control> l2, List<Control> l3)
+    public void SetShopInfo(IEnumerable<Animation> animations,
+        IEnumerable<LootBox> lootBoxes,
+        IEnumerable<CheckersSkin> skins)
     {
-        flowLayoutPanel1.Controls.AddRange(l1.ToArray());
-        flowLayoutPanel2.Controls.AddRange(l2.ToArray());
-        flowLayoutPanel3.Controls.AddRange(l3.ToArray());
+        foreach (var animation in animations)
+            flowLayoutPanel1.Controls.Add(new ItemShowPanel(animation));
+        foreach (var lootBox in lootBoxes)
+            flowLayoutPanel2.Controls.Add(new ItemShowPanel(lootBox));
+        foreach (var skin in skins)
+            flowLayoutPanel3.Controls.Add(new ItemShowPanel(skin));
     }
 }
