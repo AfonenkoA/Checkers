@@ -1,5 +1,6 @@
 ﻿using Api.Interface;
 using Common.Entity;
+using WinFormsClient.Model;
 using WinFormsClient.Presentation.Common;
 using WinFormsClient.Presentation.Views;
 
@@ -9,12 +10,16 @@ public class ShopPresenter : BasePresenter<IShopView, Credential>
 {
     private readonly IAsyncUserApi _userApi;
     private Credential? _credential;
-    private readonly ResourceManager manager;
-    public ShopPresenter(IApplicationController controller, IShopView view, IAsyncUserApi userApi) :
+    private readonly ResourceManager _manager;
+    public ShopPresenter(IApplicationController controller,
+        IShopView view,
+        IAsyncUserApi userApi,
+        ResourceManager manager) :
         base(controller, view)
     {
         _userApi = userApi;
-        View.BackToMenu += BackToMenu;
+        this._manager = manager;
+        View.OnBackToMenu += BackToMenu;
     }
     public override void Run(Credential argument)
     {
@@ -25,28 +30,25 @@ public class ShopPresenter : BasePresenter<IShopView, Credential>
     private async Task UpdateShopInfo()
     {
         var (_, user) = await _userApi.TryGetSelf(_credential ?? new Credential());
-        var checkers = user.AvailableCheckersSkins;
-        var animations = user.AvailableAnimations;
-        var lootBoxes = user.AvailableLootBox;
-        var l1 = new List<(CheckersSkin,Image)>();
-        var checkersSkins = checkers.ToList();
-        foreach (var i in checkersSkins)
-            l1.Add((i,await manager.Get(i.Resource.Id)));
-        var l2 = new List<(Animation, Image)>();
-        var animationsSkins = animations.ToList();
-        foreach (var i in animationsSkins)
-            l2.Add((i, await manager.Get(i.Resource.Id)));
-        var l3 = new List<(LootBox, Image)>();
-        var lootBoxesSkins = lootBoxes.ToList();
-        foreach (var i in lootBoxesSkins)
-            l3.Add((i, await manager.Get(i.Resource.Id)));
+        var checkers = user.AvailableCheckersSkins.ToList();
+        var animations = user.AvailableAnimations.ToList();
+        var lootBoxes = user.AvailableLootBox.ToList();
 
-        View.SetShopInfo(l1,l2,l3);
+        await _manager.PreLoad(checkers);
+        await _manager.PreLoad(animations);
+        await _manager.PreLoad(lootBoxes);
+
+        View.SetShopInfo(
+            animations.Select(a => new VisualAnimation(a, _manager.Get(a))),
+                checkers.Select(c => new VisualCheckersSkin(c, _manager.Get(c))),
+                lootBoxes.Select(l => new VisualLootBox(l, _manager.Get(l))));
+
     }
 
     private void BackToMenu()
     {
-        Controller.Run<MainMenuPresenter,Credential>(_credential);
+        if (_credential != null) throw new ArgumentException("Empty credential");
+        Controller.Run<MainMenuPresenter, Credential>(_credential);
         View.Close();
     }
 }

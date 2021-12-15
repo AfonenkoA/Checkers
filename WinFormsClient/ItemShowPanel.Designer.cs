@@ -1,6 +1,6 @@
 ﻿namespace WinFormsClient
 {
-    partial class ItemShowPanel
+    sealed partial class ItemShowPanel
     {
         /// <summary> 
         /// Обязательная переменная конструктора.

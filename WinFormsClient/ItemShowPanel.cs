@@ -1,27 +1,18 @@
-﻿using Api.Interface;
-using Api.WebImplementation;
-using Common.Entity;
-using WinFormsClient.Presentation.Common;
+﻿using WinFormsClient.Model;
 
-namespace WinFormsClient
+namespace WinFormsClient;
+
+internal sealed partial class ItemShowPanel : UserControl
 {
-    public partial class ItemShowPanel : UserControl
+    private readonly int _id;
+
+    public ItemShowPanel(VisualDetailedItem item)
     {
-        
-        private static readonly IAsyncResourceService ResourceService = new AsyncResourceWebApi();
-        private readonly DetailedItem _item;
-       
-
-        public ItemShowPanel(DetailedItem item,Image img)
-        {
-            _item = item;
-            InitializeComponent();
-            TitleLabel.Text = _item.Name;
-            DescriptionLabel.Text = _item.Detail;
-            pictureBox1.Image = img;
-        }
-
-
-        
+        _id = item.Id;
+        InitializeComponent();
+        TitleLabel.Text = item.Name;
+        DescriptionLabel.Text = item.Detail;
+        pictureBox1.Image = item.Image;
     }
+
 }

@@ -30,11 +30,11 @@
         {
             this.ReturnButton = new System.Windows.Forms.Button();
             this.CurrencyLabel = new System.Windows.Forms.Label();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.LootBoxes = new System.Windows.Forms.FlowLayoutPanel();
+            this.Animations = new System.Windows.Forms.FlowLayoutPanel();
             this.AnimationsLabel = new System.Windows.Forms.Label();
             this.CheckersLabel = new System.Windows.Forms.Label();
-            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
+            this.CheckersSkins = new System.Windows.Forms.FlowLayoutPanel();
             this.LootBoxesLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
@@ -59,23 +59,23 @@
             this.CurrencyLabel.TabIndex = 4;
             this.CurrencyLabel.Text = "Currency";
             // 
-            // flowLayoutPanel2
+            // LootBoxes
             // 
-            this.flowLayoutPanel2.AutoScroll = true;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(12, 226);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(776, 113);
-            this.flowLayoutPanel2.TabIndex = 7;
-            this.flowLayoutPanel2.WrapContents = false;
+            this.LootBoxes.AutoScroll = true;
+            this.LootBoxes.Location = new System.Drawing.Point(12, 226);
+            this.LootBoxes.Name = "LootBoxes";
+            this.LootBoxes.Size = new System.Drawing.Size(776, 113);
+            this.LootBoxes.TabIndex = 7;
+            this.LootBoxes.WrapContents = false;
             // 
-            // flowLayoutPanel1
+            // Animations
             // 
-            this.flowLayoutPanel1.AutoScroll = true;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(12, 62);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(776, 113);
-            this.flowLayoutPanel1.TabIndex = 8;
-            this.flowLayoutPanel1.WrapContents = false;
+            this.Animations.AutoScroll = true;
+            this.Animations.Location = new System.Drawing.Point(12, 62);
+            this.Animations.Name = "Animations";
+            this.Animations.Size = new System.Drawing.Size(776, 113);
+            this.Animations.TabIndex = 8;
+            this.Animations.WrapContents = false;
             // 
             // AnimationsLabel
             // 
@@ -97,14 +97,14 @@
             this.CheckersLabel.TabIndex = 6;
             this.CheckersLabel.Text = "Checkers";
             // 
-            // flowLayoutPanel3
+            // CheckersSkins
             // 
-            this.flowLayoutPanel3.AutoScroll = true;
-            this.flowLayoutPanel3.Location = new System.Drawing.Point(12, 392);
-            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(776, 113);
-            this.flowLayoutPanel3.TabIndex = 10;
-            this.flowLayoutPanel3.WrapContents = false;
+            this.CheckersSkins.AutoScroll = true;
+            this.CheckersSkins.Location = new System.Drawing.Point(12, 392);
+            this.CheckersSkins.Name = "CheckersSkins";
+            this.CheckersSkins.Size = new System.Drawing.Size(776, 113);
+            this.CheckersSkins.TabIndex = 10;
+            this.CheckersSkins.WrapContents = false;
             // 
             // LootBoxesLabel
             // 
@@ -121,10 +121,10 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 510);
-            this.Controls.Add(this.flowLayoutPanel3);
+            this.Controls.Add(this.CheckersSkins);
             this.Controls.Add(this.LootBoxesLabel);
-            this.Controls.Add(this.flowLayoutPanel2);
-            this.Controls.Add(this.flowLayoutPanel1);
+            this.Controls.Add(this.LootBoxes);
+            this.Controls.Add(this.Animations);
             this.Controls.Add(this.AnimationsLabel);
             this.Controls.Add(this.CheckersLabel);
             this.Controls.Add(this.CurrencyLabel);
@@ -140,11 +140,11 @@
 
         private Button ReturnButton;
         private Label CurrencyLabel;
-        private FlowLayoutPanel flowLayoutPanel2;
-        private FlowLayoutPanel flowLayoutPanel1;
+        private FlowLayoutPanel LootBoxes;
+        private FlowLayoutPanel Animations;
         private Label AnimationsLabel;
         private Label CheckersLabel;
-        private FlowLayoutPanel flowLayoutPanel3;
+        private FlowLayoutPanel CheckersSkins;
         private Label LootBoxesLabel;
     }
 }

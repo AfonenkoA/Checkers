@@ -1,35 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common.Entity;
+﻿using Common.Entity;
 
-namespace WinFormsClient.Model
+namespace WinFormsClient.Model;
+
+public class VisualDetailedItem : VisualNamedItem
 {
+    public string Detail { get; }
 
-    internal class NamedItemModel
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Detail { get; set; }
-
-
-        public DetailedItemModel(DetailedItem item)
-        {
-
-        }
-    }
-    internal class DetailedItemModel
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Detail { get; set; }
-
-
-        public DetailedItemModel(DetailedItem item)
-        {
-
-        }
-    }
+    public VisualDetailedItem(DetailedItem item, Image image) : 
+        base(item, image) =>
+        Detail = item.Detail;
 }

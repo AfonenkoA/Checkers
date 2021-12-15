@@ -1,4 +1,5 @@
 ﻿using Common.Entity;
+using WinFormsClient.Model;
 using WinFormsClient.Presentation.Views;
 
 namespace WinFormsClient;
@@ -20,14 +21,14 @@ public partial class CollectionWindow : Form, ICollectionView
         base.Show();
     }
 
-    public void SetCollectionInfo(IEnumerable<Animation> animations,
-        IEnumerable<CheckersSkin> skins)
+    public void SetCollectionInfo(IEnumerable<VisualAnimation> animations,
+        IEnumerable<VisualCheckersSkin> skins)
     {
         foreach (var animation in animations)
-            flowLayoutPanel1.Controls.Add(new ItemShowPanel(animation));
+            Aniamtions.Controls.Add(new ItemShowPanel(animation));
         
         foreach (var skin in skins)
-            flowLayoutPanel2.Controls.Add(new ItemShowPanel(skin));
+            CheckersSkins.Controls.Add(new ItemShowPanel(skin));
     }
 
     public event Action BackToMenu;

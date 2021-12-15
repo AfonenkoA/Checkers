@@ -1,4 +1,4 @@
-﻿using Common.Entity;
+﻿using WinFormsClient.Model;
 using WinFormsClient.Presentation.Views;
 
 namespace WinFormsClient;
@@ -11,7 +11,7 @@ public partial class ShopWindow : Form, IShopView
     {
         _context = context;
         InitializeComponent();
-        ReturnButton.Click+= (sender, args) => Invoke(BackToMenu);
+        ReturnButton.Click+= (sender, args) => Invoke(OnBackToMenu);
     }
 
     public new void Show()
@@ -20,19 +20,23 @@ public partial class ShopWindow : Form, IShopView
         base.Show();
     }
 
-    public void SetShopInfo(IEnumerable<Animation> animations,
-        IEnumerable<LootBox> lootBoxes,
-        IEnumerable<CheckersSkin> skins)
+
+
+    public event Action OnBackToMenu;
+    public void SetShopInfo(IEnumerable<VisualAnimation> animations,
+        IEnumerable<VisualCheckersSkin> checkersSkin,
+        IEnumerable<VisualLootBox> lootBoxes)
     {
         foreach (var animation in animations)
-            flowLayoutPanel1.Controls.Add(new ItemShowPanel(animation));
+            Animations.Controls.Add(new ItemShowPanel(animation));
         foreach (var lootBox in lootBoxes)
-            flowLayoutPanel2.Controls.Add(new ItemShowPanel(lootBox));
-        foreach (var skin in skins)
-            flowLayoutPanel3.Controls.Add(new ItemShowPanel(skin));
+            LootBoxes.Controls.Add(new ItemShowPanel(lootBox));
+        foreach (var skin in checkersSkin)
+            CheckersSkins.Controls.Add(new ItemShowPanel(skin));
     }
 
-    public event Action BackToMenu;
+
+
     private void Invoke(Action action)
     {
         if (action != null) action();
