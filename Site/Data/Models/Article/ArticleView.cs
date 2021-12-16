@@ -6,7 +6,7 @@ public sealed class ArticleView : ArticlePreview
     public DateTime Created { get; }
     public int PostId { get; }
 
-    public ArticleView(Common.Entity.Article article, string pictureUrl) : base(article, pictureUrl)
+    public ArticleView(Common.Entity.Article article, ResourceView image) : base(article, image)
     {
         Content = article.Content;
         Created = article.Created;

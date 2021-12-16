@@ -1,11 +1,15 @@
 ﻿namespace Site.Data.Models;
 
-public class PictureView
+public class PictureView : ResourceView
 {
-    public PictureView(string pictureUrl)
+    public PictureView(ResourceView resource, int id) : base(resource)
     {
-        PictureUrl = pictureUrl;
+        Id = id;
     }
+    public int Id { get; }
 
-    public string PictureUrl { get; }
+    public PictureView(PictureView pic) : base(pic)
+    {
+        Id = pic.Id;
+    }
 }

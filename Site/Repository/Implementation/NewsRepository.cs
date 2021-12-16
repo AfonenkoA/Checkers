@@ -5,22 +5,22 @@ using Site.Repository.Interface;
 
 namespace Site.Repository.Implementation;
 
-public class NewsRepository : INewsRepository
+public sealed class NewsRepository : INewsRepository
 {
     private readonly IAsyncNewsApi _newsApi;
-    private readonly IAsyncResourceService _resourceService;
+    private readonly IResourceRepository _resource;
 
-    public NewsRepository(IAsyncNewsApi newsApi, IAsyncResourceService resourceService)
+    public NewsRepository(IAsyncNewsApi newsApi, IResourceRepository resource)
     {
         _newsApi = newsApi;
-        _resourceService = resourceService;
+        _resource = resource;
     }
 
     private ArticlePreview ConvertToPreview(ArticleInfo info) =>
-        new(info, _resourceService.GetFileUrl(info.PictureId));
+        new(info, _resource.GetResource(info.PictureId));
 
     private ArticleView ConvertToView(Article info) =>
-        new(info, _resourceService.GetFileUrl(info.PictureId));
+        new(info, _resource.GetResource(info.PictureId));
 
     public async Task<(bool, IEnumerable<ArticlePreview>)> GetNews()
     {

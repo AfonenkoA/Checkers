@@ -6,7 +6,7 @@ public sealed class Friend : UserInfo
 {
     public int ChatId { get; }
 
-    public Friend(FriendUserData data,string pictureUrl) : base(data, pictureUrl)
+    public Friend(FriendUserData data, PictureView picture) : base(data, picture)
     {
         ChatId = data.ChatId;
     }

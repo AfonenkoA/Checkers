@@ -17,4 +17,5 @@ public interface IUserRepository
     Task<bool> UpdateUserLogin(Credential credential, string login);
     Task<bool> UpdateUserPassword(Credential credential, string password);
     Task<bool> UpdateUserEmail(Credential credential, string email);
+    Task<bool> UpdateUserPicture(Credential credential, int id);
 }

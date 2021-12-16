@@ -19,12 +19,15 @@ internal static class Program
             .AddSingleton<IAsyncUserApi, UserWebApi>()
             .AddSingleton<IAsyncResourceService, AsyncResourceWebApi>()
             .AddSingleton<IAsyncStatisticsApi,StatisticsWebApi>()
+            .AddSingleton<IAsyncChatApi, ChatWebApi>()
             .AddSingleton<IAsyncNewsApi,NewsWebApi>()
+            .AddSingleton<IAsyncForumApi, ForumWebApi>()
+            .AddSingleton<IAsyncItemApi,ItemWebApi>()
+            .AddSingleton<IResourceRepository,ResourceRepository>()
+            .AddSingleton<IItemRepository,ItemRepository>()
             .AddSingleton<IUserRepository, UserRepository>()
             .AddSingleton<INewsRepository,NewsRepository>()
-            .AddSingleton<IAsyncChatApi,ChatWebApi>()
             .AddSingleton<IChatRepository,ChatRepository>()
-            .AddSingleton<IAsyncForumApi,ForumWebApi>()
             .AddSingleton<IForumRepository,ForumRepository>();
 
         var app = builder.Build();

@@ -9,7 +9,7 @@ public sealed class PostView : PostPreview
     public UserInfo Author { get; }
     public Chat Chat { get; }
 
-    public PostView(Common.Entity.Post post, UserInfo author, Chat chat,string pictureUrl) : base(post, pictureUrl)
+    public PostView(Common.Entity.Post post, UserInfo author, Chat chat, ResourceView pic) : base(post, pic)
     {
         Content = post.Content;
         Created = post.Created;

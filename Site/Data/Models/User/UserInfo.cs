@@ -2,15 +2,17 @@
 
 namespace Site.Data.Models.User;
 
-public class UserInfo : PictureView
+public class UserInfo
 {
     internal int Id { get; }
     internal string Nick { get; }
     internal DateTime LastActivity { get; }
     internal string Type { get; }
     internal int SocialCredit { get; }
-    public UserInfo(BasicUserData data, string pictureUrl) : base(pictureUrl)
+    internal PictureView Picture { get; }
+    public UserInfo(BasicUserData data, PictureView picture)
     {
+        Picture = picture;
         Id = data.Id;
         Nick = data.Nick;
         LastActivity = data.LastActivity;
@@ -18,8 +20,9 @@ public class UserInfo : PictureView
         SocialCredit = data.SocialCredit;
     }
 
-    public UserInfo(UserInfo info) : base(info.PictureUrl)
+    public UserInfo(UserInfo info, PictureView picture)
     {
+        Picture = picture;
         Id = info.Id;
         Nick = info.Nick;
         Type = info.Type;

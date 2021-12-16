@@ -4,7 +4,7 @@
 @{
     Layout = null;
 }
-<img src="@Model?.Value.PictureUrl" width="100" height="100">
+<img src="@Model?.Value.Picture.Url" width="100" height="100">
 <a asp-controller="User"
    asp-action="Profile"
    asp-route-id="@Model?.Value.Id"

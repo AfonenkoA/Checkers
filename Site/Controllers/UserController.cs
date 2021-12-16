@@ -49,14 +49,14 @@ public sealed class UserController : Controller
             if (!success) return View("Error");
         }
 
-        var model = new Identified<IDictionary<long, UserInfo>>(credential,data);
+        var model = new Identified<IDictionary<long, UserInfo>>(credential, data);
         return View(model);
     }
 
     public async Task<ViewResult> UpdateNick(Credential c, string nick)
     {
         var success = await _repository.UpdateUserNick(c, nick);
-        var model = new Identified<ModificationResult>(c,new ModificationResult("User", "PersonalArea", success));
+        var model = new Identified<ModificationResult>(c, new ModificationResult("User", "PersonalArea", success));
         return View("ModificationResult", model);
     }
 
@@ -80,5 +80,12 @@ public sealed class UserController : Controller
         var model = new Identified<ModificationResult>(c, new ModificationResult("User", "PersonalArea", success));
         return View("ModificationResult", model);
     }
-    
+
+    public async Task<ViewResult> UpdatePicture(Credential c, int picture)
+    {
+        var success = await _repository.UpdateUserPicture(c, picture);
+        var model = new Identified<ModificationResult>(c, new ModificationResult("User", "PersonalArea", success));
+        return View("ModificationResult", model);
+    }
+
 }

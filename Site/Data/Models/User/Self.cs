@@ -2,8 +2,14 @@
 
 public sealed class Self : UserInfo
 {
-    public IEnumerable<Friend> Friends { get; init; } = Enumerable.Empty<Friend>();
-    public Self(UserInfo info) : base(info)
+    public IEnumerable<Friend> Friends { get; } 
+    public IEnumerable<PictureView> Pictures { get;}
+    public Self(UserInfo info, 
+        PictureView picture,
+        IEnumerable<Friend> friends,
+        IEnumerable<PictureView> pictures) : base(info,picture)
     {
+        Friends = friends;
+        Pictures = pictures;
     }
 }

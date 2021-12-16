@@ -8,32 +8,34 @@ namespace Site.Repository.Implementation;
 public sealed class UserRepository : IUserRepository
 {
     private readonly IAsyncUserApi _userApi;
-    private readonly IAsyncResourceService _resourceService;
+    private readonly IItemRepository _item;
     private readonly IAsyncStatisticsApi _statisticsApi;
 
-    public UserRepository(IAsyncUserApi userApi, IAsyncResourceService resourceService, IAsyncStatisticsApi statisticsApi)
+    public UserRepository(IAsyncUserApi userApi,
+        IAsyncResourceService resourceService,
+        IAsyncStatisticsApi statisticsApi, IItemRepository item)
     {
         _userApi = userApi;
-        _resourceService = resourceService;
         _statisticsApi = statisticsApi;
+        _item = item;
     }
 
-    private string GetPictureUrl(PublicUserData data) =>
-        _resourceService.GetFileUrl(data.Picture.Resource.Id);
-
-    private UserInfo ConvertToUserInfo(PublicUserData u) =>
-        new(u, GetPictureUrl(u));
+    private async Task<UserInfo> ConvertToUserInfo(PublicUserData u) =>
+        new(u, await _item.GetPicture(u.Picture.Id));
 
     public async Task<(bool, UserInfo)> GetUser(int id)
     {
         var (success, user) = await _userApi.TryGetUser(id);
-        return (success, ConvertToUserInfo(user));
+        return (success, await ConvertToUserInfo(user));
     }
 
     public async Task<(bool, IEnumerable<UserInfo>)> GetByNick(string pattern)
     {
-        var (success, users) = await _userApi.TryGetUsersByNick(pattern);
-        return (success, users.Select(ConvertToUserInfo));
+        var (success, data) = await _userApi.TryGetUsersByNick(pattern);
+        var users = new List<UserInfo>();
+        foreach (var p in data)
+            users.Add(await ConvertToUserInfo(p));
+        return (success, users);
     }
 
     public Task<bool> Authorize(Credential credential) => _userApi.Authenticate(credential);
@@ -44,11 +46,15 @@ public sealed class UserRepository : IUserRepository
         var friends = new List<Friend>();
         foreach (var friend in user.Friends)
         {
-            var (s, f) = await _userApi.TryGetFriend(credential, friend.Id);
-            if (!s) return (s, new Self(ConvertToUserInfo(user)));
-            friends.Add(new Friend(f, GetPictureUrl(f)));
+            var (_, f) = await _userApi.TryGetFriend(credential, friend.Id);
+
+            friends.Add(new Friend(f, await _item.GetPicture(f.Picture.Id)));
         }
-        return (success, new Self(ConvertToUserInfo(user)) { Friends = friends });
+
+        return (success, new Self(await ConvertToUserInfo(user),
+            await _item.GetPicture(user.Picture.Id),
+            friends,
+            await _item.GetPictures()));
     }
 
     public async Task<(bool, IDictionary<long, UserInfo>)> GetTop()
@@ -56,7 +62,7 @@ public sealed class UserRepository : IUserRepository
         var (success, users) = await _statisticsApi.TryGetTopPlayers();
         var res = new Dictionary<long, UserInfo>();
         foreach (var (pos, user) in users)
-            res.Add(pos, ConvertToUserInfo(user));
+            res.Add(pos, await ConvertToUserInfo(user));
         return (success, res);
     }
 
@@ -65,7 +71,7 @@ public sealed class UserRepository : IUserRepository
         var (success, users) = await _statisticsApi.TryGetTopPlayers(credential);
         var res = new Dictionary<long, UserInfo>();
         foreach (var (pos, user) in users)
-            res.Add(pos, ConvertToUserInfo(user));
+            res.Add(pos, await ConvertToUserInfo(user));
         return (success, res);
     }
 
@@ -80,4 +86,7 @@ public sealed class UserRepository : IUserRepository
 
     public Task<bool> UpdateUserEmail(Credential credential, string email) =>
         _userApi.UpdateUserEmail(credential, email);
+
+    public Task<bool> UpdateUserPicture(Credential credential, int id) =>
+        _userApi.UpdateUserPicture(credential, id);
 }
