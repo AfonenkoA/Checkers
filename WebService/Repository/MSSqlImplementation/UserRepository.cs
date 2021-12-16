@@ -90,9 +90,9 @@ public sealed class UserRepository : UserRepositoryBase, IUserRepository
     public const string UserGetAvailableCheckersSkinProc = "[SP_GetAvailableCheckersSkin]";
     public const string UserGetAvailableLootBoxProc = "[SP_GetAvailableLootBox]";
 
-
     public const string SelectUserGameProc = "[SP_SelectUserGameProc]";
     public const string SelectAllUserGameProc = "[SP_SelectAllUserGameProc]";
+    public const string SelectUserCurrency = "[SP_SelectUserCurrency]";
 
     public const string CreateUserGameProc = "[SP_CreateUserGame]";
 
@@ -146,12 +146,18 @@ public sealed class UserRepository : UserRepositoryBase, IUserRepository
         var userId = Auth(credential);
         if (userId == InvalidId)
             return User.Invalid;
-        var user = new User(GetUser(userId));
+        var user = new User(GetPublicUserDataUser(userId));
         using (var command = CreateProcedure(SelectUserFriendshipProc))
         {
             command.Parameters.Add(IdParameter(userId));
             using var reader = command.ExecuteReader();
             user.Friends = reader.GetAllFriendship();
+        }
+        using (var command = CreateProcedure(SelectUserCurrency))
+        {
+            command.Parameters.Add(IdParameter(userId));
+            command.ExecuteScalar();
+            user.Currency = command.GetReturn();
         }
         user.Animations = GetUserAnimations(userId);
         user.CheckerSkins = GetUserCheckerSkins(userId);
@@ -168,7 +174,7 @@ public sealed class UserRepository : UserRepositoryBase, IUserRepository
         if (userId == InvalidId)
             return FriendUserData.Invalid;
 
-        var user = new FriendUserData(GetUser(userId)) { Achievements = GetUserAchievements(userId) };
+        var user = new FriendUserData(GetPublicUserDataUser(friendId));
         using var command = CreateProcedureReturn(SelectFriendChatIdProc);
         command.Parameters.AddRange(new[]
         {

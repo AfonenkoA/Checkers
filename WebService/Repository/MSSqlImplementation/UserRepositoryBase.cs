@@ -36,7 +36,7 @@ public class UserRepositoryBase : RepositoryBase
 
     protected IEnumerable<CheckersSkin> GetUserCheckerSkins(int id)
     {
-        using var command = CreateProcedure(SelectAllUserAnimationProc);
+        using var command = CreateProcedure(SelectAllUserCheckersSkinProc);
         command.Parameters.Add(IdParameter(id));
         using var reader = command.ExecuteReader();
         return reader.GetAllCheckersSkin();
