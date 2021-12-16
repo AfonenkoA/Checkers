@@ -1,5 +1,4 @@
-﻿using Common.Entity;
-using WinFormsClient.Model;
+﻿using WinFormsClient.Model;
 using WinFormsClient.Presentation.Common;
 
 namespace WinFormsClient.Presentation.Views;

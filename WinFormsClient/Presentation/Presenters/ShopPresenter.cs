@@ -1,5 +1,4 @@
-﻿using System.Xml.Serialization;
-using Api.Interface;
+﻿using Api.Interface;
 using Common.Entity;
 using WinFormsClient.Model;
 using WinFormsClient.Presentation.Common;
