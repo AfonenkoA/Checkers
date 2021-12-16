@@ -1,6 +1,4 @@
-﻿using Common.Entity;
-
-namespace Site.Data.Models.User;
+﻿namespace Site.Data.Models.User;
 
 public sealed class Self : UserInfo
 {

@@ -3,6 +3,8 @@ using Api.WebImplementation;
 using WinFormsClient.Presentation.Common;
 using WinFormsClient.Presentation.Presenters;
 using WinFormsClient.Presentation.Views;
+using WinFormsClient.Repository.Implementation;
+using WinFormsClient.Repository.Interface;
 
 namespace WinFormsClient;
 
@@ -12,7 +14,7 @@ internal static class Program
     ///  The main entry point for the application.
     /// </summary>
         
-    public static readonly ApplicationContext Context = new ApplicationContext();
+    public static readonly ApplicationContext Context = new();
 
     private static void Main()
     {
@@ -28,8 +30,10 @@ internal static class Program
             .RegisterService<IAsyncUserApi, UserWebApi>()
             .RegisterService<IAsyncItemApi, ItemWebApi>()
             .RegisterService<IAsyncResourceService,AsyncResourceWebApi>()
-            .RegisterService<ResourceManager,ResourceManager>()
-            .RegisterInstance(new ApplicationContext());
+            .RegisterService<IResourceRepository,ResourceManager>()
+            .RegisterService<IItemRepository,ItemRepository>()
+            .RegisterService<IUserRepository,UserRepository>()
+            .RegisterInstance(Context);
 
         controller.Run<LoginPresenter>();
     }

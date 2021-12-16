@@ -1,8 +1,4 @@
-﻿using Api.Interface;
-using Api.WebImplementation;
-using Site.Repository;
-
-namespace Site;
+﻿namespace Site;
 
 public class Startup
 {

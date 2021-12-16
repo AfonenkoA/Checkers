@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Site.Data.Models;
 using Site.Data.Models.User;
-using Site.Repository;
 using Site.Repository.Interface;
 
 namespace Site.Controllers;

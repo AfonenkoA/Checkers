@@ -1,5 +1,4 @@
-﻿using Site.Data.Models;
-using Site.Data.Models.Article;
+﻿using Site.Data.Models.Article;
 
 namespace Site.Repository.Interface;
 

@@ -1,5 +1,4 @@
 ﻿using Common.Entity;
-using static System.String;
 
 namespace Site.Data.Models.Article;
 

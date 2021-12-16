@@ -3,22 +3,22 @@ using Common.Entity;
 using WinFormsClient.Model;
 using WinFormsClient.Presentation.Common;
 using WinFormsClient.Presentation.Views;
+using WinFormsClient.Repository.Implementation;
+using WinFormsClient.Repository.Interface;
 
 namespace WinFormsClient.Presentation.Presenters;
 
 public class ShopPresenter : BasePresenter<IShopView, Credential>
 {
-    private readonly IAsyncUserApi _userApi;
     private Credential? _credential;
-    private readonly ResourceManager _manager;
+    private readonly IUserRepository _repository;
+
     public ShopPresenter(IApplicationController controller,
         IShopView view,
-        IAsyncUserApi userApi,
-        ResourceManager manager) :
+        IUserRepository repository) :
         base(controller, view)
     {
-        _userApi = userApi;
-        this._manager = manager;
+        _repository = repository;
         View.OnBackToMenu += BackToMenu;
         View.ReloadShop += ReloadShop;
     }
@@ -30,32 +30,26 @@ public class ShopPresenter : BasePresenter<IShopView, Credential>
     }
     private async Task UpdateShopInfo()
     {
-        var (_, user) = await _userApi.TryGetSelf(_credential ?? new Credential());
-        var checkers = user.AvailableCheckersSkins.ToList();
-        var animations = user.AvailableAnimations.ToList();
-        var lootBoxes = user.AvailableLootBox.ToList();
-
-        await _manager.PreLoad(checkers);
-        await _manager.PreLoad(animations);
-        await _manager.PreLoad(lootBoxes);
+        if (_credential == null) throw new ArgumentException("Null credential");
+        var (_, user) = await _repository.GetSelf(_credential);
 
         View.SetShopInfo(_credential,
-            animations.Select(a => new VisualAnimation(a, _manager.Get(a))),
-                checkers.Select(c => new VisualCheckersSkin(c, _manager.Get(c))),
-                lootBoxes.Select(l => new VisualLootBox(l, _manager.Get(l))));
+            user.AvailableAnimations,
+                user.AvailableCheckersSkins,
+                user.AvailableLootBoxes);
 
     }
 
     private void BackToMenu()
     {
-        if (_credential == null) throw new ArgumentException("Empty credential");
+        if (_credential == null) throw new ArgumentException("Null credential");
         Controller.Run<MainMenuPresenter, Credential>(_credential);
         View.Close();
     }
 
     private void ReloadShop()
     {
-        Controller.Run<ShopPresenter,Credential>(_credential);
+        Controller.Run<ShopPresenter, Credential>(_credential);
         View.Close();
     }
 }

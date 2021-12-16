@@ -96,6 +96,8 @@ public sealed class User : PublicUserData
         LastActivity = data.LastActivity;
         Type = data.Type;
         Picture = data.Picture;
+        SelectedCheckers = data.SelectedCheckers;
+        SelectedAnimation = data.SelectedAnimation;
     }
 
     [JsonConstructor]

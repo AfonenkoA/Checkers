@@ -1,8 +1,5 @@
-﻿using Api.Interface;
-using Api.WebImplementation;
-using Common.Entity;
+﻿using Common.Entity;
 using Microsoft.AspNetCore.Mvc;
-using Site.Data.Models;
 
 
 namespace Site.Controllers;

@@ -1,6 +1,5 @@
 ﻿using Api.Interface;
 using Common.Entity;
-using Site.Data.Models;
 using Site.Data.Models.Article;
 using Site.Repository.Interface;
 

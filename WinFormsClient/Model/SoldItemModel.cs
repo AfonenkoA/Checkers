@@ -27,3 +27,10 @@ public sealed class VisualLootBox : VisualSoldItem
     public VisualLootBox(SoldItem item, Image image) : base(item, image)
     { }
 }
+
+public sealed class VisualAchievement : VisualDetailedItem
+{
+    public VisualAchievement(DetailedItem item, Image image) : base(item, image)
+    {
+    }
+}
