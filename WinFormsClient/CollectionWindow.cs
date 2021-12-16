@@ -25,10 +25,10 @@ public partial class CollectionWindow : Form, ICollectionView
         IEnumerable<VisualCheckersSkin> skins)
     {
         foreach (var animation in animations)
-            Aniamtions.Controls.Add(new ItemShowPanel(animation));
+            Aniamtions.Controls.Add(new SelectedItemShowPanel(animation));
         
         foreach (var skin in skins)
-            CheckersSkins.Controls.Add(new ItemShowPanel(skin));
+            CheckersSkins.Controls.Add(new SelectedItemShowPanel(skin));
     }
 
     public event Action BackToMenu;

@@ -28,11 +28,11 @@ public partial class ShopWindow : Form, IShopView
         IEnumerable<VisualLootBox> lootBoxes)
     {
         foreach (var animation in animations)
-            Animations.Controls.Add(new ItemShowPanel(animation));
+            Animations.Controls.Add(new SoldItemShowPanel(animation));
         foreach (var lootBox in lootBoxes)
-            LootBoxes.Controls.Add(new ItemShowPanel(lootBox));
+            LootBoxes.Controls.Add(new SoldItemShowPanel(lootBox));
         foreach (var skin in checkersSkin)
-            CheckersSkins.Controls.Add(new ItemShowPanel(skin));
+            CheckersSkins.Controls.Add(new SoldItemShowPanel(skin));
     }
 
 

@@ -17,7 +17,7 @@ public sealed class ResourceManager
     {
         var (success, bytes) = await _resourceService.TryGetFile(item.Resource.Id);
         if (!success) throw new ArgumentException("Resource not found");
-        _images.Add(item.Resource.Id, Image.FromStream(new MemoryStream(bytes)));
+        _images[item.Resource.Id]= Image.FromStream(new MemoryStream(bytes));
     }
 
     public Image Get(Item item) => _images[item.Resource.Id];

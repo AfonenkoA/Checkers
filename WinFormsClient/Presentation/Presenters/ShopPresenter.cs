@@ -47,7 +47,7 @@ public class ShopPresenter : BasePresenter<IShopView, Credential>
 
     private void BackToMenu()
     {
-        if (_credential != null) throw new ArgumentException("Empty credential");
+        if (_credential == null) throw new ArgumentException("Empty credential");
         Controller.Run<MainMenuPresenter, Credential>(_credential);
         View.Close();
     }

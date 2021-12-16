@@ -38,6 +38,7 @@ public class MainMenuPresenter : BasePresenter<IMainMenuView,Credential>
     private void ShowCollection()
     {
         Controller.Run<CollectionPresenter,Credential>(_credential);
+        View.Close();
     }
 
     private void LogOut()

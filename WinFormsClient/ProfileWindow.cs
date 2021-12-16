@@ -17,10 +17,10 @@ public partial class ProfileWindow : Form, IProfileView
         base.Show();
     }
 
-    public void SetUserInfo(string username, string password,string lastactivity)
+    public void SetUserInfo(string username, string socialCredit,string lastActivity)
     {
         NickLabel.Text = username;
-        RatingLabel.Text = password;
-        lastActivityLabel.Text= lastactivity;
+        RatingLabel.Text = socialCredit;
+        lastActivityLabel.Text= lastActivity;
     }
 }

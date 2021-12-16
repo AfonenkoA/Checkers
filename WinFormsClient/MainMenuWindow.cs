@@ -12,6 +12,7 @@ public partial class MainMenuWindow : Form, IMainMenuView
         InitializeComponent();
         ProfileButton.Click += (sender, args) => Invoke(ShowProfile);
         ShopButton.Click += (sender,args)=>Invoke(ShowShop);
+        CollectionButton.Click +=(sender, args) =>Invoke(ShowCollection);
        // LogOutButton.Click += (sender, args) => Invoke(LogOut);
     }
 
