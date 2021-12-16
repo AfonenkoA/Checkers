@@ -12,4 +12,9 @@ public interface IUserRepository
     public Task<(bool, UserInfo)> GetUser(int id);
     public Task<(bool, IDictionary<long, UserInfo>)> GetTop();
     public Task<(bool, IDictionary<long, UserInfo>)> GetTop(Credential credential);
+
+    Task<bool> UpdateUserNick(Credential credential, string nick);
+    Task<bool> UpdateUserLogin(Credential credential, string login);
+    Task<bool> UpdateUserPassword(Credential credential, string password);
+    Task<bool> UpdateUserEmail(Credential credential, string email);
 }

@@ -52,4 +52,33 @@ public sealed class UserController : Controller
         var model = new Identified<IDictionary<long, UserInfo>>(credential,data);
         return View(model);
     }
+
+    public async Task<ViewResult> UpdateNick(Credential c, string nick)
+    {
+        var success = await _repository.UpdateUserNick(c, nick);
+        var model = new Identified<ModificationResult>(c,new ModificationResult("User", "PersonalArea", success));
+        return View("ModificationResult", model);
+    }
+
+    public async Task<ViewResult> UpdateLogin(Credential c, string newLogin)
+    {
+        var success = await _repository.UpdateUserLogin(c, newLogin);
+        var model = new Identified<ModificationResult>(Credential.Invalid, new ModificationResult("Home", "Index", success));
+        return View("ModificationResult", model);
+    }
+
+    public async Task<ViewResult> UpdatePassword(Credential c, string newPassword)
+    {
+        var success = await _repository.UpdateUserPassword(c, newPassword);
+        var model = new Identified<ModificationResult>(Credential.Invalid, new ModificationResult("Home", "Index", success));
+        return View("ModificationResult", model);
+    }
+
+    public async Task<ViewResult> UpdateEmail(Credential c, string email)
+    {
+        var success = await _repository.UpdateUserEmail(c, email);
+        var model = new Identified<ModificationResult>(c, new ModificationResult("User", "PersonalArea", success));
+        return View("ModificationResult", model);
+    }
+    
 }

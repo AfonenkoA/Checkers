@@ -31,8 +31,38 @@
         }, friend))
     }
 }
-<form>
-
+<h2>Управление</h2>
+<p>Изменить ник</p>
+<form asp-controller="User"
+      asp-action="UpdateNick">
+    <input type="hidden" name="login" value="@Model.Login"/>
+    <input type="hidden" name="password" value="@Model.Password"/>
+    <input type="text" name="nick" value="@Model.Value.Nick"/>
+    <input type="submit" value="Отправить"/>
+</form>
+<p>Изменить логин</p>
+<form asp-controller="User"
+      asp-action="UpdateLogin">
+    <input type="hidden" name="login" value="@Model.Login"/>
+    <input type="hidden" name="password" value="@Model.Password"/>
+    <input type="text" name="newLogin"/>
+    <input type="submit" value="Отправить"/>
+</form>
+<p>Изменить пароль</p>
+<form asp-controller="User"
+      asp-action="UpdatePassword">
+    <input type="hidden" name="login" value="@Model.Login"/>
+    <input type="hidden" name="password" value="@Model.Password"/>
+    <input type="text" name="newPassword"/>
+    <input type="submit" value="Отправить"/>
+</form>
+<p>Изменить email</p>
+<form asp-controller="User"
+      asp-action="UpdateEmail">
+    <input type="hidden" name="login" value="@Model.Login"/>
+    <input type="hidden" name="password" value="@Model.Password"/>
+    <input type="text" name="email"/>
+    <input type="submit" value="Отправить"/>
 </form>
 </body>
 </html>

@@ -44,11 +44,11 @@ public sealed class UserRepository : IUserRepository
         var friends = new List<Friend>();
         foreach (var friend in user.Friends)
         {
-            var (s, f) =  await _userApi.TryGetFriend(credential,friend.Id);
-            if (!s) return (s,new Self(ConvertToUserInfo(user)));
-            friends.Add(new Friend(f,GetPictureUrl(f)));   
+            var (s, f) = await _userApi.TryGetFriend(credential, friend.Id);
+            if (!s) return (s, new Self(ConvertToUserInfo(user)));
+            friends.Add(new Friend(f, GetPictureUrl(f)));
         }
-        return (success, new Self(ConvertToUserInfo(user)){Friends = friends});
+        return (success, new Self(ConvertToUserInfo(user)) { Friends = friends });
     }
 
     public async Task<(bool, IDictionary<long, UserInfo>)> GetTop()
@@ -56,8 +56,8 @@ public sealed class UserRepository : IUserRepository
         var (success, users) = await _statisticsApi.TryGetTopPlayers();
         var res = new Dictionary<long, UserInfo>();
         foreach (var (pos, user) in users)
-            res.Add(pos,ConvertToUserInfo(user));
-        return (success,res);
+            res.Add(pos, ConvertToUserInfo(user));
+        return (success, res);
     }
 
     public async Task<(bool, IDictionary<long, UserInfo>)> GetTop(Credential credential)
@@ -68,4 +68,16 @@ public sealed class UserRepository : IUserRepository
             res.Add(pos, ConvertToUserInfo(user));
         return (success, res);
     }
+
+    public Task<bool> UpdateUserNick(Credential credential, string nick) =>
+        _userApi.UpdateUserNick(credential, nick);
+
+    public Task<bool> UpdateUserLogin(Credential credential, string login) =>
+        _userApi.UpdateUserLogin(credential, login);
+
+    public Task<bool> UpdateUserPassword(Credential credential, string password) =>
+        _userApi.UpdateUserPassword(credential, password);
+
+    public Task<bool> UpdateUserEmail(Credential credential, string email) =>
+        _userApi.UpdateUserEmail(credential, email);
 }
