@@ -206,7 +206,7 @@ GO
 CREATE PROCEDURE {SelectUserCurrency} {IdVar} INT
 AS
 BEGIN
-    SELECT {Currency} FROM {Schema}.{UserTable} WHERE {Id}={UserId}
+    SELECT {Currency} FROM {Schema}.{UserTable} WHERE {Id}={IdVar}
 END";
 
     internal static readonly string Function = $@"

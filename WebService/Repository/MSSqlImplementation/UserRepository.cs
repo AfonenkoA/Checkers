@@ -153,7 +153,7 @@ public sealed class UserRepository : UserRepositoryBase, IUserRepository
             using var reader = command.ExecuteReader();
             user.Friends = reader.GetAllFriendship();
         }
-        using (var command = CreateProcedure(SelectUserCurrency))
+        using (var command = CreateProcedureReturn(SelectUserCurrency))
         {
             command.Parameters.Add(IdParameter(userId));
             command.ExecuteScalar();
