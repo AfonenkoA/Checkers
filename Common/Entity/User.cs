@@ -83,7 +83,7 @@ public sealed class FriendUserData : PublicUserData
 }
 
 
-public sealed class User : BasicUserData
+public sealed class User : PublicUserData
 {
 
     public new static readonly User Invalid = new(PublicUserData.Invalid);
@@ -100,8 +100,7 @@ public sealed class User : BasicUserData
 
     [JsonConstructor]
     public User() { }
-
-    public Picture Picture { get; set; }
+    
     public int Currency { get; set; }
     public IEnumerable<CheckersSkin> CheckerSkins { get; set; } = Empty<CheckersSkin>();
     public IEnumerable<Animation> Animations { get; set; } = Empty<Animation>();
