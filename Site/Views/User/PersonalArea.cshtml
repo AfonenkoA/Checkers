@@ -19,6 +19,11 @@
 @{
     foreach (var friend in Model.Value.Friends)
     {
+        <a asp-controller="Chat"
+           asp-action="Chat"
+           asp-route-id="@friend.ChatId"
+           asp-route-login="@Model?.Login"
+           asp-route-password="@Model?.Password">Чат</a>
         @await Html.PartialAsync("UserInfo", new Identified<Friend>(new Credential
         {
             Login = Model.Login,

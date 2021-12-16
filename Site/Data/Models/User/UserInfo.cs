@@ -17,4 +17,13 @@ public class UserInfo : PictureView
         Type = data.Type.ToString();
         SocialCredit = data.SocialCredit;
     }
+
+    public UserInfo(UserInfo info) : base(info.PictureUrl)
+    {
+        Id = info.Id;
+        Nick = info.Nick;
+        Type = info.Type;
+        LastActivity = info.LastActivity;
+        SocialCredit = info.SocialCredit;
+    }
 }

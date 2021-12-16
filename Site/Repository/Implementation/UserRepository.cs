@@ -18,9 +18,11 @@ public sealed class UserRepository : IUserRepository
         _statisticsApi = statisticsApi;
     }
 
-    private UserInfo ConvertToUserInfo(PublicUserData u) =>
-        new(u, _resourceService.GetFileUrl(u.Picture.Resource.Id));
+    private string GetPictureUrl(PublicUserData data) =>
+        _resourceService.GetFileUrl(data.Picture.Resource.Id);
 
+    private UserInfo ConvertToUserInfo(PublicUserData u) =>
+        new(u, GetPictureUrl(u));
 
     public async Task<(bool, UserInfo)> GetUser(int id)
     {
@@ -43,10 +45,10 @@ public sealed class UserRepository : IUserRepository
         foreach (var friend in user.Friends)
         {
             var (s, f) =  await _userApi.TryGetFriend(credential,friend.Id);
-            if (!s) return (s,new Self(user,""));
-            friends.Add(new Friend(f,""));   
+            if (!s) return (s,new Self(ConvertToUserInfo(user)));
+            friends.Add(new Friend(f,GetPictureUrl(f)));   
         }
-        return (success, new Self(user,""){Friends = friends});
+        return (success, new Self(ConvertToUserInfo(user)){Friends = friends});
     }
 
     public async Task<(bool, IDictionary<long, UserInfo>)> GetTop()
