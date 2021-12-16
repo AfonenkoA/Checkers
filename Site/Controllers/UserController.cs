@@ -1,36 +1,59 @@
-﻿using Api.Interface;
-using Api.WebImplementation;
-using Common.Entity;
+﻿using Common.Entity;
 using Microsoft.AspNetCore.Mvc;
 using Site.Data.Models;
+using Site.Data.Models.User;
+using Site.Repository;
+using Site.Repository.Interface;
 
 namespace Site.Controllers;
 
 public sealed class UserController : Controller
 {
 
-    private static readonly IAsyncUserApi UserApi = new UserWebApi();
-    private static readonly IAsyncResourceService ResourceApi = new AsyncResourceWebApi();
+    private readonly IUserRepository _repository;
 
-    public async Task<IActionResult> Profile([FromQuery] Credential c, [FromRoute] int id)
+    public UserController(IUserRepository repository)
     {
-        if (!c.IsValid) return View("Error");
-        var (success, user) = await UserApi.TryGetUser(id);
-        if (!success) return View("Error");
-        var picture = ResourceApi.GetFileUrl(user.Picture.Resource.Id);
-        var model = new PublicUserModel(c, user) { PictureUrl = picture };
+        _repository = repository;
+    }
+
+    public async Task<IActionResult> Profile(string login, string password, int id)
+    {
+        var c = new Credential { Login = login, Password = password };
+        var (success, user) = await _repository.GetUser(id);
+        var model = new Identified<UserInfo>(c, user);
+        return !success ? View("Error") : View(model);
+    }
+
+
+    public async Task<IActionResult> PersonalArea(Credential c)
+    {
+        if (!c.IsValid) return RedirectToAction("Login", "Authorization",
+            new { callerAction = "PersonalArea", callerController = "User" });
+        var (success, self) = await _repository.GetSelf(c);
+        var model = new Identified<Self>(c, self);
+        return success ? View(model) : View("Error");
+    }
+
+    public async Task<ViewResult> TopPlayers(Credential credential)
+    {
+        IDictionary<long, UserInfo> data;
+        bool success;
+        if (credential.IsValid)
+        {
+            (success, data) = await _repository.GetTop(credential);
+            if (!success) return View("Error");
+        }
+        else
+        {
+            (success, data) = await _repository.GetTop();
+            if (!success) return View("Error");
+        }
+
+        var players = new Dictionary<long, IIdentified<UserInfo>>();
+        foreach (var (pos,user) in data)
+            players.Add(pos,new Identified<UserInfo>(credential,user));
+        var model = new Identified<IDictionary<long, IIdentified<UserInfo>>>(credential, players);
         return View(model);
-    }
-
-    public async Task<IActionResult> List()
-    {
-        var (_, users) = await UserApi.TryGetUsersByNick("");
-        return View(users);
-    }
-
-    public async Task<IActionResult> PersonalArea([FromQuery] Credential c)
-    {
-        var (success, self) = await UserApi.TryGetSelf(c);
-        return !success ? View("Error") : View(new PublicUserModel(c,self));
     }
 }

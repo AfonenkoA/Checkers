@@ -11,4 +11,27 @@
     <ProjectReference Include="..\Common\Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\User\TopPlayers.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Forum\Index.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Forum\Post.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\News\Index.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\User\TopPlayers.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\News\Index.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Forum\Index.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Forum\Post.cshtml" />
+  </ItemGroup>
+
 </Project>

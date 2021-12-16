@@ -1,6 +1,5 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using Site.Data.Models;
+@model Caller
 @{
     Layout = null;
 }
@@ -13,6 +12,8 @@
 <form asp-action="Authorize" asp-controller="Authorization">
     <input type="text" name="login"/>
     <input type="text" name="password"/>
+    <input type="hidden" name="callerController" value="@Model?.Controller"/>
+    <input type="hidden" name="callerAction" value="@Model?.Action"/>
     <input type="submit" value="Отправить"/>
 </form>
 </body>

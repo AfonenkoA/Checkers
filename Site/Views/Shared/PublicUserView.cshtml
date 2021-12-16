@@ -1,6 +1,0 @@
-﻿@using Site.Data.Models
-@model PublicUserModel
-<img style="padding: 5px;" src="@Model.PictureUrl" width="140" height="140" alt="user">
-<p>Ник: <a href="/User/Get/@Model.Id@Model.Query">@Model.Nick</a></p>
-<p>Рейтинг: @Model.SocialCredit</p>
-<p>Дата регистрации: @Model.LastActivity</p>

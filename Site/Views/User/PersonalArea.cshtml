@@ -1,4 +1,5 @@
-﻿@model Site.Data.Models.PublicUserModel
+﻿@using Site.Data.Models;
+@model Identified<Site.Data.Models.User.Self>
 
 @{
     Layout = null;
@@ -11,8 +12,6 @@
     <title>title</title>
 </head>
 <body>
-<div>
-    @Model.Nick
-</div>
+@await Html.PartialAsync("UserInfo",Model)
 </body>
 </html>

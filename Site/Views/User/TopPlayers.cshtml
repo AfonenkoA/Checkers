@@ -1,0 +1,23 @@
+﻿@using Site.Data.Models;
+@using Site.Data.Models.User;
+@model Identified<IDictionary<long,IIdentified<UserInfo>>>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>title</title>
+</head>
+<body>
+@{
+    foreach (var (pos,user) in Model.Value)
+    {
+        <h2>@pos</h2>
+        @await Html.PartialAsync("UserInfo", user)
+    }
+}
+</body>
+</html>

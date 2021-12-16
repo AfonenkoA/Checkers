@@ -1,0 +1,25 @@
+﻿@using Site.Data.Models.Article;
+@using Site.Data.Models;
+@model IIdentified<ArticleView>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>title</title>
+</head>
+<body>
+    @await Html.PartialAsync("ArticlePreview",Model)
+<p>@Model?.Value.Created</p>
+<p>@Model?.Value.Content</p>
+<a asp-controller="Forum"
+   asp-action="Post"
+   asp-route-id="@Model?.Value.PostId"
+   asp-route-login="@Model?.Login"
+   asp-route-password="@Model?.Password">Обсуждение</a>
+</body>
+</html>

@@ -1,5 +1,9 @@
-﻿@using Site.Data.Models;
-@model CredentialModel
+﻿@using Common.Entity;
+@model Credential;
+
+@{
+    Layout = null;
+}
 
 <html>
 <head>
@@ -7,8 +11,21 @@
     <title>Nick</title>
 </head>
 <body>
-<a href="/Authorization/Login">Войти</a>
-<a href="/User/PersonalArea/@Model.Query">Профиль</a>
-
+<a asp-controller="Authorization"
+   asp-action="Login"
+   asp-route-callerController="Home"
+   asp-route-callerAction="Index">Войти</a>
+<a asp-controller="User"
+   asp-action="PersonalArea"
+   asp-route-login="@Model?.Login"
+   asp-route-password="@Model?.Password">Личный кабинет</a>
+<a asp-controller="User"
+   asp-action="TopPlayers"
+   asp-route-login="@Model?.Login"
+   asp-route-password="@Model?.Password">Лучшие игроки</a>
+<a asp-controller="News"
+   asp-action="Index"
+   asp-route-login="@Model?.Login"
+   asp-route-password="@Model?.Password">Новости</a>
 </body>
 </html>

@@ -9,9 +9,6 @@ namespace Site.Controllers;
 
 public sealed class HomeController : Controller
 {
-        
-    public IActionResult Index([FromQuery] Credential c)
-    {
-        return View(new CredentialModel(c));
-    }
+
+    public IActionResult Index(Credential c) => View(c);
 }

@@ -1,18 +1,17 @@
 ﻿@using Site.Data.Models
-@model PublicUserModel
-    
+@model IIdentified<Site.Data.Models.User.UserInfo>
+
 @{
     Layout = null;
 }
 
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Профиль игрока</title>
-        <meta charset="UTF-8">
-    </head>
-    <body>
-        <h1>Профиль игрока</h1>
-    @await Html.PartialAsync("PublicUserView", Model)
-    </body>
+<head>
+    <title>Профиль игрока</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+@await Html.PartialAsync("UserInfo",Model)
+</body>
 </html>

@@ -1,0 +1,21 @@
+﻿@using Site.Data.Models
+@using Site.Data.Models.Article
+@model Identified<IEnumerable<IIdentified<ArticlePreview>>>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>title</title>
+</head>
+<body>
+@{
+    foreach (var article in Model.Value)
+        @await Html.PartialAsync("ArticlePreview", article)
+}
+</body>
+</html>
