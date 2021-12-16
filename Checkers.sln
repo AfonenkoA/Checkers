@@ -48,7 +48,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameClient", "GameClient\GameClient.csproj", "{316E7719-5645-406A-83ED-66AF10871468}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Site", "Site\Site.csproj", "{E7CD284E-F835-47E5-8211-E771F6B46D14}"
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameClient", "GameClient\GameClient.csproj", "{316E7719-5645-406A-83ED-66AF10871468}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinFormsClient", "WinFormsClient\WinFormsClient.csproj", "{A887534D-ADFF-4935-B0AF-E38A371AD74E}"
 EndProject
