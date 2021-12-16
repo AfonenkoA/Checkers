@@ -1,5 +1,7 @@
-﻿@using Site.Data.Models;
-@model Identified<Site.Data.Models.User.Self>
+﻿@using Common.Entity
+@using Site.Data.Models;
+@using Site.Data.Models.User;
+@model Identified<Self>
 
 @{
     Layout = null;
@@ -13,5 +15,19 @@
 </head>
 <body>
 @await Html.PartialAsync("UserInfo",Model)
+<h2>Друзья</h2>
+@{
+    foreach (var friend in Model.Value.Friends)
+    {
+        @await Html.PartialAsync("UserInfo", new Identified<Friend>(new Credential
+        {
+            Login = Model.Login,
+            Password = Model.Password
+        }, friend))
+    }
+}
+<form>
+
+</form>
 </body>
 </html>

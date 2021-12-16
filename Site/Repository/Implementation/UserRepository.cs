@@ -19,10 +19,7 @@ public sealed class UserRepository : IUserRepository
     }
 
     private UserInfo ConvertToUserInfo(PublicUserData u) =>
-        new(u)
-        {
-            PictureUrl = _resourceService.GetFileUrl(u.Picture.Resource.Id)
-        };
+        new(u, _resourceService.GetFileUrl(u.Picture.Resource.Id));
 
 
     public async Task<(bool, UserInfo)> GetUser(int id)
@@ -42,7 +39,14 @@ public sealed class UserRepository : IUserRepository
     public async Task<(bool, Self)> GetSelf(Credential credential)
     {
         var (success, user) = await _userApi.TryGetSelf(credential);
-        return (success, new Self(user));
+        var friends = new List<Friend>();
+        foreach (var friend in user.Friends)
+        {
+            var (s, f) =  await _userApi.TryGetFriend(credential,friend.Id);
+            if (!s) return (s,new Self(user,""));
+            friends.Add(new Friend(f,""));   
+        }
+        return (success, new Self(user,""){Friends = friends});
     }
 
     public async Task<(bool, IDictionary<long, UserInfo>)> GetTop()

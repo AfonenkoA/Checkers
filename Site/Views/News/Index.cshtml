@@ -1,6 +1,6 @@
 ﻿@using Site.Data.Models
 @using Site.Data.Models.Article
-@model Identified<IEnumerable<IIdentified<ArticlePreview>>>
+@model Identified<IEnumerable<ArticlePreview>>
 
 @{
     Layout = null;
@@ -13,9 +13,10 @@
     <title>title</title>
 </head>
 <body>
-@{
-    foreach (var article in Model.Value)
-        @await Html.PartialAsync("ArticlePreview", article)
-}
+    @{
+        foreach (var article in Model.Value)
+            @await Html.PartialAsync("ArticlePreview", 
+                new Identified<ArticlePreview>(Model.Credential,article))
+    }
 </body>
 </html>

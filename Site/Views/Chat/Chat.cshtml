@@ -1,0 +1,16 @@
+﻿@using Site.Data.Models;
+@model IIdentified<Chat>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>title</title>
+</head>
+<body>
+@await Html.PartialAsync("ChatPartial",Model)
+</body>
+</html>
+

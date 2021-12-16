@@ -1,7 +1,6 @@
 using Api.Interface;
 using Api.WebImplementation;
 using Microsoft.AspNetCore;
-using Site.Repository;
 using Site.Repository.Implementation;
 using Site.Repository.Interface;
 
@@ -22,7 +21,11 @@ internal static class Program
             .AddSingleton<IAsyncStatisticsApi,StatisticsWebApi>()
             .AddSingleton<IAsyncNewsApi,NewsWebApi>()
             .AddSingleton<IUserRepository, UserRepository>()
-            .AddSingleton<INewsRepository,NewsRepository>();
+            .AddSingleton<INewsRepository,NewsRepository>()
+            .AddSingleton<IAsyncChatApi,ChatWebApi>()
+            .AddSingleton<IChatRepository,ChatRepository>()
+            .AddSingleton<IAsyncForumApi,ForumWebApi>()
+            .AddSingleton<IForumRepository,ForumRepository>();
 
         var app = builder.Build();
 

@@ -1,15 +1,20 @@
-﻿namespace Site.Data.Models.Post;
+﻿using Site.Data.Models.User;
+
+namespace Site.Data.Models.Post;
 
 public sealed class PostView : PostPreview
 {
     public string Content { get; }
     public DateTime Created { get; }
-    public int PostId { get;}
+    public UserInfo Author { get; }
+    public Chat Chat { get; }
 
-    public PostView(Common.Entity.Article article) : base(article)
+    public PostView(Common.Entity.Post post, UserInfo author, Chat chat,string pictureUrl) : base(post, pictureUrl)
     {
-        Content = article.Content;
-        Created = article.Created;
-        PostId = article.PostId;
+        Content = post.Content;
+        Created = post.Created;
+        Chat = chat;
+        Author = author;
     }
+
 }

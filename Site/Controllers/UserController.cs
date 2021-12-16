@@ -50,10 +50,7 @@ public sealed class UserController : Controller
             if (!success) return View("Error");
         }
 
-        var players = new Dictionary<long, IIdentified<UserInfo>>();
-        foreach (var (pos,user) in data)
-            players.Add(pos,new Identified<UserInfo>(credential,user));
-        var model = new Identified<IDictionary<long, IIdentified<UserInfo>>>(credential, players);
+        var model = new Identified<IDictionary<long, UserInfo>>(credential,data);
         return View(model);
     }
 }

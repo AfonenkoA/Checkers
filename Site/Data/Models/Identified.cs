@@ -6,6 +6,7 @@ public interface IIdentified<out T>
 {
     public string Login { get; }
     public string Password { get; }
+    public Credential Credential { get; }
     public T Value { get; }
 }
 
@@ -16,9 +17,11 @@ public sealed class Identified<T> : IIdentified<T>
         Login = credential.Login;
         Password = credential.Password;
         Value = value;
+        Credential = new Credential {Login = Login, Password = Password};
     }
     
     public string Login { get; }
     public string Password { get; }
+    public Credential Credential { get; }
     public T Value { get; }
 }

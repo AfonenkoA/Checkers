@@ -1,4 +1,6 @@
-﻿@model dynamic
+﻿@using Site.Data.Models
+@using Site.Data.Models.Post
+@model IIdentified<IEnumerable<PostPreview>>
 
 @{
     Layout = null;
@@ -11,8 +13,10 @@
     <title>title</title>
 </head>
 <body>
-<div>
-      
-</div>
+@{
+    foreach (var post in Model.Value)
+        @await Html.PartialAsync("PostPreview", 
+            new Identified<PostPreview>(Model.Credential,post))
+}
 </body>
 </html>

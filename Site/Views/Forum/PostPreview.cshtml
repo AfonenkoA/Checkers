@@ -1,0 +1,9 @@
+﻿@using Site.Data.Models;
+@using Site.Data.Models.Post;
+@model IIdentified<PostPreview>
+<img width="100" height="100" src="@Model?.Value.PictureUrl"/>
+<a asp-controller="Forum"
+   asp-action="Post"
+   asp-route-id="@Model?.Value.Id"
+   asp-route-login="@Model?.Login"
+   asp-route-password="@Model?.Password">@Model?.Value.Title</a>

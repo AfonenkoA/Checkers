@@ -16,8 +16,7 @@ public sealed class NewsController : Controller
     public async Task<IActionResult> Index(Credential c)
     {
         var (success, data) = await _repository.GetNews();
-        var news = data.Select(article => new Identified<ArticlePreview>(c, article)).Cast<IIdentified<ArticlePreview>>().ToList();
-        var model = new Identified<IEnumerable<IIdentified<ArticlePreview>>>(c, news);
+        var model = new Identified<IEnumerable<ArticlePreview>>(c, data);
         return success ? View(model) : View("Error");
     }
 

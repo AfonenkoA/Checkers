@@ -2,9 +2,10 @@
 
 namespace Site.Data.Models.User;
 
-public class Self : UserInfo
+public sealed class Self : UserInfo
 {
-    public Self( BasicUserData data) : base( data)
+    public IEnumerable<Friend> Friends { get; init; } = Enumerable.Empty<Friend>();
+    public Self(BasicUserData data, string pictureUrl) : base(data, pictureUrl)
     {
     }
 }

@@ -1,11 +1,13 @@
 ﻿using Common.Entity;
-using static System.String;
 
 namespace Site.Data.Models.User;
 
-public class Friend : UserInfo
+public sealed class Friend : UserInfo
 {
-    public string ChatUrl { get; init; } = Empty;
-    public Friend( BasicUserData data) : base( data)
-    { }
+    public int ChatId { get; }
+
+    public Friend(FriendUserData data,string pictureUrl) : base(data, pictureUrl)
+    {
+        ChatId = data.ChatId;
+    }
 }

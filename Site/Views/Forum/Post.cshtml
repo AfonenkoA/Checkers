@@ -1,4 +1,7 @@
-﻿@model dynamic
+﻿@using Site.Data.Models.Post;
+@using Site.Data.Models;
+@using Site.Data.Models.User
+@model IIdentified<PostView>
 
 @{
     Layout = null;
@@ -11,8 +14,12 @@
     <title>title</title>
 </head>
 <body>
-<div>
-      
-</div>
+@await Html.PartialAsync("~/Views/User/UserInfo.cshtml",
+    new Identified<UserInfo>(Model.Credential,Model.Value.Author))
+@await Html.PartialAsync("PostPreview", Model)
+<p>@Model?.Value.Created</p>
+<p>@Model?.Value.Content</p>
+@await Html.PartialAsync("~/Views/Chat/ChatPartial.cshtml", 
+    new Identified<Chat>(Model.Credential,Model.Value.Chat))
 </body>
 </html>

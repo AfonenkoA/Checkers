@@ -3,14 +3,13 @@ using static System.String;
 
 namespace Site.Data.Models.Article;
 
-public class ArticlePreview
+public class ArticlePreview : PictureView
 {
     public int Id { get;  }
     public string Title { get;  }
     public string Abstract { get; }
-    public string PictureUrl { get; init; } = Empty;
 
-    public ArticlePreview(ArticleInfo info)
+    public ArticlePreview(ArticleInfo info,string pictureUrl) : base(pictureUrl)
     {
         Id = info.Id;
         Title = info.Title;

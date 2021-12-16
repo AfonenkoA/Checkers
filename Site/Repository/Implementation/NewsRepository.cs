@@ -18,14 +18,10 @@ public class NewsRepository : INewsRepository
     }
 
     private ArticlePreview ConvertToPreview(ArticleInfo info) =>
-        new(info)
-            {PictureUrl = _resourceService.GetFileUrl(info.PictureId)};
+        new(info, _resourceService.GetFileUrl(info.PictureId));
 
     private ArticleView ConvertToView(Article info) =>
-        new(info)
-        {
-            PictureUrl = _resourceService.GetFileUrl(info.PictureId)
-        };
+        new(info, _resourceService.GetFileUrl(info.PictureId));
 
     public async Task<(bool, IEnumerable<ArticlePreview>)> GetNews()
     {
