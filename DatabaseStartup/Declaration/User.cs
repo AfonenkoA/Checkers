@@ -201,6 +201,14 @@ BEGIN
 END";
 
 
+    private const string SelectCurrency = $@"
+GO
+CREATE PROCEDURE {SelectUserCurrency} {IdVar} INT
+AS
+BEGIN
+    SELECT {Currency} FROM {Schema}.{UserTable} WHERE {Id}={UserId}
+END";
+
     internal static readonly string Function = $@"
 --User
 {UpdateActivity}
@@ -218,5 +226,6 @@ END";
 {UpdatePicture}
 {SelectTop}
 {SelectTopAuth}
-{SelectByNick}";
+{SelectByNick}
+{SelectCurrency}";
 }

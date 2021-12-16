@@ -71,6 +71,7 @@ public sealed class FriendUserData : PublicUserData
         Achievements = data.Achievements;
         SelectedAnimation = data.SelectedAnimation;
         SelectedCheckers = data.SelectedCheckers;
+        Picture = data.Picture;
     }
     [JsonConstructor]
     public FriendUserData() { }
@@ -94,11 +95,14 @@ public sealed class User : BasicUserData
         SocialCredit = data.SocialCredit;
         LastActivity = data.LastActivity;
         Type = data.Type;
+        Picture = data.Picture;
     }
 
     [JsonConstructor]
     public User() { }
 
+    public Picture Picture { get; set; }
+    public int Currency { get; set; }
     public IEnumerable<CheckersSkin> CheckerSkins { get; set; } = Empty<CheckersSkin>();
     public IEnumerable<Animation> Animations { get; set; } = Empty<Animation>();
     public IEnumerable<Friendship> Friends { get; set; } = Empty<Friendship>();
