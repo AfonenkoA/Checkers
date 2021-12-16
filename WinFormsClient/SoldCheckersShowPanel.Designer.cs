@@ -1,6 +1,6 @@
 ﻿namespace WinFormsClient
 {
-    partial class SoldItemShowPanel
+    partial class SoldCheckersShowPanel
     {
         /// <summary> 
         /// Обязательная переменная конструктора.
@@ -42,7 +42,7 @@
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(111, 100);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 1;
+            this.pictureBox1.TabIndex = 2;
             this.pictureBox1.TabStop = false;
             // 
             // TitleLabel
@@ -51,7 +51,7 @@
             this.TitleLabel.Location = new System.Drawing.Point(117, 11);
             this.TitleLabel.Name = "TitleLabel";
             this.TitleLabel.Size = new System.Drawing.Size(29, 15);
-            this.TitleLabel.TabIndex = 2;
+            this.TitleLabel.TabIndex = 3;
             this.TitleLabel.Text = "Title";
             // 
             // DescriptionLabel
@@ -61,29 +61,30 @@
             this.DescriptionLabel.Location = new System.Drawing.Point(117, 26);
             this.DescriptionLabel.Name = "DescriptionLabel";
             this.DescriptionLabel.Size = new System.Drawing.Size(67, 15);
-            this.DescriptionLabel.TabIndex = 3;
+            this.DescriptionLabel.TabIndex = 4;
             this.DescriptionLabel.Text = "Description";
             this.DescriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // BuyItemButton
             // 
-            this.BuyItemButton.Location = new System.Drawing.Point(161, 76);
+            this.BuyItemButton.Location = new System.Drawing.Point(154, 74);
             this.BuyItemButton.Name = "BuyItemButton";
             this.BuyItemButton.Size = new System.Drawing.Size(75, 23);
-            this.BuyItemButton.TabIndex = 4;
+            this.BuyItemButton.TabIndex = 5;
             this.BuyItemButton.Text = "Buy";
             this.BuyItemButton.UseVisualStyleBackColor = true;
+            this.BuyItemButton.Click += new System.EventHandler(this.BuyItemButton_Click);
             // 
             // PriceLabel
             // 
             this.PriceLabel.AutoSize = true;
-            this.PriceLabel.Location = new System.Drawing.Point(198, 58);
+            this.PriceLabel.Location = new System.Drawing.Point(196, 56);
             this.PriceLabel.Name = "PriceLabel";
             this.PriceLabel.Size = new System.Drawing.Size(33, 15);
-            this.PriceLabel.TabIndex = 5;
+            this.PriceLabel.TabIndex = 6;
             this.PriceLabel.Text = "Price";
             // 
-            // SoldItemShowPanel
+            // SoldCheckersShowPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -92,7 +93,7 @@
             this.Controls.Add(this.DescriptionLabel);
             this.Controls.Add(this.TitleLabel);
             this.Controls.Add(this.pictureBox1);
-            this.Name = "SoldItemShowPanel";
+            this.Name = "SoldCheckersShowPanel";
             this.Size = new System.Drawing.Size(242, 100);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);

@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.ReturnButton = new System.Windows.Forms.Button();
             this.avatarPictureBox = new System.Windows.Forms.PictureBox();
             this.NickLabel = new System.Windows.Forms.Label();
             this.RatingLabel = new System.Windows.Forms.Label();
@@ -39,17 +38,6 @@
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.avatarPictureBox)).BeginInit();
             this.SuspendLayout();
-            // 
-            // ReturnButton
-            // 
-            this.ReturnButton.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.ReturnButton.Location = new System.Drawing.Point(698, 12);
-            this.ReturnButton.Name = "ReturnButton";
-            this.ReturnButton.Size = new System.Drawing.Size(90, 37);
-            this.ReturnButton.TabIndex = 3;
-            this.ReturnButton.Text = "Return";
-            this.ReturnButton.UseVisualStyleBackColor = true;
-            
             // 
             // avatarPictureBox
             // 
@@ -138,10 +126,8 @@
             this.Controls.Add(this.RatingLabel);
             this.Controls.Add(this.NickLabel);
             this.Controls.Add(this.avatarPictureBox);
-            this.Controls.Add(this.ReturnButton);
             this.Name = "ProfileWindow";
             this.Text = "ProfileWindow";
-        
             ((System.ComponentModel.ISupportInitialize)(this.avatarPictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -149,8 +135,6 @@
         }
 
         #endregion
-
-        private Button ReturnButton;
         private PictureBox avatarPictureBox;
         private Label NickLabel;
         private Label RatingLabel;

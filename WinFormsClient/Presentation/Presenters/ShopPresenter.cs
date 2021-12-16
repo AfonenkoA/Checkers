@@ -1,4 +1,5 @@
-﻿using Api.Interface;
+﻿using System.Xml.Serialization;
+using Api.Interface;
 using Common.Entity;
 using WinFormsClient.Model;
 using WinFormsClient.Presentation.Common;
@@ -20,6 +21,7 @@ public class ShopPresenter : BasePresenter<IShopView, Credential>
         _userApi = userApi;
         this._manager = manager;
         View.OnBackToMenu += BackToMenu;
+        View.ReloadShop += ReloadShop;
     }
     public override void Run(Credential argument)
     {
@@ -38,7 +40,7 @@ public class ShopPresenter : BasePresenter<IShopView, Credential>
         await _manager.PreLoad(animations);
         await _manager.PreLoad(lootBoxes);
 
-        View.SetShopInfo(
+        View.SetShopInfo(_credential,
             animations.Select(a => new VisualAnimation(a, _manager.Get(a))),
                 checkers.Select(c => new VisualCheckersSkin(c, _manager.Get(c))),
                 lootBoxes.Select(l => new VisualLootBox(l, _manager.Get(l))));
@@ -49,6 +51,12 @@ public class ShopPresenter : BasePresenter<IShopView, Credential>
     {
         if (_credential == null) throw new ArgumentException("Empty credential");
         Controller.Run<MainMenuPresenter, Credential>(_credential);
+        View.Close();
+    }
+
+    private void ReloadShop()
+    {
+        Controller.Run<ShopPresenter,Credential>(_credential);
         View.Close();
     }
 }
