@@ -7,6 +7,7 @@ public interface ICredential
 {
     public string Login { get; }
     public string Password { get; }
+    public bool IsValid { get; }
 }
 
 public class Credential : ICredential

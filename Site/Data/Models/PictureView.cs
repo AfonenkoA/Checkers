@@ -1,7 +1,10 @@
-﻿namespace Site.Data.Models;
+﻿using static Common.Entity.EntityValues;
 
-public class PictureView : ResourceView
+namespace Site.Data.Models;
+
+public sealed class PictureView : ResourceView
 {
+    public static readonly PictureView Invalid = new PictureView(ResourceView.Invalid,InvalidInt);
     public PictureView(ResourceView resource, int id) : base(resource)
     {
         Id = id;

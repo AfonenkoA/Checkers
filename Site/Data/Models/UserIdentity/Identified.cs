@@ -1,26 +1,15 @@
-﻿using Common.Entity;
+﻿namespace Site.Data.Models.UserIdentity;
 
-namespace Site.Data.Models.UserIdentity;
-
-public sealed class Identified<T> : IIdentified<T>
+public sealed class Identified<T> : Identity,  IIdentified<T>
 {
-    public Identified(ICredential credential, T value, UserType type)
+    public Identified(IIdentity identity, T value)
     {
-        Login = credential.Login;
-        Password = credential.Password;
+        Login = identity.Login;
+        Password = identity.Password;
         Value = value;
-        Type = type;
+        Type = identity.Type;
+        UserId = identity.UserId;
     }
 
-    public Identified(ICredential i, T value)
-    {
-        Value = value;
-        Login = i.Login;
-        Password = i.Password;
-    }
-
-    public string Login { get; }
-    public string Password { get; }
-    public UserType Type { get; }
     public T Value { get; }
 }

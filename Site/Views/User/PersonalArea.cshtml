@@ -23,6 +23,7 @@
            asp-route-id="@friend.ChatId"
            asp-route-login="@Model?.Login"
            asp-route-type="@Model?.Type"
+           asp-route-userId="@Model?.UserId"
            asp-route-password="@Model?.Password">Чат</a>
         @await Html.PartialAsync("UserInfo", new Identified<Friend>(Model, friend))
     }

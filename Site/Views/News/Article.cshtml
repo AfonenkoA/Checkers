@@ -1,5 +1,5 @@
 ﻿@using Site.Data.Models.Article;
-@model Site.Data.Models.UserIdentity.IIdentified<ArticleView>
+@model Site.Data.Models.UserIdentity.IIdentified<VisualArticle>
 
 @{
     Layout = null;
@@ -20,6 +20,7 @@
    asp-route-id="@Model?.Value.PostId"
    asp-route-login="@Model?.Login"
    asp-route-type="@Model?.Type"
+   asp-route-userId="@Model?.UserId"
    asp-route-password="@Model?.Password">Обсуждение</a>
 </body>
 </html>

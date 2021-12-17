@@ -4,6 +4,6 @@ namespace Site.Repository.Interface;
 
 public interface INewsRepository
 {
-    public Task<(bool, IEnumerable<ArticlePreview>)> GetNews();
-    public Task<(bool,ArticleView)> GetArticle(int id);
+    public Task<(bool, IEnumerable<Preview>)> GetNews();
+    public Task<(bool,VisualArticle)> GetArticle(int id);
 }

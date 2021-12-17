@@ -16,19 +16,19 @@ public sealed class NewsRepository : INewsRepository
         _resource = resource;
     }
 
-    private ArticlePreview ConvertToPreview(ArticleInfo info) =>
+    private Preview ConvertToPreview(ArticleInfo info) =>
         new(info, _resource.GetResource(info.PictureId));
 
-    private ArticleView ConvertToView(Article info) =>
+    private VisualArticle ConvertToView(Article info) =>
         new(info, _resource.GetResource(info.PictureId));
 
-    public async Task<(bool, IEnumerable<ArticlePreview>)> GetNews()
+    public async Task<(bool, IEnumerable<Preview>)> GetNews()
     {
         var (success, news) = await _newsApi.TryGetNews();
         return (success, news.Select(ConvertToPreview));
     }
 
-    public async Task<(bool, ArticleView)> GetArticle(int id)
+    public async Task<(bool, VisualArticle)> GetArticle(int id)
     {
         var (success, article) = await _newsApi.TryGetArticle(id);
         return (success, ConvertToView(article));

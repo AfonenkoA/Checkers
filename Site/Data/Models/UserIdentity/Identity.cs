@@ -1,35 +1,30 @@
 ﻿using Common.Entity;
+using Site.Data.Models.User;
 using static System.String;
+using static Common.Entity.EntityValues;
 
 namespace Site.Data.Models.UserIdentity;
 
-public sealed class Identity :  IIdentity
+public class Identity : IIdentity
 {
+    public static readonly Identity Invalid = new(Credential.Invalid, UserInfo.Invalid);
     public Identity()
-    {
-        Login = Credential.Invalid.Login;
-        Password = Credential.Invalid.Password;
-        Type = UserType.Invalid;
-    }
-    public Identity(ICredential c, UserType type)
+    { }
+    public Identity(ICredential c, UserInfo self)
     {
         Login = c.Login;
         Password = c.Password;
-        Type = type;
+        Type = self.Type;
+        UserId = self.Id;
     }
-    public Identity(string login, string password, UserType type)
-    {
-        Login = login;
-        Password = password;
-        Type = type;
-    }
-    
-    public UserType Type { get; set; }
-    public static readonly Identity Invalid = new(Credential.Invalid, UserType.Invalid);
-    public string Login { get; set; }
-    public string Password { get; set; }
 
-    public bool IsValid => !(Login == Empty ||
-                             Password == Empty ||
-                             Type == UserType.Invalid);
+    public int UserId { get; set; } = InvalidInt;
+    public UserType Type { get; set; } = UserType.Invalid;
+    public string Login { get; set; } = InvalidString;
+    public string Password { get; set; } = InvalidString;
+
+    public bool IsValid => !(Login == InvalidString ||
+                             Password == InvalidString ||
+                             Type == UserType.Invalid ||
+                             UserId == InvalidInt);
 }

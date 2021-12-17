@@ -2,13 +2,13 @@
 
 namespace Site.Data.Models.Article;
 
-public class ArticlePreview
+public class Preview
 {
     public int Id { get; }
     public string Title { get; }
     public string Abstract { get; }
     public ResourceView Image { get; }
-    public ArticlePreview(ArticleInfo info, ResourceView image)
+    public Preview(ArticleInfo info, ResourceView image)
     {
         Image = image;
         Id = info.Id;

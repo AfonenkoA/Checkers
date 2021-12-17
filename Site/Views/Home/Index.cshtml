@@ -14,31 +14,37 @@
 <a asp-controller="Authorization"
    asp-action="Login"
    asp-route-callerController="Home"
+   asp-route-userId="@Model?.UserId"
    asp-route-callerAction="Index">Войти</a>
 <a asp-controller="User"
    asp-action="PersonalArea"
    asp-route-login="@Model?.Login"
    asp-route-password="@Model?.Password"
+   asp-route-userId="@Model?.UserId"
    asp-route-type="@Model?.Type">Личный кабинет</a>
 <a asp-controller="User"
    asp-action="TopPlayers"
    asp-route-login="@Model?.Login"
    asp-route-password="@Model?.Password"
+   asp-route-userId="@Model?.UserId"
    asp-route-type="@Model?.Type">Лучшие игроки</a>
 <a asp-controller="News"
    asp-action="Index"
    asp-route-login="@Model?.Login"
    asp-route-password="@Model?.Password"
+   asp-route-userId="@Model?.UserId"
    asp-route-type="@Model?.Type">Новости</a>
 <a asp-controller="Chat"
    asp-action="CommonChat"
    asp-route-login="@Model?.Login"
    asp-route-password="@Model?.Password"
+   asp-route-userId="@Model?.UserId"
    asp-route-type="@Model?.Type">Общий чат</a>
 <a asp-controller="Forum"
    asp-action="Index"
    asp-route-login="@Model?.Login"
    asp-route-password="@Model?.Password"
+   asp-route-userId="@Model?.UserId"
    asp-route-type="@Model?.Type">Форум</a>
 </body>
 </html>

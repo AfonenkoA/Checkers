@@ -2,13 +2,13 @@
 
 namespace Site.Data.Models.Post;
 
-public class PostPreview
+public class Preview
 {
     public int Id { get; }
     public string Title { get; }
     public ResourceView Image { get; }
 
-    public PostPreview(PostInfo info, ResourceView image)
+    public Preview(PostInfo info, ResourceView image)
     {
         Image = image;
         Id = info.Id;

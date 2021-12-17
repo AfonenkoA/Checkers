@@ -4,6 +4,8 @@ namespace Site.Data.Models.User;
 
 public class UserInfo
 {
+    public static readonly UserInfo Invalid = new(BasicUserData.Invalid, PictureView.Invalid);
+
     internal int Id { get; }
     internal string Nick { get; }
     internal DateTime LastActivity { get; }

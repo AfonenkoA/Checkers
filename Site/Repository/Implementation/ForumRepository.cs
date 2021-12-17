@@ -22,19 +22,37 @@ public sealed class ForumRepository : IForumRepository
         _resource = resource;
     }
 
-
-    public async Task<(bool, PostView)> GetPost(ICredential c, int postId)
+    public async Task<(bool, VisualPost)> GetPost(ICredential c, int postId)
     {
         var (_, data) = await _forumApi.TryGetPost(postId);
         var (_, user) = await _userRepository.GetUser(data.AuthorId);
         var (_, chat) = await _chatRepository.GetMessages(c, data.ChatId);
-        return (true, new PostView(data, user, chat, _resource.GetResource(data.PictureId)));
+        return (true, new VisualPost(data, user, chat, _resource.GetResource(data.PictureId)));
     }
 
-    public async Task<(bool, IEnumerable<PostPreview>)> GetPosts()
+    public async Task<(bool, IEnumerable<Preview>)> GetPosts()
     {
         var (success, data) = await _forumApi.TryGetPosts();
         return (success,
-            data.Select(p => new PostPreview(p, _resource.GetResource(p.PictureId))));
+            data.Select(p => new Preview(p, _resource.GetResource(p.PictureId))));
+    }
+
+    public async Task<bool> Create(CreationData creation)
+    {
+        if (creation.Picture == null) return false;
+        var pic = creation.Picture;
+        if (creation.Login == null) return false;
+        var login = creation.Login;
+        if (creation.Password == null) return false;
+        var password = creation.Password;
+        if (creation.Title == null) return false;
+        var title = creation.Title;
+        if (creation.Content == null) return false;
+        var content = creation.Content;
+        var c = new Credential {Login = login, Password = password};
+        var (s, id) = await _resource.Create(c, pic);
+        if (!s) return false;
+        var post = new PostCreationData {Content = content, PictureId = id, Title = title};
+        return await _forumApi.CreatePost(c, post);
     }
 }

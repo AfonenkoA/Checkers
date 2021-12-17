@@ -5,11 +5,11 @@ using Site.Repository.Interface;
 
 namespace Site.Controllers;
 
-public sealed class ForumController : Controller
+public sealed class ForumController : ControllerBase
 {
     private readonly IForumRepository _repository;
 
-    public ForumController(IForumRepository repository)
+    public ForumController(IForumRepository repository, IUserRepository user) : base(user)
     {
         _repository = repository;
     }
@@ -17,27 +17,19 @@ public sealed class ForumController : Controller
     public async Task<IActionResult> Index(Identity i)
     {
         var (success, data) = await _repository.GetPosts();
-        var model = new Identified<IEnumerable<PostPreview>>(i, data);
+        var model = new Identified<IEnumerable<Preview>>(i, data);
         return success ? View(model) : View("Error");
     }
 
     public async Task<IActionResult> Post(Identity i, int id)
     {
-        if (i.IsValid) return RedirectToAction("Login", "Authorization",
+        if (!i.IsValid) return RedirectToAction("Login", "Authorization",
             new { callerAction = "Index", callerController = "Forum" });
         var (success, data) = await _repository.GetPost(i, id);
-        var model = new Identified<PostView>(i, data);
+        var model = new Identified<VisualPost>(i, data);
         return success ? View(model) : View("Error");
     }
 
-    public sealed class PostCreation
-    {
-        public IFormFile? Picture { get; set; }
-        public string? Title { get; set; }
-        public string? Content { get; set; }
-        public string? Login { get; set; }
-        public string? Password { get; set; }
-    }
 
     public IActionResult CreationPage(Identity i)
     {
@@ -47,8 +39,15 @@ public sealed class ForumController : Controller
     }
 
     [HttpPost]
-    public Task<IActionResult> Create(PostCreation p)
+    public async Task<IActionResult> Create(CreationData p)
     {
-        return null;
+        if (p.Login == null) return View("Error");
+        var login = p.Login;
+        if (p.Password == null) return View("Error");
+        var password = p.Password;
+        var (s, identity) = await Authorize(login,password);
+        if (!s) return View("Error");
+        var success = await _repository.Create(p);
+        return success ? RedirectToAction("Index", "Forum", IdentityValues(identity)) : View("Error");
     }
 }

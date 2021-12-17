@@ -22,7 +22,7 @@ public sealed class AuthorizationController : ControllerBase
     {
         var (success, self) = await _repository.GetSelf(c);
         if (!success) return View("Error");
-        var model = new Identity(c, self.Type);
+        var model = new Identity(c, self);
         return RedirectToAction(caller.CallerAction, caller.CallerController, IdentityValues(model));
     }
 }
