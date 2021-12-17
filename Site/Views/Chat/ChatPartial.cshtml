@@ -1,6 +1,6 @@
 ﻿@using Site.Data.Models;
 @using Site.Data.Models.UserIdentity
-@model Site.Data.Models.UserIdentity.IIdentified<Chat>
+@model IIdentified<Chat>
 @{
     foreach (var message in Model?.Value.Messages)
         @await Html.PartialAsync("~/Views/Chat/Message.cshtml", new Identified<MessageView>(Model,message))

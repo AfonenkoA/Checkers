@@ -1,7 +1,7 @@
 ﻿@using Site.Data.Models;
 @using Site.Data.Models.User
 @using Site.Data.Models.UserIdentity
-@model Site.Data.Models.UserIdentity.Identified<MessageView>
+@model Identified<MessageView>
 @await Html.PartialAsync("~/Views/User/UserInfo.cshtml",
     new Identified<UserInfo>(Model,Model.Value.Sender))
 <p>@Model?.Value.SendTime</p>
