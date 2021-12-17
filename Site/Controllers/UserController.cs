@@ -2,25 +2,25 @@
 using Microsoft.AspNetCore.Mvc;
 using Site.Data.Models;
 using Site.Data.Models.User;
+using Site.Data.Models.UserIdentity;
 using Site.Repository.Interface;
 
 namespace Site.Controllers;
 
-public sealed class UserController : Controller
+public sealed class UserController : ControllerBase
 {
 
     private readonly IUserRepository _repository;
 
-    public UserController(IUserRepository repository)
+    public UserController(IUserRepository repository) : base(repository)
     {
         _repository = repository;
     }
 
-    public async Task<IActionResult> Profile(string login, string password, int id)
+    public async Task<IActionResult> Profile(Identity i, int id)
     {
-        var c = new Credential { Login = login, Password = password };
         var (success, user) = await _repository.GetUser(id);
-        var model = new Identified<UserInfo>(c, user);
+        var model = new Identified<UserInfo>(i, user);
         return !success ? View("Error") : View(model);
     }
 
@@ -29,18 +29,19 @@ public sealed class UserController : Controller
     {
         if (!c.IsValid) return RedirectToAction("Login", "Authorization",
             new { callerAction = "PersonalArea", callerController = "User" });
+        var (s,i) = await Authorize(c.Login, c.Password);
         var (success, self) = await _repository.GetSelf(c);
-        var model = new Identified<Self>(c, self);
+        var model = new Identified<Self>(i, self);
         return success ? View(model) : View("Error");
     }
 
-    public async Task<ViewResult> TopPlayers(Credential credential)
+    public async Task<ViewResult> TopPlayers(Identity i)
     {
         IDictionary<long, UserInfo> data;
         bool success;
-        if (credential.IsValid)
+        if (i.IsValid)
         {
-            (success, data) = await _repository.GetTop(credential);
+            (success, data) = await _repository.GetTop(i);
             if (!success) return View("Error");
         }
         else
@@ -48,43 +49,42 @@ public sealed class UserController : Controller
             (success, data) = await _repository.GetTop();
             if (!success) return View("Error");
         }
-
-        var model = new Identified<IDictionary<long, UserInfo>>(credential, data);
+        var model = new Identified<IDictionary<long, UserInfo>>(i, data);
         return View(model);
     }
 
-    public async Task<ViewResult> UpdateNick(Credential c, string nick)
+    public async Task<ViewResult> UpdateNick(Identity i, string nick)
     {
-        var success = await _repository.UpdateUserNick(c, nick);
-        var model = new Identified<ModificationResult>(c, new ModificationResult("User", "PersonalArea", success));
+        var success = await _repository.UpdateUserNick(i, nick);
+        var model = new Identified<ModificationResult>(i, new ModificationResult("User", "PersonalArea", success));
         return View("ModificationResult", model);
     }
 
-    public async Task<ViewResult> UpdateLogin(Credential c, string newLogin)
+    public async Task<ViewResult> UpdateLogin(Identity i, string newLogin)
     {
-        var success = await _repository.UpdateUserLogin(c, newLogin);
-        var model = new Identified<ModificationResult>(Credential.Invalid, new ModificationResult("Home", "Index", success));
+        var success = await _repository.UpdateUserLogin(i, newLogin);
+        var model = new Identified<ModificationResult>(Identity.Invalid, new ModificationResult("Home", "Index", success));
         return View("ModificationResult", model);
     }
 
-    public async Task<ViewResult> UpdatePassword(Credential c, string newPassword)
+    public async Task<ViewResult> UpdatePassword(Identity i, string newPassword)
     {
-        var success = await _repository.UpdateUserPassword(c, newPassword);
-        var model = new Identified<ModificationResult>(Credential.Invalid, new ModificationResult("Home", "Index", success));
+        var success = await _repository.UpdateUserPassword(i, newPassword);
+        var model = new Identified<ModificationResult>(Identity.Invalid, new ModificationResult("Home", "Index", success));
         return View("ModificationResult", model);
     }
 
-    public async Task<ViewResult> UpdateEmail(Credential c, string email)
+    public async Task<ViewResult> UpdateEmail(Identity i, string email)
     {
-        var success = await _repository.UpdateUserEmail(c, email);
-        var model = new Identified<ModificationResult>(c, new ModificationResult("User", "PersonalArea", success));
+        var success = await _repository.UpdateUserEmail(i, email);
+        var model = new Identified<ModificationResult>(i, new ModificationResult("User", "PersonalArea", success));
         return View("ModificationResult", model);
     }
 
-    public async Task<ViewResult> UpdatePicture(Credential c, int picture)
+    public async Task<ViewResult> UpdatePicture(Identity i, int picture)
     {
-        var success = await _repository.UpdateUserPicture(c, picture);
-        var model = new Identified<ModificationResult>(c, new ModificationResult("User", "PersonalArea", success));
+        var success = await _repository.UpdateUserPicture(i, picture);
+        var model = new Identified<ModificationResult>(i, new ModificationResult("User", "PersonalArea", success));
         return View("ModificationResult", model);
     }
 

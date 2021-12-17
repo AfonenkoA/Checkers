@@ -1,7 +1,6 @@
-﻿@using Common.Entity
-@using Site.Data.Models;
-@using Site.Data.Models.User;
-@model Identified<Self>
+﻿@using Site.Data.Models.User;
+@using Site.Data.Models.UserIdentity
+@model Site.Data.Models.UserIdentity.IIdentified<Self>
 
 @{
     Layout = null;
@@ -23,12 +22,9 @@
            asp-action="Chat"
            asp-route-id="@friend.ChatId"
            asp-route-login="@Model?.Login"
+           asp-route-type="@Model?.Type"
            asp-route-password="@Model?.Password">Чат</a>
-        @await Html.PartialAsync("UserInfo", new Identified<Friend>(new Credential
-        {
-            Login = Model.Login,
-            Password = Model.Password
-        }, friend))
+        @await Html.PartialAsync("UserInfo", new Identified<Friend>(Model, friend))
     }
 }
 <h2>Управление</h2>
@@ -38,6 +34,7 @@
     <input type="hidden" name="login" value="@Model.Login"/>
     <input type="hidden" name="password" value="@Model.Password"/>
     <input type="text" name="nick" value="@Model.Value.Nick"/>
+    <input type="hidden" name="type" value="@Model.Type"/>
     <input type="submit" value="Отправить"/>
 </form>
 <p>Изменить логин</p>
@@ -45,6 +42,7 @@
       asp-action="UpdateLogin">
     <input type="hidden" name="login" value="@Model.Login"/>
     <input type="hidden" name="password" value="@Model.Password"/>
+    <input type="hidden" name="type" value="@Model.Type"/>
     <input type="text" name="newLogin"/>
     <input type="submit" value="Отправить"/>
 </form>
@@ -53,6 +51,7 @@
       asp-action="UpdatePassword">
     <input type="hidden" name="login" value="@Model.Login"/>
     <input type="hidden" name="password" value="@Model.Password"/>
+    <input type="hidden" name="type" value="@Model.Type"/>
     <input type="text" name="newPassword"/>
     <input type="submit" value="Отправить"/>
 </form>
@@ -61,6 +60,7 @@
       asp-action="UpdateEmail">
     <input type="hidden" name="login" value="@Model.Login"/>
     <input type="hidden" name="password" value="@Model.Password"/>
+    <input type="hidden" name="type" value="@Model.Type"/>
     <input type="text" name="email"/>
     <input type="submit" value="Отправить"/>
 </form>
@@ -69,6 +69,7 @@
       asp-action="UpdatePicture">
     <input type="hidden" name="login" value="@Model.Login"/>
     <input type="hidden" name="password" value="@Model.Password"/>
+    <input type="hidden" name="type" value="@Model.Type"/>
     @{
         foreach (var p in Model.Value.Pictures)
         {

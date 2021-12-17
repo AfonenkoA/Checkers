@@ -1,0 +1,30 @@
+﻿@using Site.Data.Models.UserIdentity;
+@model IIdentity
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>title</title>
+</head>
+<body>
+<form asp-controller="Forum"
+      asp-action="Create"
+      enctype="multipart/form-data"
+      method="post">
+    <label for="title"></label>
+    <textarea name="title" id="title"></textarea>
+    <label for="content"></label>
+    <textarea name="content" id="content"></textarea>
+    <input type="file" name="picture"/>
+    <input type="hidden" name="login" value="@Model?.Login"/>
+    <input type="hidden" name="password" value="@Model?.Password"/>
+    <input type="hidden" name="type" value="@Model?.Type"/>
+    <input type="submit" name="Создать"/>
+</form>
+</body>
+</html>

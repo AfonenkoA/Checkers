@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Forum\CreationPage.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Forum\Index.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Forum\Post.cshtml" />
     <_ContentIncludedByDefault Remove="Views\News\Index.cshtml" />
@@ -32,6 +33,10 @@
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Views\Forum\Post.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Forum\CreationPage.cshtml" />
   </ItemGroup>
 
 </Project>

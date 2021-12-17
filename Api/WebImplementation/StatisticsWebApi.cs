@@ -15,7 +15,7 @@ public sealed class StatisticsWebApi : WebApiBase, IAsyncStatisticsApi
         return res != null ? (true, res) : (false, new Dictionary<long,PublicUserData>());
     }
 
-    public async Task<(bool, IDictionary<long, PublicUserData>)> TryGetTopPlayers(Credential credential)
+    public async Task<(bool, IDictionary<long, PublicUserData>)> TryGetTopPlayers(ICredential credential)
     {
         var route = $"{StatisticsRoute}{Query(credential)}";
         var response = await Client.GetStringAsync(route);

@@ -1,10 +1,11 @@
 ﻿@using Site.Data.Models;
-@model IIdentified<ModificationResult>
+@model Site.Data.Models.UserIdentity.IIdentified<ModificationResult>
 @{
     Layout = null;
 }
 <p>Изменено @Model?.Value.Success</p>
-<a asp-controller="@Model?.Value.Controller"
-   asp-action="@Model?.Value.Action"
+<a asp-controller="@Model?.Value.CallerController"
+   asp-action="@Model?.Value.CallerAction"
    asp-route-login="@Model?.Login"
-   asp-route-password="@Model?.Password">Назад</a>
+   asp-route-password="@Model?.Password"
+   asp-route-type="@Model?.Type">Назад</a>

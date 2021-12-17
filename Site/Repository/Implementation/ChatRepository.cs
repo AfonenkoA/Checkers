@@ -16,7 +16,7 @@ public sealed class ChatRepository : IChatRepository
         _userRepository = userRepository;
     }
 
-    public async Task<(bool, Chat)> GetMessages(Credential credential, int chatId)
+    public async Task<(bool, Chat)> GetMessages(ICredential credential, int chatId)
     {
         var (success, data) = await _chatApi.TryGetMessages(credential, chatId, DateTime.MinValue);
         var messages = new List<MessageView>();
@@ -28,8 +28,8 @@ public sealed class ChatRepository : IChatRepository
         return (success, new Chat(chatId,messages));
     }
 
-    public Task<(bool, int)> GetCommonChatId(Credential credential) => _chatApi.TryGetCommonChatId(credential);
+    public Task<(bool, int)> GetCommonChatId(ICredential credential) => _chatApi.TryGetCommonChatId(credential);
 
-    public Task<bool> SendMessage(Credential credential, int chatId, string message) =>
+    public Task<bool> SendMessage(ICredential credential, int chatId, string message) =>
         _chatApi.SendMessage(credential, chatId, message);
 }

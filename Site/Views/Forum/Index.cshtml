@@ -1,6 +1,6 @@
-﻿@using Site.Data.Models
-@using Site.Data.Models.Post
-@model IIdentified<IEnumerable<PostPreview>>
+﻿@using Site.Data.Models.Post
+@using Site.Data.Models.UserIdentity
+@model Site.Data.Models.UserIdentity.IIdentified<IEnumerable<PostPreview>>
 
 @{
     Layout = null;
@@ -16,7 +16,13 @@
 @{
     foreach (var post in Model.Value)
         @await Html.PartialAsync("PostPreview", 
-            new Identified<PostPreview>(Model.Credential,post))
+            new Identified<PostPreview>(Model,post))
 }
+
+<a asp-controller="Forum"
+      asp-action="CreationPage"
+      asp-route-login="@Model?.Login"
+      asp-route-type="@Model?.Type"
+      asp-route-password="@Model?.Password">Создать</a>
 </body>
 </html>

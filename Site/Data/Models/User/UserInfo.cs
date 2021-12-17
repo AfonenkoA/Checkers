@@ -7,7 +7,7 @@ public class UserInfo
     internal int Id { get; }
     internal string Nick { get; }
     internal DateTime LastActivity { get; }
-    internal string Type { get; }
+    internal UserType Type { get; }
     internal int SocialCredit { get; }
     internal PictureView Picture { get; }
     public UserInfo(BasicUserData data, PictureView picture)
@@ -16,7 +16,7 @@ public class UserInfo
         Id = data.Id;
         Nick = data.Nick;
         LastActivity = data.LastActivity;
-        Type = data.Type.ToString();
+        Type = data.Type;
         SocialCredit = data.SocialCredit;
     }
 

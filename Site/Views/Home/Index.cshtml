@@ -1,5 +1,5 @@
-﻿@using Common.Entity;
-@model Credential;
+﻿@using Site.Data.Models.UserIdentity;
+@model IIdentity;
 
 @{
     Layout = null;
@@ -18,22 +18,27 @@
 <a asp-controller="User"
    asp-action="PersonalArea"
    asp-route-login="@Model?.Login"
-   asp-route-password="@Model?.Password">Личный кабинет</a>
+   asp-route-password="@Model?.Password"
+   asp-route-type="@Model?.Type">Личный кабинет</a>
 <a asp-controller="User"
    asp-action="TopPlayers"
    asp-route-login="@Model?.Login"
-   asp-route-password="@Model?.Password">Лучшие игроки</a>
+   asp-route-password="@Model?.Password"
+   asp-route-type="@Model?.Type">Лучшие игроки</a>
 <a asp-controller="News"
    asp-action="Index"
    asp-route-login="@Model?.Login"
-   asp-route-password="@Model?.Password">Новости</a>
+   asp-route-password="@Model?.Password"
+   asp-route-type="@Model?.Type">Новости</a>
 <a asp-controller="Chat"
    asp-action="CommonChat"
    asp-route-login="@Model?.Login"
-   asp-route-password="@Model?.Password">Общий чат</a>
+   asp-route-password="@Model?.Password"
+   asp-route-type="@Model?.Type">Общий чат</a>
 <a asp-controller="Forum"
    asp-action="Index"
    asp-route-login="@Model?.Login"
-   asp-route-password="@Model?.Password">Форум</a>
+   asp-route-password="@Model?.Password"
+   asp-route-type="@Model?.Type">Форум</a>
 </body>
 </html>

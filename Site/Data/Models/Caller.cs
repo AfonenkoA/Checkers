@@ -1,13 +1,18 @@
-﻿namespace Site.Data.Models;
+﻿using static System.String;
+
+namespace Site.Data.Models;
 
 public class Caller
 {
-    public string Controller { get; }
-    public string Action { get; }
+    public string CallerController { get; set; } = Empty;
+    public string CallerAction { get; set; } = Empty;
+
+    public Caller()
+    { }
 
     public Caller(string controller, string action)
     {
-        Controller = controller;
-        Action = action;
+        CallerController = controller;
+        CallerAction = action;
     }
 }

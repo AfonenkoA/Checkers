@@ -1,11 +1,10 @@
-﻿using Common.Entity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Site.Data.Models.UserIdentity;
 
 
 namespace Site.Controllers;
 
 public sealed class HomeController : Controller
 {
-
-    public IActionResult Index(Credential c) => View(c);
+    public IActionResult Index(Identity i) => View(i);
 }

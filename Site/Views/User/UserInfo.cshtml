@@ -1,6 +1,5 @@
-﻿@using Site.Data.Models;
-@using Site.Data.Models.User;
-@model IIdentified<UserInfo>
+﻿@using Site.Data.Models.User;
+@model Site.Data.Models.UserIdentity.IIdentified<UserInfo>
 @{
     Layout = null;
 }
@@ -9,6 +8,7 @@
    asp-action="Profile"
    asp-route-id="@Model?.Value.Id"
    asp-route-login="@Model?.Login"
+   asp-route-type="@Model?.Type"
    asp-route-password="@Model?.Password">@Model?.Value.Nick</a>
 <p>Был в сети: @Model?.Value.LastActivity</p>
 <p>@Model?.Value.SocialCredit</p>

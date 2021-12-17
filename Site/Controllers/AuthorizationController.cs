@@ -1,24 +1,28 @@
-﻿using Api.Interface;
-using Api.WebImplementation;
-using Common.Entity;
+﻿using Common.Entity;
 using Microsoft.AspNetCore.Mvc;
 using Site.Data.Models;
+using Site.Data.Models.UserIdentity;
+using Site.Repository.Interface;
 
 namespace Site.Controllers;
 
-public sealed class AuthorizationController : Controller
+public sealed class AuthorizationController : ControllerBase
 {
-    private static readonly IAsyncUserApi UserApi = new UserWebApi();
+    private readonly IUserRepository _repository;
 
+    public AuthorizationController(IUserRepository repository) : base(repository)
+    {
+        _repository = repository;
+    }
 
     public IActionResult Login(string callerController, string callerAction) =>
         View(new Caller(callerController, callerAction));
 
-    public async Task<IActionResult> Authorize(string login, string password, string callerController, string callerAction)
+    public async Task<IActionResult> Authorize(Credential c, Caller caller)
     {
-        var auth = await UserApi.Authenticate(new Credential { Login = login, Password = password });
-        return auth ?
-            RedirectToAction(callerAction, callerController, new { login = login, password = password }) :
-            View("Error");
+        var (success, self) = await _repository.GetSelf(c);
+        if (!success) return View("Error");
+        var model = new Identity(c, self.Type);
+        return RedirectToAction(caller.CallerAction, caller.CallerController, IdentityValues(model));
     }
 }

@@ -12,7 +12,6 @@ public sealed class UserRepository : IUserRepository
     private readonly IAsyncStatisticsApi _statisticsApi;
 
     public UserRepository(IAsyncUserApi userApi,
-        IAsyncResourceService resourceService,
         IAsyncStatisticsApi statisticsApi, IItemRepository item)
     {
         _userApi = userApi;
@@ -38,9 +37,9 @@ public sealed class UserRepository : IUserRepository
         return (success, users);
     }
 
-    public Task<bool> Authorize(Credential credential) => _userApi.Authenticate(credential);
+    public Task<bool> Authorize(ICredential credential) => _userApi.Authenticate(credential);
 
-    public async Task<(bool, Self)> GetSelf(Credential credential)
+    public async Task<(bool, Self)> GetSelf(ICredential credential)
     {
         var (success, user) = await _userApi.TryGetSelf(credential);
         var friends = new List<Friend>();
@@ -66,7 +65,7 @@ public sealed class UserRepository : IUserRepository
         return (success, res);
     }
 
-    public async Task<(bool, IDictionary<long, UserInfo>)> GetTop(Credential credential)
+    public async Task<(bool, IDictionary<long, UserInfo>)> GetTop(ICredential credential)
     {
         var (success, users) = await _statisticsApi.TryGetTopPlayers(credential);
         var res = new Dictionary<long, UserInfo>();
@@ -75,18 +74,18 @@ public sealed class UserRepository : IUserRepository
         return (success, res);
     }
 
-    public Task<bool> UpdateUserNick(Credential credential, string nick) =>
+    public Task<bool> UpdateUserNick(ICredential credential, string nick) =>
         _userApi.UpdateUserNick(credential, nick);
 
-    public Task<bool> UpdateUserLogin(Credential credential, string login) =>
+    public Task<bool> UpdateUserLogin(ICredential credential, string login) =>
         _userApi.UpdateUserLogin(credential, login);
 
-    public Task<bool> UpdateUserPassword(Credential credential, string password) =>
+    public Task<bool> UpdateUserPassword(ICredential credential, string password) =>
         _userApi.UpdateUserPassword(credential, password);
 
-    public Task<bool> UpdateUserEmail(Credential credential, string email) =>
+    public Task<bool> UpdateUserEmail(ICredential credential, string email) =>
         _userApi.UpdateUserEmail(credential, email);
 
-    public Task<bool> UpdateUserPicture(Credential credential, int id) =>
+    public Task<bool> UpdateUserPicture(ICredential credential, int id) =>
         _userApi.UpdateUserPicture(credential, id);
 }

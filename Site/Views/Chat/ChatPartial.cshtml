@@ -1,13 +1,15 @@
 ﻿@using Site.Data.Models;
-@model IIdentified<Chat>
+@using Site.Data.Models.UserIdentity
+@model Site.Data.Models.UserIdentity.IIdentified<Chat>
 @{
     foreach (var message in Model?.Value.Messages)
-        @await Html.PartialAsync("~/Views/Chat/Message.cshtml", new Identified<MessageView>(Model.Credential,message))
+        @await Html.PartialAsync("~/Views/Chat/Message.cshtml", new Identified<MessageView>(Model,message))
 }
 <form asp-controller="Chat"
       asp-action="Send"
       asp-route-id="@Model?.Value.Id"
       asp-route-login="@Model?.Login"
+      asp-route-type="@Model?.Type"
       asp-route-password="@Model?.Password">
     <textarea name="message"></textarea>
     <input type="submit" value="Отправить"/>

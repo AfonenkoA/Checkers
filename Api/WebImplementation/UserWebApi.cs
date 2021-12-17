@@ -17,7 +17,7 @@ public sealed class UserWebApi : WebApiBase, IAsyncUserApi
         return response.IsSuccessStatusCode;
     }
 
-    public async Task<bool> DeleteUser(Credential credential)
+    public async Task<bool> DeleteUser(ICredential credential)
     {
         var route = $"{UserRoute}{Query(credential)}";
         using var response = await Client.DeleteAsync(route);
@@ -33,7 +33,7 @@ public sealed class UserWebApi : WebApiBase, IAsyncUserApi
 
     }
 
-    public async Task<(bool, User)> TryGetSelf(Credential credential)
+    public async Task<(bool, User)> TryGetSelf(ICredential credential)
     {
         var route = $"{UserRoute}{Query(credential)}";
         var response = await Client.GetStringAsync(route);
@@ -42,7 +42,7 @@ public sealed class UserWebApi : WebApiBase, IAsyncUserApi
     }
 
     //invalid
-    public async Task<(bool, FriendUserData)> TryGetFriend(Credential credential, int friendId)
+    public async Task<(bool, FriendUserData)> TryGetFriend(ICredential credential, int friendId)
     {
         var route = $"{UserRoute}/{friendId}{Query(credential)}";
         var response = await
@@ -51,62 +51,62 @@ public sealed class UserWebApi : WebApiBase, IAsyncUserApi
         return res != null ? (true, res) : (false, FriendUserData.Invalid);
     }
 
-    public Task<(bool, IEnumerable<GameInfo>)> TryGetGames(Credential credential)
+    public Task<(bool, IEnumerable<GameInfo>)> TryGetGames(ICredential credential)
     {
         throw new NotImplementedException();
     }
 
 
-    public async Task<bool> SelectAnimation(Credential credential, int animationId)
+    public async Task<bool> SelectAnimation(ICredential credential, int animationId)
     {
         var route = $"{UserRoute}/{Query(credential, UserApiAction.SelectAnimation)}";
         using var response = await Client.PutAsJsonAsync(route, animationId.ToString());
         return response.IsSuccessStatusCode;
     }
 
-    public async Task<bool> SelectCheckers(Credential credential, int checkersId)
+    public async Task<bool> SelectCheckers(ICredential credential, int checkersId)
     {
         var route = $"{UserRoute}{Query(credential, UserApiAction.SelectCheckers)}";
         using var response = await Client.PutAsJsonAsync(route, checkersId.ToString());
         return response.IsSuccessStatusCode;
     }
 
-    public async Task<bool> Authenticate(Credential user)
+    public async Task<bool> Authenticate(ICredential user)
     {
         var route = $"{UserRoute}{Query(user, UserApiAction.Authenticate)}";
         using var response = await Client.PutAsJsonAsync(route, string.Empty);
         return response.IsSuccessStatusCode;
     }
 
-    public async Task<bool> UpdateUserNick(Credential credential, string nick)
+    public async Task<bool> UpdateUserNick(ICredential credential, string nick)
     {
         var route = UserRoute + Query(credential, UpdateNick);
         using var response = await Client.PutAsJsonAsync(route, nick);
         return response.IsSuccessStatusCode;
     }
 
-    public async Task<bool> UpdateUserLogin(Credential credential, string login)
+    public async Task<bool> UpdateUserLogin(ICredential credential, string login)
     {
         var route = $"{UserRoute}{Query(credential, UpdateLogin)}";
         using var response = await Client.PutAsJsonAsync(route, login);
         return response.IsSuccessStatusCode;
     }
 
-    public async Task<bool> UpdateUserPassword(Credential credential, string password)
+    public async Task<bool> UpdateUserPassword(ICredential credential, string password)
     {
         var route = $"{UserRoute}{Query(credential, UpdatePassword)}";
         using var response = await Client.PutAsJsonAsync(route, password);
         return response.IsSuccessStatusCode;
     }
 
-    public async Task<bool> UpdateUserEmail(Credential credential, string email)
+    public async Task<bool> UpdateUserEmail(ICredential credential, string email)
     {
         var route = $"{UserRoute}{Query(credential, UpdateEmail)}";
         using var response = await Client.PutAsJsonAsync(route, email);
         return response.IsSuccessStatusCode;
     }
 
-    public async Task<bool> UpdateUserPicture(Credential credential, int pictureId)
+    public async Task<bool> UpdateUserPicture(ICredential credential, int pictureId)
     {
         var route = $"{UserRoute}{Query(credential, UserApiAction.UpdateUserPicture)}";
         using var response = await Client.PutAsJsonAsync(route, pictureId.ToString());
@@ -123,42 +123,42 @@ public sealed class UserWebApi : WebApiBase, IAsyncUserApi
     }
 
 
-    public async Task<bool> AddFriend(Credential credential, int userId)
+    public async Task<bool> AddFriend(ICredential credential, int userId)
     {
         var route = $"{UserRoute}{Query(credential, UserApiAction.AddFriend)}";
         using var response = await Client.PutAsJsonAsync(route, userId);
         return response.IsSuccessStatusCode;
     }
 
-    public async Task<bool> DeleteFriend(Credential credential, int userId)
+    public async Task<bool> DeleteFriend(ICredential credential, int userId)
     {
         var route = $"{UserRoute}{Query(credential, UserApiAction.DeleteFriend)}";
         using var response = await Client.PutAsJsonAsync(route, userId);
         return response.IsSuccessStatusCode;
     }
 
-    public async Task<bool> AcceptFriend(Credential credential, int userId)
+    public async Task<bool> AcceptFriend(ICredential credential, int userId)
     {
         var route = $"{UserRoute}{Query(credential, UserApiAction.AcceptFriend)}";
         using var response = await Client.PutAsJsonAsync(route, userId);
         return response.IsSuccessStatusCode;
     }
 
-    public async Task<bool> BuyCheckersSkin(Credential credential, int id)
+    public async Task<bool> BuyCheckersSkin(ICredential credential, int id)
     {
         var route = $"{UserRoute}{Query(credential, UserApiAction.BuyCheckersSkin)}";
         using var response = await Client.PutAsJsonAsync(route, id.ToString());
         return response.IsSuccessStatusCode;
     }
 
-    public async Task<bool> BuyAnimation(Credential credential, int id)
+    public async Task<bool> BuyAnimation(ICredential credential, int id)
     {
         var route = $"{UserRoute}{Query(credential, UserApiAction.BuyAnimation)}";
         using var response = await Client.PutAsJsonAsync(route, id.ToString());
         return response.IsSuccessStatusCode;
     }
 
-    public async Task<bool> BuyLootBox(Credential credential, int id)
+    public async Task<bool> BuyLootBox(ICredential credential, int id)
     {
         var route = $"{UserRoute}{Query(credential, UserApiAction.BuyLootBox)}";
         using var response = await Client.PutAsJsonAsync(route, id.ToString());

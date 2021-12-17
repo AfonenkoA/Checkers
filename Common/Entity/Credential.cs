@@ -3,7 +3,13 @@ using static Common.Entity.EntityValues;
 
 namespace Common.Entity;
 
-public sealed class Credential
+public interface ICredential
+{
+    public string Login { get; }
+    public string Password { get; }
+}
+
+public class Credential : ICredential
 {
     public static readonly Credential Invalid = new();
     public string Login { get; set; } = InvalidString;

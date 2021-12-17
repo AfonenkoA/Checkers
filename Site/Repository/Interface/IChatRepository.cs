@@ -5,7 +5,7 @@ namespace Site.Repository.Interface;
 
 public interface IChatRepository
 {
-    Task<(bool, Chat)> GetMessages(Credential credential, int chatId);
-    Task<(bool, int)> GetCommonChatId(Credential credential);
-    Task<bool> SendMessage(Credential credential, int chatId, string message);
+    Task<(bool, Chat)> GetMessages(ICredential credential, int chatId);
+    Task<(bool, int)> GetCommonChatId(ICredential credential);
+    Task<bool> SendMessage(ICredential credential, int chatId, string message);
 }

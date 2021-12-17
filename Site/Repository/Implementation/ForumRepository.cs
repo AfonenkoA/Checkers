@@ -23,7 +23,7 @@ public sealed class ForumRepository : IForumRepository
     }
 
 
-    public async Task<(bool, PostView)> GetPost(Credential c, int postId)
+    public async Task<(bool, PostView)> GetPost(ICredential c, int postId)
     {
         var (_, data) = await _forumApi.TryGetPost(postId);
         var (_, user) = await _userRepository.GetUser(data.AuthorId);

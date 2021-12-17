@@ -8,7 +8,7 @@ namespace Api.WebImplementation;
 
 public sealed class AsyncResourceWebApi : WebApiBase, IAsyncResourceService
 {
-    public async Task<(bool, int)> TryUploadFile(Credential credential, byte[] picture, string ext)
+    public async Task<(bool, int)> TryUploadFile(ICredential credential, byte[] picture, string ext)
     {
         var route = $"{ResourceRoute}{Query(credential, ext)}";
         using var response = await Client.PostAsJsonAsync(route, Convert.ToBase64String(picture));

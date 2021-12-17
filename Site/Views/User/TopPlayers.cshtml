@@ -1,6 +1,6 @@
-﻿@using Site.Data.Models;
-@using Site.Data.Models.User;
-@model Identified<IDictionary<long,UserInfo>>
+﻿@using Site.Data.Models.User;
+@using Site.Data.Models.UserIdentity
+@model Site.Data.Models.UserIdentity.Identified<IDictionary<long,UserInfo>>
 
 @{
     Layout = null;
@@ -16,7 +16,7 @@
     foreach (var (pos,user) in Model.Value)
     {
         <h2>@pos</h2>
-        @await Html.PartialAsync("UserInfo", new Identified<UserInfo>(Model.Credential,user))
+        @await Html.PartialAsync("UserInfo", new Identified<UserInfo>(Model,user))
     }
 }
 </body>

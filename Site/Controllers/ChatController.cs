@@ -1,41 +1,48 @@
-﻿using Common.Entity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Site.Data.Models;
+using Site.Data.Models.UserIdentity;
 using Site.Repository.Interface;
 
 namespace Site.Controllers;
 
-public sealed class ChatController : Controller
+public sealed class ChatController : ControllerBase
 {
-    public readonly IChatRepository _repository;
+    private readonly IChatRepository _chatRepository;
 
-    public ChatController(IChatRepository repository)
+    public ChatController(IChatRepository chatRepository, IUserRepository user) : base(user)
     {
-        _repository = repository;
+        _chatRepository = chatRepository;
     }
 
-    public async Task<IActionResult> CommonChat(Credential c)
+    private static object ChatValues(IIdentity i, int id) =>
+        new
+        {
+            login = i.Login,
+            password = i.Password,
+            type = i.Type,
+            id = id
+        };
+
+    public async Task<IActionResult> CommonChat(Identity i)
     {
-        if (!c.IsValid) return RedirectToAction("Login", "Authorization",
+        if (!i.IsValid) return RedirectToAction("Login", "Authorization",
             new { callerAction = "CommonChat", callerController = "Chat" });
-        var (success, id) = await _repository.GetCommonChatId(c);
+        var (success, id) = await _chatRepository.GetCommonChatId(i);
         if (!success) return View("Error");
-        return RedirectToAction("Chat",
-            new { login = c.Login, password = c.Password, id = id });
+        return RedirectToAction("Chat", ChatValues(i,id));
     }
 
-    public async Task<IActionResult> Chat(Credential c, int id)
+    public async Task<IActionResult> Chat(Identity i, int id)
     {
-        var (success, data) = await _repository.GetMessages(c, id);
-        var model = new Identified<Chat>(c, data);
+        var (success, data) = await _chatRepository.GetMessages(i, id);
+        var model = new Identified<Chat>(i, data);
         return success ? View(model) : View("Error");
     }
 
     [HttpPost]
-    public async Task<IActionResult> Send(Credential c, int id, string message)
+    public async Task<IActionResult> Send(Identity i, int id, string message)
     {
-        var success = await _repository.SendMessage(c, id, message);
-        return success ? RedirectToAction("Chat", new { login = c.Login, password = c.Password, id = id }) :
-            View("Error");
+        var success = await _chatRepository.SendMessage(i, id, message);
+        return success ? RedirectToAction("Chat", "Chat", ChatValues(i, id)) : View("Error");
     }
 }
