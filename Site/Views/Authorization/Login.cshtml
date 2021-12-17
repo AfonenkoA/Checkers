@@ -1,22 +1,39 @@
 ﻿@using Site.Data.Models;
 @model Caller
 @{
-    Layout = null;
+    Layout = "_HomeLayout";
 }
 
-<html>
-<head>
-    <title>Вход</title>
-</head>
-<body>
+<h2>Вход</h2>
+<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+    <ul class="navbar-nav flex-grow-1">
+        <li class="nav-item">
+            <button style="height:50px;width:200px">
+                <a class="nav-link text-dark"
+                   asp-controller="Home"
+                   asp-action="Index"
+                   asp-route-callerController="Home"
+                   asp-route-callerAction="Index">Регистрация</a>
+                </button>
+        </li>
+        <li class="nav-item">
+            <button style="height:50px;width:200px">
+                <a class="nav-link text-dark"
+                   asp-controller="Home"
+                   asp-action="Index"
+                   asp-route-callerController="Home"
+                   asp-route-callerAction="Index">Вернуться на главную</a>
+                </button>
+        </li>
+    </ul>
+</div>
+<hr/>
 <form asp-action="Authorize" asp-controller="Authorization">
-    <label for="login">Логин</label>
-    <input type="text" name="login" id="login"/>
-    <label for="password">Пароль</label>
-    <input type="text" name="password" id="password"/>
+    <p><label for="login">Логин</label></p>
+    <p><input type="text" name="login" id="login"/></p>
+    <p><label for="password">Пароль</label></p>
+    <p><input type="text" name="password" id="password"/></p>
     <input type="hidden" name="callerController" value="@Model?.CallerController"/>
     <input type="hidden" name="callerAction" value="@Model?.CallerAction"/>
     <input type="submit" value="Отправить"/>
 </form>
-</body>
-</html>

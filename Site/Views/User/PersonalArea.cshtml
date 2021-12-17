@@ -3,33 +3,50 @@
 @model IIdentified<Self>
 
 @{
-    Layout = null;
+    Layout = "_HomeLayout";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title>title</title>
-</head>
-<body>
+<h2>Личный кабинет</h2>
+<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+    <ul class="navbar-nav flex-grow-1">
+        <li class="nav-item">
+            <button style="height:50px;width:200px">
+                <a class="nav-link text-dark"
+                   asp-controller="Home"
+                   asp-action="Index"
+                   asp-route-callerController="Home"
+                   asp-route-callerAction="Index"
+                   asp-route-id="@Model?.Value.Id"
+                   asp-route-login="@Model?.Login"
+                   asp-route-type="@Model?.Type"
+                   asp-route-userId="@Model?.UserId"
+                   asp-route-password="@Model?.Password">Вернуться на главную</a>
+                </button>
+        </li>
+    </ul>
+</div>
+<hr/>
+<h2>Личные данные</h2>
 @await Html.PartialAsync("UserInfo",Model)
+<hr/>
 <h2>Друзья</h2>
 @{
     foreach (var friend in Model.Value.Friends)
     {
-        <a asp-controller="Chat"
-           asp-action="Chat"
-           asp-route-id="@friend.ChatId"
-           asp-route-login="@Model?.Login"
-           asp-route-type="@Model?.Type"
-           asp-route-userId="@Model?.UserId"
-           asp-route-password="@Model?.Password">Чат</a>
         @await Html.PartialAsync("UserInfo", new Identified<Friend>(Model, friend))
+        <p><a asp-controller="Chat"
+              asp-action="Chat"
+              asp-route-id="@friend.ChatId"
+              asp-route-login="@Model?.Login"
+              asp-route-type="@Model?.Type"
+              asp-route-userId="@Model?.UserId"
+              asp-route-password="@Model?.Password">Чат</a></p>
+        <hr/>
     }
 }
+<hr/>
 <h2>Управление</h2>
-<p>Изменить ник</p>
+<p><b>Изменить ник: </b></p>
 <form asp-controller="User"
       asp-action="UpdateNick">
     <input type="hidden" name="login" value="@Model.Login"/>
@@ -38,7 +55,7 @@
     <input type="hidden" name="type" value="@Model.Type"/>
     <input type="submit" value="Отправить"/>
 </form>
-<p>Изменить логин</p>
+<p><b>Изменить логин: </b></p>
 <form asp-controller="User"
       asp-action="UpdateLogin">
     <input type="hidden" name="login" value="@Model.Login"/>
@@ -47,7 +64,7 @@
     <input type="text" name="newLogin"/>
     <input type="submit" value="Отправить"/>
 </form>
-<p>Изменить пароль</p>
+<p><b>Изменить пароль: </b></p>
 <form asp-controller="User"
       asp-action="UpdatePassword">
     <input type="hidden" name="login" value="@Model.Login"/>
@@ -56,7 +73,7 @@
     <input type="text" name="newPassword"/>
     <input type="submit" value="Отправить"/>
 </form>
-<p>Изменить email</p>
+<p><b>Изменить email: </b></p>
 <form asp-controller="User"
       asp-action="UpdateEmail">
     <input type="hidden" name="login" value="@Model.Login"/>
@@ -65,7 +82,7 @@
     <input type="text" name="email"/>
     <input type="submit" value="Отправить"/>
 </form>
-<p>Выбрать картинку</p>
+<p><b>Выбрать картинку: </b></p>
 <form asp-controller="User"
       asp-action="UpdatePicture">
     <input type="hidden" name="login" value="@Model.Login"/>
@@ -80,5 +97,3 @@
     }
     <input type="submit" value="Выбрать"/>
 </form>
-</body>
-</html>

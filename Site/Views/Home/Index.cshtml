@@ -2,49 +2,74 @@
 @model IIdentity;
 
 @{
-    Layout = null;
+    Layout = "_HomeLayout";
 }
 
-<html>
-<head>
-    <meta name="viewport" content="width-device-width" />
-    <title>Nick</title>
-</head>
-<body>
-<a asp-controller="Authorization"
-   asp-action="Login"
-   asp-route-callerController="Home"
-   asp-route-userId="@Model?.UserId"
-   asp-route-callerAction="Index">Войти</a>
-<a asp-controller="User"
-   asp-action="PersonalArea"
-   asp-route-login="@Model?.Login"
-   asp-route-password="@Model?.Password"
-   asp-route-userId="@Model?.UserId"
-   asp-route-type="@Model?.Type">Личный кабинет</a>
-<a asp-controller="User"
-   asp-action="TopPlayers"
-   asp-route-login="@Model?.Login"
-   asp-route-password="@Model?.Password"
-   asp-route-userId="@Model?.UserId"
-   asp-route-type="@Model?.Type">Лучшие игроки</a>
-<a asp-controller="News"
-   asp-action="Index"
-   asp-route-login="@Model?.Login"
-   asp-route-password="@Model?.Password"
-   asp-route-userId="@Model?.UserId"
-   asp-route-type="@Model?.Type">Новости</a>
-<a asp-controller="Chat"
-   asp-action="CommonChat"
-   asp-route-login="@Model?.Login"
-   asp-route-password="@Model?.Password"
-   asp-route-userId="@Model?.UserId"
-   asp-route-type="@Model?.Type">Общий чат</a>
-<a asp-controller="Forum"
-   asp-action="Index"
-   asp-route-login="@Model?.Login"
-   asp-route-password="@Model?.Password"
-   asp-route-userId="@Model?.UserId"
-   asp-route-type="@Model?.Type">Форум</a>
-</body>
-</html>
+<h2>Главная страница</h2>
+<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+    <ul class="navbar-nav flex-grow-1">
+        <li class="nav-item">
+            <button style="height:50px;width:160px">
+                <a class="nav-link text-dark"
+                   asp-controller="Authorization"
+                   asp-action="Login"
+                   asp-route-callerController="Home"
+                   asp-route-userId="@Model?.UserId"
+                   asp-route-callerAction="Index">Войти</a>
+                </button>
+        </li>
+        <li class="nav-item">
+            <button style="height:50px;width:160px">
+                <a class="nav-link text-dark"
+                   asp-controller="User"
+                   asp-action="PersonalArea"
+                   asp-route-login="@Model?.Login"
+                   asp-route-password="@Model?.Password"
+                   asp-route-userId="@Model?.UserId"
+                   asp-route-type="@Model?.Type">Личный кабинет</a>
+                </button>
+            </li>
+        <li class="nav-item">
+            <button style="height:50px;width:160px">
+                <a class="nav-link text-dark"
+                   asp-controller="User"
+                   asp-action="TopPlayers"
+                   asp-route-login="@Model?.Login"
+                   asp-route-password="@Model?.Password"
+                   asp-route-userId="@Model?.UserId"
+                   asp-route-type="@Model?.Type">Лучшие игроки</a>
+                </button>
+        </li>
+        <li class="nav-item">
+            <button style="height:50px;width:160px">
+                <a class="nav-link text-dark"
+                   asp-controller="News"
+                   asp-action="Index"
+                   asp-route-login="@Model?.Login"
+                   asp-route-password="@Model?.Password"
+                   asp-route-userId="@Model?.UserId"
+                   asp-route-type="@Model?.Type">Новости</a>
+                </button>
+        <li class="nav-item">
+            <button style="height:50px;width:160px">
+                <a class="nav-link text-dark"
+                   asp-controller="Chat"
+                   asp-action="CommonChat"
+                   asp-route-login="@Model?.Login"
+                   asp-route-password="@Model?.Password"
+                   asp-route-userId="@Model?.UserId"
+                   asp-route-type="@Model?.Type">Общий чат</a>
+                </button>
+        <li class="nav-item">
+            <button style="height:50px;width:160px">
+                <a class="nav-link text-dark"
+                   asp-controller="Forum"
+                   asp-action="Index"
+                   asp-route-login="@Model?.Login"
+                   asp-route-password="@Model?.Password"
+                   asp-route-userId="@Model?.UserId"
+                   asp-route-type="@Model?.Type">Форум</a>
+                </button>
+        </li>
+    </ul>
+</div>
