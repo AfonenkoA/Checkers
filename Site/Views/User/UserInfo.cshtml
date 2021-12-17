@@ -6,13 +6,13 @@
 }
 <div class="icon"><img src="@Model?.Value.Picture.Url" width="140" height="140"></div>
 <p><b>Никнейм: </b>
-<a asp-controller="User"
-   asp-action="Profile"
-   asp-route-id="@Model?.Value.Id"
-   asp-route-login="@Model?.Login"
-   asp-route-type="@Model?.Type"
-   asp-route-userId="@Model?.UserId"
-   asp-route-password="@Model?.Password">@Model?.Value.Nick</a></p>
+    <a asp-controller="User"
+       asp-action="Profile"
+       asp-route-id="@Model?.Value.Id"
+       asp-route-login="@Model?.Login"
+       asp-route-type="@Model?.Type"
+       asp-route-userId="@Model?.UserId"
+       asp-route-password="@Model?.Password">@Model?.Value.Nick</a></p>
 <p><b>Был в сети: </b>@Model?.Value.LastActivity</p>
 <p><b>Рейтинг: </b>@Model?.Value.SocialCredit</p>
 <p><b>Тип пользователя: </b>@Model?.Value.Type</p>

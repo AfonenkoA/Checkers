@@ -34,13 +34,16 @@
     foreach (var friend in Model.Value.Friends)
     {
         @await Html.PartialAsync("UserInfo", new Identified<Friend>(Model, friend))
-        <p><a asp-controller="Chat"
-              asp-action="Chat"
-              asp-route-id="@friend.ChatId"
-              asp-route-login="@Model?.Login"
-              asp-route-type="@Model?.Type"
-              asp-route-userId="@Model?.UserId"
-              asp-route-password="@Model?.Password">Чат</a></p>
+        <p>
+            <button style="height:50px;width:146px">
+                <a class="nav-link text-dark"
+                   asp-controller="Chat"
+                   asp-action="Chat"
+                   asp-route-id="@friend.ChatId"
+                   asp-route-login="@Model?.Login"
+                   asp-route-type="@Model?.Type"
+                   asp-route-userId="@Model?.UserId"
+                   asp-route-password="@Model?.Password">Чат</a></button></p>
         <hr/>
     }
 }
@@ -53,7 +56,7 @@
     <input type="hidden" name="password" value="@Model.Password"/>
     <input type="text" name="nick" value="@Model.Value.Nick"/>
     <input type="hidden" name="type" value="@Model.Type"/>
-    <input type="submit" value="Отправить"/>
+    <input type="submit" value="Подтвердить"/>
 </form>
 <p><b>Изменить логин: </b></p>
 <form asp-controller="User"
@@ -62,7 +65,7 @@
     <input type="hidden" name="password" value="@Model.Password"/>
     <input type="hidden" name="type" value="@Model.Type"/>
     <input type="text" name="newLogin"/>
-    <input type="submit" value="Отправить"/>
+    <input type="submit" value="Подтвердить"/>
 </form>
 <p><b>Изменить пароль: </b></p>
 <form asp-controller="User"
@@ -71,7 +74,7 @@
     <input type="hidden" name="password" value="@Model.Password"/>
     <input type="hidden" name="type" value="@Model.Type"/>
     <input type="text" name="newPassword"/>
-    <input type="submit" value="Отправить"/>
+    <input type="submit" value="Подтвердить"/>
 </form>
 <p><b>Изменить email: </b></p>
 <form asp-controller="User"
@@ -80,7 +83,7 @@
     <input type="hidden" name="password" value="@Model.Password"/>
     <input type="hidden" name="type" value="@Model.Type"/>
     <input type="text" name="email"/>
-    <input type="submit" value="Отправить"/>
+    <input type="submit" value="Подтвердить"/>
 </form>
 <p><b>Выбрать картинку: </b></p>
 <form asp-controller="User"
@@ -95,5 +98,5 @@
             <input type="radio" name="picture" id="@p.Id" value="@p.Id"/>
         }
     }
-    <input type="submit" value="Выбрать"/>
+    <input type="submit" value="Подтвердить"/>
 </form>
