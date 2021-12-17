@@ -5,7 +5,10 @@ namespace WinFormsClient.Presentation.Views;
 
 public interface ICollectionView : IView
 {
-    event Action BackToMenu;
-    void SetCollectionInfo(IEnumerable<VisualAnimation> animations,
-        IEnumerable<VisualCheckersSkin> checkers);
+    event Action OnBackToMenu;
+    event Action OnAnimationSelect;
+    event Action OnCheckersSkinSelect;
+    public int SelectedCheckersId { get; }
+    public int SelectedAnimationsId { get; }
+    void SetCollectionInfo(Collection collection);
 }

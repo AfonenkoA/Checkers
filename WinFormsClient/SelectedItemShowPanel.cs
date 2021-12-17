@@ -2,13 +2,23 @@
 
 namespace WinFormsClient;
 
-public partial class SelectedItemShowPanel : UserControl
+public sealed partial class SelectedItemShowPanel : UserControl
 {
-    public SelectedItemShowPanel(VisualDetailedItem item)
+    private readonly CollectionWindow _parent;
+    private readonly int _id;
+    public SelectedItemShowPanel(CollectionWindow parent, VisualDetailedItem item)
     {
+        _parent = parent;
+        _id = item.Id;
         InitializeComponent();
+        BackColor = Color.Blue;
         TitleLabel.Text = item.Name;
         DescriptionLabel.Text = item.Detail;
         pictureBox1.Image = item.Image;
+    }
+
+    private void SelectItemButton_Click(object sender, EventArgs e)
+    {
+        _parent.SelectedAnimationsId = _id;
     }
 }

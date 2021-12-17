@@ -39,4 +39,18 @@ internal class UserRepository : IUserRepository
 
         return (true, self);
     }
+
+    public async Task<(bool, Collection)> GetCollection(Credential credential)
+    {
+        var (_, self) = await GetSelf(credential);
+        var selectedAnimId = self.SelectedAnimation.Id;
+        var selectedSkinId = self.SelectedCheckersSkin.Id;
+        var animations = self.Animations
+            .Select(a => new CollectionAnimation(a, a.Id == selectedAnimId))
+            .ToList();
+        var skins = self.CheckersSkins
+            .Select(c => new CollectionCheckersSkin(c, c.Id == selectedSkinId))
+            .ToList();
+        return (true, new Collection(animations, skins));
+    }
 }

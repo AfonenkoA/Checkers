@@ -11,7 +11,7 @@ public partial class CollectionWindow : Form, ICollectionView
     {
         _context = context;
         InitializeComponent();
-        ReturnButton.Click += (sender, args) => Invoke(BackToMenu);
+        ReturnButton.Click += (_, _) => InvokeAction(OnBackToMenu);
     }
 
     public new void Show()
@@ -20,19 +20,20 @@ public partial class CollectionWindow : Form, ICollectionView
         base.Show();
     }
 
-    public void SetCollectionInfo(IEnumerable<VisualAnimation> animations,
-        IEnumerable<VisualCheckersSkin> skins)
+
+    public void SetCollectionInfo(Collection collection)
     {
-        foreach (var animation in animations)
-            Aniamtions.Controls.Add(new SelectedItemShowPanel(animation));
+        foreach (var animation in collection.Animations)
+            Aniamtions.Controls.Add(new SelectedItemShowPanel(this,animation));
         
-        foreach (var skin in skins)
-            CheckersSkins.Controls.Add(new SelectedItemShowPanel(skin));
+        foreach (var skin in collection.Skins)
+            CheckersSkins.Controls.Add(new SelectedItemShowPanel(this,skin));
     }
 
-    public event Action BackToMenu;
-    private void Invoke(Action action)
-    {
-        if (action != null) action();
-    }
+    public event Action? OnBackToMenu;
+    public event Action? OnAnimationSelect;
+    public event Action? OnCheckersSkinSelect;
+    public int SelectedCheckersId { get; set; }
+    public int SelectedAnimationsId { get; set; }
+    private static void InvokeAction(Action? action) => action?.Invoke();
 }

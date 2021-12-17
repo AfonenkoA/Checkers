@@ -14,4 +14,11 @@ public class VisualNamedItem
         Name = item.Name;
         Image = img;
     }
+
+    public VisualNamedItem(VisualNamedItem item)
+    {
+        Id = item.Id;
+        Name = item.Name;
+        Image = item.Image;
+    }
 }

@@ -1,6 +1,6 @@
 ﻿namespace WinFormsClient
 {
-    partial class SelectedItemShowPanel
+    sealed partial class SelectedItemShowPanel
     {
         /// <summary> 
         /// Обязательная переменная конструктора.
@@ -72,6 +72,7 @@
             this.SelectItemButton.TabIndex = 5;
             this.SelectItemButton.Text = "Select";
             this.SelectItemButton.UseVisualStyleBackColor = true;
+            this.SelectItemButton.Click += new System.EventHandler(this.SelectItemButton_Click);
             // 
             // SelectedItemShowPanel
             // 
