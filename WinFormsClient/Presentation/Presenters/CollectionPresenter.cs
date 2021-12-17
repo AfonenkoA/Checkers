@@ -15,7 +15,7 @@ public class CollectionPresenter : BasePresenter<ICollectionView, Credential>
         base(controller, view)
     {
         _repository = repository;
-        View.BackToMenu += BackToMenu;
+        View.OnBackToMenu += BackToMenu;
     }
     public override void Run(Credential argument)
     {
@@ -26,8 +26,8 @@ public class CollectionPresenter : BasePresenter<ICollectionView, Credential>
     private async Task UpdateCollectionInfo()
     {
         if (_credential == null) throw new ArgumentException("Null credential");
-        var (_,user) = await _repository.GetSelf(_credential);
-        View.SetCollectionInfo(user.Animations, user.CheckersSkins);
+        var (_, collection) = await _repository.GetCollection(_credential);
+        View.SetCollectionInfo(collection);
     }
 
     private void BackToMenu()

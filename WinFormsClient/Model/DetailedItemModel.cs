@@ -9,4 +9,9 @@ public class VisualDetailedItem : VisualNamedItem
     public VisualDetailedItem(DetailedItem item, Image image) : 
         base(item, image) =>
         Detail = item.Detail;
+
+    public VisualDetailedItem(VisualDetailedItem item) : base(item)
+    {
+        Detail = item.Detail;
+    }
 }

@@ -10,7 +10,7 @@ public partial class LoginWindow : Form, ILoginView
         _context = context;
         InitializeComponent();
 
-        EnterButton.Click += (sender, args) => Invoke(LogIn);
+        EnterButton.Click += (_, _) => InvokeAction(LogIn);
     }
 
     public new void Show()
@@ -19,17 +19,15 @@ public partial class LoginWindow : Form, ILoginView
         Application.Run(_context);
     }
 
-    public string Login { get { return LoginTextBox.Text; } }
-    public string Password { get { return PasswordTextBox.Text; } }
-    public event Action LogIn;
+    public string Login => LoginTextBox.Text;
+    public string Password => PasswordTextBox.Text;
+
+    public event Action? LogIn;
 
     public void ShowError(string errorMessage)
     {
         ErrorLabel.Text = errorMessage;
     }
 
-    private void Invoke(Action action)
-    {
-        if (action != null) action();
-    }
+    private static void InvokeAction(Action? action) => action?.Invoke();
 }
