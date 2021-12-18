@@ -18,6 +18,8 @@ public class ShopPresenter : BasePresenter<IShopView, Credential>
         _repository = repository;
         View.OnBackToMenu += BackToMenu;
         View.ReloadShop += ReloadShop;
+        View.OnBuyCheckersSkin += BuyCheckersSkin;
+        View.OnBuyAnimation += BuyAnimatiom;
     }
     public override void Run(Credential argument)
     {
@@ -35,6 +37,16 @@ public class ShopPresenter : BasePresenter<IShopView, Credential>
                 user.AvailableCheckersSkins,
                 user.AvailableLootBoxes);
 
+    }
+    private async void BuyCheckersSkin()
+    {
+        await _repository.BuyCheckersSkin(_credential, View.CheckersSkinId);
+        await UpdateShopInfo().ConfigureAwait(true);
+    }
+    private async void BuyAnimation()
+    {
+        await _repository.BuyAnimation(_credential, View.AnimationId);
+        await UpdateShopInfo().ConfigureAwait(true);
     }
 
     private void BackToMenu()

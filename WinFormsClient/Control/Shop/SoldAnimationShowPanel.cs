@@ -8,12 +8,12 @@ namespace WinFormsClient.Control.Shop;
 public sealed partial class SoldAnimationShowPanel : UserControl
 {
     private readonly IAsyncUserApi _userApi = new UserWebApi();
-    private readonly VisualSoldItem _item;
-    private readonly Credential _credential;
-    public SoldAnimationShowPanel(VisualSoldItem item,Credential credential)
+    private readonly ShopWindow _parent;
+    private readonly int _id;
+    public SoldAnimationShowPanel(ShopWindow parent,VisualSoldItem item)
     {
-        _credential = credential;
-        _item = item;
+        _parent = parent;
+        _id = item.Id;
         InitializeComponent();
         TitleLabel.Text = item.Name;
         DescriptionLabel.Text = item.Detail;
@@ -22,11 +22,11 @@ public sealed partial class SoldAnimationShowPanel : UserControl
 
     }
 
-    private async void BuyItemButton_Click(object sender, EventArgs e)
+    private  void BuyItemButton_Click(object sender, EventArgs e)
     {
 
-        await _userApi.BuyAnimation(_credential, _item.Id);
-        Hide();
-            
+        _parent.AnimationId = _id;
+        _parent.BuyAnimation();
+
     }
 }
