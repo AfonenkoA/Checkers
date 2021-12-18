@@ -2,18 +2,20 @@
 using Common.Entity;
 using WinFormsClient.Presentation.Common;
 using WinFormsClient.Presentation.Views;
+using WinFormsClient.Repository.Interface;
 using static System.Globalization.CultureInfo;
 
 namespace WinFormsClient.Presentation.Presenters;
 
 public class ProfilePresenter : BasePresenter<IProfileView, Credential>
 {
-    private readonly IAsyncUserApi _userApi ;
+    private readonly IUserRepository _repository;
     private Credential _credential;
 
-    public ProfilePresenter(IApplicationController controller, IProfileView view,IAsyncUserApi userApi) : base(controller, view)
+    public ProfilePresenter(IApplicationController controller, IProfileView view, IUserRepository repository
+    ) : base(controller, view)
     {
-        _userApi = userApi;
+        _repository = repository;
     }
     public override void Run(Credential argument)
     {
@@ -23,7 +25,7 @@ public class ProfilePresenter : BasePresenter<IProfileView, Credential>
     }
     private async Task UpdateUserInfo()
     {
-        var (_, user) = await _userApi.TryGetSelf(_credential);
-        View.SetUserInfo(user.Nick,user.SocialCredit.ToString(), user.LastActivity.ToString(CurrentCulture));
+        var (_, user) = await _repository.GetSelf(_credential);
+        View.SetUserInfo(user.Nick,user.SocialCredit.ToString(), user.LastActivity.ToString(CurrentCulture),user.Image);
     }
 }

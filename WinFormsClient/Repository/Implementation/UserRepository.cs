@@ -60,4 +60,10 @@ internal class UserRepository : IUserRepository
 
     public Task<bool> SelectCheckers(ICredential credential, int id) =>
         _userApi.SelectCheckers(credential, id);
+
+    public Task<bool> BuyCheckersSkin(ICredential credential, int id) => 
+        _userApi.BuyCheckersSkin(credential, id);
+    public Task<bool> BuyAnimation(ICredential credential, int id) =>
+        _userApi.BuyCheckersSkin(credential, id);
+
 }

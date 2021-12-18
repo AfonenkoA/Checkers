@@ -8,12 +8,12 @@ namespace WinFormsClient.Control.Shop;
 public partial class SoldCheckersShowPanel : UserControl
 {
     private readonly IAsyncUserApi _userApi = new UserWebApi();
-    private readonly VisualSoldItem _item;
-    private readonly Credential _credential;
-    public SoldCheckersShowPanel(VisualSoldItem item, Credential credential)
+    private readonly ShopWindow _parent;
+    private readonly int _id;
+    internal SoldCheckersShowPanel(ShopWindow parent, VisualSoldItem item)
     {
-        _credential = credential;
-        _item = item;
+        _parent = parent;
+        _id = item.Id;
         InitializeComponent();
         TitleLabel.Text = item.Name;
         DescriptionLabel.Text = item.Detail;
@@ -22,9 +22,9 @@ public partial class SoldCheckersShowPanel : UserControl
 
     }
 
-    private async void BuyItemButton_Click(object sender, EventArgs e)
+    private  void BuyItemButton_Click(object sender, EventArgs e)
     {
-        await _userApi.BuyCheckersSkin(_credential, _item.Id);
-        Hide();
+        _parent.CheckersSkinId = _id;
+        _parent.BuyCheckersSkin();
     }
 }
