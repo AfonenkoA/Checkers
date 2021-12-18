@@ -2,30 +2,22 @@
 @model IIdentity
 
 @{
-    Layout = null;
+    Layout = "_HomeLayout";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title>title</title>
-</head>
-<body>
+<h2>Создание поста</h2>
 <form asp-controller="Forum"
       asp-action="Create"
       enctype="multipart/form-data"
       method="post">
-    <label for="title">Заголовок</label>
-    <textarea name="title" id="title"></textarea>
-    <label for="content">Содержание</label>
-    <textarea name="content" id="content"></textarea>
-    <input type="file" name="picture"/>
+    <p><label for="title">Заголовок</label></p>
+    <p><textarea cols="80" rows="2" name="title" id="title"></textarea></p>
+    <p><label for="content">Содержание</label></p>
+    <p><textarea cols="80" rows="10" name="content" id="content"></textarea></p>
+    <p><input type="file" name="picture"/></p>
     <input type="hidden" name="login" value="@Model?.Login"/>
     <input type="hidden" name="password" value="@Model?.Password"/>
     <input type="hidden" name="type" value="@Model?.Type"/>
     <input type="hidden" name="userId" value="@Model?.UserId"/>
-    <input type="submit" name="Создать"/>
+    <p><input type="submit" name="Создать"/></p>
 </form>
-</body>
-</html>

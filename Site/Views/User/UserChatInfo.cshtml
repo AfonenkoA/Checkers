@@ -4,7 +4,7 @@
 @{
     Layout = null;
 }
-<div class="icon"><img src="@Model?.Value.Picture.Url" width="140" height="140"></div>
+<div class="icon"><img src="@Model?.Value.Picture.Url" width="60" height="60"></div>
 <p><b>Никнейм: </b>
     <a asp-controller="User"
        asp-action="Profile"
@@ -13,8 +13,5 @@
        asp-route-type="@Model?.Type"
        asp-route-userId="@Model?.UserId"
        asp-route-password="@Model?.Password">@Model?.Value.Nick</a></p>
-<p><b>Был в сети: </b>@Model?.Value.LastActivity</p>
-<p><b>Рейтинг: </b>@Model?.Value.SocialCredit</p>
-<hr style="opacity:0">
-<hr style="opacity:0">
-<hr style="opacity:0">
+
+

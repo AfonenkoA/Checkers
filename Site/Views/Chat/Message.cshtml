@@ -2,7 +2,8 @@
 @using Site.Data.Models.User
 @using Site.Data.Models.UserIdentity
 @model Identified<MessageView>
-@await Html.PartialAsync("~/Views/User/UserInfo.cshtml",
+@await Html.PartialAsync("~/Views/User/UserChatInfo.cshtml",
     new Identified<UserInfo>(Model,Model.Value.Sender))
-<p>@Model?.Value.SendTime</p>
+<p><b>Отправлено: </b>@Model?.Value.SendTime</p>
 <p>@Model?.Value.Content</p>
+<hr/>

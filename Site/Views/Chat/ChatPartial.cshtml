@@ -5,7 +5,7 @@
     foreach (var message in Model?.Value.Messages)
         @await Html.PartialAsync("~/Views/Chat/Message.cshtml", new Identified<MessageView>(Model,message))
 }
-<p>Коментировать</p>
+<h3>Коментировать</h3>
 <form asp-controller="Chat"
       asp-action="Send"
       asp-route-id="@Model?.Value.Id"
@@ -13,6 +13,6 @@
       asp-route-type="@Model?.Type"
       asp-route-userId="@Model?.UserId"
       asp-route-password="@Model?.Password">
-    <textarea name="message"></textarea>
-    <input type="submit" value="Отправить"/>
+    <p><textarea cols="80" rows="5" name="message"></textarea></p>
+    <p><input type="submit" value="Отправить"/></p>
 </form>

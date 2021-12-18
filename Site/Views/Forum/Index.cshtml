@@ -3,16 +3,11 @@
 @model IIdentified<IEnumerable<Preview>>
 
 @{
-    Layout = null;
+    ViewData["Title"] = "Форум";
+    Layout = "_HomeLayout";
 }
 
-<!DOCTYPE html>
 
-<html>
-<head>
-    <title>title</title>
-</head>
-<body>
 @{
     foreach (var post in Model.Value)
         @await Html.PartialAsync("PostPreview", 
@@ -20,12 +15,19 @@
 }
 @if (Model.IsValid)
 {
-    <a asp-controller="Forum"
-       asp-action="CreationPage"
-       asp-route-login="@Model?.Login"
-       asp-route-type="@Model?.Type"
-       asp-route-userId="@Model?.UserId"
-       asp-route-password="@Model?.Password">Создать</a>
-}
-</body>
-</html>
+    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+        <ul class="navbar-nav flex-grow-1">
+            <li class="nav-item">
+                <button style="height:50px;width:160px">
+                    <a class="nav-link text-dark"
+                        asp-controller="Forum"
+                       asp-action="CreationPage"
+                       asp-route-login="@Model?.Login"
+                       asp-route-type="@Model?.Type"
+                       asp-route-userId="@Model?.UserId"
+                       asp-route-password="@Model?.Password">Создать</a>
+                </button>
+            </li>
+        </ul>
+    </div>
+        }

@@ -2,16 +2,10 @@
 @using Site.Data.Models.UserIdentity;
 @model IIdentified<Chat>
 @{
-    Layout = null;
+    Layout = "_HomeLayout";
 }
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>title</title>
-</head>
-<body>
+
 @await Html.PartialAsync("ChatPartial",Model)
-</body>
-</html>
+
 
