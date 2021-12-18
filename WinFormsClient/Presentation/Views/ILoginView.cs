@@ -2,11 +2,10 @@
 
 namespace WinFormsClient.Presentation.Views;
 
-public interface ILoginView : IView
-
+internal interface ILoginView : IView
 {
     string Login { get; }
     string Password { get; }
-    event Action LogIn;
+    event Action OnLogIn;
     void ShowError(string errorMessage);
 }

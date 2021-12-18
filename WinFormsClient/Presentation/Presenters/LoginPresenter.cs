@@ -17,7 +17,7 @@ internal class LoginPresenter : BasePresenter<ILoginView>
         _userApi = userApi;
             
 
-        View.LogIn += () => Authenticate(View.Login,View.Password);
+        View.OnLogIn += () => Authenticate(View.Login,View.Password);
     }
         
 

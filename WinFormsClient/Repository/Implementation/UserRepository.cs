@@ -3,6 +3,7 @@ using Common.Entity;
 using WinFormsClient.Model;
 using WinFormsClient.Model.Item;
 using WinFormsClient.Repository.Interface;
+using User = WinFormsClient.Model.User;
 
 namespace WinFormsClient.Repository.Implementation;
 
@@ -25,7 +26,7 @@ internal class UserRepository : IUserRepository
     {
         var (_, data) = await _userApi.TryGetSelf(c);
 
-        var user = new Model.User(data,
+        var user = new User(data,
             await _itemRepository.Get(data.Achievements),
             await _itemRepository.Get(data.SelectedCheckers),
             await _itemRepository.Get(data.SelectedAnimation),
@@ -60,4 +61,22 @@ internal class UserRepository : IUserRepository
 
     public Task<bool> SelectCheckers(ICredential credential, int id) =>
         _userApi.SelectCheckers(credential, id);
+
+    public async Task<(bool, IEnumerable<User>)> GetFriends(ICredential c)
+    {
+        var (_, data) = await _userApi.TryGetSelf(c);
+
+        var friends = new List<User>();
+        foreach (var friendship in data.Friends)
+        {
+            var (_, friend) = await _userApi.TryGetUser(friendship.Id);
+            friends.Add(new User(friend,
+                await _itemRepository.Get(friend.Achievements),
+                await _itemRepository.Get(friend.SelectedCheckers),
+                await _itemRepository.Get(friend.SelectedAnimation),
+                await _resourceRepository.Get(friend)));
+        }
+
+        return (true, friends);
+    }
 }

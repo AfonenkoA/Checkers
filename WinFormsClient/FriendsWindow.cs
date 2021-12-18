@@ -1,6 +1,8 @@
-﻿namespace WinFormsClient;
+﻿using WinFormsClient.Presentation.Views;
 
-public partial class FriendsWindow : Form
+namespace WinFormsClient;
+
+public partial class FriendsWindow : Form, IFriendWindow
 {
     private readonly MainMenuWindow _menuWindow;
     public FriendsWindow(MainMenuWindow window)
@@ -19,4 +21,7 @@ public partial class FriendsWindow : Form
         Hide();
         _menuWindow.Show();
     }
+
+    public int UserId { get; } = 0;
+    public event Action? OnShowFriend;
 }

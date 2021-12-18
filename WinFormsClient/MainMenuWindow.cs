@@ -32,4 +32,10 @@ public partial class MainMenuWindow : Form, IMainMenuView
     {
         if (action != null) action();
     }
+
+    private void PlayButton_Click(object sender, EventArgs e)
+    {
+        Hide();
+        new GameWindow().Show();
+    }
 }

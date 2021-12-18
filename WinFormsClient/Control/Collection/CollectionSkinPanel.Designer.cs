@@ -83,7 +83,7 @@
             this.Controls.Add(this.TitleLabel);
             this.Controls.Add(this.Picture);
             this.Name = "CollectionSkinPanel";
-            this.Size = new System.Drawing.Size(242, 100);
+            this.Size = new System.Drawing.Size(242, 102);
             ((System.ComponentModel.ISupportInitialize)(this.Picture)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -65,6 +65,7 @@
             this.PlayButton.TabIndex = 2;
             this.PlayButton.Text = "Play";
             this.PlayButton.UseVisualStyleBackColor = true;
+            this.PlayButton.Click += new System.EventHandler(this.PlayButton_Click);
             // 
             // CollectionButton
             // 
