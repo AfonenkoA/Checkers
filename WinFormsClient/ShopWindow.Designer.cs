@@ -36,7 +36,6 @@
             this.CheckersLabel = new System.Windows.Forms.Label();
             this.Lootboxes = new System.Windows.Forms.FlowLayoutPanel();
             this.LootBoxesLabel = new System.Windows.Forms.Label();
-            this.ReloadShopButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // ReturnButton
@@ -116,16 +115,6 @@
             this.LootBoxesLabel.TabIndex = 9;
             this.LootBoxesLabel.Text = "Loot boxes";
             // 
-            // ReloadShopButton
-            // 
-            this.ReloadShopButton.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.ReloadShopButton.Location = new System.Drawing.Point(334, 6);
-            this.ReloadShopButton.Name = "ReloadShopButton";
-            this.ReloadShopButton.Size = new System.Drawing.Size(90, 37);
-            this.ReloadShopButton.TabIndex = 3;
-            this.ReloadShopButton.Text = "Reload";
-            this.ReloadShopButton.UseVisualStyleBackColor = true;
-            // 
             // ShopWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -138,7 +127,6 @@
             this.Controls.Add(this.AnimationsLabel);
             this.Controls.Add(this.CheckersLabel);
             this.Controls.Add(this.CurrencyLabel);
-            this.Controls.Add(this.ReloadShopButton);
             this.Controls.Add(this.ReturnButton);
             this.Name = "ShopWindow";
             this.Text = "ShopWindow";
@@ -157,6 +145,5 @@
         private Label CheckersLabel;
         private FlowLayoutPanel Lootboxes;
         private Label LootBoxesLabel;
-        private Button ReloadShopButton;
     }
 }

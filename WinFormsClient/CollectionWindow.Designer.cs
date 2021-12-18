@@ -44,7 +44,6 @@
             this.ReturnButton.TabIndex = 2;
             this.ReturnButton.Text = "Return";
             this.ReturnButton.UseVisualStyleBackColor = true;
-            
             // 
             // CheckersLabel
             // 
@@ -52,9 +51,9 @@
             this.CheckersLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 24F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point);
             this.CheckersLabel.Location = new System.Drawing.Point(12, 92);
             this.CheckersLabel.Name = "CheckersLabel";
-            this.CheckersLabel.Size = new System.Drawing.Size(146, 45);
+            this.CheckersLabel.Size = new System.Drawing.Size(185, 45);
             this.CheckersLabel.TabIndex = 3;
-            this.CheckersLabel.Text = "Checkers";
+            this.CheckersLabel.Text = "Animations";
             // 
             // AnimationsLabel
             // 
@@ -62,9 +61,9 @@
             this.AnimationsLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 24F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point);
             this.AnimationsLabel.Location = new System.Drawing.Point(12, 258);
             this.AnimationsLabel.Name = "AnimationsLabel";
-            this.AnimationsLabel.Size = new System.Drawing.Size(185, 45);
+            this.AnimationsLabel.Size = new System.Drawing.Size(146, 45);
             this.AnimationsLabel.TabIndex = 3;
-            this.AnimationsLabel.Text = "Animations";
+            this.AnimationsLabel.Text = "Checkers";
             // 
             // Aniamtions
             // 
@@ -92,7 +91,6 @@
             this.Controls.Add(this.ReturnButton);
             this.Name = "CollectionWindow";
             this.Text = "CollectionWindow";
-            
             this.ResumeLayout(false);
             this.PerformLayout();
 

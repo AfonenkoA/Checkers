@@ -10,7 +10,7 @@ public partial class SoldLootboxShowPanel : UserControl
     private readonly IAsyncUserApi _userApi = new UserWebApi();
     private readonly VisualSoldItem _item;
     private readonly Credential _credential;
-    public SoldLootboxShowPanel(VisualSoldItem item,Credential credential)
+    public SoldLootboxShowPanel(VisualSoldItem item, Credential credential)
     {
         _credential = credential;
         _item = item;
@@ -24,6 +24,6 @@ public partial class SoldLootboxShowPanel : UserControl
     private async void BuyItemButton_Click(object sender, EventArgs e)
     {
         await _userApi.BuyLootBox(_credential, _item.Id);
-            
+
     }
 }

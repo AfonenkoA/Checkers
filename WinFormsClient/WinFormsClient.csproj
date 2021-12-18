@@ -18,8 +18,4 @@
     <ProjectReference Include="..\GameClient\GameClient.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Model\Item\Shop\" />
-  </ItemGroup>
-
 </Project>

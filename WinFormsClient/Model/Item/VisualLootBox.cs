@@ -2,8 +2,11 @@
 
 namespace WinFormsClient.Model.Item;
 
-public sealed class VisualLootBox : VisualSoldItem
+public class VisualLootBox : VisualSoldItem
 {
     public VisualLootBox(SoldItem item, Image image) : base(item, image)
+    { }
+
+    public VisualLootBox(VisualLootBox box) : base(box)
     { }
 }

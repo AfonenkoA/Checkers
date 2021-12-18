@@ -4,8 +4,8 @@ namespace WinFormsClient.Model;
 
 public sealed class Collection
 {
-    public IEnumerable<CollectionAnimation> Animations;
-    public IEnumerable<CollectionCheckersSkin> Skins;
+    public readonly IEnumerable<CollectionAnimation> Animations;
+    public readonly IEnumerable<CollectionCheckersSkin> Skins;
 
     public Collection(IEnumerable<CollectionAnimation> animations,
         IEnumerable<CollectionCheckersSkin> skins)
