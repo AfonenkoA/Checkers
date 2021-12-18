@@ -1,5 +1,6 @@
 ﻿using Api.Interface;
 using Common.Entity;
+using Site.Data.Models;
 using Site.Data.Models.Article;
 using Site.Repository.Interface;
 
@@ -32,5 +33,22 @@ public sealed class NewsRepository : INewsRepository
     {
         var (success, article) = await _newsApi.TryGetArticle(id);
         return (success, ConvertToView(article));
+    }
+
+    public Task<bool> UpdateTitle(ICredential credential, int id, string title) =>
+        _newsApi.UpdateTitle(credential, id, title);
+
+    public Task<bool> UpdateAbstract(ICredential credential, int id, string @abstract) =>
+        _newsApi.UpdateAbstract(credential, id, @abstract);
+
+    public Task<bool> UpdateContent(ICredential credential, int id, string content) =>
+        _newsApi.UpdateContent(credential, id, content);
+
+    public async Task<bool> UpdatePicture(PictureUpdateData data)
+    {
+        if (data.Picture == null) return false;
+        var (s, id) = await _resource.Create(data, data.Picture);
+        if (!s) return false;
+        return await _newsApi.UpdatePicture(data, data.Id, id);
     }
 }

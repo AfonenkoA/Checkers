@@ -1,5 +1,6 @@
 ﻿@using Site.Data.Models.Article;
 @using Site.Data.Models.UserIdentity;
+@using Common.Entity
 @model IIdentified<VisualArticle>
 
 @{
@@ -23,5 +24,54 @@
    asp-route-type="@Model?.Type"
    asp-route-userId="@Model?.UserId"
    asp-route-password="@Model?.Password">Обсуждение</a>
+
+@if (Model.Type == UserType.Editor)
+{
+    <p>Изменить заголовок</p>
+    <form asp-controller="News"
+          asp-action="UpdateTitle">
+        <input type="hidden" name="login" value="@Model.Login"/>
+        <input type="hidden" name="password" value="@Model.Password"/>
+        <input type="hidden" name="type" value="@Model.Type"/>
+        <input type="hidden" name="userId" value="@Model?.UserId"/>
+        <input type="hidden" name="id" value="@Model?.Value.Id"/>
+        <textarea name="title">@Model.Value.Title</textarea>
+        <input type="submit" value="Подтвердить"/>
+    </form>
+    <p>Изменить введение</p>
+    <form asp-controller="News"
+          asp-action="UpdateAbstract">
+        <input type="hidden" name="login" value="@Model.Login"/>
+        <input type="hidden" name="password" value="@Model.Password"/>
+        <input type="hidden" name="type" value="@Model.Type"/>
+        <input type="hidden" name="userId" value="@Model?.UserId"/>
+        <input type="hidden" name="id" value="@Model?.Value.Id"/>
+        <textarea name="content">@Model.Value.Content</textarea>
+        <input type="submit" value="Подтвердить"/>
+    </form>
+    <p>Изменить содержание</p>
+    <form asp-controller="News"
+          asp-action="UpdateContent">
+        <input type="hidden" name="login" value="@Model.Login"/>
+        <input type="hidden" name="password" value="@Model.Password"/>
+        <input type="hidden" name="type" value="@Model.Type"/>
+        <input type="hidden" name="userId" value="@Model?.UserId"/>
+        <input type="hidden" name="id" value="@Model?.Value.Id"/>
+        <textarea name="content">@Model.Value.Content</textarea>
+        <input type="submit" value="Подтвердить"/>
+    </form>
+    <p>Изменить картинку</p>
+    <form asp-controller="Forum"
+          asp-action="UpdatePicture"
+          enctype="multipart/form-data">
+        <input type="hidden" name="login" value="@Model.Login"/>
+        <input type="hidden" name="password" value="@Model.Password"/>
+        <input type="hidden" name="type" value="@Model.Type"/>
+        <input type="hidden" name="userId" value="@Model?.UserId"/>
+        <input type="hidden" name="id" value="@Model?.Value.Id"/>
+        <input type="file" name="picture"/>
+        <input type="submit" value="Подтвердить"/>
+    </form>
+}
 </body>
 </html>
