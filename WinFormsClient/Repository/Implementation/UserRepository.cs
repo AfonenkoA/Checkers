@@ -1,6 +1,7 @@
 ﻿using Api.Interface;
 using Common.Entity;
 using WinFormsClient.Model;
+using WinFormsClient.Model.Item;
 using WinFormsClient.Repository.Interface;
 
 namespace WinFormsClient.Repository.Implementation;
@@ -20,7 +21,7 @@ internal class UserRepository : IUserRepository
         _resourceRepository = resourceRepository;
     }
 
-    public async Task<(bool, Self)> GetSelf(Credential c)
+    public async Task<(bool, Self)> GetSelf(ICredential c)
     {
         var (_, data) = await _userApi.TryGetSelf(c);
 
@@ -40,7 +41,7 @@ internal class UserRepository : IUserRepository
         return (true, self);
     }
 
-    public async Task<(bool, Collection)> GetCollection(Credential credential)
+    public async Task<(bool, Collection)> GetCollection(ICredential credential)
     {
         var (_, self) = await GetSelf(credential);
         var selectedAnimId = self.SelectedAnimation.Id;
@@ -53,4 +54,10 @@ internal class UserRepository : IUserRepository
             .ToList();
         return (true, new Collection(animations, skins));
     }
+
+    public Task<bool> SelectAnimation(ICredential credential, int id) =>
+        _userApi.SelectAnimation(credential, id);
+
+    public Task<bool> SelectCheckers(ICredential credential, int id) =>
+        _userApi.SelectCheckers(credential, id);
 }

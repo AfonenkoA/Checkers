@@ -1,5 +1,6 @@
 ﻿using Common.Entity;
-using WinFormsClient.Model;
+using WinFormsClient.Control.Shop;
+using WinFormsClient.Model.Item;
 using WinFormsClient.Presentation.Views;
 
 namespace WinFormsClient;

@@ -1,7 +1,7 @@
 ﻿using Api.Interface;
 using Api.WebImplementation;
 using Common.Entity;
-using WinFormsClient.Model;
+using WinFormsClient.Model.Item;
 
 namespace WinFormsClient;
 
@@ -18,7 +18,7 @@ public partial class SoldLootboxShowPanel : UserControl
         TitleLabel.Text = item.Name;
         DescriptionLabel.Text = item.Detail;
         PriceLabel.Text = item.Price.ToString();
-        pictureBox1.Image = item.Image;
+        Picture.Image = item.Image;
     }
 
     private async void BuyItemButton_Click(object sender, EventArgs e)

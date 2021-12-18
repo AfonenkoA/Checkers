@@ -1,5 +1,5 @@
 ﻿using Common.Entity;
-using WinFormsClient.Model;
+using WinFormsClient.Model.Item;
 
 namespace WinFormsClient.Repository.Interface;
 

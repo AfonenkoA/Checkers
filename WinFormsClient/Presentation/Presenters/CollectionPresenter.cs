@@ -16,6 +16,8 @@ public class CollectionPresenter : BasePresenter<ICollectionView, Credential>
     {
         _repository = repository;
         View.OnBackToMenu += BackToMenu;
+        View.OnAnimationSelect += SelectAnimation;
+        View.OnCheckersSkinSelect += SelectCheckersSkin;
     }
     public override void Run(Credential argument)
     {
@@ -23,11 +25,24 @@ public class CollectionPresenter : BasePresenter<ICollectionView, Credential>
         Task.Run(UpdateCollectionInfo).Wait();
         View.Show();
     }
+
     private async Task UpdateCollectionInfo()
     {
         if (_credential == null) throw new ArgumentException("Null credential");
         var (_, collection) = await _repository.GetCollection(_credential);
         View.SetCollectionInfo(collection);
+    }
+
+    private async void SelectAnimation()
+    {
+        await _repository.SelectAnimation(_credential, View.SelectedAnimationsId);
+        await UpdateCollectionInfo().ConfigureAwait(true);
+    }
+
+    private async void SelectCheckersSkin()
+    {
+        await _repository.SelectCheckers(_credential, View.SelectedCheckersId);
+        await UpdateCollectionInfo().ConfigureAwait(true);
     }
 
     private void BackToMenu()

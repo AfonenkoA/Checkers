@@ -1,6 +1,6 @@
 ﻿namespace WinFormsClient
 {
-    sealed partial class ItemShowPanel
+    partial class SoldLootboxShowPanel
     {
         /// <summary> 
         /// Обязательная переменная конструктора.
@@ -28,52 +28,74 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.Picture = new System.Windows.Forms.PictureBox();
             this.TitleLabel = new System.Windows.Forms.Label();
             this.DescriptionLabel = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.BuyItemButton = new System.Windows.Forms.Button();
+            this.PriceLabel = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.Picture)).BeginInit();
             this.SuspendLayout();
             // 
-            // pictureBox1
+            // Picture
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(111, 100);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
+            this.Picture.Location = new System.Drawing.Point(0, 0);
+            this.Picture.Name = "Picture";
+            this.Picture.Size = new System.Drawing.Size(111, 100);
+            this.Picture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.Picture.TabIndex = 2;
+            this.Picture.TabStop = false;
             // 
             // TitleLabel
             // 
             this.TitleLabel.AutoSize = true;
-            this.TitleLabel.Location = new System.Drawing.Point(118, 6);
+            this.TitleLabel.Location = new System.Drawing.Point(117, 13);
             this.TitleLabel.Name = "TitleLabel";
             this.TitleLabel.Size = new System.Drawing.Size(29, 15);
-            this.TitleLabel.TabIndex = 1;
+            this.TitleLabel.TabIndex = 3;
             this.TitleLabel.Text = "Title";
             // 
             // DescriptionLabel
             // 
             this.DescriptionLabel.AutoSize = true;
             this.DescriptionLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.DescriptionLabel.Location = new System.Drawing.Point(117, 21);
+            this.DescriptionLabel.Location = new System.Drawing.Point(117, 28);
             this.DescriptionLabel.Name = "DescriptionLabel";
             this.DescriptionLabel.Size = new System.Drawing.Size(67, 15);
-            this.DescriptionLabel.TabIndex = 1;
+            this.DescriptionLabel.TabIndex = 4;
             this.DescriptionLabel.Text = "Description";
             this.DescriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // ItemShowPanel
+            // BuyItemButton
+            // 
+            this.BuyItemButton.Location = new System.Drawing.Point(152, 74);
+            this.BuyItemButton.Name = "BuyItemButton";
+            this.BuyItemButton.Size = new System.Drawing.Size(75, 23);
+            this.BuyItemButton.TabIndex = 5;
+            this.BuyItemButton.Text = "Buy";
+            this.BuyItemButton.UseVisualStyleBackColor = true;
+            this.BuyItemButton.Click += new System.EventHandler(this.BuyItemButton_Click);
+            // 
+            // PriceLabel
+            // 
+            this.PriceLabel.AutoSize = true;
+            this.PriceLabel.Location = new System.Drawing.Point(194, 56);
+            this.PriceLabel.Name = "PriceLabel";
+            this.PriceLabel.Size = new System.Drawing.Size(33, 15);
+            this.PriceLabel.TabIndex = 6;
+            this.PriceLabel.Text = "Price";
+            // 
+            // SoldLootboxShowPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.PriceLabel);
+            this.Controls.Add(this.BuyItemButton);
             this.Controls.Add(this.DescriptionLabel);
             this.Controls.Add(this.TitleLabel);
-            this.Controls.Add(this.pictureBox1);
-            this.Name = "ItemShowPanel";
+            this.Controls.Add(this.Picture);
+            this.Name = "SoldLootboxShowPanel";
             this.Size = new System.Drawing.Size(242, 100);
-            
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Picture)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -81,8 +103,10 @@
 
         #endregion
 
-        private PictureBox pictureBox1;
+        private PictureBox Picture;
         private Label TitleLabel;
         private Label DescriptionLabel;
+        private Button BuyItemButton;
+        private Label PriceLabel;
     }
 }

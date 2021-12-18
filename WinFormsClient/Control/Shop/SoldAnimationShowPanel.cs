@@ -1,11 +1,11 @@
 ﻿using Api.Interface;
 using Api.WebImplementation;
 using Common.Entity;
-using WinFormsClient.Model;
+using WinFormsClient.Model.Item;
 
-namespace WinFormsClient;
+namespace WinFormsClient.Control.Shop;
 
-public partial class SoldAnimationShowPanel : UserControl
+public sealed partial class SoldAnimationShowPanel : UserControl
 {
     private readonly IAsyncUserApi _userApi = new UserWebApi();
     private readonly VisualSoldItem _item;
@@ -18,7 +18,7 @@ public partial class SoldAnimationShowPanel : UserControl
         TitleLabel.Text = item.Name;
         DescriptionLabel.Text = item.Detail;
         PriceLabel.Text = item.Price.ToString();
-        pictureBox1.Image = item.Image;
+        Picture.Image = item.Image;
 
     }
 

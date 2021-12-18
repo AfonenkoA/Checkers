@@ -1,6 +1,6 @@
-﻿namespace WinFormsClient
+﻿namespace WinFormsClient.Control.Collection
 {
-    sealed partial class SelectedItemShowPanel
+    sealed partial class CollectionSkinPanel
     {
         /// <summary> 
         /// Обязательная переменная конструктора.
@@ -28,63 +28,63 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.TitleLabel = new System.Windows.Forms.Label();
-            this.DescriptionLabel = new System.Windows.Forms.Label();
             this.SelectItemButton = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.DescriptionLabel = new System.Windows.Forms.Label();
+            this.TitleLabel = new System.Windows.Forms.Label();
+            this.Picture = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.Picture)).BeginInit();
             this.SuspendLayout();
             // 
-            // pictureBox1
+            // SelectItemButton
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(111, 100);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 2;
-            this.pictureBox1.TabStop = false;
-            // 
-            // TitleLabel
-            // 
-            this.TitleLabel.AutoSize = true;
-            this.TitleLabel.Location = new System.Drawing.Point(117, 12);
-            this.TitleLabel.Name = "TitleLabel";
-            this.TitleLabel.Size = new System.Drawing.Size(29, 15);
-            this.TitleLabel.TabIndex = 3;
-            this.TitleLabel.Text = "Title";
+            this.SelectItemButton.Location = new System.Drawing.Point(154, 74);
+            this.SelectItemButton.Name = "SelectItemButton";
+            this.SelectItemButton.Size = new System.Drawing.Size(75, 23);
+            this.SelectItemButton.TabIndex = 9;
+            this.SelectItemButton.Text = "Select";
+            this.SelectItemButton.UseVisualStyleBackColor = true;
+            this.SelectItemButton.Click += new System.EventHandler(this.SelectItemButton_Click);
             // 
             // DescriptionLabel
             // 
             this.DescriptionLabel.AutoSize = true;
             this.DescriptionLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.DescriptionLabel.Location = new System.Drawing.Point(117, 27);
+            this.DescriptionLabel.Location = new System.Drawing.Point(130, 27);
             this.DescriptionLabel.Name = "DescriptionLabel";
             this.DescriptionLabel.Size = new System.Drawing.Size(67, 15);
-            this.DescriptionLabel.TabIndex = 4;
+            this.DescriptionLabel.TabIndex = 8;
             this.DescriptionLabel.Text = "Description";
             this.DescriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // SelectItemButton
+            // TitleLabel
             // 
-            this.SelectItemButton.Location = new System.Drawing.Point(141, 74);
-            this.SelectItemButton.Name = "SelectItemButton";
-            this.SelectItemButton.Size = new System.Drawing.Size(75, 23);
-            this.SelectItemButton.TabIndex = 5;
-            this.SelectItemButton.Text = "Select";
-            this.SelectItemButton.UseVisualStyleBackColor = true;
-            this.SelectItemButton.Click += new System.EventHandler(this.SelectItemButton_Click);
+            this.TitleLabel.AutoSize = true;
+            this.TitleLabel.Location = new System.Drawing.Point(130, 12);
+            this.TitleLabel.Name = "TitleLabel";
+            this.TitleLabel.Size = new System.Drawing.Size(29, 15);
+            this.TitleLabel.TabIndex = 7;
+            this.TitleLabel.Text = "Title";
             // 
-            // SelectedItemShowPanel
+            // Picture
+            // 
+            this.Picture.Location = new System.Drawing.Point(13, 0);
+            this.Picture.Name = "Picture";
+            this.Picture.Size = new System.Drawing.Size(111, 100);
+            this.Picture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.Picture.TabIndex = 6;
+            this.Picture.TabStop = false;
+            // 
+            // CollectionSkinPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.SelectItemButton);
             this.Controls.Add(this.DescriptionLabel);
             this.Controls.Add(this.TitleLabel);
-            this.Controls.Add(this.pictureBox1);
-            this.Name = "SelectedItemShowPanel";
+            this.Controls.Add(this.Picture);
+            this.Name = "CollectionSkinPanel";
             this.Size = new System.Drawing.Size(242, 100);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Picture)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -92,9 +92,9 @@
 
         #endregion
 
-        private PictureBox pictureBox1;
-        private Label TitleLabel;
-        private Label DescriptionLabel;
         private Button SelectItemButton;
+        private Label DescriptionLabel;
+        private Label TitleLabel;
+        private PictureBox Picture;
     }
 }

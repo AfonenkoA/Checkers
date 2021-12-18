@@ -5,6 +5,8 @@ namespace WinFormsClient.Repository.Interface;
 
 public interface IUserRepository
 {
-    public Task<(bool, Self)> GetSelf(Credential c);
-    public Task<(bool, Collection)> GetCollection(Credential c);
+    public Task<(bool, Self)> GetSelf(ICredential c);
+    public Task<(bool, Collection)> GetCollection(ICredential c);
+    public Task<bool> SelectAnimation(ICredential credential, int id);
+    public Task<bool> SelectCheckers(ICredential credential, int id);
 }

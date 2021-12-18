@@ -1,9 +1,9 @@
 ﻿using Api.Interface;
 using Api.WebImplementation;
 using Common.Entity;
-using WinFormsClient.Model;
+using WinFormsClient.Model.Item;
 
-namespace WinFormsClient;
+namespace WinFormsClient.Control.Shop;
 
 public partial class SoldCheckersShowPanel : UserControl
 {
@@ -18,7 +18,7 @@ public partial class SoldCheckersShowPanel : UserControl
         TitleLabel.Text = item.Name;
         DescriptionLabel.Text = item.Detail;
         PriceLabel.Text = item.Price.ToString();
-        pictureBox1.Image = item.Image;
+        Picture.Image = item.Image;
 
     }
 

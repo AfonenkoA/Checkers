@@ -5,7 +5,7 @@ using WinFormsClient.Presentation.Views;
 
 namespace WinFormsClient.Presentation.Presenters;
 
-public class LoginPresenter : BasePresenter<ILoginView>
+internal class LoginPresenter : BasePresenter<ILoginView>
 {
        
     private readonly IAsyncUserApi _userApi;

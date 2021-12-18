@@ -1,5 +1,5 @@
 ﻿using Common.Entity;
-using WinFormsClient.Model;
+using WinFormsClient.Model.Item;
 using WinFormsClient.Presentation.Common;
 
 namespace WinFormsClient.Presentation.Views;

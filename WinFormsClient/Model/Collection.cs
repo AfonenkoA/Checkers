@@ -1,4 +1,6 @@
-﻿using WinFormsClient.Model;
+﻿using WinFormsClient.Model.Item;
+
+namespace WinFormsClient.Model;
 
 public sealed class Collection
 {

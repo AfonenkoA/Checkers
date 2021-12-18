@@ -80,7 +80,7 @@ public class UserRepositoryBase : RepositoryBase
 
     private CheckersSkin GetUserCheckersSkin(int userId)
     {
-        using var command = CreateProcedure(SelectUserAnimationProc);
+        using var command = CreateProcedure(SelectUserCheckersSkinProc);
         command.Parameters.Add(IdParameter(userId));
         using var reader = command.ExecuteReader();
         return reader.Read() ? reader.GetCheckersSkin() : CheckersSkin.Invalid;

@@ -1,6 +1,6 @@
 ﻿using Common.Entity;
 
-namespace WinFormsClient.Model;
+namespace WinFormsClient.Model.Item;
 
 public class VisualNamedItem
 {

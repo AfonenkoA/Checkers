@@ -1,5 +1,5 @@
 ﻿using Common.Entity;
-using WinFormsClient.Model;
+using WinFormsClient.Model.Item;
 using WinFormsClient.Repository.Interface;
 
 namespace WinFormsClient.Repository.Implementation;
@@ -46,8 +46,8 @@ internal class ItemRepository : IItemRepository
     public async Task<IEnumerable<VisualCheckersSkin>> Get(IEnumerable<CheckersSkin> skins)
     {
         var result = new List<VisualCheckersSkin>();
-        foreach (var a in skins)
-            result.Add(await Get(a));
+        foreach (var c in skins)
+            result.Add(await Get(c));
         return result;
     }
 

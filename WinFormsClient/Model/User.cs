@@ -1,4 +1,5 @@
 ﻿using Common.Entity;
+using WinFormsClient.Model.Item;
 
 namespace WinFormsClient.Model;
 

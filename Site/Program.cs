@@ -1,8 +1,9 @@
 using Api.Interface;
 using Api.WebImplementation;
-using Microsoft.AspNetCore;
 using Site.Repository.Implementation;
 using Site.Repository.Interface;
+using static Microsoft.AspNetCore.Builder.WebApplication;
+using static Microsoft.AspNetCore.WebHost;
 
 namespace Site;
 
@@ -10,7 +11,7 @@ internal static class Program
 {
     public static void Main(string[] args)
     {
-        var builder = WebApplication.CreateBuilder(args);
+        var builder = CreateBuilder(args);
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
@@ -56,5 +57,5 @@ internal static class Program
     }
 
     public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-        WebHost.CreateDefaultBuilder(args).UseStartup<Startup>();
+        CreateDefaultBuilder(args).UseStartup<Startup>();
 }

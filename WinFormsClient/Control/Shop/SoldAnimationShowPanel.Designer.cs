@@ -1,6 +1,6 @@
-﻿namespace WinFormsClient
+﻿namespace WinFormsClient.Control.Shop
 {
-    partial class SoldAnimationShowPanel
+    sealed partial class SoldAnimationShowPanel
     {
         /// <summary> 
         /// Обязательная переменная конструктора.
@@ -28,22 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.Picture = new System.Windows.Forms.PictureBox();
             this.TitleLabel = new System.Windows.Forms.Label();
             this.DescriptionLabel = new System.Windows.Forms.Label();
             this.BuyItemButton = new System.Windows.Forms.Button();
             this.PriceLabel = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Picture)).BeginInit();
             this.SuspendLayout();
             // 
-            // pictureBox1
+            // Picture
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(111, 100);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
+            this.Picture.Location = new System.Drawing.Point(0, 0);
+            this.Picture.Name = "Picture";
+            this.Picture.Size = new System.Drawing.Size(111, 100);
+            this.Picture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.Picture.TabIndex = 1;
+            this.Picture.TabStop = false;
             // 
             // TitleLabel
             // 
@@ -84,7 +84,7 @@
             this.PriceLabel.TabIndex = 5;
             this.PriceLabel.Text = "Price";
             // 
-            // SoldItemShowPanel
+            // SoldAnimationShowPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -92,10 +92,10 @@
             this.Controls.Add(this.BuyItemButton);
             this.Controls.Add(this.DescriptionLabel);
             this.Controls.Add(this.TitleLabel);
-            this.Controls.Add(this.pictureBox1);
-            this.Name = "SoldItemShowPanel";
+            this.Controls.Add(this.Picture);
+            this.Name = "SoldAnimationShowPanel";
             this.Size = new System.Drawing.Size(242, 100);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Picture)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -103,7 +103,7 @@
 
         #endregion
 
-        private PictureBox pictureBox1;
+        private PictureBox Picture;
         private Label TitleLabel;
         private Label DescriptionLabel;
         private Button BuyItemButton;
