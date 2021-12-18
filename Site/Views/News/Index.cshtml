@@ -1,5 +1,6 @@
 ﻿@using Site.Data.Models.Article
 @using Site.Data.Models.UserIdentity
+@using Common.Entity
 @model Identified<IEnumerable<Preview>>
 
 @{
@@ -18,5 +19,14 @@
             @await Html.PartialAsync("ArticlePreview", 
                 new Identified<Preview>(Model,article))
     }
+@if (Model.Type == UserType.Editor)
+{
+    <a asp-controller="News"
+       asp-action="CreationPage"
+       asp-route-login="@Model?.Login"
+       asp-route-type="@Model?.Type"
+       asp-route-userId="@Model?.UserId"
+       asp-route-password="@Model?.Password">Создать</a>
+}
 </body>
 </html>

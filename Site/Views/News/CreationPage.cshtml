@@ -12,7 +12,7 @@
     <title>title</title>
 </head>
 <body>
-<form asp-controller="Forum"
+<form asp-controller="News"
       asp-action="Create"
       enctype="multipart/form-data"
       method="post">
@@ -20,6 +20,8 @@
     <textarea name="title" id="title"></textarea>
     <label for="content">Содержание</label>
     <textarea name="content" id="content"></textarea>
+    <label for="abstract">Введение</label>
+    <textarea name="abstract" id="abstract"></textarea>
     <input type="file" name="picture"/>
     <input type="hidden" name="login" value="@Model?.Login"/>
     <input type="hidden" name="password" value="@Model?.Password"/>

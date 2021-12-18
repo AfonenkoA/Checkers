@@ -51,4 +51,30 @@ public sealed class NewsRepository : INewsRepository
         if (!s) return false;
         return await _newsApi.UpdatePicture(data, data.Id, id);
     }
+
+    public async Task<bool> CreateArticle(CreationData creation)
+    {
+        if (creation.Picture == null) return false;
+        var pic = creation.Picture;
+        if (creation.Login == null) return false;
+        var login = creation.Login;
+        if (creation.Password == null) return false;
+        var password = creation.Password;
+        if (creation.Title == null) return false;
+        var title = creation.Title;
+        if (creation.Content == null) return false;
+        var content = creation.Content;
+        if (creation.Abstract == null) return false;
+        var c = new Credential { Login = login, Password = password };
+        var (s, id) = await _resource.Create(c, pic);
+        if (!s) return false;
+        var article = new ArticleCreationData
+        {
+            Content = content,
+            PictureId = id,
+            Title = title,
+            Abstract = creation.Abstract
+        };
+        return await _newsApi.CreateArticle(c, article);
+    }
 }

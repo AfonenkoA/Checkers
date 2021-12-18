@@ -6,10 +6,10 @@ using Site.Repository.Interface;
 
 namespace Site.Controllers;
 
-public sealed class NewsController : Controller
+public sealed class NewsController : ControllerBase
 {
     private readonly INewsRepository _repository;
-    public NewsController(INewsRepository repository)
+    public NewsController(INewsRepository repository, IUserRepository user) : base(user)
     {
         _repository = repository;
     }
@@ -20,18 +20,32 @@ public sealed class NewsController : Controller
         return success ? View(model) : View("Error");
     }
 
-    public async Task<IActionResult> Article(Identity i,int id)
+    public async Task<IActionResult> Article(Identity i, int id)
     {
         var (success, article) = await _repository.GetArticle(id);
         var model = new Identified<VisualArticle>(i, article);
         return success ? View(model) : View("Error");
     }
 
-    public void CreationPage()
-    {}
+    public IActionResult CreationPage(Identity i)
+    {
+        if (!i.IsValid) return RedirectToAction("Login", "Authorization",
+            new { callerAction = "CreationPage", callerController = "Forum" });
+        return View(i);
+    }
 
-    public void Create()
-    { }
+    [HttpPost]
+    public async Task<IActionResult> Create(CreationData data)
+    {
+        if (data.Login == null) return View("Error");
+        var login = data.Login;
+        if (data.Password == null) return View("Error");
+        var password = data.Password;
+        var (s, identity) = await Authorize(login, password);
+        if (!s) return View("Error");
+        var success = await _repository.CreateArticle(data);
+        return success ? RedirectToAction("Index", "News", IdentityValues(identity)) : View("Error");
+    }
 
     public async Task<IActionResult> UpdateTitle(Identity i, int id, string title)
     {
@@ -43,7 +57,7 @@ public sealed class NewsController : Controller
 
     public async Task<IActionResult> UpdateContent(Identity i, int id, string content)
     {
-        var success = await _repository.UpdateAbstract(i, id, content);
+        var success = await _repository.UpdateContent(i, id, content);
         return View("ModificationResult",
             new Identified<ModificationResult>(i,
                 new ModificationResult("News", "Index", success)));
