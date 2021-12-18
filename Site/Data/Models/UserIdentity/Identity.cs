@@ -1,6 +1,5 @@
 ﻿using Common.Entity;
 using Site.Data.Models.User;
-using static System.String;
 using static Common.Entity.EntityValues;
 
 namespace Site.Data.Models.UserIdentity;

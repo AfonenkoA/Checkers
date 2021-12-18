@@ -17,9 +17,9 @@ public class ShopPresenter : BasePresenter<IShopView, Credential>
     {
         _repository = repository;
         View.OnBackToMenu += BackToMenu;
-        View.ReloadShop += ReloadShop;
+        View.OnReloadShop += ReloadShop;
         View.OnBuyCheckersSkin += BuyCheckersSkin;
-        View.OnBuyAnimation += BuyAnimatiom;
+        View.OnBuyAnimation += BuyAnimation;
     }
     public override void Run(Credential argument)
     {
@@ -30,12 +30,8 @@ public class ShopPresenter : BasePresenter<IShopView, Credential>
     private async Task UpdateShopInfo()
     {
         if (_credential == null) throw new ArgumentException("Null credential");
-        var (_, user) = await _repository.GetSelf(_credential);
-
-        View.SetShopInfo(_credential,
-            user.AvailableAnimations,
-                user.AvailableCheckersSkins,
-                user.AvailableLootBoxes);
+        var (_, shop) = await _repository.GetShop(_credential);
+        View.SetShopInfo(shop);
 
     }
     private async void BuyCheckersSkin()

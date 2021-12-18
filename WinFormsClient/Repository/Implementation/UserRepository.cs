@@ -2,6 +2,7 @@
 using Common.Entity;
 using WinFormsClient.Model;
 using WinFormsClient.Model.Item;
+using WinFormsClient.Model.Item.Shop;
 using WinFormsClient.Repository.Interface;
 using User = WinFormsClient.Model.User;
 
@@ -56,11 +57,26 @@ internal class UserRepository : IUserRepository
         return (true, new Collection(animations, skins));
     }
 
+    public async Task<(bool, Shop)> GetShop(ICredential credential)
+    {
+        var (_, self) = await GetSelf(credential);
+        return (true, new Shop(
+            self.AvailableAnimations.Select(a => new ShopAnimation(a)),
+            self.AvailableCheckersSkins.Select(c => new ShopCheckersSkin(c)),
+                self.AvailableLootBoxes.Select(l => new ShopLootBox(l))));
+    }
+
     public Task<bool> SelectAnimation(ICredential credential, int id) =>
         _userApi.SelectAnimation(credential, id);
 
     public Task<bool> SelectCheckers(ICredential credential, int id) =>
         _userApi.SelectCheckers(credential, id);
+
+    public Task<bool> BuyCheckersSkin(ICredential credential, int id) =>
+        _userApi.BuyCheckersSkin(credential, id);
+
+    public Task<bool> BuyAnimation(ICredential credential, int id) =>
+        _userApi.BuyAnimation(credential, id);
 
     public async Task<(bool, IEnumerable<User>)> GetFriends(ICredential c)
     {
