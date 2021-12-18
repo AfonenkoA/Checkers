@@ -88,4 +88,15 @@ public sealed class UserController : ControllerBase
         return View("ModificationResult", model);
     }
 
+
+
+    public IActionResult CreationPage(Identity i) => View(i);
+
+
+    public async Task<IActionResult> Create(UserCreationData d)
+    {
+        var success = await _repository.CreateUser(d);
+        return success ? RedirectToAction("Login", "Authorization") : View("Error");
+    }
+
 }

@@ -88,4 +88,6 @@ public sealed class UserRepository : IUserRepository
 
     public Task<bool> UpdateUserPicture(ICredential credential, int id) =>
         _userApi.UpdateUserPicture(credential, id);
+
+    public Task<bool> CreateUser(UserCreationData user) => _userApi.CreateUser(user);
 }
