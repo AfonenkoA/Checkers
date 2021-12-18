@@ -4,16 +4,11 @@
 @model Identified<IEnumerable<Preview>>
 
 @{
-    Layout = null;
+    ViewData["Title"] = "Новости";
+    Layout = "_HomeLayout";
 }
 
-<!DOCTYPE html>
 
-<html>
-<head>
-    <title>title</title>
-</head>
-<body>
     @{
         foreach (var article in Model.Value)
             @await Html.PartialAsync("ArticlePreview", 
@@ -21,12 +16,19 @@
     }
 @if (Model.Type == UserType.Editor)
 {
-    <a asp-controller="News"
-       asp-action="CreationPage"
-       asp-route-login="@Model?.Login"
-       asp-route-type="@Model?.Type"
-       asp-route-userId="@Model?.UserId"
-       asp-route-password="@Model?.Password">Создать</a>
+    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+        <ul class="navbar-nav flex-grow-1">
+            <li class="nav-item">
+                <button style="height:50px;width:160px">
+                <a class="nav-link text-dark"
+                   asp-controller="News"
+                   asp-action="CreationPage"
+                   asp-route-login="@Model?.Login"
+                   asp-route-type="@Model?.Type"
+                   asp-route-userId="@Model?.UserId"
+                   asp-route-password="@Model?.Password">Создать</a>
+                </button>
+            </li>
+        </ul>
+    </div>
 }
-</body>
-</html>

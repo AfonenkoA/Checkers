@@ -2,12 +2,19 @@
 @using Site.Data.Models.UserIdentity;
 @model IIdentified<ModificationResult>
 @{
-    Layout = "_HomeLayout";
+    Layout = "_ModificationLayout";
 }
 <div>
     <center>
     <h3>Изменено:</h3>
-    <h4 style="color: @if (Model.Value.Success){@("green")} else{@("rad")}">@Model?.Value.Success</h4>
+        @if (Model.Value.Success)
+        {
+            <h4 style="color: green">Успешно</h4>
+        }
+        @if (!Model.Value.Success)
+        {
+            <h4 style="color: red">Неудачно</h4>
+        }
     <button style="height: 40px; width: 100px">
         <a class="nav-link text-dark"
            asp-controller="@Model?.Value.CallerController"

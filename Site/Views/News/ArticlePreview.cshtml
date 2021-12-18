@@ -1,12 +1,13 @@
 ﻿@using Site.Data.Models.UserIdentity;
 @using Site.Data.Models.Article;
 @model IIdentified<Preview>
-<img width="100" height="100" src="@Model?.Value.Image.Url"/>
-<a asp-controller="News"
+<div class="icon"><img width="60" height="60" src="@Model?.Value.Image.Url"/></div>
+<p><a asp-controller="News"
    asp-action="Article"
    asp-route-id="@Model?.Value.Id"
    asp-route-login="@Model?.Login"
    asp-route-type="@Model?.Type"
    asp-route-userId="@Model?.UserId"
-   asp-route-password="@Model?.Password">@Model?.Value.Title</a>
-   <p>@Model?.Value.Abstract</p>
+   asp-route-password="@Model?.Password">@Model?.Value.Title</a></p>
+<p>@Model?.Value.Abstract</p>
+<hr/>
