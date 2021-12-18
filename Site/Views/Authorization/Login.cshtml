@@ -1,29 +1,12 @@
 ﻿@using Site.Data.Models;
 @model Caller
 @{
-    Layout = "_HomeLayout";
+    ViewData["Title"] = "Вход";
+    Layout = "_EnterLayout";
 }
 
-<h2>Вход</h2>
-<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-    <ul class="navbar-nav flex-grow-1">
-        <li class="nav-item">
-            <button style="height:50px;width:200px">
-                <a class="nav-link text-dark"
-                   asp-controller="User"
-                   asp-action="CreationPage">Регистрация</a>
-                </button>
-        </li>
-        <li class="nav-item">
-            <button style="height:50px;width:200px">
-                <a class="nav-link text-dark"
-                   asp-controller="Home"
-                   asp-action="Index">Вернуться на главную</a>
-                </button>
-        </li>
-    </ul>
-</div>
-<hr/>
+
+
 <form asp-action="Authorize" asp-controller="Authorization">
     <p><label for="login">Логин</label></p>
     <p><input type="text" name="login" id="login"/></p>

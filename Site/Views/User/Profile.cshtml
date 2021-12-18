@@ -3,41 +3,8 @@
 @model IIdentified<UserInfo>
 
 @{
+    ViewData["Title"] = "Профиль игрока";
     Layout = "_HomeLayout";
 }
 
-<h2>Профиль игрока</h2>
-<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-    <ul class="navbar-nav flex-grow-1">
-        <li class="nav-item">
-            <button style="height:50px;width:200px">
-                <a class="nav-link text-dark"
-                   asp-controller="User"
-                   asp-action="PersonalArea"
-                   asp-route-callerController="Home"
-                   asp-route-callerAction="Index"
-                   asp-route-id="@Model?.Value.Id"
-                   asp-route-login="@Model?.Login"
-                   asp-route-type="@Model?.Type"
-                   asp-route-userId="@Model?.UserId"
-                   asp-route-password="@Model?.Password">Вернуться в лич. каб.</a>
-                </button>
-        </li>
-        <li class="nav-item">
-            <button style="height:50px;width:200px">
-                <a class="nav-link text-dark"
-                   asp-controller="Home"
-                   asp-action="Index"
-                   asp-route-callerController="Home"
-                   asp-route-callerAction="Index"
-                   asp-route-id="@Model?.Value.Id"
-                   asp-route-login="@Model?.Login"
-                   asp-route-type="@Model?.Type"
-                   asp-route-userId="@Model?.UserId"
-                   asp-route-password="@Model?.Password">Вернуться на главную</a>
-                </button>
-        </li>
-    </ul>
-</div>
-<hr/>
 @await Html.PartialAsync("UserInfo",Model)
