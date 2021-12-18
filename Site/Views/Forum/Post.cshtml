@@ -2,6 +2,7 @@
 @using Site.Data.Models;
 @using Site.Data.Models.User
 @using Site.Data.Models.UserIdentity
+@using Common.Entity
 @model IIdentified<VisualPost>
 
 @{
@@ -15,12 +16,50 @@
     <title>title</title>
 </head>
 <body>
-@await Html.PartialAsync("~/Views/User/UserInfo.cshtml",
+    @await Html.PartialAsync("~/Views/User/UserInfo.cshtml",
     new Identified<UserInfo>(Model,Model.Value.Author))
-@await Html.PartialAsync("PostPreview", Model)
-<p>@Model?.Value.Created</p>
-<p>@Model?.Value.Content</p>
-@await Html.PartialAsync("~/Views/Chat/ChatPartial.cshtml", 
+    @await Html.PartialAsync("PostPreview", Model)
+    <p>@Model?.Value.Created</p>
+    <p>@Model?.Value.Content</p>
+    @if (Model.UserId == Model.Value.Author.Id || Model.Type == UserType.Moderator)
+    {
+        <p>Изменить заголовок</p>
+        <form asp-controller="Forum"
+              asp-action="UpdateTitle">
+            <input type="hidden" name="login" value="@Model.Login"/>
+            <input type="hidden" name="password" value="@Model.Password"/>
+            <input type="hidden" name="type" value="@Model.Type"/>
+            <input type="hidden" name="userId" value="@Model?.UserId"/>
+            <input type="hidden" name="id" value="@Model?.Value.Id"/>
+            <textarea name="title"></textarea>
+            <input type="submit" value="Подтвердить"/>
+        </form>
+        <p>Изменить содержание</p>
+        <form asp-controller="Forum"
+              asp-action="UpdateContent">
+            <input type="hidden" name="login" value="@Model.Login"/>
+            <input type="hidden" name="password" value="@Model.Password"/>
+            <input type="hidden" name="type" value="@Model.Type"/>
+            <input type="hidden" name="userId" value="@Model?.UserId"/>
+            <input type="hidden" name="id" value="@Model?.Value.Id"/>
+            <textarea name="content"></textarea>
+            <input type="submit" value="Подтвердить"/>
+        </form>
+        <p>Изменить картинку</p>
+        <form asp-controller="Forum"
+              asp-action="UpdatePicture"
+              enctype="multipart/form-data">
+            <input type="hidden" name="login" value="@Model.Login"/>
+            <input type="hidden" name="password" value="@Model.Password"/>
+            <input type="hidden" name="type" value="@Model.Type"/>
+            <input type="hidden" name="userId" value="@Model?.UserId"/>
+            <input type="hidden" name="id" value="@Model?.Value.Id"/>
+            <input type="file" name="picture"/>
+            <input type="submit" value="Подтвердить"/>
+        </form>
+    }
+
+    @await Html.PartialAsync("~/Views/Chat/ChatPartial.cshtml",
     new Identified<Chat>(Model,Model.Value.Chat))
 </body>
 </html>

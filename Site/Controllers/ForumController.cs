@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Site.Data.Models;
 using Site.Data.Models.Post;
 using Site.Data.Models.UserIdentity;
 using Site.Repository.Interface;
@@ -45,9 +46,33 @@ public sealed class ForumController : ControllerBase
         var login = p.Login;
         if (p.Password == null) return View("Error");
         var password = p.Password;
-        var (s, identity) = await Authorize(login,password);
+        var (s, identity) = await Authorize(login, password);
         if (!s) return View("Error");
         var success = await _repository.Create(p);
         return success ? RedirectToAction("Index", "Forum", IdentityValues(identity)) : View("Error");
+    }
+
+    public async Task<IActionResult> UpdateTitle(Identity i, int id, string title)
+    {
+        var success = await _repository.UpdateTitle(i, id, title);
+        return View("ModificationResult",
+            new Identified<ModificationResult>(i, 
+                new ModificationResult("Forum", "Index", success)));
+    }
+
+    public async Task<IActionResult> UpdateContent(Identity i, int id, string content)
+    {
+        var success = await _repository.UpdateContent(i, id, content);
+        return View("ModificationResult",
+            new Identified<ModificationResult>(i,
+                new ModificationResult("Forum", "Index", success)));
+    }
+
+    public async Task<IActionResult> UpdatePicture(PictureUpdateData p)
+    {
+        var success = await _repository.UpdatePicture(p);
+        return View("ModificationResult",
+            new Identified<ModificationResult>(p,
+                new ModificationResult("Forum", "Index", success)));
     }
 }

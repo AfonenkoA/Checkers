@@ -1,5 +1,6 @@
 ﻿using Api.Interface;
 using Common.Entity;
+using Site.Data.Models;
 using Site.Data.Models.Post;
 using Site.Repository.Interface;
 
@@ -49,10 +50,25 @@ public sealed class ForumRepository : IForumRepository
         var title = creation.Title;
         if (creation.Content == null) return false;
         var content = creation.Content;
-        var c = new Credential {Login = login, Password = password};
+        var c = new Credential { Login = login, Password = password };
         var (s, id) = await _resource.Create(c, pic);
         if (!s) return false;
-        var post = new PostCreationData {Content = content, PictureId = id, Title = title};
+        var post = new PostCreationData { Content = content, PictureId = id, Title = title };
         return await _forumApi.CreatePost(c, post);
     }
+
+    public Task<bool> UpdateTitle(ICredential credential, int postId, string title) =>
+        _forumApi.UpdateTitle(credential, postId, title);
+
+    public Task<bool> UpdateContent(ICredential credential, int postId, string content) =>
+        _forumApi.UpdateContent(credential, postId, content);
+
+    public async Task<bool> UpdatePicture(PictureUpdateData data)
+    {
+        if (data.Picture == null) return false;
+        var (s, id) = await _resource.Create(data, data.Picture);
+        if (!s) return false;
+        return await _forumApi.UpdatePicture(data, data.Id, id);
+    }
+
 }

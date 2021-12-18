@@ -5,6 +5,7 @@
     foreach (var message in Model?.Value.Messages)
         @await Html.PartialAsync("~/Views/Chat/Message.cshtml", new Identified<MessageView>(Model,message))
 }
+<p>Коментировать</p>
 <form asp-controller="Chat"
       asp-action="Send"
       asp-route-id="@Model?.Value.Id"
