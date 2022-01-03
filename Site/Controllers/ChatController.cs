@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Site.Data.Models;
 using Site.Data.Models.UserIdentity;
-using Site.Repository.Interface;
+using Site.Service.Interface;
 
 namespace Site.Controllers;
 
 public sealed class ChatController : ControllerBase
 {
-    private readonly IChatRepository _chatRepository;
+    private readonly IChatService _chatRepository;
 
-    public ChatController(IChatRepository chatRepository, IUserRepository user) : base(user)
+    public ChatController(IChatService chatRepository, IUserService user) : base(user)
     {
         _chatRepository = chatRepository;
     }

@@ -65,7 +65,6 @@
             this.PlayButton.TabIndex = 2;
             this.PlayButton.Text = "Play";
             this.PlayButton.UseVisualStyleBackColor = true;
-            this.PlayButton.Click += new System.EventHandler(this.PlayButton_Click);
             // 
             // CollectionButton
             // 
@@ -120,6 +119,7 @@
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.LogOutButton);
             this.Name = "MainMenuWindow";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MainMenuWindow";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);

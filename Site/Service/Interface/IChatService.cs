@@ -1,9 +1,9 @@
 ﻿using Common.Entity;
 using Site.Data.Models;
 
-namespace Site.Repository.Interface;
+namespace Site.Service.Interface;
 
-public interface IChatRepository
+public interface IChatService
 {
     Task<(bool, Chat)> GetMessages(ICredential credential, int chatId);
     Task<(bool, int)> GetCommonChatId(ICredential credential);

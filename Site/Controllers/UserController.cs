@@ -3,16 +3,16 @@ using Microsoft.AspNetCore.Mvc;
 using Site.Data.Models;
 using Site.Data.Models.User;
 using Site.Data.Models.UserIdentity;
-using Site.Repository.Interface;
+using Site.Service.Interface;
 
 namespace Site.Controllers;
 
 public sealed class UserController : ControllerBase
 {
 
-    private readonly IUserRepository _repository;
+    private readonly IUserService _repository;
 
-    public UserController(IUserRepository repository) : base(repository)
+    public UserController(IUserService repository) : base(repository)
     {
         _repository = repository;
     }

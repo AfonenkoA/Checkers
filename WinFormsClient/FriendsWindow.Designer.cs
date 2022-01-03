@@ -59,6 +59,7 @@
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.ReturnButton);
             this.Name = "FriendsWindow";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FriendsWindow";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FriendsWindow_FormClosed);
             this.ResumeLayout(false);

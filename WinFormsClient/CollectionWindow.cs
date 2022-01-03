@@ -40,4 +40,9 @@ public partial class CollectionWindow : Form, ICollectionView
     public int SelectedCheckersId { get; set; }
     public int SelectedAnimationsId { get; set; }
     private static void InvokeAction(Action? action) => action?.Invoke();
+
+    private void CollectionWindow_Load(object sender, EventArgs e)
+    {
+
+    }
 }

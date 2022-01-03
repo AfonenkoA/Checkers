@@ -1,10 +1,10 @@
 ﻿using Api.Interface;
 using Common.Entity;
-using WinFormsClient.Repository.Interface;
+using WinFormsClient.Service.Interface;
 
-namespace WinFormsClient.Repository.Implementation;
+namespace WinFormsClient.Service.Implementation;
 
-public sealed class ResourceManager : IResourceRepository
+public sealed class ResourceManager : IResourceService
 {
     private readonly IAsyncResourceService _resourceService;
     private readonly IDictionary<int, Image> _images = new Dictionary<int, Image>();

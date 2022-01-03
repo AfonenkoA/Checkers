@@ -2,9 +2,9 @@
 using Site.Data.Models;
 using Site.Data.Models.Article;
 
-namespace Site.Repository.Interface;
+namespace Site.Service.Interface;
 
-public interface INewsRepository
+public interface INewsService
 {
     public Task<(bool, IEnumerable<Preview>)> GetNews();
     public Task<(bool, VisualArticle)> GetArticle(int id);

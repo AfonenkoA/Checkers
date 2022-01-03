@@ -2,20 +2,20 @@
 using Common.Entity;
 using Site.Data.Models;
 using Site.Data.Models.Post;
-using Site.Repository.Interface;
+using Site.Service.Interface;
 
-namespace Site.Repository.Implementation;
+namespace Site.Service.Implementation;
 
-public sealed class ForumRepository : IForumRepository
+public sealed class ForumService : IForumService
 {
     private readonly IAsyncForumApi _forumApi;
-    private readonly IUserRepository _userRepository;
-    private readonly IChatRepository _chatRepository;
-    private readonly IResourceRepository _resource;
-    public ForumRepository(IAsyncForumApi forumApi,
-        IUserRepository userRepository,
-        IChatRepository chatRepository,
-        IResourceRepository resource)
+    private readonly IUserService _userRepository;
+    private readonly IChatService _chatRepository;
+    private readonly IResourceService _resource;
+    public ForumService(IAsyncForumApi forumApi,
+        IUserService userRepository,
+        IChatService chatRepository,
+        IResourceService resource)
     {
         _forumApi = forumApi;
         _userRepository = userRepository;

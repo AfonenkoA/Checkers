@@ -90,7 +90,9 @@
             this.Controls.Add(this.CheckersLabel);
             this.Controls.Add(this.ReturnButton);
             this.Name = "CollectionWindow";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "CollectionWindow";
+            this.Load += new System.EventHandler(this.CollectionWindow_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

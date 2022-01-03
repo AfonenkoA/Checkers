@@ -127,6 +127,7 @@
             this.Controls.Add(this.NickLabel);
             this.Controls.Add(this.avatarPictureBox);
             this.Name = "ProfileWindow";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ProfileWindow";
             ((System.ComponentModel.ISupportInitialize)(this.avatarPictureBox)).EndInit();
             this.ResumeLayout(false);

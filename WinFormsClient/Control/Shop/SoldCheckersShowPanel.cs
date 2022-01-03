@@ -1,12 +1,9 @@
-﻿using Api.Interface;
-using Api.WebImplementation;
-using WinFormsClient.Model.Item;
+﻿using WinFormsClient.Model.Item;
 
 namespace WinFormsClient.Control.Shop;
 
 public partial class SoldCheckersShowPanel : UserControl
 {
-    private readonly IAsyncUserApi _userApi = new UserWebApi();
     private readonly ShopWindow _parent;
     private readonly int _id;
     internal SoldCheckersShowPanel(ShopWindow parent, VisualSoldItem item)

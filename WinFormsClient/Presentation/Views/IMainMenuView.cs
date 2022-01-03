@@ -2,10 +2,11 @@
 
 namespace WinFormsClient.Presentation.Views;
 
-public interface IMainMenuView :IView
+public interface IMainMenuView : IView
 {
-    event Action ShowProfile;
-    event Action ShowShop;
-    event Action ShowCollection;
+    event Action OnShowProfile;
+    event Action OnShowShop;
+    event Action OnShowCollection;
+    event Action OnShowGame;
     //event Action LogOut;
 }

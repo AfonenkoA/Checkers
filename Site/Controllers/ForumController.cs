@@ -2,15 +2,15 @@
 using Site.Data.Models;
 using Site.Data.Models.Post;
 using Site.Data.Models.UserIdentity;
-using Site.Repository.Interface;
+using Site.Service.Interface;
 
 namespace Site.Controllers;
 
 public sealed class ForumController : ControllerBase
 {
-    private readonly IForumRepository _repository;
+    private readonly IForumService _repository;
 
-    public ForumController(IForumRepository repository, IUserRepository user) : base(user)
+    public ForumController(IForumService repository, IUserService user) : base(user)
     {
         _repository = repository;
     }

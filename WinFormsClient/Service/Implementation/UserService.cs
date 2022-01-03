@@ -1,26 +1,39 @@
 ﻿using Api.Interface;
 using Common.Entity;
 using WinFormsClient.Model;
-using WinFormsClient.Model.Item;
+using WinFormsClient.Model.Item.Collection;
 using WinFormsClient.Model.Item.Shop;
-using WinFormsClient.Repository.Interface;
+using WinFormsClient.Service.Interface;
 using User = WinFormsClient.Model.User;
 
-namespace WinFormsClient.Repository.Implementation;
+namespace WinFormsClient.Service.Implementation;
 
-internal class UserRepository : IUserRepository
+internal class UserService : IUserService
 {
     private readonly IAsyncUserApi _userApi;
-    private readonly IItemRepository _itemRepository;
-    private readonly IResourceRepository _resourceRepository;
+    private readonly IItemService _itemRepository;
+    private readonly IResourceService _resourceRepository;
 
-    public UserRepository(IAsyncUserApi userApi,
-        IItemRepository itemRepository,
-        IResourceRepository resourceRepository)
+    public UserService(IAsyncUserApi userApi,
+        IItemService itemRepository,
+        IResourceService resourceRepository)
     {
         _userApi = userApi;
         _itemRepository = itemRepository;
         _resourceRepository = resourceRepository;
+    }
+
+    public async Task<(bool, User)> GetUser(int id)
+    {
+        var (_, data) = await _userApi.TryGetUser(id);
+
+        var user = new User(data,
+            await _itemRepository.Get(data.Achievements),
+            await _itemRepository.Get(data.SelectedCheckers),
+            await _itemRepository.Get(data.SelectedAnimation),
+            await _resourceRepository.Get(data));
+
+        return (true, user);
     }
 
     public async Task<(bool, Self)> GetSelf(ICredential c)
@@ -38,7 +51,8 @@ internal class UserRepository : IUserRepository
             await _itemRepository.Get(data.AvailableCheckersSkins),
             await _itemRepository.Get(data.AvailableLootBox),
             await _itemRepository.Get(data.Animations),
-            await _itemRepository.Get(data.CheckerSkins));
+            await _itemRepository.Get(data.CheckerSkins),
+            data.Currency);
 
         return (true, self);
     }
@@ -63,7 +77,8 @@ internal class UserRepository : IUserRepository
         return (true, new Shop(
             self.AvailableAnimations.Select(a => new ShopAnimation(a)),
             self.AvailableCheckersSkins.Select(c => new ShopCheckersSkin(c)),
-                self.AvailableLootBoxes.Select(l => new ShopLootBox(l))));
+                self.AvailableLootBoxes.Select(l => new ShopLootBox(l)), 
+            self.Currency));
     }
 
     public Task<bool> SelectAnimation(ICredential credential, int id) =>
@@ -77,6 +92,9 @@ internal class UserRepository : IUserRepository
 
     public Task<bool> BuyAnimation(ICredential credential, int id) =>
         _userApi.BuyAnimation(credential, id);
+
+    public Task<bool> BuyLootBox(ICredential credential, int id)=>
+        _userApi.BuyLootBox(credential, id);
 
     public async Task<(bool, IEnumerable<User>)> GetFriends(ICredential c)
     {

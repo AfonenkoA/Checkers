@@ -10,32 +10,29 @@ public partial class MainMenuWindow : Form, IMainMenuView
     {
         _context = context;
         InitializeComponent();
-        ProfileButton.Click += (sender, args) => Invoke(ShowProfile);
-        ShopButton.Click += (sender,args)=>Invoke(ShowShop);
-        CollectionButton.Click +=(sender, args) =>Invoke(ShowCollection);
-       // LogOutButton.Click += (sender, args) => Invoke(LogOut);
+        ProfileButton.Click += (_, _) => Invoke(OnShowProfile);
+        ShopButton.Click += (_,_)=>Invoke(OnShowShop);
+        CollectionButton.Click +=(_, _) =>Invoke(OnShowCollection);
+        PlayButton.Click += (_, _) => Invoke(OnShowGame);
+        // LogOutButton.Click += (sender, args) => Invoke(LogOut);
     }
-
-   
 
     public new void Show()
     {
         _context.MainForm = this;
         base.Show();
     }
-    public event Action ShowProfile;
-    public event Action ShowShop;
+    public event Action OnShowProfile;
+    public event Action OnShowShop;
 
-    public event Action ShowCollection;
+    public event Action OnShowCollection;
+
+    public event Action? OnShowGame;
+
     //public event Action LogOut;
     private void Invoke(Action action)
     {
         if (action != null) action();
     }
 
-    private void PlayButton_Click(object sender, EventArgs e)
-    {
-        Hide();
-        new GameWindow().Show();
-    }
 }

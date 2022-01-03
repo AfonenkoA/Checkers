@@ -1,25 +1,25 @@
 ﻿using Common.Entity;
 using WinFormsClient.Presentation.Common;
 using WinFormsClient.Presentation.Views;
-using WinFormsClient.Repository.Interface;
+using WinFormsClient.Service.Interface;
 
 namespace WinFormsClient.Presentation.Presenters;
 
 public class ShopPresenter : BasePresenter<IShopView, Credential>
 {
     private Credential? _credential;
-    private readonly IUserRepository _repository;
+    private readonly IUserService _repository;
 
     public ShopPresenter(IApplicationController controller,
         IShopView view,
-        IUserRepository repository) :
+        IUserService repository) :
         base(controller, view)
     {
         _repository = repository;
         View.OnBackToMenu += BackToMenu;
-        View.OnReloadShop += ReloadShop;
         View.OnBuyCheckersSkin += BuyCheckersSkin;
         View.OnBuyAnimation += BuyAnimation;
+        View.OnBuyLootBox += BuyLootBox;
     }
     public override void Run(Credential argument)
     {
@@ -45,6 +45,12 @@ public class ShopPresenter : BasePresenter<IShopView, Credential>
         await UpdateShopInfo().ConfigureAwait(true);
     }
 
+    private async void BuyLootBox()
+    {
+        await _repository.BuyLootBox(_credential, View.LootBoxId);
+        await UpdateShopInfo().ConfigureAwait(true);
+    }
+
     private void BackToMenu()
     {
         if (_credential == null) throw new ArgumentException("Null credential");
@@ -52,9 +58,4 @@ public class ShopPresenter : BasePresenter<IShopView, Credential>
         View.Close();
     }
 
-    private void ReloadShop()
-    {
-        Controller.Run<ShopPresenter, Credential>(_credential);
-        View.Close();
-    }
 }

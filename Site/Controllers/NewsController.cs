@@ -2,14 +2,14 @@
 using Site.Data.Models;
 using Site.Data.Models.Article;
 using Site.Data.Models.UserIdentity;
-using Site.Repository.Interface;
+using Site.Service.Interface;
 
 namespace Site.Controllers;
 
 public sealed class NewsController : ControllerBase
 {
-    private readonly INewsRepository _repository;
-    public NewsController(INewsRepository repository, IUserRepository user) : base(user)
+    private readonly INewsService _repository;
+    public NewsController(INewsService repository, IUserService user) : base(user)
     {
         _repository = repository;
     }

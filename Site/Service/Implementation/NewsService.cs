@@ -2,16 +2,16 @@
 using Common.Entity;
 using Site.Data.Models;
 using Site.Data.Models.Article;
-using Site.Repository.Interface;
+using Site.Service.Interface;
 
-namespace Site.Repository.Implementation;
+namespace Site.Service.Implementation;
 
-public sealed class NewsRepository : INewsRepository
+public sealed class NewsService : INewsService
 {
     private readonly IAsyncNewsApi _newsApi;
-    private readonly IResourceRepository _resource;
+    private readonly IResourceService _resource;
 
-    public NewsRepository(IAsyncNewsApi newsApi, IResourceRepository resource)
+    public NewsService(IAsyncNewsApi newsApi, IResourceService resource)
     {
         _newsApi = newsApi;
         _resource = resource;

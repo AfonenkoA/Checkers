@@ -2,9 +2,9 @@
 using Site.Data.Models;
 using Site.Data.Models.Post;
 
-namespace Site.Repository.Interface;
+namespace Site.Service.Interface;
 
-public interface IForumRepository
+public interface IForumService
 {
     public Task<(bool, VisualPost)> GetPost(ICredential c, int postId);
     public Task<(bool, IEnumerable<Preview>)> GetPosts();

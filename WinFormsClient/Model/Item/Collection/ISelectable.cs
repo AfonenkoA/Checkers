@@ -1,4 +1,4 @@
-﻿namespace WinFormsClient.Model.Item;
+﻿namespace WinFormsClient.Model.Item.Collection;
 
 public interface ISelectable
 {

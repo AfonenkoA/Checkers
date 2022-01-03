@@ -1,7 +1,7 @@
 using Api.Interface;
 using Api.WebImplementation;
-using Site.Repository.Implementation;
-using Site.Repository.Interface;
+using Site.Service.Implementation;
+using Site.Service.Interface;
 using static Microsoft.AspNetCore.Builder.WebApplication;
 using static Microsoft.AspNetCore.WebHost;
 
@@ -24,12 +24,12 @@ internal static class Program
             .AddSingleton<IAsyncNewsApi,NewsWebApi>()
             .AddSingleton<IAsyncForumApi, ForumWebApi>()
             .AddSingleton<IAsyncItemApi,ItemWebApi>()
-            .AddSingleton<IResourceRepository,ResourceRepository>()
-            .AddSingleton<IItemRepository,ItemRepository>()
-            .AddSingleton<IUserRepository, UserRepository>()
-            .AddSingleton<INewsRepository,NewsRepository>()
-            .AddSingleton<IChatRepository,ChatRepository>()
-            .AddSingleton<IForumRepository,ForumRepository>();
+            .AddSingleton<IResourceService, ResourceService>()
+            .AddSingleton<IItemService, ItemService>()
+            .AddSingleton<IUserService, UserService>()
+            .AddSingleton<INewsService, NewsService>()
+            .AddSingleton<IChatService,ChatService>()
+            .AddSingleton<IForumService, ForumService>();
 
         var app = builder.Build();
 

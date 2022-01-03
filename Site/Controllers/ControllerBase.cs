@@ -1,15 +1,15 @@
 ﻿using Common.Entity;
 using Microsoft.AspNetCore.Mvc;
 using Site.Data.Models.UserIdentity;
-using Site.Repository.Interface;
+using Site.Service.Interface;
 
 namespace Site.Controllers;
 
 public class ControllerBase : Controller
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IUserService _userRepository;
 
-    public ControllerBase(IUserRepository userRepository)
+    public ControllerBase(IUserService userRepository)
     {
         _userRepository = userRepository;
     }

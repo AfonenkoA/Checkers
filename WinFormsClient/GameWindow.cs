@@ -1,8 +1,10 @@
-﻿using static System.Drawing.Graphics;
+﻿using WinFormsClient.Model;
+using WinFormsClient.Presentation.Views;
+using static System.Drawing.Graphics;
 
 namespace WinFormsClient;
 
-public sealed partial class GameWindow : Form
+public sealed partial class GameWindow : Form, IGameView
 {
     private const int Cells = 10;
     private readonly Graphics _graphics;
@@ -34,18 +36,34 @@ public sealed partial class GameWindow : Form
         }
     }
 
-    public GameWindow()
+    public new void Show()
     {
+        _context.MainForm = this;
+        base.Show();
+    }
+
+    private readonly ApplicationContext _context;
+
+    public GameWindow(ApplicationContext context)
+
+    {
+        _context = context;
         InitializeComponent();
         _bitmap = new Bitmap(Board.Width, Board.Height);
         _graphics = FromImage(_bitmap);
     }
 
-    private void GameWindow_Load(object sender, EventArgs e)
+    private void GameWindow_FormClosed(object sender, FormClosedEventArgs e) => Application.Exit();
+
+    public void SetGameInfo(Self self, User enemy)
     {
         DrawBoard();
         Board.Image = _bitmap;
+        SelfNick.Text = self.Nick;
+        SelfPicture.Image = self.Image;
+        SelfSocialCredit.Text = self.SocialCredit.ToString();
+        EnemyNick.Text = enemy.Nick;
+        EnemyPicture.Image = enemy.Image;
+        EnemySocialCredit.Text = enemy.SocialCredit.ToString();
     }
-
-    private void GameWindow_FormClosed(object sender, FormClosedEventArgs e) => Application.Exit();
 }

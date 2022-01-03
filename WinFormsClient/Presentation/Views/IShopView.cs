@@ -9,7 +9,6 @@ public interface IShopView : IView
     event Action OnBuyAnimation;
     event Action OnBuyLootBox;
     event Action OnBackToMenu;
-    event Action OnReloadShop;
     public int  CheckersSkinId { get; }
     public int AnimationId { get; }
     public int LootBoxId { get; }

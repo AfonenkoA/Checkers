@@ -25,7 +25,7 @@ public class LightInjectAdapder : IContainer
 
     public void Register<TService, TArgument>(Expression<Func<TArgument, TService>> factory)
     {
-        _container.Register(serviceFactory => factory);
+        _container.Register(_ => factory);
     }
 
     public TService Resolve<TService>()

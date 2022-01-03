@@ -1,16 +1,16 @@
 ﻿using Api.Interface;
 using Common.Entity;
 using Site.Data.Models;
-using Site.Repository.Interface;
+using Site.Service.Interface;
 
-namespace Site.Repository.Implementation;
+namespace Site.Service.Implementation;
 
-public sealed class ChatRepository : IChatRepository
+public sealed class ChatService : IChatService
 {
     private readonly IAsyncChatApi _chatApi;
-    private readonly IUserRepository _userRepository;
+    private readonly IUserService _userRepository;
 
-    public ChatRepository(IAsyncChatApi chatApi, IUserRepository userRepository)
+    public ChatService(IAsyncChatApi chatApi, IUserService userRepository)
     {
         _chatApi = chatApi;
         _userRepository = userRepository;

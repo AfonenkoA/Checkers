@@ -159,6 +159,7 @@ public sealed class UserRepository : UserRepositoryBase, IUserRepository
             command.ExecuteScalar();
             user.Currency = command.GetReturn();
         }
+        
         user.Animations = GetUserAnimations(userId);
         user.CheckerSkins = GetUserCheckerSkins(userId);
         user.Animations = GetUserAnimations(userId);

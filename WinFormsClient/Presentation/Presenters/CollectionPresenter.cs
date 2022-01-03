@@ -1,17 +1,17 @@
 ﻿using Common.Entity;
 using WinFormsClient.Presentation.Common;
 using WinFormsClient.Presentation.Views;
-using WinFormsClient.Repository.Interface;
+using WinFormsClient.Service.Interface;
 
 namespace WinFormsClient.Presentation.Presenters;
 
 public class CollectionPresenter : BasePresenter<ICollectionView, Credential>
 {
-    private readonly IUserRepository _repository;
+    private readonly IUserService _repository;
     private Credential? _credential;
     public CollectionPresenter(IApplicationController controller,
         ICollectionView view,
-        IUserRepository repository) :
+        IUserService repository) :
         base(controller, view)
     {
         _repository = repository;

@@ -1,15 +1,15 @@
 ﻿using Api.Interface;
 using Site.Data.Models;
-using Site.Repository.Interface;
+using Site.Service.Interface;
 
-namespace Site.Repository.Implementation;
+namespace Site.Service.Implementation;
 
-public sealed class ItemRepository : IItemRepository
+public sealed class ItemService : IItemService
 {
     private readonly IAsyncItemApi _item;
-    private readonly IResourceRepository _resource;
+    private readonly IResourceService _resource;
 
-    public ItemRepository(IAsyncItemApi item, IResourceRepository repository)
+    public ItemService(IAsyncItemApi item, IResourceService repository)
     {
         _item = item;
         _resource = repository;

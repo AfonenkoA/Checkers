@@ -1,18 +1,18 @@
 ﻿using Common.Entity;
 using WinFormsClient.Model.Item;
-using WinFormsClient.Repository.Interface;
+using WinFormsClient.Service.Interface;
 
-namespace WinFormsClient.Repository.Implementation;
+namespace WinFormsClient.Service.Implementation;
 
-internal class ItemRepository : IItemRepository
+internal class ItemService : IItemService
 {
-    private readonly IResourceRepository _resourceRepository;
+    private readonly IResourceService _resourceRepository;
     private readonly IDictionary<int, VisualAnimation> _animations = new Dictionary<int, VisualAnimation>();
     private readonly IDictionary<int, VisualCheckersSkin> _skins = new Dictionary<int, VisualCheckersSkin>();
     private readonly IDictionary<int, VisualLootBox> _lootBoxes = new Dictionary<int, VisualLootBox>();
     private readonly IDictionary<int, VisualAchievement> _achievements = new Dictionary<int, VisualAchievement>();
 
-    public ItemRepository(IResourceRepository resourceRepository)
+    public ItemService(IResourceService resourceRepository)
     {
         _resourceRepository = resourceRepository;
     }

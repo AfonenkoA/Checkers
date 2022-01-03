@@ -124,6 +124,7 @@
             this.Controls.Add(this.AuthorisationLabel);
             this.Controls.Add(this.TitleLabel);
             this.Name = "LoginWindow";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "LoginWindow";
             this.ResumeLayout(false);
             this.PerformLayout();

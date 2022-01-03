@@ -1,8 +1,8 @@
 ﻿using Site.Data.Models;
 
-namespace Site.Repository.Interface;
+namespace Site.Service.Interface;
 
-public interface IItemRepository
+public interface IItemService
 {
     public Task<IEnumerable<PictureView>> GetPictures();
     public Task<PictureView> GetPicture(int id);

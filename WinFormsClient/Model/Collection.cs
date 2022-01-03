@@ -1,4 +1,5 @@
 ﻿using WinFormsClient.Model.Item;
+using WinFormsClient.Model.Item.Collection;
 
 namespace WinFormsClient.Model;
 

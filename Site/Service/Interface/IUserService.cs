@@ -1,9 +1,9 @@
 ﻿using Common.Entity;
 using Site.Data.Models.User;
 
-namespace Site.Repository.Interface;
+namespace Site.Service.Interface;
 
-public interface IUserRepository
+public interface IUserService
 {
     
     public Task<(bool, IEnumerable<UserInfo>)> GetByNick(string pattern);

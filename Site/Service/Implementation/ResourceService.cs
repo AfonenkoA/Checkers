@@ -1,15 +1,15 @@
 ﻿using Api.Interface;
 using Common.Entity;
 using Site.Data.Models;
-using Site.Repository.Interface;
+using Site.Service.Interface;
 
-namespace Site.Repository.Implementation;
+namespace Site.Service.Implementation;
 
-public sealed class ResourceRepository : IResourceRepository
+public sealed class ResourceService : IResourceService
 {
     private readonly IAsyncResourceService _resource;
 
-    public ResourceRepository(IAsyncResourceService resource)
+    public ResourceService(IAsyncResourceService resource)
     {
         _resource = resource;
     }

@@ -129,6 +129,7 @@
             this.Controls.Add(this.CurrencyLabel);
             this.Controls.Add(this.ReturnButton);
             this.Name = "ShopWindow";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ShopWindow";
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -1,6 +1,6 @@
-﻿namespace WinFormsClient
+﻿namespace WinFormsClient.Control.Shop
 {
-    partial class SoldLootboxShowPanel
+    sealed partial class SoldLootBoxShowPanel
     {
         /// <summary> 
         /// Обязательная переменная конструктора.
@@ -93,7 +93,7 @@
             this.Controls.Add(this.DescriptionLabel);
             this.Controls.Add(this.TitleLabel);
             this.Controls.Add(this.Picture);
-            this.Name = "SoldLootboxShowPanel";
+            this.Name = "SoldLootBoxShowPanel";
             this.Size = new System.Drawing.Size(242, 100);
             ((System.ComponentModel.ISupportInitialize)(this.Picture)).EndInit();
             this.ResumeLayout(false);

@@ -12,7 +12,7 @@ public partial class ShopWindow : Form, IShopView
     {
         _context = context;
         InitializeComponent();
-        ReturnButton.Click+= (sender, args) => Invoke(OnBackToMenu);
+        ReturnButton.Click += (_, _) => Invoke(OnBackToMenu);
     }
 
     public new void Show()
@@ -26,7 +26,6 @@ public partial class ShopWindow : Form, IShopView
     public void BuyLootBox() => InvokeAction(OnBuyLootBox);
 
     public event Action OnBackToMenu;
-    public event Action OnReloadShop;
     public event Action OnBuyAnimation;
     public event Action OnBuyCheckersSkin;
     public event Action OnBuyLootBox;
@@ -40,9 +39,12 @@ public partial class ShopWindow : Form, IShopView
         CheckersSkins.Controls.Clear();
         Lootboxes.Controls.Clear();
         foreach (var a in shop.Animations)
-            Animations.Controls.Add(new SoldAnimationShowPanel(this,a));
+            Animations.Controls.Add(new SoldAnimationShowPanel(this, a));
         foreach (var skin in shop.Skins)
             CheckersSkins.Controls.Add(new SoldCheckersShowPanel(this, skin));
+        foreach (var box in shop.LootBoxes)
+            Lootboxes.Controls.Add(new SoldLootBoxShowPanel(this, box));
+        CurrencyLabel.Text = shop.Currency.ToString();
     }
 
     private static void InvokeAction(Action? action) => action?.Invoke();

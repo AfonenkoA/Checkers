@@ -108,6 +108,7 @@
             this.Controls.Add(this.PlayRunkedGameButton);
             this.Controls.Add(this.ReturnButton);
             this.Name = "GameSelectionWindow";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "GameSelectionWindow";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GameSelectionWindow_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

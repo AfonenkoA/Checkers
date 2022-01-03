@@ -1,4 +1,5 @@
 ﻿using WinFormsClient.Model.Item;
+using WinFormsClient.Model.Item.Collection;
 using static System.Drawing.Color;
 
 namespace WinFormsClient.Control.Collection;

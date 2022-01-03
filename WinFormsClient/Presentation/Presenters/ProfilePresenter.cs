@@ -1,17 +1,17 @@
 ﻿using Common.Entity;
 using WinFormsClient.Presentation.Common;
 using WinFormsClient.Presentation.Views;
-using WinFormsClient.Repository.Interface;
+using WinFormsClient.Service.Interface;
 using static System.Globalization.CultureInfo;
 
 namespace WinFormsClient.Presentation.Presenters;
 
 public class ProfilePresenter : BasePresenter<IProfileView, Credential>
 {
-    private readonly IUserRepository _repository;
+    private readonly IUserService _repository;
     private Credential _credential;
 
-    public ProfilePresenter(IApplicationController controller, IProfileView view, IUserRepository repository
+    public ProfilePresenter(IApplicationController controller, IProfileView view, IUserService repository
     ) : base(controller, view)
     {
         _repository = repository;

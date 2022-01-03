@@ -5,16 +5,18 @@ namespace WinFormsClient.Model;
 
 public class Shop
 {
-    public IEnumerable<ShopAnimation> Animations;
-    public IEnumerable<ShopCheckersSkin> Skins;
-    public IEnumerable<VisualLootBox> LootBoxes;
+    public readonly IEnumerable<ShopAnimation> Animations;
+    public readonly IEnumerable<ShopCheckersSkin> Skins;
+    public readonly IEnumerable<VisualLootBox> LootBoxes;
+    public readonly int Currency;
 
     public Shop(IEnumerable<ShopAnimation> animations,
         IEnumerable<ShopCheckersSkin> skins,
-        IEnumerable<VisualLootBox> lootBoxes)
+        IEnumerable<VisualLootBox> lootBoxes, int currency)
     {
-        this.Animations = animations;
+        Animations = animations;
         Skins = skins;
         LootBoxes = lootBoxes;
+        Currency = currency;
     }
 }

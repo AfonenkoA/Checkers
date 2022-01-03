@@ -1,8 +1,8 @@
 ﻿using Common.Entity;
 
-namespace WinFormsClient.Repository.Interface;
+namespace WinFormsClient.Service.Interface;
 
-internal interface IResourceRepository
+internal interface IResourceService
 {
     public Task<Image> Get(Item item);
     public Task<Image> Get(PublicUserData user);

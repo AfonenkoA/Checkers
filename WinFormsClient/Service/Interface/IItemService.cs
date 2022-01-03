@@ -1,9 +1,9 @@
 ﻿using Common.Entity;
 using WinFormsClient.Model.Item;
 
-namespace WinFormsClient.Repository.Interface;
+namespace WinFormsClient.Service.Interface;
 
-internal interface IItemRepository
+internal interface IItemService
 {
     public Task<VisualAnimation> Get(Animation animation);
     public Task<IEnumerable<VisualAnimation>> Get(IEnumerable<Animation> animations);

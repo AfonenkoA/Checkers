@@ -1,18 +1,18 @@
 ﻿using Api.Interface;
 using Common.Entity;
 using Site.Data.Models.User;
-using Site.Repository.Interface;
+using Site.Service.Interface;
 
-namespace Site.Repository.Implementation;
+namespace Site.Service.Implementation;
 
-public sealed class UserRepository : IUserRepository
+public sealed class UserService : IUserService
 {
     private readonly IAsyncUserApi _userApi;
-    private readonly IItemRepository _item;
+    private readonly IItemService _item;
     private readonly IAsyncStatisticsApi _statisticsApi;
 
-    public UserRepository(IAsyncUserApi userApi,
-        IAsyncStatisticsApi statisticsApi, IItemRepository item)
+    public UserService(IAsyncUserApi userApi,
+        IAsyncStatisticsApi statisticsApi, IItemService item)
     {
         _userApi = userApi;
         _statisticsApi = statisticsApi;
